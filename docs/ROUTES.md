@@ -16,17 +16,16 @@
 ## Food Donor — planned
 
 - `/donor/dashboard`
-- `/donor/add-food/details`
-- `/donor/add-food/pickup`
-- `/donor/add-food/safety`
-- `/donor/add-food/review`
-- `/donor/add-food/success`
+- `/donor/donations/new`
 - `/donor/donations`
 - `/donor/donations/[donationId]`
+- `/donor/donations/[donationId]/tracking`
 - `/donor/ngos`
 - `/donor/ngos/[ngoId]`
 - `/donor/notifications`
 - `/donor/profile`
+- `/donor/profile/edit`
+- `/donor/addresses`
 - `/donor/settings`
 - `/donor/support`
 
@@ -35,18 +34,23 @@
 - `/ngo/dashboard`
 - `/ngo/discover`
 - `/ngo/discover/map`
-- `/ngo/discover/[donationId]`
+- `/ngo/donations/[donationId]`
 - `/ngo/claims`
 - `/ngo/claims/[claimId]`
+- `/ngo/claims/[claimId]/confirm-delivery`
+- `/ngo/claims/[claimId]/distribution`
+- `/ngo/claims/[claimId]/report-issue`
 - `/ngo/requests`
-- `/ngo/requests/new/info`
-- `/ngo/requests/new/food-details`
-- `/ngo/requests/new/quantity-time`
-- `/ngo/requests/new/location`
-- `/ngo/requests/new/review`
-- `/ngo/requests/new/success`
+- `/ngo/requests/new`
+- `/ngo/requests/[requestId]`
+- `/ngo/requests/submitted`
 - `/ngo/impact`
 - `/ngo/notifications`
 - `/ngo/profile`
+- `/ngo/profile/edit`
+- `/ngo/team`
+- `/ngo/verification`
 - `/ngo/settings`
 - `/ngo/support`
+
+All route strings and dynamic route builders are centralized in `src/lib/routes.ts`. Planned routes are not reachable until their implementation phase.

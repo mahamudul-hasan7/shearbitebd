@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 
 export function DesktopSidebar({ role, activeHref }: { role: PortalRole; activeHref: string }) {
-  const items = getNavigation(role);
+  const items = getNavigation(role, activeHref.startsWith("/preview/"));
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[280px] flex-col border-r border-line bg-white/95 px-5 py-6 backdrop-blur lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r border-line bg-white/95 px-5 py-6 backdrop-blur lg:flex">
       <BrandLogo />
       <div className="mt-8 rounded-3xl bg-brand-50 p-4">
         <div className="flex items-center gap-3">
@@ -27,6 +27,7 @@ export function DesktopSidebar({ role, activeHref }: { role: PortalRole; activeH
             <Link
               key={item.label}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition",
                 active ? "bg-brand-600 text-white shadow-sm" : "text-muted-600 hover:bg-brand-50 hover:text-brand-800",

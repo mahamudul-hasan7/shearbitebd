@@ -9,40 +9,43 @@ import {
   UserRound,
 } from "lucide-react";
 import type { NavigationItem, PortalRole } from "@/types/navigation";
+import { ROUTES } from "@/lib/routes";
+import { USER_ROLE_META, UserRole } from "@/lib/constants/roles";
 
 export const donorNavigation: NavigationItem[] = [
-  { label: "Home", href: "/preview/donor", icon: Home },
-  { label: "Donations", href: "#donations", icon: PackageSearch },
-  { label: "Add Food", href: "#add-food", icon: Plus, isPrimary: true },
-  { label: "NGOs", href: "#ngos", icon: Building2 },
-  { label: "Profile", href: "#profile", icon: UserRound },
+  { label: "Home", href: ROUTES.donor.dashboard, icon: Home },
+  { label: "Donations", href: ROUTES.donor.donations, icon: PackageSearch },
+  { label: "Add Food", href: ROUTES.donor.newDonation, icon: Plus, isPrimary: true },
+  { label: "NGOs", href: ROUTES.donor.ngos, icon: Building2 },
+  { label: "Profile", href: ROUTES.donor.profile, icon: UserRound },
 ];
 
 export const ngoNavigation: NavigationItem[] = [
-  { label: "Home", href: "/preview/ngo", icon: Home },
-  { label: "Discover", href: "#discover", icon: Search },
-  { label: "Request", href: "#request", icon: Plus, isPrimary: true },
-  { label: "Claims", href: "#claims", icon: ClipboardList },
-  { label: "Profile", href: "#profile", icon: UserRound },
+  { label: "Home", href: ROUTES.ngo.dashboard, icon: Home },
+  { label: "Discover", href: ROUTES.ngo.discover, icon: Search },
+  { label: "Request", href: ROUTES.ngo.newRequest, icon: Plus, isPrimary: true },
+  { label: "Claims", href: ROUTES.ngo.claims, icon: ClipboardList },
+  { label: "Profile", href: ROUTES.ngo.profile, icon: UserRound },
 ];
 
 export const roleMeta: Record<PortalRole, { label: string; description: string }> = {
-  donor: {
-    label: "Food Donor",
-    description: "Post, track and measure surplus food donations.",
-  },
-  ngo: {
-    label: "NGO / Organization",
-    description: "Discover, claim and distribute rescued food.",
-  },
+  donor: USER_ROLE_META[UserRole.DONOR],
+  ngo: USER_ROLE_META[UserRole.NGO],
 };
 
-export function getNavigation(role: PortalRole) {
-  return role === "donor" ? donorNavigation : ngoNavigation;
+export function getNavigation(role: PortalRole, preview = false) {
+  const navigation = role === "donor" ? donorNavigation : ngoNavigation;
+  if (!preview) return navigation;
+
+  return navigation.map((item, index) =>
+    index === 0
+      ? { ...item, href: role === "donor" ? ROUTES.preview.donor : ROUTES.preview.ngo }
+      : item,
+  );
 }
 
 export const productLinks = [
-  { label: "Design System", href: "/design-system", icon: HeartHandshake },
-  { label: "Donor Preview", href: "/preview/donor", icon: PackageSearch },
-  { label: "NGO Preview", href: "/preview/ngo", icon: Building2 },
+  { label: "Design System", href: ROUTES.designSystem, icon: HeartHandshake },
+  { label: "Donor Preview", href: ROUTES.preview.donor, icon: PackageSearch },
+  { label: "NGO Preview", href: ROUTES.preview.ngo, icon: Building2 },
 ];

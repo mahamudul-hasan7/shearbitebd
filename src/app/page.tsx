@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 
 export default function HomePage() {
-  redirect("/splash");
+  redirect(ROUTES.auth.splash);
 }

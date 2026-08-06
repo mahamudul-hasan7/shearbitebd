@@ -28,7 +28,7 @@ export default function DonorPreviewPage() {
                 <p className="mt-2 text-sm text-muted-600">UIU Cafeteria · 40 meal packs · Refrigerated</p>
                 <div className="mt-5 flex flex-wrap gap-2"><Badge>Posted</Badge><Badge tone="success">Matched</Badge><Badge tone="warning">Pickup pending</Badge></div>
               </div>
-              <div className="rounded-3xl bg-red-50 p-5 text-center"><p className="text-xs font-bold uppercase tracking-wider text-red-700">Rescue clock</p><p className="mt-2 text-3xl font-black text-danger">01:45:32</p></div>
+              <div className="rounded-3xl bg-danger-soft p-5 text-center"><p className="text-xs font-bold uppercase tracking-wider text-danger-strong">Rescue clock</p><p className="mt-2 text-3xl font-black text-danger">01:45:32</p></div>
             </div>
           </CardContent>
         </Card>

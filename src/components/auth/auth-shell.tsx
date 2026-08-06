@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { AuthArtwork } from "@/components/auth/auth-artwork";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 interface AuthShellProps {
   children: ReactNode;
@@ -25,7 +26,7 @@ export function AuthShell({
     <main className="min-h-screen px-3 py-3 sm:px-5 sm:py-5 lg:p-7">
       <div
         className={cn(
-          "mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-[1480px] overflow-hidden rounded-[2rem] border border-white/70 bg-white/90 shadow-[0_35px_100px_rgba(4,53,31,0.14)] backdrop-blur sm:min-h-[calc(100vh-2.5rem)] lg:grid-cols-[minmax(380px,0.9fr)_minmax(560px,1.1fr)]",
+          "mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-[1480px] overflow-hidden rounded-panel border border-white/70 bg-white/90 shadow-dialog backdrop-blur sm:min-h-[calc(100vh-2.5rem)] lg:grid-cols-[minmax(380px,0.9fr)_minmax(560px,1.1fr)]",
           className,
         )}
       >
@@ -58,9 +59,9 @@ export function AuthShell({
           </div>
         </aside>
 
-        <section className="relative flex min-h-full flex-col bg-[radial-gradient(circle_at_top_right,rgba(255,237,204,0.55),transparent_23rem),radial-gradient(circle_at_bottom_left,rgba(226,241,229,0.7),transparent_25rem),#fff]">
+        <section className="auth-surface relative flex min-h-full flex-col">
           <div className="flex items-center justify-between px-5 py-5 sm:px-8 lg:hidden">
-            <BrandLogo href="/splash" />
+            <BrandLogo href={ROUTES.auth.splash} />
             <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">UIU Pilot</span>
           </div>
           <div className="flex flex-1 items-center justify-center px-5 pb-8 pt-2 sm:px-8 sm:pb-10 lg:px-12 lg:py-10 xl:px-16">

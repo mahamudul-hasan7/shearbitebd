@@ -1,11 +1,12 @@
 import { HeartHandshake, Leaf } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 export function BrandLogo({
   compact = false,
   className,
-  href = "/splash",
+  href = ROUTES.auth.splash,
   inverse = false,
 }: {
   compact?: boolean;

@@ -24,14 +24,32 @@
   --color-muted-400: var(--muted-400);
   --color-line: var(--line);
   --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-strong: var(--success-strong);
   --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-strong: var(--warning-strong);
   --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-strong: var(--danger-strong);
   --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-strong: var(--info-strong);
   --font-sans: var(--font-sans);
+  --radius-sm: 0.75rem;
   --radius-card: 1.5rem;
   --radius-control: 1rem;
+  --radius-panel: 2rem;
   --shadow-card: 0 18px 50px rgba(20, 66, 43, 0.08);
   --shadow-float: 0 20px 55px rgba(0, 87, 52, 0.18);
+  --shadow-dialog: 0 30px 90px rgba(4, 53, 31, 0.24);
+  --shadow-sticky: 0 -12px 35px rgba(4, 53, 31, 0.08);
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
 }
 
 :root {
@@ -58,10 +76,20 @@
   --muted-400: #929c96;
   --line: #e3e9e5;
   --success: #168149;
+  --success-soft: #eaf7ef;
+  --success-strong: #0b6336;
   --warning: #f29a18;
+  --warning-soft: #fff6df;
+  --warning-strong: #8a4b05;
   --danger: #d93636;
+  --danger-soft: #fff0f0;
+  --danger-strong: #9f2424;
   --info: #2563eb;
+  --info-soft: #edf4ff;
+  --info-strong: #1746a2;
   --font-sans: Inter, "Noto Sans Bengali", "Segoe UI", Arial, sans-serif;
+  --sidebar-width: 17.5rem;
+  --page-max-width: 100rem;
 }
 
 * {
@@ -83,6 +111,15 @@ body {
   color: var(--ink-900);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
+}
+
+dialog {
+  color: inherit;
+}
+
+dialog::backdrop {
+  background: rgba(4, 53, 31, 0.52);
+  backdrop-filter: blur(4px);
 }
 
 button,
@@ -111,4 +148,36 @@ select {
     linear-gradient(to right, rgba(14, 107, 64, 0.045) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(14, 107, 64, 0.045) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+.auth-surface {
+  background:
+    radial-gradient(circle at top right, rgba(255, 237, 204, 0.55), transparent 23rem),
+    radial-gradient(circle at bottom left, rgba(226, 241, 229, 0.7), transparent 25rem),
+    var(--surface);
+}
+
+.splash-landscape {
+  background: linear-gradient(
+    165deg,
+    transparent 35%,
+    color-mix(in srgb, var(--brand-100) 75%, transparent) 35%,
+    color-mix(in srgb, var(--brand-100) 75%, transparent) 55%,
+    color-mix(in srgb, var(--accent-100) 75%, transparent) 55%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

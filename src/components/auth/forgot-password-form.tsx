@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ROUTES } from "@/lib/routes";
 
 export function ForgotPasswordForm() {
   const [sent, setSent] = useState(false);
@@ -24,7 +25,7 @@ export function ForgotPasswordForm() {
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-600">
           We sent a password reset link. The demo does not send a real email yet; backend integration will be added later.
         </p>
-        <Link href="/login" className="mt-6 inline-flex font-black text-brand-700 hover:text-brand-800">
+        <Link href={ROUTES.auth.login} className="mt-6 inline-flex font-black text-brand-700 hover:text-brand-800">
           Back to login
         </Link>
       </div>

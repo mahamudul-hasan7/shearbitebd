@@ -19,10 +19,12 @@ import { useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { AuthProgress } from "@/components/auth/auth-progress";
 import { PasswordInput } from "@/components/auth/password-input";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { ROUTES } from "@/lib/routes";
+import { USER_ROLE_META, UserRole } from "@/lib/constants/roles";
 
 const steps = [
   { label: "Account" },
@@ -34,9 +36,9 @@ const steps = [
 type Role = "donor" | "ngo" | "volunteer";
 
 const roleLabels: Record<Role, string> = {
-  donor: "Food Donor",
-  ngo: "NGO / Organization",
-  volunteer: "Volunteer",
+  donor: USER_ROLE_META[UserRole.DONOR].label,
+  ngo: USER_ROLE_META[UserRole.NGO].label,
+  volunteer: USER_ROLE_META[UserRole.VOLUNTEER].label,
 };
 
 interface RegistrationData {
@@ -137,8 +139,8 @@ export function RegisterForm() {
           </div>
         </div>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href="/login"><Button size="lg" rightIcon={<ArrowRight className="size-5" />}>Continue to login</Button></Link>
-          <Link href="/role-selection"><Button size="lg" variant="outline">Register another role</Button></Link>
+          <ButtonLink href={ROUTES.auth.login} size="lg" rightIcon={<ArrowRight className="size-5" />}>Continue to login</ButtonLink>
+          <ButtonLink href={ROUTES.auth.roleSelection} size="lg" variant="outline">Register another role</ButtonLink>
         </div>
       </div>
     );
@@ -156,7 +158,7 @@ export function RegisterForm() {
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted-600">{description}</p>
         </div>
-        <Link href="/role-selection" className="shrink-0 text-sm font-black text-brand-700 hover:text-brand-800">Change role</Link>
+        <Link href={ROUTES.auth.roleSelection} className="shrink-0 text-sm font-black text-brand-700 hover:text-brand-800">Change role</Link>
       </div>
 
       <form ref={formRef} onSubmit={handleSubmit} className="mt-6 grid gap-5">
@@ -266,7 +268,7 @@ export function RegisterForm() {
               Back
             </Button>
           ) : (
-            <Link href="/role-selection"><Button type="button" size="lg" variant="ghost" leftIcon={<ArrowLeft className="size-5" />}>Role selection</Button></Link>
+            <ButtonLink href={ROUTES.auth.roleSelection} size="lg" variant="ghost" leftIcon={<ArrowLeft className="size-5" />}>Role selection</ButtonLink>
           )}
 
           {currentStep < 3 ? (

@@ -19,8 +19,8 @@ export function StatCard({
   const tones = {
     brand: "bg-brand-100 text-brand-700",
     accent: "bg-accent-100 text-accent-600",
-    info: "bg-blue-100 text-blue-700",
-    success: "bg-green-100 text-green-700",
+    info: "bg-info-soft text-info-strong",
+    success: "bg-success-soft text-success-strong",
   };
   return (
     <Card className="p-5">

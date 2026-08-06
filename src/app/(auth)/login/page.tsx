@@ -2,13 +2,14 @@ import { ArrowLeft, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
+import { ROUTES } from "@/lib/routes";
 
 export const metadata = { title: "Log In" };
 
 export default function LoginPage() {
   return (
     <AuthShell artworkVariant="security" eyebrow="Secure account access" title="Welcome back to the rescue network." description="Continue coordinating safe, verified, and time-sensitive food rescue operations.">
-      <Link href="/onboarding" className="mb-6 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:text-brand-800">
+      <Link href={ROUTES.auth.onboarding} className="mb-6 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:text-brand-800">
         <ArrowLeft className="size-4" /> Back
       </Link>
       <p className="text-xs font-black uppercase tracking-[0.2em] text-accent-600">ShareBite BD account</p>

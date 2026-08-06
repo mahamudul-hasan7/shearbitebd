@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-08-07
-Current milestone: Phase 0 complete; Phase 1 and Phase 2 implementations preserved
+Current milestone: Phase 1 complete; existing Phase 2 authentication preserved for its completion pass
 
 ## Audit summary
 
@@ -20,14 +20,16 @@ Current milestone: Phase 0 complete; Phase 1 and Phase 2 implementations preserv
 - Replaced the unavailable Lucide `Chrome` export with the supported `Globe` icon on the Google login placeholder.
 - Removed the handwritten `lucide-react` declaration shim that masked invalid imports and used an explicit `any`.
 
-## Completed foundation (existing Phase 1 work)
+## Completed foundation (Phase 1)
 
-- Central brand tokens for green, orange, warm off-white, neutral, and semantic colors.
+- Central brand tokens for green, orange, warm off-white, neutral, semantic colors, breakpoints, radii, shadows, and layout dimensions.
 - Shared logo and wordmark component.
-- Reusable UI primitives: avatar, badge, button, card, empty state, icon button, input, section header, select, stat card, tabs, and textarea.
-- Shared responsive portal shell with desktop sidebar, app top bar, and mobile bottom navigation.
-- Central donor/NGO navigation configuration.
-- Design-system catalogue and donor/NGO shell preview pages.
+- Complete reusable UI primitives: actions, inputs, selection controls, cards, statuses, feedback, overlays, loading states, stepper, search, and file upload.
+- Shared responsive portal shell with AppHeader, desktop sidebar, 320px-safe mobile bottom navigation, page container, responsive grid, and sticky action bar.
+- Central auth/donor/NGO routes and dynamic resource route builders.
+- Central roles, registration policy, donation statuses, claim statuses, request statuses, labels, tones, and lifecycle arrays.
+- Complete design-system catalogue and donor/NGO shell preview pages.
+- Accessible labels, help/error associations, keyboard dialogs, focus states, live-region feedback, safe-area spacing, and reduced-motion behavior.
 
 ## Completed authentication frontend (existing Phase 2 work)
 
@@ -54,7 +56,7 @@ Authentication remains a frontend demonstration. There is no real session, OAuth
 | `/register?role=donor` | Implemented mock | Donor registration |
 | `/register?role=ngo` | Implemented mock | NGO registration and verification upload UI |
 | `/register?role=volunteer` | Implemented mock | Volunteer registration |
-| `/design-system` | Implemented | Current shared component catalogue |
+| `/design-system` | Implemented | Complete shared component and layout catalogue |
 | `/preview/donor` | Implemented preview | Responsive donor shell demonstration |
 | `/preview/ngo` | Implemented preview | Responsive NGO shell demonstration |
 
@@ -67,15 +69,6 @@ The donor and NGO route groups contain intentional `.gitkeep` placeholders only.
 - `npm audit` reports three high-severity advisories through the pinned `next@16.2.12` dependency (`postcss` and `sharp`). npm reports `next@16.3.0` as the non-major remediation. The version was not changed during Phase 0 because the project now runs and this phase forbids unnecessary package upgrades.
 - Windows PowerShell may block `npm.ps1` under a restricted execution policy. `npm.cmd run <script>` works without changing machine policy.
 - There is no automated test script or configured test suite yet.
-
-### Phase 1 gaps
-
-- The master component list is not complete. Checkbox, radio group, switch, modal, drawer, dropdown, skeleton, alert, toast, stepper, search input, and file upload primitives are still pending consolidation.
-- Domain roles and lifecycle statuses are not yet represented by centralized enums/constants.
-- Preview navigation still uses hash placeholders for routes that will be implemented in later phases.
-- At 320px, the five `min-w-16` mobile navigation items plus horizontal padding can exceed the viewport; this requires a responsive component pass.
-- The mobile top-bar menu button has no drawer/action attached.
-- Several preview/auth links wrap button elements, which should be normalized to avoid nested interactive controls.
 
 ### Phase 2 gaps
 
@@ -100,15 +93,14 @@ The donor and NGO route groups contain intentional `.gitkeep` placeholders only.
 
 ## Upcoming phases
 
-1. Phase 1: finish and consolidate the responsive design system.
-2. Phase 2: complete auth validation, mock session state, and route guards.
-3. Phase 3: add typed domains, mock service adapters, state helpers, and API contracts.
-4. Phases 4–8: implement the complete donor experience.
-5. Phases 9–14: implement the complete NGO experience.
-6. Phase 15: complete cross-device responsive QA.
-7. Phase 16: accessibility, performance, and UX quality.
-8. Phase 17: tests and backend readiness.
-9. Phase 18: final QA and release-candidate documentation.
+1. Phase 2: complete auth validation, mock session state, and route guards.
+2. Phase 3: add typed domains, mock service adapters, state helpers, and API contracts.
+3. Phases 4–8: implement the complete donor experience.
+4. Phases 9–14: implement the complete NGO experience.
+5. Phase 15: complete cross-device responsive QA.
+6. Phase 16: accessibility, performance, and UX quality.
+7. Phase 17: tests and backend readiness.
+8. Phase 18: final QA and release-candidate documentation.
 
 ## Verification commands
 

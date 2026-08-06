@@ -7,6 +7,7 @@ import { useState, type FormEvent } from "react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ROUTES } from "@/lib/routes";
 
 export function LoginForm() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export function LoginForm() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    window.setTimeout(() => router.push("/role-selection"), 450);
+    window.setTimeout(() => router.push(ROUTES.auth.roleSelection), 450);
   }
 
   return (
@@ -42,7 +43,7 @@ export function LoginForm() {
           />
           Remember me
         </label>
-        <Link href="/forgot-password" className="font-bold text-brand-700 hover:text-brand-800">
+        <Link href={ROUTES.auth.forgotPassword} className="font-bold text-brand-700 hover:text-brand-800">
           Forgot password?
         </Link>
       </div>
@@ -63,7 +64,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-muted-600">
         Don&apos;t have an account?{" "}
-        <Link href="/role-selection" className="font-black text-brand-700 hover:text-brand-800">
+        <Link href={ROUTES.auth.roleSelection} className="font-black text-brand-700 hover:text-brand-800">
           Create account
         </Link>
       </p>

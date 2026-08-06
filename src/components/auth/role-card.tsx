@@ -22,9 +22,9 @@ export function RoleCard({
 }) {
   const tones = {
     brand: "border-brand-200 bg-brand-50/80 text-brand-700 group-hover:border-brand-400",
-    blue: "border-blue-100 bg-blue-50/70 text-blue-800 group-hover:border-blue-300",
+    blue: "border-info/20 bg-info-soft text-info-strong group-hover:border-info/40",
     accent: "border-accent-100 bg-accent-50 text-accent-600 group-hover:border-accent-400",
-    purple: "border-purple-100 bg-purple-50/70 text-purple-800 group-hover:border-purple-300",
+    purple: "border-line bg-canvas text-ink-700 group-hover:border-muted-400",
   };
 
   const content = (

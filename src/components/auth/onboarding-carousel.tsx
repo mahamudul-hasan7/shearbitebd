@@ -3,8 +3,9 @@
 import { ArrowRight, BarChart3, Check, Clock3, PackagePlus, ScanLine, Search, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 const slides = [
   {
@@ -73,7 +74,7 @@ export function OnboardingCarousel() {
       <div>
         <div className="flex items-center justify-between gap-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-accent-600">{slide.eyebrow}</p>
-          <Link href="/role-selection" className="text-sm font-bold text-brand-700 hover:text-brand-800">Skip</Link>
+          <Link href={ROUTES.auth.roleSelection} className="text-sm font-bold text-brand-700 hover:text-brand-800">Skip</Link>
         </div>
         <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight text-brand-900 sm:text-5xl">{slide.title}</h1>
         <p className="mt-5 max-w-xl text-base leading-7 text-muted-600 sm:text-lg">{slide.description}</p>
@@ -89,9 +90,7 @@ export function OnboardingCarousel() {
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           {last ? (
-            <Link href="/role-selection" className="flex-1 sm:flex-none">
-              <Button size="lg" fullWidth rightIcon={<ArrowRight className="size-5" />}>Get started</Button>
-            </Link>
+            <ButtonLink href={ROUTES.auth.roleSelection} size="lg" fullWidth rightIcon={<ArrowRight className="size-5" />} className="flex-1 sm:flex-none">Get started</ButtonLink>
           ) : (
             <Button size="lg" rightIcon={<ArrowRight className="size-5" />} onClick={() => setIndex((value) => value + 1)}>
               Continue
