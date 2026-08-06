@@ -1,0 +1,77 @@
+1. NGO Dashboard
+Available Donations
+Active Claims
+Meals Received
+Pending Deliveries
+Recommended donation preview
+Quick actions
+2. Recommended Donations
+Smart-matched food listings
+Match percentage
+Urgency
+Quantity
+Distance
+3. Search & Filter Donations
+Food category
+Distance
+Quantity
+Urgency
+Pickup deadline
+4. Rescue Map
+Nearby donations
+Available and critical map pins
+Donor location preview
+5. Donation Details
+Food image and name
+Donor information
+Meal quantity
+Preparation time
+Storage condition
+Rescue Clock
+6. Food Safety & Eligibility
+Allergen information
+Storage details
+Safety declaration
+NGO capacity compatibility
+7. Claim Donation
+Required quantity
+Pickup availability
+Distribution capacity
+Confirm claim button
+8. Claim Successful
+Donation reserved
+Claim ID
+Pickup deadline
+Waiting for volunteer status
+9. Demand Request Form
+Required meals
+Beneficiary count
+Food preference
+Required date and time
+Urgency
+10. Demand Request Submitted
+Request confirmation
+Request ID
+Matching status
+Edit or cancel option
+11. Active Claims
+Reserved
+Volunteer assigned
+Picked up
+Delivery pending
+Completed claims
+12. Live Delivery Tracking
+Reserved → Assigned → Picked Up → Delivered
+Volunteer information
+Estimated arrival
+Route preview
+13. Delivery Confirmation
+QR verification
+Quantity received
+Food condition confirmation
+Report problem option
+14. Distribution Record & Impact
+Beneficiaries served
+Meals distributed
+Completed donation history
+Monthly NGO impact
