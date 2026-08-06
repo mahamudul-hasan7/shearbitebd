@@ -5,7 +5,7 @@ Responsive frontend foundation for the ShareBite BD smart surplus food rescue pl
 ## Current progress
 
 - Phase 1: project structure, design system, reusable UI, responsive portal shell
-- Phase 2: splash, onboarding, login, password recovery, role selection, and multi-step registration
+- Phase 2: complete authentication frontend, accessible validation, mock sessions, and role guards
 
 ## Run locally
 
@@ -27,7 +27,13 @@ Open `http://localhost:3000`. The root route redirects to `/splash`.
 /register?role=donor
 /register?role=ngo
 /register?role=volunteer
+/unauthorized
+/donor/dashboard
+/ngo/dashboard
+/volunteer/dashboard
 ```
+
+Development builds show one-click donor, NGO, and volunteer accounts on `/login`. Their shared password is `Demo1234`; session data contains only mock profile and role metadata, never the password.
 
 ## Quality commands
 
@@ -39,6 +45,6 @@ npm run build
 
 ## Frontend-only note
 
-Authentication forms currently demonstrate interface behavior only. Real sessions, database storage, Google OAuth, email reset, document upload, and verification approval require backend integration.
+Authentication remains a frontend demonstration. The role session and route guards are browser-only mocks, not production authorization. Database storage, Google OAuth, reset email delivery, document upload, and verification approval require backend integration.
 
 See `docs/PHASE_2_SUMMARY.md` for the completed scope.

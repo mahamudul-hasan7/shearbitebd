@@ -1,21 +1,24 @@
 # Route Plan
 
-## Authentication — implemented in Phase 2
+## Authentication - implemented in Phase 2
 
 | Route | Purpose |
 |---|---|
 | `/splash` | Launch and brand introduction |
 | `/onboarding` | Product overview carousel |
-| `/login` | Account login |
-| `/forgot-password` | Password reset request |
-| `/role-selection` | Select donor, NGO, volunteer, or admin path |
+| `/login` | Validated mock account login |
+| `/forgot-password` | Password reset request placeholder |
+| `/role-selection` | Select donor, NGO, or volunteer; admin is invite-only |
 | `/register?role=donor` | Food donor registration |
 | `/register?role=ngo` | NGO registration |
 | `/register?role=volunteer` | Volunteer registration |
+| `/unauthorized` | Wrong-role access explanation |
+| `/donor/dashboard` | Guarded donor placeholder; full screen planned for Phase 4 |
+| `/ngo/dashboard` | Guarded NGO placeholder; full screen planned for Phase 9 |
+| `/volunteer/dashboard` | Guarded volunteer placeholder |
 
-## Food Donor — planned
+## Food Donor - planned
 
-- `/donor/dashboard`
 - `/donor/donations/new`
 - `/donor/donations`
 - `/donor/donations/[donationId]`
@@ -29,9 +32,8 @@
 - `/donor/settings`
 - `/donor/support`
 
-## NGO — planned
+## NGO - planned
 
-- `/ngo/dashboard`
 - `/ngo/discover`
 - `/ngo/discover/map`
 - `/ngo/donations/[donationId]`

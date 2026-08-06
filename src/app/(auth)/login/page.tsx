@@ -1,5 +1,6 @@
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { ROUTES } from "@/lib/routes";
@@ -15,10 +16,10 @@ export default function LoginPage() {
       <p className="text-xs font-black uppercase tracking-[0.2em] text-accent-600">ShareBite BD account</p>
       <h1 className="mt-3 text-4xl font-black tracking-tight text-brand-900 sm:text-5xl">Welcome back</h1>
       <p className="mt-3 max-w-xl text-sm leading-7 text-muted-600 sm:text-base">Log in to continue rescuing food and creating measurable impact.</p>
-      <div className="mt-7"><LoginForm /></div>
+      <div className="mt-7"><Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-brand-50" />}><LoginForm /></Suspense></div>
       <div className="mt-7 flex items-center justify-center gap-2 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-sm text-brand-800">
         <ShieldCheck className="size-5 shrink-0" />
-        <span className="font-bold">Safe, verified, and transparent food rescue.</span>
+        <span className="font-bold">Frontend demo only — real authentication is not connected yet.</span>
       </div>
     </AuthShell>
   );

@@ -16,4 +16,4 @@ src/
 └── data/                # Mock data during frontend development
 ```
 
-The route groups for auth, donor and NGO are already prepared with `.gitkeep` files.
+The auth route group is complete for Phase 2. Donor, NGO, and volunteer groups now include guarded landing placeholders; later phases will add their full product screens.

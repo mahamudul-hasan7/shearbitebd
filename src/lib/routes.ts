@@ -11,6 +11,7 @@ export const ROUTES = {
     registerDonor: "/register?role=donor",
     registerNgo: "/register?role=ngo",
     registerVolunteer: "/register?role=volunteer",
+    unauthorized: "/unauthorized",
   },
   preview: {
     donor: "/preview/donor",
@@ -53,6 +54,9 @@ export const ROUTES = {
     distribution: (claimId: string) => `/ngo/claims/${claimId}/distribution`,
     reportIssue: (claimId: string) => `/ngo/claims/${claimId}/report-issue`,
     request: (requestId: string) => `/ngo/requests/${requestId}`,
+  },
+  volunteer: {
+    dashboard: "/volunteer/dashboard",
   },
 } as const;
 
