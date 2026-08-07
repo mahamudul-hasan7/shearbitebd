@@ -6,6 +6,7 @@ Responsive frontend foundation for the ShareBite BD smart surplus food rescue pl
 
 - Phase 1: project structure, design system, reusable UI, responsive portal shell
 - Phase 2: complete authentication frontend, accessible validation, mock sessions, and role guards
+- Phase 3: strict domain models, Bangladesh-focused mock services, state, permissions, and API contracts
 
 ## Run locally
 
@@ -48,3 +49,5 @@ npm run build
 Authentication remains a frontend demonstration. The role session and route guards are browser-only mocks, not production authorization. Database storage, Google OAuth, reset email delivery, document upload, and verification approval require backend integration.
 
 See `docs/PHASE_2_SUMMARY.md` for the completed scope.
+
+Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`.

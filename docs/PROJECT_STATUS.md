@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-08-07
-Current milestone: Phase 2 complete
+Current milestone: Phase 3 complete
 
 ## Completed foundation
 
@@ -25,6 +25,17 @@ Current milestone: Phase 2 complete
 - Guarded dashboard placeholders and a wrong-role `/unauthorized` route.
 
 Authentication remains a frontend demonstration. There is no production session, OAuth, reset-email delivery, upload storage, identity verification, or authorization backend.
+
+## Completed domain and mock service foundation (Phase 3)
+
+- Strict TypeScript models cover users, role profiles, addresses, donations, safety declarations, claims, food requests, notifications, impact, incidents, and distributions.
+- Central enums cover domain taxonomy and the existing role/status lifecycles.
+- Bangladesh-focused mock state includes UIU Cafeteria, nearby donor businesses, verified NGOs, donations, claims, requests, notifications, and estimated impact history.
+- Promise service adapters provide configurable latency, abort, loading, and mock error behavior.
+- Central selectors calculate rescue time, urgency, and match-score display.
+- Central transition maps validate donation, claim, and request state changes.
+- Permission and privacy projection helpers hide exact donor address/contact from unauthorized viewers.
+- `docs/API_CONTRACTS.md` documents the future backend boundary.
 
 ## Implemented routes
 
@@ -52,6 +63,7 @@ Authentication remains a frontend demonstration. There is no production session,
 - The installed Next.js version remains pinned; dependency upgrades were outside the completed phase scope.
 - There is no automated test script or configured test suite yet. Business-rule tests are planned for Phase 17.
 - Mock sessions and client route guards are not production security controls.
+- The Phase 3 domain store is in-memory and resets on full reload.
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - Donor and NGO dashboards are minimal auth handoff pages; the product workflows begin in later phases.
@@ -65,13 +77,12 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phase 3: typed domains, mock service adapters, state helpers, and API contracts.
-2. Phases 4-8: complete donor experience.
-3. Phases 9-14: complete NGO experience.
-4. Phase 15: cross-device responsive QA.
-5. Phase 16: accessibility, performance, and UX quality.
-6. Phase 17: tests and backend readiness.
-7. Phase 18: final QA and release-candidate documentation.
+1. Phases 4-8: complete donor experience.
+2. Phases 9-14: complete NGO experience.
+3. Phase 15: cross-device responsive QA.
+4. Phase 16: accessibility, performance, and UX quality.
+5. Phase 17: tests and backend readiness.
+6. Phase 18: final QA and release-candidate documentation.
 
 ## Verification commands
 
