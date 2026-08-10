@@ -61,6 +61,14 @@ npm run git:check
 
 It reports uncommitted changes, unpushed commits, and the number of commits ahead or behind the remote.
 
+Pushes are also guarded by a local Git hook after setup:
+
+```bash
+npm run git:setup
+```
+
+That configures `.githooks/pre-push`, which runs the same check automatically before `git push`.
+
 ## Frontend-only note
 
 Authentication remains a frontend demonstration. The role session and route guards are browser-only mocks, not production authorization. Database storage, Google OAuth, reset email delivery, document upload, and verification approval require backend integration.

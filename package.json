@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "git:check": "node scripts/check-unpushed.mjs"
+    "git:check": "node scripts/check-unpushed.mjs",
+    "git:setup": "node scripts/setup-git-hooks.mjs",
+    "postinstall": "node scripts/setup-git-hooks.mjs"
   },
   "dependencies": {
     "lucide-react": "1.27.0",
