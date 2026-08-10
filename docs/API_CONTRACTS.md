@@ -88,7 +88,9 @@ Backend requirements:
 | `GET` | `/donations/:donationId` | Donation ID | `DonationView` |
 | `POST` | `/donations` | `CreateDonationInput` | Created `DonationView` |
 | `PATCH` | `/donations/:donationId` | Editable draft fields | Updated `DonationView` |
+| `POST` | `/donations/:donationId/cancel` | Required cancellation reason | Cancelled `DonationView` and released pre-pickup claim |
 | `POST` | `/donations/:donationId/transitions` | `{ "status": "PUBLISHED" }` | Updated `DonationView` |
+| `GET` | `/donations/:donationId/tracking` | Authorized donation participant | `DonationTrackingData` |
 
 Required backend rules:
 
@@ -98,6 +100,9 @@ Required backend rules:
 - Required food-safety declarations must be complete before publishing.
 - Food safety is based on declaration, traceability, moderation, and disclaimers; the product does not medically certify food.
 - Status changes must follow `DONATION_TRANSITIONS`.
+- Edit is allowed only before pickup begins; completed, expired, cancelled, and disputed records are read-only.
+- Cancellation requires a recorded reason and must atomically release a reserved or assigned pre-pickup claim.
+- Tracking responses must authorize the donor owner, accepted NGO, assigned volunteer, or administrator before including private contact, token, or exact-location fields.
 
 ## Donation privacy response
 

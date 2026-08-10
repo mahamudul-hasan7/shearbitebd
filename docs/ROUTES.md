@@ -20,9 +20,9 @@
 ## Food Donor
 
 - `/donor/donations/new` - implemented in Phase 5; four-step surplus-food wizard
-- `/donor/donations` - Phase 5 service-backed verification handoff; full management planned for Phase 6
-- `/donor/donations/[donationId]` - Phase 5 owner detail handoff; full detail and lifecycle actions planned for Phase 6
-- `/donor/donations/[donationId]/tracking`
+- `/donor/donations` - implemented in Phase 6; searchable/filterable management, status tabs, progress, and states
+- `/donor/donations/[donationId]` - implemented in Phase 6; full owner detail, receiver summary, lifecycle, edit/cancel/report/share actions
+- `/donor/donations/[donationId]/tracking` - implemented in Phase 6; permission-aware tracking, map/ETA placeholders, contacts, and mock QR handover
 - `/donor/ngos`
 - `/donor/ngos/[ngoId]`
 - `/donor/notifications`

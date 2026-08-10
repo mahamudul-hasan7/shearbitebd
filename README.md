@@ -9,6 +9,7 @@ Responsive frontend foundation for the ShareBite BD smart surplus food rescue pl
 - Phase 3: strict domain models, Bangladesh-focused mock services, state, permissions, and API contracts
 - Phase 4: complete responsive Food Donor dashboard powered by typed mock services
 - Phase 5: responsive four-step surplus-food wizard with persisted browser drafts, validation, submission confirmation, and service-backed verification views
+- Phase 6: complete donor donation management with search/status filters, lifecycle actions, receiver details, permission-aware tracking, and mock QR handover
 
 ## Run locally
 
@@ -35,6 +36,7 @@ Open `http://localhost:3000`. The root route redirects to `/splash`.
 /donor/donations/new
 /donor/donations
 /donor/donations/donation-uiu-lunch
+/donor/donations/donation-uiu-lunch/tracking
 /ngo/dashboard
 /volunteer/dashboard
 ```
@@ -55,4 +57,4 @@ Authentication remains a frontend demonstration. The role session and route guar
 
 See `docs/PHASE_2_SUMMARY.md` for the completed scope.
 
-Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. The donor dashboard is documented in `docs/PHASE_4_SUMMARY.md`, and the donation wizard in `docs/PHASE_5_SUMMARY.md`.
+Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md`, `docs/PHASE_5_SUMMARY.md`, and `docs/PHASE_6_SUMMARY.md`.

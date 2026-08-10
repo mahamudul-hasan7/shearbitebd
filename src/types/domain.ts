@@ -147,6 +147,8 @@ export interface Donation {
   priority: PriorityLevel;
   status: DonationStatus;
   publishedAt?: ISODateTime;
+  cancelledAt?: ISODateTime;
+  cancellationReason?: string;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
 }

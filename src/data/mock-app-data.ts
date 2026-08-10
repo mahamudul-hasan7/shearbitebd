@@ -85,10 +85,10 @@ export function createMockAppState(now = new Date()): MockAppState {
         pickup: { addressId: "address-uiu", approximateArea: "Badda, Dhaka", distanceKm: 3.2, contact: { name: "UIU Cafeteria Desk", phone: "+8801700000001", email: "donor@sharebite.demo" }, windowStart: relativeIso(baseTime, 30), windowEnd: relativeIso(baseTime, 120), directions: "Use the designated mock pickup gate and ask for the cafeteria desk." },
         safetyDeclaration: declaration(baseTime, "user-donor-uiu", 40),
         priority: PriorityLevel.HIGH,
-        status: DonationStatus.AVAILABLE,
+        status: DonationStatus.ASSIGNED,
         publishedAt: relativeIso(baseTime, -35),
         createdAt: relativeIso(baseTime, -50),
-        updatedAt: relativeIso(baseTime, -35),
+        updatedAt: relativeIso(baseTime, -5),
       },
       {
         id: "donation-banani-bread",
@@ -179,6 +179,7 @@ export function createMockAppState(now = new Date()): MockAppState {
       },
     ],
     claims: [
+      { id: "claim-uiu-lunch", donationId: "donation-uiu-lunch", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.ASSIGNED, matchScore: 96, reservedAt: relativeIso(baseTime, -25), assignedAt: relativeIso(baseTime, -5), estimatedPickupAt: relativeIso(baseTime, 45), estimatedDeliveryAt: relativeIso(baseTime, 95), pickupVerificationToken: "MOCK-PICKUP-624819", deliveryVerificationToken: "MOCK-DELIVERY-381507", updatedAt: relativeIso(baseTime, -5) },
       { id: "claim-banani-bread", donationId: "donation-banani-bread", ngoProfileId: "ngo-community-kitchen", status: ClaimStatus.RESERVED, matchScore: 86, reservedAt: relativeIso(baseTime, -15), estimatedPickupAt: relativeIso(baseTime, 150), updatedAt: relativeIso(baseTime, -15) },
       { id: "claim-badda-biryani", donationId: "donation-badda-biryani", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.ASSIGNED, matchScore: 94, reservedAt: relativeIso(baseTime, -30), assignedAt: relativeIso(baseTime, -5), estimatedPickupAt: relativeIso(baseTime, 35), estimatedDeliveryAt: relativeIso(baseTime, 80), pickupVerificationToken: "MOCK-PICKUP-482913", deliveryVerificationToken: "MOCK-DELIVERY-735204", updatedAt: relativeIso(baseTime, -5) },
       { id: "claim-uiu-produce", donationId: "donation-uiu-produce", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.DISTRIBUTED, matchScore: 91, reservedAt: relativeIso(baseTime, -1_440), assignedAt: relativeIso(baseTime, -1_380), pickedUpAt: relativeIso(baseTime, -1_200), deliveredAt: relativeIso(baseTime, -1_020), distributedAt: relativeIso(baseTime, -600), updatedAt: relativeIso(baseTime, -600) },
@@ -188,7 +189,7 @@ export function createMockAppState(now = new Date()): MockAppState {
       { id: "request-community-weekend", ngoProfileId: "ngo-community-kitchen", title: "Weekend community lunch supplies", requestType: RequestType.RECURRING, priority: PriorityLevel.MEDIUM, purpose: "Community lunch preparation", recipientType: "Community outreach", categories: [FoodCategory.GROCERIES, FoodCategory.PRODUCE], dietaryTypes: [DietaryType.HALAL, DietaryType.VEGETARIAN], allergensOrRestrictions: [], peopleToServe: 150, mealsNeeded: 150, neededBy: relativeIso(baseTime, 2_880), preferredTimeSlot: "Friday morning", deliveryAddressId: "address-community-kitchen", locationType: "COMMUNITY_CENTER", status: RequestStatus.PENDING_REVIEW, createdAt: relativeIso(baseTime, -90), updatedAt: relativeIso(baseTime, -90) },
     ],
     notifications: [
-      { id: "notification-uiu-published", userId: "user-donor-uiu", type: NotificationType.SYSTEM, priority: PriorityLevel.MEDIUM, title: "Donation is live", message: "Your lunch donation is visible to verified NGOs in the Badda area.", href: "/donor/donations/donation-uiu-lunch", createdAt: relativeIso(baseTime, -32) },
+      { id: "notification-uiu-published", userId: "user-donor-uiu", type: NotificationType.VOLUNTEER, priority: PriorityLevel.HIGH, title: "Volunteer assigned", message: "A verified volunteer is scheduled to collect your lunch donation.", href: "/donor/donations/donation-uiu-lunch/tracking", createdAt: relativeIso(baseTime, -5) },
       { id: "notification-donor-claim", userId: "user-donor-badda", type: NotificationType.CLAIM, priority: PriorityLevel.HIGH, title: "Donation assigned", message: "A verified volunteer was assigned to the biryani rescue.", href: "/donor/donations/donation-badda-biryani", createdAt: relativeIso(baseTime, -5) },
       { id: "notification-ngo-nearby", userId: "user-ngo-hope", type: NotificationType.NEARBY_DONATION, priority: PriorityLevel.HIGH, title: "Nearby food is available", message: "42 lunch portions are available in the Badda area.", href: "/ngo/donations/donation-uiu-lunch", createdAt: relativeIso(baseTime, -20) },
       { id: "notification-volunteer-pickup", userId: "user-volunteer-demo", type: NotificationType.PICKUP, priority: PriorityLevel.URGENT, title: "Pickup assignment ready", message: "Collect the assigned biryani donation within the safe pickup window.", href: "/ngo/claims/claim-badda-biryani", createdAt: relativeIso(baseTime, -5) },
@@ -212,5 +213,5 @@ export const mockDataReference = {
   ngoProfileId: "ngo-hope",
   volunteerProfileId: "volunteer-demo",
   activeDonationId: "donation-uiu-lunch",
-  activeClaimId: "claim-badda-biryani",
+  activeClaimId: "claim-uiu-lunch",
 } as const;

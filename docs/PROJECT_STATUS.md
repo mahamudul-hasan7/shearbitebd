@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-08-10
-Current milestone: Phase 5 complete
+Current milestone: Phase 6 complete
 
 ## Completed foundation
 
@@ -54,8 +54,19 @@ Authentication remains a frontend demonstration. There is no production session,
 - Food and pickup time consistency, positive quantity, contact fields, and all seven required safety declarations use blocking inline validation.
 - Draft input survives forward/back navigation and can be persisted to session storage in the current browser tab.
 - Submission uses the typed Phase 3 donation service, generates a mock donation ID, clears the saved draft, and renders the confirmation/next-step UI.
-- `/donor/donations` and `/donor/donations/[donationId]` provide a deliberately limited service-backed verification handoff; full tabs, lifecycle actions, and tracking remain Phase 6 work.
+- Phase 5 introduced limited service-backed list/detail verification handoffs; Phase 6 has since upgraded them into the complete management and tracking experience.
 - Sensitive pickup fields are visible on the owner-only detail response but remain excluded from public discovery projections.
+
+## Completed donor donation management and tracking (Phase 6)
+
+- `/donor/donations` now provides status overview cards, search, category/priority filters, sorting, seven working status tabs, lifecycle progress, rescue clocks, filter-aware empty states, and responsive management cards.
+- `/donor/donations/[donationId]` now renders complete food, timing, storage, dietary, allergen, pickup, authorized NGO, issue, and lifecycle information.
+- Donors can edit food/quantity/timing details only before pickup begins; service validation rechecks positive quantity and deadline/pickup consistency.
+- Cancellation requires a reason, moves the donation to `CANCELLED`, and releases an active pre-pickup claim.
+- Claim-linked issue reporting creates a typed incident record and consistently moves the claim and donation to `DISPUTED` when allowed.
+- Share uses the device share sheet or clipboard fallback and returns accessible status feedback.
+- `/donor/donations/[donationId]/tracking` includes permission-aware pickup/receiver route UI, current progress, volunteer and NGO summaries, mock ETA, contact controls, safety copy, and a clearly non-secure QR/fallback handover entry.
+- The tracking service exposes receiver/volunteer contact details only to an authorized rescue participant; global donation projections remain approximate.
 
 ## Implemented routes
 
@@ -73,8 +84,9 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/unauthorized` | Implemented mock | Wrong-role access explanation |
 | `/donor/dashboard` | Implemented | Complete responsive Food Donor dashboard |
 | `/donor/donations/new` | Implemented mock | Four-step Add Surplus Food wizard and confirmation |
-| `/donor/donations` | Implemented Phase 5 handoff | Service-backed donor listing; full management planned for Phase 6 |
-| `/donor/donations/[donationId]` | Implemented Phase 5 handoff | Owner-visible submission verification summary; full detail planned for Phase 6 |
+| `/donor/donations` | Implemented | Searchable/filterable donation management and status tabs |
+| `/donor/donations/[donationId]` | Implemented | Full ID-based detail, lifecycle, privacy-aware receiver data, and donor actions |
+| `/donor/donations/[donationId]/tracking` | Implemented mock | Permission-aware tracking, ETA, contacts, map placeholder, and QR handover entry |
 | `/ngo/dashboard` | Guarded placeholder | NGO authentication handoff; full dashboard begins in Phase 9 |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
@@ -89,10 +101,13 @@ Authentication remains a frontend demonstration. There is no production session,
 - The Phase 3 domain store is in-memory and resets on full reload.
 - Donation wizard drafts use session storage; selected photo names are retained, but files are not uploaded.
 - A newly submitted donation appears in My Donations during client-side navigation in the current app session and resets on full reload.
+- Donation edits, cancellations, issue reports, tracking updates, and claim releases are in-memory mock operations and reset on full reload.
+- Tracking maps and ETAs are visual placeholders; there is no live GPS, routing, or real-time socket connection.
+- QR/fallback credentials are visibly labelled mock-only and are not production-secure, one-time, or backend-verified.
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - NGO and volunteer dashboards remain minimal auth handoff pages.
-- Donor tracking, QR handover, notifications, NGO directory, profile, address, settings, and support destinations remain planned Phase 6-8 routes.
+- Donor notifications, NGO directory, profile, address, settings, and support destinations remain planned Phase 7-8 routes.
 
 ## Privacy and scope review
 
@@ -103,7 +118,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 6-8: complete donor donation management/tracking, NGO directory/notifications, and profile/settings/support.
+1. Phases 7-8: complete donor NGO directory/notifications and profile/settings/support.
 2. Phases 9-14: complete NGO experience.
 3. Phase 15: cross-device responsive QA.
 4. Phase 16: accessibility, performance, and UX quality.
