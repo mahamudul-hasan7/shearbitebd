@@ -22,7 +22,7 @@ import { UserRole } from "@/lib/constants/roles";
 import { DonationStatus } from "@/lib/constants/statuses";
 import { calculateUrgencyScore } from "@/lib/selectors/donation-selectors";
 import { ROUTES } from "@/lib/routes";
-import { donationService, MockApiError } from "@/services";
+import { donationService, ngoService, MockApiError, type NGODirectoryItem } from "@/services";
 import type { ViewerContext } from "@/types/domain";
 
 const wizardSteps = [
@@ -61,22 +61,37 @@ export function DonationWizard() {
   const [savedAt, setSavedAt] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<DonationWizardResult>();
+  const [preferredNgo, setPreferredNgo] = useState<NGODirectoryItem>();
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     const hydrationTimer = window.setTimeout(() => {
       try {
         const rawDraft = window.sessionStorage.getItem(DONATION_DRAFT_STORAGE_KEY);
+        const preferredNgoProfileId = new URLSearchParams(window.location.search).get("ngo")?.trim() ?? "";
+        let restoredDraft = createInitialDonationDraft();
         if (rawDraft) {
           const parsed: unknown = JSON.parse(rawDraft);
-          setDraft(restoreDonationDraft(parsed));
+          restoredDraft = restoreDonationDraft(parsed);
           setSavedAt(new Date().toISOString());
+        }
+        if (preferredNgoProfileId) restoredDraft.preferredNgoProfileId = preferredNgoProfileId;
+        setDraft(restoredDraft);
+        if (preferredNgoProfileId) {
+          ngoService.getById(preferredNgoProfileId, { signal: controller.signal }).then(setPreferredNgo).catch((error: unknown) => {
+            if (controller.signal.aborted) return;
+            setErrors({ form: error instanceof MockApiError ? error.message : "The preferred NGO context could not be loaded." });
+          });
         }
       } catch {
         window.sessionStorage.removeItem(DONATION_DRAFT_STORAGE_KEY);
       }
     }, 0);
-    return () => window.clearTimeout(hydrationTimer);
+    return () => {
+      controller.abort();
+      window.clearTimeout(hydrationTimer);
+    };
   }, []);
 
   function update(field: DonationDraftField, value: string | boolean | string[]) {
@@ -139,6 +154,7 @@ export function DonationWizard() {
       const urgency = calculateUrgencyScore({ safePickupDeadline: draft.safePickupDeadline, priority: draft.priority });
       const donation = await donationService.create({
         donorProfileId: "donor-uiu",
+        preferredNgoProfileId: draft.preferredNgoProfileId || undefined,
         title: draft.title.trim(),
         description: draft.description.trim(),
         category: draft.category,
@@ -192,7 +208,7 @@ export function DonationWizard() {
   }
 
   function addAnother() {
-    setDraft(createInitialDonationDraft());
+    setDraft({ ...createInitialDonationDraft(), preferredNgoProfileId: preferredNgo?.profile.id ?? "" });
     setCurrentStep(1);
     setResult(undefined);
     setSavedAt(undefined);
@@ -212,6 +228,7 @@ export function DonationWizard() {
       unreadNotifications={1}
     >
       <Stepper steps={wizardSteps} current={currentStep} label="Add surplus food progress" />
+      {preferredNgo && currentStep !== 4 && <Alert className="mt-6" tone="info" title={`Preferred NGO: ${preferredNgo.profile.organizationName}`} description="This preference is recorded for mock matching context only. It does not guarantee assignment or bypass NGO verification and claim rules." action={<ButtonLink href={ROUTES.donor.ngoProfile(preferredNgo.profile.id)} size="sm" variant="outline">View NGO</ButtonLink>} />}
 
       {currentStep === 4 && result ? (
         <div className="mt-10"><DonationConfirmation result={result} addAnother={addAnother} /></div>
