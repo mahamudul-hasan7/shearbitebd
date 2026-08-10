@@ -66,11 +66,21 @@ export interface NGOProfile {
   userId: EntityId;
   organizationName: string;
   registrationNumber: string;
+  summary: string;
+  mission: string;
+  vision: string;
+  values: string[];
   beneficiaryTypes: string[];
+  acceptedFoodCategories: FoodCategory[];
   authorizedContactUserId: EntityId;
   addressIds: EntityId[];
   serviceAreas: string[];
   capacityMealsPerDay: number;
+  peopleHelped: number;
+  foundedYear: number;
+  publicEmail: string;
+  publicPhone: string;
+  galleryUrls: string[];
   verificationStatus: VerificationStatus;
   verificationDocumentName?: string;
   rating?: number;
@@ -130,6 +140,7 @@ export interface DonationPickup {
 export interface Donation {
   id: EntityId;
   donorProfileId: EntityId;
+  preferredNgoProfileId?: EntityId;
   title: string;
   description: string;
   category: FoodCategory;
@@ -221,6 +232,20 @@ export interface Notification {
   readAt?: ISODateTime;
 }
 
+export type AppLanguage = "EN" | "BN";
+export type TextSizePreference = "SMALL" | "MEDIUM" | "LARGE";
+export type LocationPermissionState = "GRANTED" | "DENIED" | "NOT_REQUESTED";
+
+export interface UserPreferences {
+  userId: EntityId;
+  pushNotifications: boolean;
+  emailNotifications: boolean;
+  locationPermission: LocationPermissionState;
+  language: AppLanguage;
+  textSize: TextSizePreference;
+  updatedAt: ISODateTime;
+}
+
 export interface ImpactRecord {
   id: EntityId;
   claimId?: EntityId;
@@ -284,6 +309,7 @@ export interface MockAppState {
   claims: Claim[];
   requests: FoodRequest[];
   notifications: Notification[];
+  userPreferences: UserPreferences[];
   impactRecords: ImpactRecord[];
   incidentReports: IncidentReport[];
   distributionRecords: DistributionRecord[];
