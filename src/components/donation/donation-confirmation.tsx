@@ -23,7 +23,7 @@ export function DonationConfirmation({ result, addAnother }: { result: DonationW
           <div className="rounded-2xl bg-brand-50 p-4"><p className="text-xs text-muted-600">Estimated meals</p><p className="mt-1 font-black text-ink-900">{donation.quantity.estimatedMeals}</p></div>
           <div className="rounded-2xl bg-brand-50 p-4"><p className="text-xs text-muted-600">Public area</p><p className="mt-1 font-black text-ink-900">{donation.pickup.approximateArea}</p></div>
         </div>
-        <div className="mt-5 rounded-2xl border border-info/20 bg-info-soft p-4"><p className="font-black text-info-strong">What happens next?</p><ol className="mt-2 grid gap-2 text-sm leading-6 text-muted-600"><li>1. Verified NGOs can discover the approximate listing.</li><li>2. Exact pickup/contact details remain private until an authorized claim.</li><li>3. Future phases will add matching, QR handover, tracking, and completed impact.</li></ol></div>
+        <div className="mt-5 rounded-2xl border border-info/20 bg-info-soft p-4"><p className="font-black text-info-strong">What happens next?</p><ol className="mt-2 grid gap-2 text-sm leading-6 text-muted-600"><li>1. Verified NGOs can discover the approximate listing.</li>{donation.preferredNgoProfileId && <li>2. Your preferred NGO context was recorded, but assignment is not guaranteed.</li>}<li>{donation.preferredNgoProfileId ? "3" : "2"}. Exact pickup/contact details remain private until an authorized claim.</li><li>{donation.preferredNgoProfileId ? "4" : "3"}. Tracking and QR handover appear after an authorized match and assignment.</li></ol></div>
       </Card>
 
       <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
