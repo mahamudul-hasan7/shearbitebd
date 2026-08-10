@@ -11,6 +11,11 @@ export function PortalShell({
   title,
   description,
   actions,
+  profileName,
+  profileDescription,
+  avatarInitials,
+  notificationHref,
+  unreadNotifications,
   children,
 }: {
   role: PortalRole;
@@ -18,13 +23,18 @@ export function PortalShell({
   title: string;
   description?: string;
   actions?: ReactNode;
+  profileName?: string;
+  profileDescription?: string;
+  avatarInitials?: string;
+  notificationHref?: string;
+  unreadNotifications?: number;
   children: ReactNode;
 }) {
   return (
     <div className="min-h-screen bg-canvas">
-      <DesktopSidebar role={role} activeHref={activeHref} />
+      <DesktopSidebar role={role} activeHref={activeHref} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} />
       <div className="lg:pl-[var(--sidebar-width)]">
-        <AppHeader role={role} />
+        <AppHeader role={role} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} notificationHref={notificationHref} unreadNotifications={unreadNotifications} />
         <PageContainer className="pb-32 pt-6 lg:pb-10">
           <main>
             <div className="mb-7 flex flex-wrap items-end justify-between gap-4">

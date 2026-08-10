@@ -1,8 +1,7 @@
-import { ProtectedPortalPlaceholder } from "@/components/auth/protected-portal-placeholder";
-import { UserRole } from "@/lib/constants/roles";
+import { DonorDashboard } from "@/features/donor-dashboard/donor-dashboard";
 
-export const metadata = { title: "Donor Access" };
+export const metadata = { title: "Food Donor Dashboard" };
 
-export default function DonorDashboardPlaceholderPage() {
-  return <ProtectedPortalPlaceholder role={UserRole.DONOR} />;
+export default function DonorDashboardPage() {
+  return <DonorDashboard />;
 }

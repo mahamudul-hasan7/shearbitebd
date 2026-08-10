@@ -80,7 +80,7 @@ export function createMockAppState(now = new Date()): MockAppState {
         storageCondition: StorageCondition.HOT_HOLDING,
         foodCondition: "FRESHLY_PREPARED",
         allergens: ["Milk"],
-        photoUrls: ["/mock/food/uiu-lunch.jpg"],
+        photoUrls: ["/images/donor-active-meal.png"],
         specialInstructions: "Bring insulated carriers and collect all trays together.",
         pickup: { addressId: "address-uiu", approximateArea: "Badda, Dhaka", distanceKm: 3.2, contact: { name: "UIU Cafeteria Desk", phone: "+8801700000001", email: "donor@sharebite.demo" }, windowStart: relativeIso(baseTime, 30), windowEnd: relativeIso(baseTime, 120), directions: "Use the designated mock pickup gate and ask for the cafeteria desk." },
         safetyDeclaration: declaration(baseTime, "user-donor-uiu", 40),
@@ -188,6 +188,7 @@ export function createMockAppState(now = new Date()): MockAppState {
       { id: "request-community-weekend", ngoProfileId: "ngo-community-kitchen", title: "Weekend community lunch supplies", requestType: RequestType.RECURRING, priority: PriorityLevel.MEDIUM, purpose: "Community lunch preparation", recipientType: "Community outreach", categories: [FoodCategory.GROCERIES, FoodCategory.PRODUCE], dietaryTypes: [DietaryType.HALAL, DietaryType.VEGETARIAN], allergensOrRestrictions: [], peopleToServe: 150, mealsNeeded: 150, neededBy: relativeIso(baseTime, 2_880), preferredTimeSlot: "Friday morning", deliveryAddressId: "address-community-kitchen", locationType: "COMMUNITY_CENTER", status: RequestStatus.PENDING_REVIEW, createdAt: relativeIso(baseTime, -90), updatedAt: relativeIso(baseTime, -90) },
     ],
     notifications: [
+      { id: "notification-uiu-published", userId: "user-donor-uiu", type: NotificationType.SYSTEM, priority: PriorityLevel.MEDIUM, title: "Donation is live", message: "Your lunch donation is visible to verified NGOs in the Badda area.", href: "/donor/donations/donation-uiu-lunch", createdAt: relativeIso(baseTime, -32) },
       { id: "notification-donor-claim", userId: "user-donor-badda", type: NotificationType.CLAIM, priority: PriorityLevel.HIGH, title: "Donation assigned", message: "A verified volunteer was assigned to the biryani rescue.", href: "/donor/donations/donation-badda-biryani", createdAt: relativeIso(baseTime, -5) },
       { id: "notification-ngo-nearby", userId: "user-ngo-hope", type: NotificationType.NEARBY_DONATION, priority: PriorityLevel.HIGH, title: "Nearby food is available", message: "42 lunch portions are available in the Badda area.", href: "/ngo/donations/donation-uiu-lunch", createdAt: relativeIso(baseTime, -20) },
       { id: "notification-volunteer-pickup", userId: "user-volunteer-demo", type: NotificationType.PICKUP, priority: PriorityLevel.URGENT, title: "Pickup assignment ready", message: "Collect the assigned biryani donation within the safe pickup window.", href: "/ngo/claims/claim-badda-biryani", createdAt: relativeIso(baseTime, -5) },
@@ -195,6 +196,7 @@ export function createMockAppState(now = new Date()): MockAppState {
     ],
     impactRecords: [
       { id: "impact-uiu-produce", claimId: "claim-uiu-produce", donorProfileId: "donor-uiu", ngoProfileId: "ngo-hope", recordedAt: relativeIso(baseTime, -600), mealsRescued: 48, foodWeightKg: 24, beneficiariesServed: 44, estimatedCo2PreventedKg: 60, estimatedWaterSavedLitres: 6_000, estimateMethodology: "Frontend estimate using configurable meal and food-weight factors; not a measured environmental result." },
+      { id: "impact-uiu-community", donorProfileId: "donor-uiu", ngoProfileId: "ngo-community-kitchen", recordedAt: relativeIso(baseTime, -5_760), mealsRescued: 36, foodWeightKg: 18, beneficiariesServed: 33, estimatedCo2PreventedKg: 45, estimatedWaterSavedLitres: 4_500, estimateMethodology: "Frontend estimate using configurable meal and food-weight factors; not a measured environmental result." },
       { id: "impact-badda-month", donorProfileId: "donor-badda", ngoProfileId: "ngo-community-kitchen", recordedAt: relativeIso(baseTime, -10_080), mealsRescued: 36, foodWeightKg: 18, beneficiariesServed: 34, estimatedCo2PreventedKg: 45, estimateMethodology: "Frontend estimate using configurable meal and food-weight factors; not a measured environmental result." },
       { id: "impact-banani-month", donorProfileId: "donor-banani", ngoProfileId: "ngo-hope", recordedAt: relativeIso(baseTime, -20_160), mealsRescued: 62, foodWeightKg: 21, beneficiariesServed: 58, estimatedCo2PreventedKg: 52.5, estimateMethodology: "Frontend estimate using configurable meal and food-weight factors; not a measured environmental result." },
     ],

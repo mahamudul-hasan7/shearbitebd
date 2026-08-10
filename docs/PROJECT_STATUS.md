@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-08-07
-Current milestone: Phase 3 complete
+Current milestone: Phase 4 complete
 
 ## Completed foundation
 
@@ -37,6 +37,15 @@ Authentication remains a frontend demonstration. There is no production session,
 - Permission and privacy projection helpers hide exact donor address/contact from unauthorized viewers.
 - `docs/API_CONTRACTS.md` documents the future backend boundary.
 
+## Completed Food Donor dashboard (Phase 4)
+
+- The guarded `/donor/dashboard` route now renders the complete responsive dashboard.
+- Dashboard data comes from the typed profile, donation, impact, notification, and NGO services.
+- Impact statistics, active donation, live rescue clock, lifecycle timeline, quick actions, activity, and supported NGOs are implemented.
+- Responsive loading, error, empty, and no-active-donation states are included.
+- Header profile summary, unread notification count, desktop sidebar, and mobile bottom navigation share one page implementation.
+- A generated generic meal image is stored locally and rendered with Next.js Image.
+
 ## Implemented routes
 
 | Route | Status | Purpose |
@@ -51,7 +60,7 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/register?role=ngo` | Implemented mock | NGO registration and required verification document |
 | `/register?role=volunteer` | Implemented mock | Volunteer registration and required identity document |
 | `/unauthorized` | Implemented mock | Wrong-role access explanation |
-| `/donor/dashboard` | Guarded placeholder | Donor authentication handoff; full dashboard begins in Phase 4 |
+| `/donor/dashboard` | Implemented | Complete responsive Food Donor dashboard |
 | `/ngo/dashboard` | Guarded placeholder | NGO authentication handoff; full dashboard begins in Phase 9 |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
@@ -66,7 +75,8 @@ Authentication remains a frontend demonstration. There is no production session,
 - The Phase 3 domain store is in-memory and resets on full reload.
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
-- Donor and NGO dashboards are minimal auth handoff pages; the product workflows begin in later phases.
+- NGO and volunteer dashboards remain minimal auth handoff pages.
+- Donor dashboard CTA destinations are planned Phase 5-8 routes and are not implemented yet.
 
 ## Privacy and scope review
 
@@ -77,7 +87,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 4-8: complete donor experience.
+1. Phases 5-8: complete the remaining donor experience.
 2. Phases 9-14: complete NGO experience.
 3. Phase 15: cross-device responsive QA.
 4. Phase 16: accessibility, performance, and UX quality.

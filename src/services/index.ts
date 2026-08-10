@@ -1,5 +1,6 @@
 export * from "@/services/claim.service";
 export * from "@/services/donation.service";
+export * from "@/services/impact.service";
 export * from "@/services/ngo.service";
 export * from "@/services/notification.service";
 export * from "@/services/profile.service";

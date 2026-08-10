@@ -5,17 +5,17 @@ import { getNavigation, roleMeta } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 
-export function DesktopSidebar({ role, activeHref }: { role: PortalRole; activeHref: string }) {
+export function DesktopSidebar({ role, activeHref, profileName, profileDescription, avatarInitials }: { role: PortalRole; activeHref: string; profileName?: string; profileDescription?: string; avatarInitials?: string }) {
   const items = getNavigation(role, activeHref.startsWith("/preview/"));
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r border-line bg-white/95 px-5 py-6 backdrop-blur lg:flex">
       <BrandLogo />
       <div className="mt-8 rounded-3xl bg-brand-50 p-4">
         <div className="flex items-center gap-3">
-          <Avatar initials={role === "donor" ? "FD" : "NG"} />
+          <Avatar initials={avatarInitials ?? (role === "donor" ? "FD" : "NG")} />
           <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold text-brand-900">{roleMeta[role].label}</p>
-            <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-muted-600">{roleMeta[role].description}</p>
+            <p className="truncate text-sm font-extrabold text-brand-900">{profileName ?? roleMeta[role].label}</p>
+            <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-muted-600">{profileDescription ?? roleMeta[role].description}</p>
           </div>
         </div>
       </div>

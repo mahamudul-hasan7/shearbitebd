@@ -13,7 +13,7 @@
 | `/register?role=ngo` | NGO registration |
 | `/register?role=volunteer` | Volunteer registration |
 | `/unauthorized` | Wrong-role access explanation |
-| `/donor/dashboard` | Guarded donor placeholder; full screen planned for Phase 4 |
+| `/donor/dashboard` | Complete responsive donor dashboard implemented in Phase 4 |
 | `/ngo/dashboard` | Guarded NGO placeholder; full screen planned for Phase 9 |
 | `/volunteer/dashboard` | Guarded volunteer placeholder |
 
