@@ -22,6 +22,7 @@ export function createInitialDonationDraft(now = new Date()): DonationDraft {
   const deadline = new Date(preparation.getTime() + 180 * 60_000);
 
   return {
+    preferredNgoProfileId: "",
     title: "",
     category: FoodCategory.COOKED_MEAL,
     dietaryType: DietaryType.HALAL,
