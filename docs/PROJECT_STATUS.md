@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
-Last audited: 2026-08-07
-Current milestone: Phase 4 complete
+Last audited: 2026-08-10
+Current milestone: Phase 5 complete
 
 ## Completed foundation
 
@@ -46,6 +46,17 @@ Authentication remains a frontend demonstration. There is no production session,
 - Header profile summary, unread notification count, desktop sidebar, and mobile bottom navigation share one page implementation.
 - A generated generic meal image is stored locally and rendered with Next.js Image.
 
+## Completed Add Surplus Food flow (Phase 5)
+
+- The guarded `/donor/donations/new` route now provides one responsive four-step wizard.
+- Food details cover category, dietary type, quantity/unit, preparation and safe pickup times, storage, condition, allergens, description, instructions, and up to five optional local photo selections.
+- Pickup details use the saved mock address, public approximate area, private contact data, pickup window, directions, and a non-interactive map placeholder.
+- Food and pickup time consistency, positive quantity, contact fields, and all seven required safety declarations use blocking inline validation.
+- Draft input survives forward/back navigation and can be persisted to session storage in the current browser tab.
+- Submission uses the typed Phase 3 donation service, generates a mock donation ID, clears the saved draft, and renders the confirmation/next-step UI.
+- `/donor/donations` and `/donor/donations/[donationId]` provide a deliberately limited service-backed verification handoff; full tabs, lifecycle actions, and tracking remain Phase 6 work.
+- Sensitive pickup fields are visible on the owner-only detail response but remain excluded from public discovery projections.
+
 ## Implemented routes
 
 | Route | Status | Purpose |
@@ -61,6 +72,9 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/register?role=volunteer` | Implemented mock | Volunteer registration and required identity document |
 | `/unauthorized` | Implemented mock | Wrong-role access explanation |
 | `/donor/dashboard` | Implemented | Complete responsive Food Donor dashboard |
+| `/donor/donations/new` | Implemented mock | Four-step Add Surplus Food wizard and confirmation |
+| `/donor/donations` | Implemented Phase 5 handoff | Service-backed donor listing; full management planned for Phase 6 |
+| `/donor/donations/[donationId]` | Implemented Phase 5 handoff | Owner-visible submission verification summary; full detail planned for Phase 6 |
 | `/ngo/dashboard` | Guarded placeholder | NGO authentication handoff; full dashboard begins in Phase 9 |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
@@ -73,10 +87,12 @@ Authentication remains a frontend demonstration. There is no production session,
 - There is no automated test script or configured test suite yet. Business-rule tests are planned for Phase 17.
 - Mock sessions and client route guards are not production security controls.
 - The Phase 3 domain store is in-memory and resets on full reload.
+- Donation wizard drafts use session storage; selected photo names are retained, but files are not uploaded.
+- A newly submitted donation appears in My Donations during client-side navigation in the current app session and resets on full reload.
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - NGO and volunteer dashboards remain minimal auth handoff pages.
-- Donor dashboard CTA destinations are planned Phase 5-8 routes and are not implemented yet.
+- Donor tracking, QR handover, notifications, NGO directory, profile, address, settings, and support destinations remain planned Phase 6-8 routes.
 
 ## Privacy and scope review
 
@@ -87,7 +103,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 5-8: complete the remaining donor experience.
+1. Phases 6-8: complete donor donation management/tracking, NGO directory/notifications, and profile/settings/support.
 2. Phases 9-14: complete NGO experience.
 3. Phase 15: cross-device responsive QA.
 4. Phase 16: accessibility, performance, and UX quality.

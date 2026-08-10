@@ -17,11 +17,11 @@
 | `/ngo/dashboard` | Guarded NGO placeholder; full screen planned for Phase 9 |
 | `/volunteer/dashboard` | Guarded volunteer placeholder |
 
-## Food Donor - planned
+## Food Donor
 
-- `/donor/donations/new`
-- `/donor/donations`
-- `/donor/donations/[donationId]`
+- `/donor/donations/new` - implemented in Phase 5; four-step surplus-food wizard
+- `/donor/donations` - Phase 5 service-backed verification handoff; full management planned for Phase 6
+- `/donor/donations/[donationId]` - Phase 5 owner detail handoff; full detail and lifecycle actions planned for Phase 6
 - `/donor/donations/[donationId]/tracking`
 - `/donor/ngos`
 - `/donor/ngos/[ngoId]`
@@ -55,4 +55,4 @@
 - `/ngo/settings`
 - `/ngo/support`
 
-All route strings and dynamic route builders are centralized in `src/lib/routes.ts`. Planned routes are not reachable until their implementation phase.
+All route strings and dynamic route builders are centralized in `src/lib/routes.ts`. Routes without an implementation note remain unreachable until their planned phase.
