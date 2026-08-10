@@ -23,6 +23,14 @@ export interface DonorImpactOverview {
   recentRecords: ImpactRecord[];
 }
 
+export interface NGOImpactOverview {
+  mealsDistributed: number;
+  beneficiariesServed: number;
+  foodWeightKg: number;
+  completedRescues: number;
+  recentRecords: ImpactRecord[];
+}
+
 export const impactService = {
   getDonorOverview(donorProfileId: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<DonorImpactOverview> {
     return simulateRequest(() => {
@@ -47,6 +55,25 @@ export const impactService = {
         ngosHelped: ngoIds.size,
         donorScore,
         donorScoreDescription: "Mock platform metric based on verification, rescue history, and feedback. It is not a food-safety certification.",
+        recentRecords: recentRecords.map((record) => ({ ...record })),
+      };
+    }, options);
+  },
+
+  getNgoOverview(ngoProfileId: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<NGOImpactOverview> {
+    return simulateRequest(() => {
+      if (viewer.ngoProfileId !== ngoProfileId && viewer.role !== UserRole.ADMIN) {
+        throw new MockApiError({ code: "FORBIDDEN", message: "This impact summary belongs to another NGO.", status: 403, retryable: false });
+      }
+      const state = mockAppStore.getSnapshot();
+      const profile = state.ngoProfiles.find((item) => item.id === ngoProfileId);
+      if (!profile) throw new MockApiError({ code: "NOT_FOUND", message: "NGO profile not found.", status: 404, retryable: false });
+      const recentRecords = state.impactRecords.filter((record) => record.ngoProfileId === ngoProfileId).sort((left, right) => Date.parse(right.recordedAt) - Date.parse(left.recordedAt));
+      return {
+        mealsDistributed: recentRecords.reduce((total, record) => total + record.mealsRescued, 0),
+        beneficiariesServed: recentRecords.reduce((total, record) => total + record.beneficiariesServed, 0),
+        foodWeightKg: recentRecords.reduce((total, record) => total + record.foodWeightKg, 0),
+        completedRescues: profile.completedRescues,
         recentRecords: recentRecords.map((record) => ({ ...record })),
       };
     }, options);
