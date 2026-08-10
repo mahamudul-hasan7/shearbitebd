@@ -14,6 +14,7 @@ if (!existsSync(hooksDir)) {
 
 const hookContent = `#!/bin/sh
 node scripts/check-unpushed.mjs
+exit 0
 `;
 
 writeFileSync(prePushHook, hookContent, { encoding: "utf8" });

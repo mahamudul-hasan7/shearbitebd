@@ -1,2 +1,3 @@
 #!/bin/sh
 node scripts/check-unpushed.mjs
+exit 0

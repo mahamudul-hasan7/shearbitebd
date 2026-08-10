@@ -67,7 +67,7 @@ Pushes are also guarded by a local Git hook after setup:
 npm run git:setup
 ```
 
-That configures `.githooks/pre-push`, which runs the same check automatically before `git push`.
+That configures `.githooks/pre-push`, which runs the same check automatically before `git push` and prints a reminder without blocking the push.
 
 ## Frontend-only note
 
