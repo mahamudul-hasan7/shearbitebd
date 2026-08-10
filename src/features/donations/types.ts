@@ -4,6 +4,7 @@ import type { DonationView } from "@/types/domain";
 export type DonationWizardStep = 1 | 2 | 3 | 4;
 
 export interface DonationDraft {
+  preferredNgoProfileId: string;
   title: string;
   category: FoodCategory;
   dietaryType: DietaryType;
