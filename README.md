@@ -51,6 +51,16 @@ npm run lint
 npm run build
 ```
 
+## Push reminder
+
+If you forget to push often, run this before closing VS Code or ending a work session:
+
+```bash
+npm run git:check
+```
+
+It reports uncommitted changes, unpushed commits, and the number of commits ahead or behind the remote.
+
 ## Frontend-only note
 
 Authentication remains a frontend demonstration. The role session and route guards are browser-only mocks, not production authorization. Database storage, Google OAuth, reset email delivery, document upload, and verification approval require backend integration.
