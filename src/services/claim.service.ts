@@ -67,6 +67,9 @@ export const claimService = {
       if (!ngo || ngo.verificationStatus !== VerificationStatus.VERIFIED || !canClaimDonation(viewer, ngo, donation)) {
         throw new MockApiError({ code: "FORBIDDEN", message: "Only the signed-in verified NGO can claim this available donation.", status: 403, retryable: false });
       }
+      if (!ngo.acceptedFoodCategories.includes(donation.category)) {
+        throw new MockApiError({ code: "FORBIDDEN", message: "This food category is not currently accepted by your NGO profile.", status: 403, retryable: false });
+      }
       if (state.claims.some((claim) => claim.donationId === donation.id && !INACTIVE_CLAIM_STATUSES.has(claim.status))) {
         throw new MockApiError({ code: "CONFLICT", message: "This donation already has an active claim.", status: 409, retryable: false });
       }
