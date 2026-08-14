@@ -1,8 +1,7 @@
-import { ProtectedPortalPlaceholder } from "@/components/auth/protected-portal-placeholder";
-import { UserRole } from "@/lib/constants/roles";
+import { NGODashboard } from "@/features/ngo-dashboard/ngo-dashboard";
 
-export const metadata = { title: "NGO Access" };
+export const metadata = { title: "NGO Dashboard | ShareBite BD" };
 
-export default function NgoDashboardPlaceholderPage() {
-  return <ProtectedPortalPlaceholder role={UserRole.NGO} />;
+export default function NgoDashboardPage() {
+  return <NGODashboard />;
 }
