@@ -14,7 +14,7 @@
 | `/register?role=volunteer` | Volunteer registration |
 | `/unauthorized` | Wrong-role access explanation |
 | `/donor/dashboard` | Complete responsive donor dashboard implemented in Phase 4 |
-| `/ngo/dashboard` | Guarded NGO placeholder; full screen planned for Phase 9 |
+| `/ngo/dashboard` | Complete responsive NGO dashboard implemented in Phase 9 |
 | `/volunteer/dashboard` | Guarded volunteer placeholder |
 
 ## Food Donor
@@ -23,32 +23,33 @@
 - `/donor/donations` - implemented in Phase 6; searchable/filterable management, status tabs, progress, and states
 - `/donor/donations/[donationId]` - implemented in Phase 6; full owner detail, receiver summary, lifecycle, edit/cancel/report/share actions
 - `/donor/donations/[donationId]/tracking` - implemented in Phase 6; permission-aware tracking, map/ETA placeholders, contacts, and mock QR handover
-- `/donor/ngos`
-- `/donor/ngos/[ngoId]`
-- `/donor/notifications`
-- `/donor/profile`
-- `/donor/profile/edit`
-- `/donor/addresses`
-- `/donor/settings`
-- `/donor/support`
+- `/donor/ngos` - implemented in Phase 7; verified directory search, cause/category/location filters, saved state, and cards
+- `/donor/ngos/[ngoId]` - implemented in Phase 7; identity, impact/activity, gallery, public contact, save, and surplus-food CTA
+- `/donor/notifications` - implemented in Phase 8; categorized alerts, filters, and read/unread controls
+- `/donor/profile` - implemented in Phase 8; verified identity, contact, impact, account links, and logout
+- `/donor/profile/edit` - implemented in Phase 8; validated mock profile editing
+- `/donor/addresses` - implemented in Phase 8; add, edit, choose primary, and remove saved pickup addresses
+- `/donor/settings` - implemented in Phase 8; notification, language, text-size, location, and policy controls
+- `/donor/support` - implemented in Phase 8; FAQ and validated mock support request
 
-## NGO - planned
+## NGO
 
-- `/ngo/discover`
-- `/ngo/discover/map`
-- `/ngo/donations/[donationId]`
-- `/ngo/claims`
-- `/ngo/claims/[claimId]`
-- `/ngo/claims/[claimId]/confirm-delivery`
+- `/ngo/dashboard` - implemented in Phase 9; typed overview, recommendation/claim, active claims, quick actions, activity, and responsive states
+- `/ngo/discover` - implemented in Phase 10; searchable/filterable/sortable recommendation list with saved state and actionable empty state
+- `/ngo/discover/map` - implemented in Phase 10; shared filters, approximate pins, NGO area, selected preview, legend, and nearby list
+- `/ngo/donations/[donationId]` - implemented in Phase 10; ID-based details, privacy, safety declaration, eligibility, save, and claim CTA
+- `/ngo/claims` - guarded Phase 9 route handoff; full claims management arrives in Phase 12
+- `/ngo/claims/[claimId]` - guarded Phase 9 claim-context handoff; full detail arrives in Phase 12
+- `/ngo/claims/[claimId]/confirm-delivery` - guarded Phase 9 delivery-context handoff; full flow arrives in Phase 12
 - `/ngo/claims/[claimId]/distribution`
 - `/ngo/claims/[claimId]/report-issue`
 - `/ngo/requests`
-- `/ngo/requests/new`
+- `/ngo/requests/new` - guarded Phase 9 route handoff; full demand request arrives in Phase 13
 - `/ngo/requests/[requestId]`
 - `/ngo/requests/submitted`
 - `/ngo/impact`
 - `/ngo/notifications`
-- `/ngo/profile`
+- `/ngo/profile` - guarded Phase 9 route handoff; full account module arrives in Phase 14
 - `/ngo/profile/edit`
 - `/ngo/team`
 - `/ngo/verification`
