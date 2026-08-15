@@ -70,13 +70,15 @@ Frontend error codes currently modeled by `MockApiError`:
 |---|---|---|---|
 | `GET` | `/me` | Authenticated request | `ProfileBundle` |
 | `PATCH` | `/me` | Editable user/profile fields | `ProfileBundle` |
-| `GET` | `/ngos` | Filters and pagination | Public verified NGO directory items |
-| `GET` | `/ngos/:ngoId` | NGO ID | Public NGO directory item |
+| `GET` | `/ngos` | Name/area search, cause, accepted food category, service area, verified status, pagination | Public verified `NGODirectoryItem[]` |
+| `GET` | `/ngos/:ngoId` | Verified NGO ID | Public `NGODirectoryItem` with approved profile, impact summary, and recent activities |
 
 Backend requirements:
 
 - Passwords, tokens, identity documents, and verification decisions must never use the Phase 2 browser mock session.
 - Public NGO responses must expose only approved organization information.
+- Public rating, capacity, people-helped, rescue-history, and impact fields require backend provenance/review; frontend seed values remain clearly labelled mock or demo.
+- NGO public contact fields must be explicitly approved for directory display and kept separate from private account contact data.
 - Donor and volunteer private contact/address fields require explicit authorization.
 - Administrator accounts are backend-created or invite-only.
 
@@ -92,6 +94,8 @@ Backend requirements:
 | `POST` | `/donations/:donationId/transitions` | `{ "status": "PUBLISHED" }` | Updated `DonationView` |
 | `GET` | `/donations/:donationId/tracking` | Authorized donation participant | `DonationTrackingData` |
 
+NGO discovery reads should accept search, distance radius, food category, dietary compatibility, minimum estimated meals, priority/urgency, storage condition, deadline, sort, and pagination. List and map responses must use the same filter contract and return only privacy-projected `DonationView` data. Match/eligibility fields should be backend-derived and auditable rather than trusted from the client.
+
 Required backend rules:
 
 - Quantity must be positive.
@@ -103,6 +107,7 @@ Required backend rules:
 - Edit is allowed only before pickup begins; completed, expired, cancelled, and disputed records are read-only.
 - Cancellation requires a recorded reason and must atomically release a reserved or assigned pre-pickup claim.
 - Tracking responses must authorize the donor owner, accepted NGO, assigned volunteer, or administrator before including private contact, token, or exact-location fields.
+- `preferredNgoProfileId`, when present, is non-binding matching context and must not bypass verification, eligibility, reservation, or claim rules.
 
 ## Donation privacy response
 
@@ -134,6 +139,7 @@ Authorized viewers are the donor owner, the accepted NGO, the assigned volunteer
 Required backend rules:
 
 - Only a verified NGO can reserve an available donation.
+- The food category must be included in the NGO profile's current accepted-food categories.
 - One active claim is allowed per donation.
 - Claim and donation status updates must be atomic.
 - Status changes must follow `CLAIM_TRANSITIONS`.
