@@ -1,0 +1,16 @@
+{
+  "remote": "origin",
+  "branch": "segmented/16-commits",
+  "minCommits": 15,
+  "maxCommits": 20,
+  "schedule": {
+    "startDate": "2026-08-12",
+    "time": "22:00",
+    "runMissed": true
+  },
+  "safety": {
+    "requireCleanTree": true,
+    "stopOnDivergence": true,
+    "checks": ["lint", "typecheck", "build"]
+  }
+}
