@@ -19,7 +19,7 @@ const automationDir = join(localDataRoot, "ShareBiteBD");
 const logPath = join(automationDir, "daily-push.log");
 const statePath = join(automationDir, "daily-push-state.json");
 const lockPath = join(automationDir, "daily-push.lock");
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const windowsCommandShell = process.env.ComSpec || "cmd.exe";
 
 mkdirSync(automationDir, { recursive: true });
 
@@ -41,14 +41,23 @@ function log(message) {
 
 function run(command, commandArgs, { quiet = false } = {}) {
   const result = spawnSync(command, commandArgs, { cwd: rootDir, encoding: "utf8", windowsHide: true, env: process.env });
-  const output = `${result.stdout || ""}${result.stderr || ""}`.trim();
-  if (output) appendFileSync(logPath, `${output}\n`, "utf8");
+  const processError = result.error ? `${result.error.name}: ${result.error.message}` : "";
+  const output = `${result.stdout || ""}${result.stderr || ""}${processError ? `\n${processError}` : ""}`.trim();
+  if (output && (!quiet || result.status !== 0 || result.error)) appendFileSync(logPath, `${output}\n`, "utf8");
   if (!quiet && output) console.log(output);
   return { status: result.status ?? 1, output };
 }
 
 function git(commandArgs, options) {
   return run("git", commandArgs, options);
+}
+
+function npmRun(scriptName, options) {
+  if (!/^[a-zA-Z0-9:_-]+$/.test(scriptName)) throw new Error(`Unsafe npm script name: ${scriptName}`);
+  if (process.platform === "win32") {
+    return run(windowsCommandShell, ["/d", "/s", "/c", `npm.cmd run ${scriptName}`], options);
+  }
+  return run("npm", ["run", scriptName], options);
 }
 
 function requireSuccess(result, message) {
@@ -134,7 +143,7 @@ function main() {
 
   for (const check of config.safety.checks) {
     log(`Running safety check: npm run ${check}`);
-    requireSuccess(run(npmCommand, ["run", check], { quiet: true }), `Safety check failed: npm run ${check}. Nothing was pushed.`);
+    requireSuccess(npmRun(check, { quiet: true }), `Safety check failed: npm run ${check}. Nothing was pushed.`);
     log(`Safety check passed: ${check}`);
   }
 
