@@ -10,6 +10,10 @@ Responsive frontend foundation for the ShareBite BD smart surplus food rescue pl
 - Phase 4: complete responsive Food Donor dashboard powered by typed mock services
 - Phase 5: responsive four-step surplus-food wizard with persisted browser drafts, validation, submission confirmation, and service-backed verification views
 - Phase 6: complete donor donation management with search/status filters, lifecycle actions, receiver details, permission-aware tracking, and mock QR handover
+- Phase 7: verified NGO directory and ID-based profiles with working filters, impact/activity summaries, saved state, public contact, gallery, and food-wizard context
+- Phase 8: donor notifications, editable profile, saved-address management, account preferences, logout, FAQ, and mock support submission
+- Phase 9: responsive NGO dashboard with verified identity, nearby availability, impact, live recommendation, working claim CTA, active claims, activity, and route handoffs
+- Phase 10: NGO donation discovery with shared URL filters, privacy-safe list/map views, ID-based details, saved state, eligibility, safety review, and claim action
 
 ## Run locally
 
@@ -37,7 +41,21 @@ Open `http://localhost:3000`. The root route redirects to `/splash`.
 /donor/donations
 /donor/donations/donation-uiu-lunch
 /donor/donations/donation-uiu-lunch/tracking
+/donor/ngos
+/donor/ngos/ngo-hope
+/donor/notifications
+/donor/profile
+/donor/profile/edit
+/donor/addresses
+/donor/settings
+/donor/support
 /ngo/dashboard
+/ngo/discover
+/ngo/discover/map
+/ngo/donations/donation-gulshan-buffet
+/ngo/claims
+/ngo/requests/new
+/ngo/profile
 /volunteer/dashboard
 ```
 
@@ -75,4 +93,4 @@ Authentication remains a frontend demonstration. The role session and route guar
 
 See `docs/PHASE_2_SUMMARY.md` for the completed scope.
 
-Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md`, `docs/PHASE_5_SUMMARY.md`, and `docs/PHASE_6_SUMMARY.md`.
+Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md` through `docs/PHASE_8_SUMMARY.md`; the NGO experience begins in `docs/PHASE_9_SUMMARY.md`.
