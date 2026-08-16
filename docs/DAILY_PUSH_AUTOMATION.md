@@ -9,6 +9,7 @@ This repository queues real local commits and can publish a random prefix of 15-
 - Daily batch: random 15-20 commits
 - First run: 2026-08-12 at 10:00 PM (Asia/Dhaka workstation time)
 - Missed run: start when the computer is next available
+- Daily date mode: selected commits receive that Dhaka calendar day's author and committer date
 - Safety: require a clean working tree, stop on divergence, then run lint, typecheck, and production build
 
 Change future batch or schedule values in `daily-push.config.json`, then rerun `npm run git:daily:setup` when schedule values change.
@@ -38,5 +39,7 @@ The scheduled run stops without pushing when:
 - another daily push process already holds the automation lock.
 
 Logs and run state are kept outside the repository under `%LOCALAPPDATA%\ShareBiteBD`. The script pushes only the selected ancestor commit to the configured remote branch; later queued commits remain local.
+
+When daily date mode is enabled, the script rewrites only the unpushed linear queue after all safety checks pass. The selected prefix gets the current `Asia/Dhaka` date, while later queued commits retain their existing dates. Because changing an ancestor changes descendant hashes, the entire unpushed queue is reconstructed with the same trees, messages, and identities. A timestamped `backup/daily-date-*` branch is created before local `HEAD` moves. Already-pushed remote commits are never rewritten.
 
 GitHub attributes contributions according to commit metadata and its default-branch rules, not merely the time a batch is pushed.
