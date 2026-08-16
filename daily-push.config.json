@@ -8,6 +8,11 @@
     "time": "22:00",
     "runMissed": true
   },
+  "dateMode": {
+    "enabled": true,
+    "timeZone": "Asia/Dhaka",
+    "backupBranchPrefix": "backup/daily-date"
+  },
   "safety": {
     "requireCleanTree": true,
     "stopOnDivergence": true,
