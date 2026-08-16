@@ -10,6 +10,10 @@
     "typecheck": "tsc --noEmit",
     "git:check": "node scripts/check-unpushed.mjs",
     "git:setup": "node scripts/setup-git-hooks.mjs",
+    "git:daily:status": "node scripts/daily-push.mjs --dry-run",
+    "git:daily:push": "node scripts/daily-push.mjs",
+    "git:daily:setup": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-daily-push.ps1",
+    "git:daily:remove": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/remove-daily-push.ps1",
     "postinstall": "node scripts/setup-git-hooks.mjs"
   },
   "dependencies": {
