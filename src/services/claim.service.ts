@@ -1,10 +1,10 @@
-import { VerificationStatus } from "@/lib/constants/domain";
+import { TransportMethod, VerificationStatus } from "@/lib/constants/domain";
 import { UserRole } from "@/lib/constants/roles";
 import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
-import { canClaimDonation } from "@/lib/permissions/permissions";
+import { canClaimDonation, createDonationView } from "@/lib/permissions/permissions";
 import { canTransitionClaim } from "@/lib/status-transitions";
 import { mockAppStore } from "@/store/mock-app-store";
-import type { Claim, ViewerContext } from "@/types/domain";
+import type { Address, Claim, DonationView, ViewerContext } from "@/types/domain";
 import { createMockId, MockApiError, simulateRequest, type MockServiceOptions } from "@/services/shared";
 
 const CLAIM_DONATION_STATUS: Partial<Record<ClaimStatus, DonationStatus>> = {
@@ -32,8 +32,38 @@ export interface CreateClaimInput {
   matchScore: number;
 }
 
+export interface ClaimVolunteerSummary {
+  id: string;
+  displayName: string;
+  phone?: string;
+  verificationStatus: VerificationStatus;
+  transportMethod: TransportMethod;
+  completedRescues: number;
+}
+
+export interface ClaimCoordinationDetails {
+  claim: Claim;
+  donation: DonationView;
+  donorOrganization: string;
+  donorVerified: boolean;
+  volunteer?: ClaimVolunteerSummary;
+  deliveryAddress?: Address;
+}
+
 function cloneClaim(claim: Claim) {
   return { ...claim };
+}
+
+function canAccessClaim(viewer: ViewerContext, claim: Claim, donorProfileId: string) {
+  return viewer.role === UserRole.ADMIN ||
+    viewer.ngoProfileId === claim.ngoProfileId ||
+    viewer.volunteerProfileId === claim.volunteerProfileId ||
+    viewer.donorProfileId === donorProfileId;
+}
+
+function mockVerificationToken(kind: "PICKUP" | "DELIVERY", seed: number) {
+  const code = String((seed % 900_000) + 100_000).padStart(6, "0");
+  return `MOCK-${kind}-${code}`;
 }
 
 export const claimService = {
@@ -55,6 +85,42 @@ export const claimService = {
       const claim = mockAppStore.getSnapshot().claims.find((item) => item.id === id);
       if (!claim) throw new MockApiError({ code: "NOT_FOUND", message: "Claim not found.", status: 404, retryable: false });
       return cloneClaim(claim);
+    }, options);
+  },
+
+  getCoordinationDetails(id: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<ClaimCoordinationDetails> {
+    return simulateRequest(() => {
+      const state = mockAppStore.getSnapshot();
+      const claim = state.claims.find((item) => item.id === id);
+      if (!claim) throw new MockApiError({ code: "NOT_FOUND", message: "Claim not found.", status: 404, retryable: false });
+      const donation = state.donations.find((item) => item.id === claim.donationId);
+      if (!donation) throw new MockApiError({ code: "NOT_FOUND", message: "Claim donation not found.", status: 404, retryable: false });
+      if (!canAccessClaim(viewer, claim, donation.donorProfileId)) {
+        throw new MockApiError({ code: "FORBIDDEN", message: "You are not authorized to coordinate this rescue.", status: 403, retryable: false });
+      }
+
+      const donor = state.donorProfiles.find((item) => item.id === donation.donorProfileId);
+      const donorUser = donor ? state.users.find((item) => item.id === donor.userId) : undefined;
+      const ngo = state.ngoProfiles.find((item) => item.id === claim.ngoProfileId);
+      const deliveryAddress = ngo ? state.addresses.find((item) => ngo.addressIds.includes(item.id) && item.isPrimary) ?? state.addresses.find((item) => ngo.addressIds.includes(item.id)) : undefined;
+      const volunteerProfile = claim.volunteerProfileId ? state.volunteerProfiles.find((item) => item.id === claim.volunteerProfileId) : undefined;
+      const volunteerUser = volunteerProfile ? state.users.find((item) => item.id === volunteerProfile.userId) : undefined;
+
+      return {
+        claim: cloneClaim(claim),
+        donation: createDonationView(donation, viewer, state.claims, state.addresses),
+        donorOrganization: donor?.organizationName ?? donorUser?.displayName ?? "Verified food donor",
+        donorVerified: donor?.verificationStatus === VerificationStatus.VERIFIED,
+        volunteer: volunteerProfile && volunteerUser ? {
+          id: volunteerProfile.id,
+          displayName: volunteerUser.displayName,
+          phone: volunteerUser.phone,
+          verificationStatus: volunteerProfile.verificationStatus,
+          transportMethod: volunteerProfile.transportMethod,
+          completedRescues: volunteerProfile.completedRescues,
+        } : undefined,
+        deliveryAddress: deliveryAddress ? { ...deliveryAddress, coordinates: deliveryAddress.coordinates ? { ...deliveryAddress.coordinates } : undefined } : undefined,
+      };
     }, options);
   },
 
@@ -90,6 +156,48 @@ export const claimService = {
         donations: current.donations.map((item) => item.id === donation.id ? { ...item, status: DonationStatus.RESERVED, updatedAt: now } : item),
       }));
       return cloneClaim(claim);
+    }, options);
+  },
+
+  assignDemoVolunteer(id: string, volunteerProfileId: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<Claim> {
+    return simulateRequest(() => {
+      let result: Claim | undefined;
+      mockAppStore.update((state) => {
+        const claim = state.claims.find((item) => item.id === id);
+        if (!claim) throw new MockApiError({ code: "NOT_FOUND", message: "Claim not found.", status: 404, retryable: false });
+        if (viewer.role !== UserRole.ADMIN && viewer.ngoProfileId !== claim.ngoProfileId) {
+          throw new MockApiError({ code: "FORBIDDEN", message: "Only the claiming NGO can start this demo assignment.", status: 403, retryable: false });
+        }
+        if (!canTransitionClaim(claim.status, ClaimStatus.ASSIGNED)) {
+          throw new MockApiError({ code: "CONFLICT", message: "This claim is not waiting for assignment.", status: 409, retryable: false });
+        }
+        const volunteer = state.volunteerProfiles.find((item) => item.id === volunteerProfileId);
+        if (!volunteer || volunteer.verificationStatus !== VerificationStatus.VERIFIED) {
+          throw new MockApiError({ code: "VALIDATION_ERROR", message: "Select a verified demo volunteer.", status: 422, retryable: false });
+        }
+
+        const now = new Date();
+        const seed = now.getTime();
+        const nextClaim: Claim = {
+          ...claim,
+          volunteerProfileId,
+          status: ClaimStatus.ASSIGNED,
+          assignedAt: now.toISOString(),
+          estimatedPickupAt: new Date(seed + 45 * 60_000).toISOString(),
+          estimatedDeliveryAt: new Date(seed + 95 * 60_000).toISOString(),
+          pickupVerificationToken: mockVerificationToken("PICKUP", seed),
+          deliveryVerificationToken: mockVerificationToken("DELIVERY", seed + 137),
+          updatedAt: now.toISOString(),
+        };
+        result = nextClaim;
+        return {
+          ...state,
+          claims: state.claims.map((item) => item.id === id ? nextClaim : item),
+          donations: state.donations.map((item) => item.id === claim.donationId ? { ...item, status: DonationStatus.ASSIGNED, updatedAt: now.toISOString() } : item),
+        };
+      });
+      if (!result) throw new MockApiError({ code: "MOCK_FAILURE", message: "The mock volunteer assignment was not created.", status: 500, retryable: true });
+      return cloneClaim(result);
     }, options);
   },
 
