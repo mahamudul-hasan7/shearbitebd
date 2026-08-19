@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
-Last audited: 2026-08-11
-Current milestone: Phase 10 complete
+Last audited: 2026-08-19
+Current milestone: Phase 11 complete
 
 ## Completed foundation
 
@@ -111,6 +111,15 @@ Authentication remains a frontend demonstration. There is no production session,
 - Four additional available mock listings cover bakery, produce, groceries, and dairy with varied distance, quantity, deadline, diet, priority, and storage values so every filter has meaningful data.
 - Claim creation now enforces the NGO profile's accepted food categories in addition to verified ownership and availability.
 
+## Completed NGO claims, verification, and tracking (Phase 11)
+
+- `/ngo/claims` now provides service-backed claim summaries, search, seven status filters, active/history sections, rescue deadlines, volunteer assignment, and ETA context.
+- `/ngo/claims/[claimId]` renders the donation, donor, authorized exact pickup details, five-step claim timeline, volunteer coordination, and privacy-aware route preview.
+- Pickup and delivery use distinct mock QR placeholders and distinct six-digit fallback codes with explicit frontend-only, time-limited, and one-time language.
+- Demo actions cover release before pickup, verified volunteer assignment, pickup verification, delivery receipt, and typed quick incident reporting.
+- `claimService.getCoordinationDetails` validates rescue participation before returning private coordination data and reuses the central donation privacy projection.
+- Full quantity/condition confirmation, evidence upload, distribution recording, and detailed incident workflows remain assigned to Phase 13.
+
 ## Implemented routes
 
 | Route | Status | Purpose |
@@ -142,10 +151,10 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/ngo/discover` | Implemented mock | Shared-filter recommendation list, sorting, save state, and actionable empty state |
 | `/ngo/discover/map` | Implemented mock | Privacy-safe approximate rescue map, preview, legend, and nearby list |
 | `/ngo/donations/[donationId]` | Implemented mock | ID-based food, safety, eligibility, privacy, save, and claim details |
-| `/ngo/claims` | Guarded handoff | Working dashboard/mobile-navigation destination; full Phase 12 module pending |
-| `/ngo/claims/[claimId]` | Guarded handoff | Claim-context destination pending full Phase 12 detail |
-| `/ngo/claims/[claimId]/confirm-delivery` | Guarded handoff | Delivery-context destination pending full Phase 12 flow |
-| `/ngo/requests/new` | Guarded handoff | Working dashboard/mobile-navigation destination; full Phase 13 module pending |
+| `/ngo/claims` | Implemented mock | Search, status filters, summaries, active/history cards, volunteer and ETA context |
+| `/ngo/claims/[claimId]` | Implemented mock | Authorized tracking, timeline, mock pickup/delivery verification, contacts, route, and actions |
+| `/ngo/claims/[claimId]/confirm-delivery` | Guarded handoff | Full quantity, condition, evidence, and receipt flow pending Phase 13 |
+| `/ngo/requests/new` | Guarded handoff | Working dashboard/mobile-navigation destination; full Phase 12 module pending |
 | `/ngo/profile` | Guarded handoff | Working mobile-navigation destination; full Phase 14 module pending |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
@@ -169,7 +178,7 @@ Authentication remains a frontend demonstration. There is no production session,
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - The volunteer dashboard remains a minimal auth handoff page.
-- NGO Claims, Demand Request, and Profile destinations remain guarded handoffs until their dedicated phases.
+- NGO Demand Request and Profile destinations remain guarded handoffs until their dedicated phases.
 - NGO dashboard match percentage is a transparent frontend heuristic, not a production recommendation model or guarantee.
 - Discovery match and eligibility values are frontend heuristics for the mock experience; production values must be backend-derived and auditable.
 - Rescue-map pins are intentionally approximate visual placements, not live GPS coordinates or navigation routes.
@@ -186,7 +195,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 11-14: complete NGO claims, requests, impact, notifications, and account experience.
+1. Phases 12-14: complete NGO requests, delivery/distribution exceptions, impact, notifications, and account experience.
 2. Phase 15: cross-device responsive QA.
 3. Phase 16: accessibility, performance, and UX quality.
 4. Phase 17: tests and backend readiness.
