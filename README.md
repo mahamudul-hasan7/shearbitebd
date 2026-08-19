@@ -14,6 +14,7 @@ Responsive frontend foundation for the ShareBite BD smart surplus food rescue pl
 - Phase 8: donor notifications, editable profile, saved-address management, account preferences, logout, FAQ, and mock support submission
 - Phase 9: responsive NGO dashboard with verified identity, nearby availability, impact, live recommendation, working claim CTA, active claims, activity, and route handoffs
 - Phase 10: NGO donation discovery with shared URL filters, privacy-safe list/map views, ID-based details, saved state, eligibility, safety review, and claim action
+- Phase 11: NGO claims list, status filters, tracking timeline, authorized pickup details, volunteer/ETA coordination, separate mock pickup/delivery verification, and demo lifecycle actions
 
 ## Run locally
 
@@ -54,6 +55,7 @@ Open `http://localhost:3000`. The root route redirects to `/splash`.
 /ngo/discover/map
 /ngo/donations/donation-gulshan-buffet
 /ngo/claims
+/ngo/claims/claim-uiu-lunch
 /ngo/requests/new
 /ngo/profile
 /volunteer/dashboard
@@ -93,4 +95,4 @@ Authentication remains a frontend demonstration. The role session and route guar
 
 See `docs/PHASE_2_SUMMARY.md` for the completed scope.
 
-Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md` through `docs/PHASE_8_SUMMARY.md`; the NGO experience begins in `docs/PHASE_9_SUMMARY.md`.
+Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md` through `docs/PHASE_8_SUMMARY.md`; NGO milestones begin in `docs/PHASE_9_SUMMARY.md` and currently continue through `docs/PHASE_11_SUMMARY.md`.
