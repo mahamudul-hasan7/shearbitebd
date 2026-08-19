@@ -38,13 +38,13 @@
 - `/ngo/discover` - implemented in Phase 10; searchable/filterable/sortable recommendation list with saved state and actionable empty state
 - `/ngo/discover/map` - implemented in Phase 10; shared filters, approximate pins, NGO area, selected preview, legend, and nearby list
 - `/ngo/donations/[donationId]` - implemented in Phase 10; ID-based details, privacy, safety declaration, eligibility, save, and claim CTA
-- `/ngo/claims` - guarded Phase 9 route handoff; full claims management arrives in Phase 12
-- `/ngo/claims/[claimId]` - guarded Phase 9 claim-context handoff; full detail arrives in Phase 12
-- `/ngo/claims/[claimId]/confirm-delivery` - guarded Phase 9 delivery-context handoff; full flow arrives in Phase 12
+- `/ngo/claims` - implemented in Phase 11; searchable claims, status filters, summaries, active/history cards, rescue clocks, volunteers, and ETAs
+- `/ngo/claims/[claimId]` - implemented in Phase 11; authorized coordination detail, lifecycle, separate pickup/delivery mock verification, volunteer contacts, route preview, release, progression, and quick issue reporting
+- `/ngo/claims/[claimId]/confirm-delivery` - guarded Phase 9 delivery-context handoff; full condition/quantity/evidence flow arrives in Phase 13
 - `/ngo/claims/[claimId]/distribution`
 - `/ngo/claims/[claimId]/report-issue`
 - `/ngo/requests`
-- `/ngo/requests/new` - guarded Phase 9 route handoff; full demand request arrives in Phase 13
+- `/ngo/requests/new` - guarded Phase 9 route handoff; full demand request arrives in Phase 12
 - `/ngo/requests/[requestId]`
 - `/ngo/requests/submitted`
 - `/ngo/impact`
