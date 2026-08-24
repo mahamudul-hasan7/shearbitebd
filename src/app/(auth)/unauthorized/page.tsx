@@ -3,7 +3,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Access Restricted" };
+export const metadata = { title: "Access Restricted", description: "Understand why the current mock account cannot access this protected portal." };
 
 export default function UnauthorizedPage() {
   return (
