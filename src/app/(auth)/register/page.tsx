@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
 
-export const metadata = { title: "Create Account" };
+export const metadata = { title: "Create Account", description: "Complete the responsive donor, NGO, or volunteer registration demonstration." };
 
 export default function RegisterPage() {
   return (
