@@ -4,7 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Reset Password" };
+export const metadata = { title: "Reset Password", description: "Request a frontend-only ShareBite BD password reset demonstration." };
 
 export default function ForgotPasswordPage() {
   return (
