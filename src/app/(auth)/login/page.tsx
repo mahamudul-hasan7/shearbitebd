@@ -5,7 +5,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Log In" };
+export const metadata = { title: "Log In", description: "Sign in with a ShareBite BD frontend demo account." };
 
 export default function LoginPage() {
   return (
