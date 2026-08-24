@@ -2,7 +2,7 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 import { OnboardingCarousel } from "@/components/auth/onboarding-carousel";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Get Started" };
+export const metadata = { title: "Get Started", description: "Learn how ShareBite BD connects safe surplus food with nearby communities." };
 
 export default function OnboardingPage() {
   return (
