@@ -4,7 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { RoleCard } from "@/components/auth/role-card";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Choose Your Role" };
+export const metadata = { title: "Choose Your Role", description: "Choose a public donor, NGO, or volunteer registration path." };
 
 export default function RoleSelectionPage() {
   return (
