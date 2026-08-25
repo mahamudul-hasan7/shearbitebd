@@ -1,7 +1,7 @@
 import { NGOModuleHandoff } from "@/features/ngo-dashboard/ngo-module-handoff";
 import { ROUTES } from "@/lib/routes";
 
-export const metadata = { title: "Confirm Delivery | ShareBite BD" };
+export const metadata = { title: "Confirm Delivery | ShareBite BD", description: "Open the guarded delivery confirmation handoff for an NGO rescue claim." };
 
 export default async function NGOConfirmDeliveryHandoffPage({ params }: { params: Promise<{ claimId: string }> }) {
   const { claimId } = await params;
