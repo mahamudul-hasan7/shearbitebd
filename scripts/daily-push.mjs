@@ -48,6 +48,15 @@ function localDate() {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+function addCalendarDays(dateString, days) {
+  const date = new Date(`${dateString}T00:00:00Z`);
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== dateString) {
+    throw new Error(`Invalid campaign date: ${dateString}`);
+  }
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 function localIsoDate(date = new Date()) {
   const values = dateParts(date);
   const offset = values.timeZoneName === "GMT" ? "+00:00" : values.timeZoneName.replace(/^GMT/, "");
@@ -133,6 +142,44 @@ function validateConfig() {
     const candidateRef = `refs/heads/${config.dateMode.backupBranchPrefix}-20000101-000000-1`;
     if (git(["check-ref-format", candidateRef], { quiet: true }).status !== 0) throw new Error("Daily date mode backup branch prefix is invalid.");
   }
+  if (config.campaign?.enabled) {
+    const { id, startDate, batchCounts, maxConsecutivePushDays, restDaysAfterStreak } = config.campaign;
+    if (typeof id !== "string" || !id.trim()) throw new Error("The campaign requires a non-empty id.");
+    addCalendarDays(startDate, 0);
+    if (!Array.isArray(batchCounts) || batchCounts.length === 0 || batchCounts.some((count) => !Number.isInteger(count) || count < config.minCommits || count > config.maxCommits)) {
+      throw new Error("Every campaign batch must be an integer within the configured commit limits.");
+    }
+    if (!Number.isInteger(maxConsecutivePushDays) || maxConsecutivePushDays < 1) throw new Error("Campaign consecutive push days must be a positive integer.");
+    if (!Number.isInteger(restDaysAfterStreak) || restDaysAfterStreak < 1) throw new Error("Campaign rest days must be a positive integer.");
+  }
+}
+
+function getCampaignStatus(today, state) {
+  if (!config.campaign?.enabled) return { enabled: false };
+
+  const campaign = config.campaign;
+  const successfulDates = state.campaign?.id === campaign.id && Array.isArray(state.campaign.successfulDates)
+    ? state.campaign.successfulDates.filter((date) => typeof date === "string")
+    : [];
+  const completed = successfulDates.length >= campaign.batchCounts.length;
+  let nextEligibleDate = campaign.startDate;
+
+  if (successfulDates.length > 0 && !completed) {
+    const streakFinished = successfulDates.length % campaign.maxConsecutivePushDays === 0;
+    const daysToAdd = streakFinished ? campaign.restDaysAfterStreak + 1 : 1;
+    nextEligibleDate = addCalendarDays(successfulDates.at(-1), daysToAdd);
+  }
+
+  return {
+    enabled: true,
+    id: campaign.id,
+    successfulDates,
+    completed,
+    nextEligibleDate,
+    eligible: !completed && today >= nextEligibleDate,
+    batchCount: completed ? undefined : campaign.batchCounts[successfulDates.length],
+    totalPushDays: campaign.batchCounts.length,
+  };
 }
 
 function readCommit(commit) {
@@ -213,8 +260,9 @@ function main() {
   acquireLock();
   const today = localDate();
   const state = readState();
+  const campaign = getCampaignStatus(today, state);
   log(`Daily push started${dryRun ? " in dry-run mode" : ""}.`);
-  if (!dryRun && !forceToday && state.lastSuccessfulDate === today) {
+  if (!dryRun && !campaign.enabled && !forceToday && state.lastSuccessfulDate === today) {
     log(`A successful push already ran on ${today}; use --force to run again.`);
     return;
   }
@@ -239,15 +287,34 @@ function main() {
 
   const pendingOutput = requireSuccess(git(["rev-list", "--reverse", `${remoteRef}..HEAD`], { quiet: true }), "Unable to calculate the queued commits.");
   const pendingCommits = pendingOutput ? pendingOutput.split(/\r?\n/).filter(Boolean) : [];
+  log(`Queue has ${pendingCommits.length} commit(s).`);
+
+  if (campaign.enabled) {
+    if (campaign.completed) {
+      log(`Campaign ${campaign.id} is complete after ${campaign.totalPushDays} successful push days; no more scheduled commits will be pushed.`);
+      return;
+    }
+    if (!campaign.eligible) {
+      log(`Campaign ${campaign.id} is waiting. Next eligible push date: ${campaign.nextEligibleDate} (${config.dateMode.timeZone}).`);
+      return;
+    }
+  }
+
   if (pendingCommits.length === 0) {
     log("Queue is empty; nothing to push.");
     return;
   }
 
-  const dailyLimit = requestedCount ?? randomInt(config.minCommits, config.maxCommits + 1);
-  const pushCount = Math.min(dailyLimit, pendingCommits.length);
+  const dailyLimit = campaign.enabled ? campaign.batchCount : requestedCount ?? randomInt(config.minCommits, config.maxCommits + 1);
+  if (campaign.enabled && pendingCommits.length < dailyLimit) {
+    throw new Error(`Campaign batch ${campaign.successfulDates.length + 1} requires ${dailyLimit} queued commits, but only ${pendingCommits.length} remain.`);
+  }
+  const pushCount = campaign.enabled ? dailyLimit : Math.min(dailyLimit, pendingCommits.length);
   let targetCommit = pendingCommits[pushCount - 1];
-  log(`Queue has ${pendingCommits.length} commit(s); selected ${pushCount} for this run (daily draw: ${dailyLimit}).`);
+  const selectionLabel = campaign.enabled
+    ? `campaign batch ${campaign.successfulDates.length + 1} of ${campaign.totalPushDays}`
+    : `daily draw: ${dailyLimit}`;
+  log(`Selected ${pushCount} commit(s) for this run (${selectionLabel}).`);
 
   if (dryRun) {
     log(`Dry run target: ${targetCommit}. ${config.dateMode?.enabled ? `Daily date mode would date the selected commits as ${today} (${config.dateMode.timeZone}). ` : ""}No tests, history rewrite, or push were executed.`);
@@ -275,8 +342,20 @@ function main() {
     git(["push", "--porcelain", config.remote, `${targetCommit}:refs/heads/${config.branch}`], { quiet: true }),
     `GitHub push failed.${backupBranch ? ` Rewritten local history is preserved; pre-rewrite backup: ${backupBranch}.` : ""}`,
   );
-  writeFileSync(statePath, JSON.stringify({ lastSuccessfulDate: today, pushedAt: timestamp(), pushedCount: pushCount, targetCommit }, null, 2), "utf8");
+  const nextState = { ...state, lastSuccessfulDate: today, pushedAt: timestamp(), pushedCount: pushCount, targetCommit };
+  if (campaign.enabled) {
+    nextState.campaign = { id: campaign.id, successfulDates: [...campaign.successfulDates, today] };
+  }
+  writeFileSync(statePath, JSON.stringify(nextState, null, 2), "utf8");
   log(`Successfully pushed ${pushCount} commit(s). ${pendingCommits.length - pushCount} remain queued.`);
+  if (campaign.enabled) {
+    const nextCampaign = getCampaignStatus(today, nextState);
+    if (nextCampaign.completed) {
+      log(`Campaign ${campaign.id} completed all ${campaign.totalPushDays} successful push days.`);
+    } else {
+      log(`Next campaign push is eligible on ${nextCampaign.nextEligibleDate} (${config.dateMode.timeZone}).`);
+    }
+  }
 }
 
 try {
