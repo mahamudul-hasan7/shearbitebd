@@ -25,7 +25,7 @@ try {
     stdio: "inherit",
   });
   console.log("Git hooks configured: core.hooksPath=.githooks");
-} catch (error) {
+} catch {
   console.log("Git hooks were created, but core.hooksPath could not be set automatically.");
   console.log("Run this once manually:");
   console.log("git config core.hooksPath .githooks");
