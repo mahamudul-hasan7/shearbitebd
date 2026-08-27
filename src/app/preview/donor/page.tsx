@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { StatCard } from "@/components/ui/stat-card";
 
-export const metadata = { title: "Donor Shell Preview" };
+export const metadata = { title: "Donor Shell Preview", description: "Preview the responsive ShareBite BD food donor portal shell and navigation." };
 
 export default function DonorPreviewPage() {
   return (
