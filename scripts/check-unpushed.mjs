@@ -7,7 +7,7 @@ function runGit(args) {
 function safeRunGit(args) {
   try {
     return runGit(args);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
