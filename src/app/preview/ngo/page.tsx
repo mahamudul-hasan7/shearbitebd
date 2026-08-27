@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { StatCard } from "@/components/ui/stat-card";
 
-export const metadata = { title: "NGO Shell Preview" };
+export const metadata = { title: "NGO Shell Preview", description: "Preview the responsive ShareBite BD NGO portal shell and navigation." };
 
 const donations = [
   { title: "Veg Meal Pack", donor: "UIU Cafeteria", quantity: "40 meal packs", distance: "1.2 km", match: "92%", priority: "High" },
