@@ -16,9 +16,15 @@ export type CreateFoodRequestInput = Omit<FoodRequest, "id" | "createdAt" | "upd
   status?: RequestStatus;
 };
 
+export type UpdateFoodRequestInput = Partial<Omit<CreateFoodRequestInput, "ngoProfileId" | "status">>;
+
 function validateRequest(input: CreateFoodRequestInput) {
   const fieldErrors: Record<string, string> = {};
   if (!input.title.trim()) fieldErrors.title = "Enter a request title.";
+  if (!input.purpose.trim()) fieldErrors.purpose = "Explain the purpose of this request.";
+  if (!input.recipientType.trim()) fieldErrors.recipientType = "Enter the intended recipient group.";
+  if (input.categories.length === 0) fieldErrors.categories = "Select at least one food category.";
+  if (input.dietaryTypes.length === 0) fieldErrors.dietaryTypes = "Select at least one dietary preference.";
   if (input.peopleToServe <= 0) fieldErrors.peopleToServe = "People to serve must be positive.";
   if (input.mealsNeeded <= 0) fieldErrors.mealsNeeded = "Meals needed must be positive.";
   const neededBy = Date.parse(input.neededBy);
@@ -26,13 +32,23 @@ function validateRequest(input: CreateFoodRequestInput) {
   if ((input.priority === PriorityLevel.HIGH || input.priority === PriorityLevel.URGENT) && !input.priorityReason?.trim()) {
     fieldErrors.priorityReason = "Explain why this request has high priority.";
   }
+  if (!input.deliveryLocation.addressLine.trim()) fieldErrors.addressLine = "Enter the full delivery address.";
+  if (!input.deliveryLocation.area.trim()) fieldErrors.area = "Enter the delivery area.";
+  if (!input.deliveryLocation.city.trim()) fieldErrors.city = "Enter the city.";
   if (Object.keys(fieldErrors).length) {
     throw new MockApiError({ code: "VALIDATION_ERROR", message: "Correct the food request details.", status: 422, retryable: false, fieldErrors });
   }
 }
 
 function cloneRequest(request: FoodRequest) {
-  return { ...request, categories: [...request.categories], dietaryTypes: [...request.dietaryTypes], allergensOrRestrictions: [...request.allergensOrRestrictions] };
+  return {
+    ...request,
+    supportingDocumentNames: [...request.supportingDocumentNames],
+    categories: [...request.categories],
+    dietaryTypes: [...request.dietaryTypes],
+    allergensOrRestrictions: [...request.allergensOrRestrictions],
+    deliveryLocation: { ...request.deliveryLocation },
+  };
 }
 
 export const requestService = {
@@ -69,6 +85,37 @@ export const requestService = {
       const request: FoodRequest = { ...input, id: createMockId("request"), status: input.status ?? RequestStatus.DRAFT, createdAt: now, updatedAt: now };
       mockAppStore.update((state) => ({ ...state, requests: [request, ...state.requests] }));
       return cloneRequest(request);
+    }, options);
+  },
+
+  update(id: string, input: UpdateFoodRequestInput, viewer: ViewerContext, options?: MockServiceOptions): Promise<FoodRequest> {
+    return simulateRequest(() => {
+      let result: FoodRequest | undefined;
+      mockAppStore.update((state) => {
+        const request = state.requests.find((item) => item.id === id);
+        if (!request) throw new MockApiError({ code: "NOT_FOUND", message: "Food request not found.", status: 404, retryable: false });
+        if (viewer.ngoProfileId !== request.ngoProfileId && viewer.role !== UserRole.ADMIN) {
+          throw new MockApiError({ code: "FORBIDDEN", message: "You cannot edit this food request.", status: 403, retryable: false });
+        }
+        if (![RequestStatus.DRAFT, RequestStatus.PENDING_REVIEW].includes(request.status)) {
+          throw new MockApiError({ code: "CONFLICT", message: "This request can no longer be edited.", status: 409, retryable: false });
+        }
+        const nextRequest: FoodRequest = {
+          ...request,
+          ...input,
+          supportingDocumentNames: input.supportingDocumentNames ? [...input.supportingDocumentNames] : request.supportingDocumentNames,
+          categories: input.categories ? [...input.categories] : request.categories,
+          dietaryTypes: input.dietaryTypes ? [...input.dietaryTypes] : request.dietaryTypes,
+          allergensOrRestrictions: input.allergensOrRestrictions ? [...input.allergensOrRestrictions] : request.allergensOrRestrictions,
+          deliveryLocation: input.deliveryLocation ? { ...input.deliveryLocation } : request.deliveryLocation,
+          updatedAt: new Date().toISOString(),
+        };
+        validateRequest(nextRequest);
+        result = nextRequest;
+        return { ...state, requests: state.requests.map((item) => item.id === id ? nextRequest : item) };
+      });
+      if (!result) throw new MockApiError({ code: "NOT_FOUND", message: "Food request not found.", status: 404, retryable: false });
+      return cloneRequest(result);
     }, options);
   },
 
