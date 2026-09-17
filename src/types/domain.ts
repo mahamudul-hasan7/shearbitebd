@@ -203,17 +203,27 @@ export interface FoodRequest {
   requestType: RequestType;
   priority: PriorityLevel;
   priorityReason?: string;
+  supportingDocumentNames: string[];
   purpose: string;
   recipientType: string;
   categories: FoodCategory[];
   dietaryTypes: DietaryType[];
+  specificPreferences?: string;
   allergensOrRestrictions: string[];
   peopleToServe: number;
   mealsNeeded: number;
+  neededWhen: "ASAP" | "TODAY" | "TOMORROW" | "CUSTOM";
   neededBy: ISODateTime;
   preferredTimeSlot?: string;
   deliveryAddressId: EntityId;
   locationType: "SHELTER" | "COMMUNITY_CENTER" | "OTHER";
+  deliveryLocation: {
+    addressLine: string;
+    area: string;
+    city: string;
+    landmark?: string;
+    instructions?: string;
+  };
   notes?: string;
   status: RequestStatus;
   createdAt: ISODateTime;
