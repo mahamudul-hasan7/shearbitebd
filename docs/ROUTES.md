@@ -43,10 +43,10 @@
 - `/ngo/claims/[claimId]/confirm-delivery` - guarded Phase 9 delivery-context handoff; full condition/quantity/evidence flow arrives in Phase 13
 - `/ngo/claims/[claimId]/distribution`
 - `/ngo/claims/[claimId]/report-issue`
-- `/ngo/requests`
-- `/ngo/requests/new` - guarded Phase 9 route handoff; full demand request arrives in Phase 12
-- `/ngo/requests/[requestId]`
-- `/ngo/requests/submitted`
+- `/ngo/requests` - implemented in Phase 12; searchable/filterable active and historical food requests
+- `/ngo/requests/new` - implemented in Phase 12; five-step request wizard with session draft persistence
+- `/ngo/requests/[requestId]` - implemented in Phase 12; ID-based lifecycle, details, allowed editing, and confirmed cancellation
+- `/ngo/requests/submitted` - implemented in Phase 12; request reference, summary, next steps, and navigation
 - `/ngo/impact`
 - `/ngo/notifications`
 - `/ngo/profile` - guarded Phase 9 route handoff; full account module arrives in Phase 14
