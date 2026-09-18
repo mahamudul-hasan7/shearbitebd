@@ -4,15 +4,15 @@
   "minCommits": 15,
   "maxCommits": 20,
   "schedule": {
-    "startDate": "2026-08-20",
+    "startDate": "2026-09-17",
     "time": "19:00",
     "runMissed": true
   },
   "campaign": {
     "enabled": true,
-    "id": "maintenance-2026-08-20",
-    "startDate": "2026-08-20",
-    "batchCounts": [15, 15, 15, 15, 16],
+    "id": "phase-12-2026-09-17",
+    "startDate": "2026-09-17",
+    "batchCounts": [15, 15],
     "maxConsecutivePushDays": 2,
     "restDaysAfterStreak": 1
   },
