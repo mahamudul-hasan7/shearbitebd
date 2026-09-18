@@ -155,7 +155,7 @@ Required backend rules:
 | `PATCH` | `/requests/:requestId` | Editable request fields | Updated `FoodRequest` |
 | `POST` | `/requests/:requestId/transitions` | Next status | Updated `FoodRequest` |
 
-High and urgent priority requests require a reason. Status changes must follow `REQUEST_TRANSITIONS`.
+High and urgent priority requests require a reason. Creation also requires at least one food category and dietary preference, positive people/meal counts, a future `neededBy` value, and a complete delivery location. Supporting-document names in the mock UI represent future upload references; raw files must use an authorized upload endpoint. Owners may edit draft or pending-review requests. Status changes must follow `REQUEST_TRANSITIONS`, and request submission must not create a claim implicitly.
 
 ## Notifications
 
