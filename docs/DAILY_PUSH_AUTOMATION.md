@@ -1,15 +1,15 @@
 # Daily Commit Push Automation
 
-This repository queues real local commits and publishes a safe prefix without rewriting the remote branch. It currently has a five-push-day maintenance campaign.
+This repository queues real local commits and publishes a safe prefix without rewriting the remote branch. It currently has a two-push-day Phase 12 campaign.
 
 ## Selected configuration
 
 - Branch: `segmented/16-commits`
 - Remote: `origin`
-- Campaign batches: 15 + 15 + 15 + 15 + 16 = 76 real commits
-- First eligible run: 2026-08-20 at 7:00 PM (Asia/Dhaka workstation time)
+- Campaign batches: 15 + 15 = 30 real commits
+- First eligible run: 2026-09-17 at 7:00 PM (Asia/Dhaka workstation time)
 - Pattern: push for at most two consecutive successful days, then keep one rest day
-- Expected dates when the PC is available: August 20, 21, 23, 24, and 26, 2026
+- Expected dates when the PC is available: September 17 and 18, 2026
 - Missed run: start when the computer is next available
 - Daily date mode: selected commits receive that Dhaka calendar day's author and committer date
 - Safety: require a clean working tree, stop on divergence, then run lint, typecheck, and production build
@@ -44,7 +44,7 @@ The scheduled run stops without pushing when:
 
 Logs and run state are kept outside the repository under `%LOCALAPPDATA%\ShareBiteBD`. The script pushes only the selected ancestor commit to the configured remote branch; later queued commits remain local.
 
-After all five successful push days, the campaign marks itself complete and future scheduled runs leave any later work untouched. To start another campaign, use a new campaign `id`, start date, and batch list.
+After both successful push days, the campaign marks itself complete and future scheduled runs leave any later work untouched. To start another campaign, use a new campaign `id`, start date, and batch list.
 
 When daily date mode is enabled, the script rewrites only the unpushed linear queue after all safety checks pass. The selected prefix gets the current `Asia/Dhaka` date, while later queued commits retain their existing dates. Because changing an ancestor changes descendant hashes, the entire unpushed queue is reconstructed with the same trees, messages, and identities. A timestamped `backup/daily-date-*` branch is created before local `HEAD` moves. Already-pushed remote commits are never rewritten.
 
