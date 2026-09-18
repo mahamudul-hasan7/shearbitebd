@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
-Last audited: 2026-08-19
-Current milestone: Phase 11 complete
+Last audited: 2026-09-16
+Current milestone: Phase 12 complete
 
 ## Completed foundation
 
@@ -120,6 +120,16 @@ Authentication remains a frontend demonstration. There is no production session,
 - `claimService.getCoordinationDetails` validates rescue participation before returning private coordination data and reuses the central donation privacy projection.
 - Full quantity/condition confirmation, evidence upload, distribution recording, and detailed incident workflows remain assigned to Phase 13.
 
+## Completed NGO food request workflow (Phase 12)
+
+- `/ngo/requests/new` now provides a five-step request wizard covering request context, food needs, quantity/timing, delivery location, and editable review.
+- High and urgent priority requests require a reason; categories, dietary preferences, positive quantities, future timing, and delivery address fields use centralized validation.
+- Draft input autosaves in session storage for the current browser tab, while optional supporting documents remain clearly labelled filename-only mock selections.
+- `/ngo/requests` provides service-backed totals, search, complete status filtering, active/history sections, loading, error, and actionable empty states.
+- `/ngo/requests/[requestId]` provides lifecycle, food, recipient, timing, and authorized location details, plus owner-scoped editing and confirmed cancellation where status permits.
+- `/ngo/requests/submitted` shows the request ID, summary, transparent frontend-only next steps, and working navigation.
+- Submitted requests appear in My Requests during client-side navigation, and the Request and Claim modules remain separate.
+
 ## Implemented routes
 
 | Route | Status | Purpose |
@@ -154,7 +164,10 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/ngo/claims` | Implemented mock | Search, status filters, summaries, active/history cards, volunteer and ETA context |
 | `/ngo/claims/[claimId]` | Implemented mock | Authorized tracking, timeline, mock pickup/delivery verification, contacts, route, and actions |
 | `/ngo/claims/[claimId]/confirm-delivery` | Guarded handoff | Full quantity, condition, evidence, and receipt flow pending Phase 13 |
-| `/ngo/requests/new` | Guarded handoff | Working dashboard/mobile-navigation destination; full Phase 12 module pending |
+| `/ngo/requests` | Implemented mock | Searchable/filterable active and historical NGO food requests |
+| `/ngo/requests/new` | Implemented mock | Five-step NGO food-request wizard with session draft persistence |
+| `/ngo/requests/[requestId]` | Implemented mock | ID-based details, lifecycle, allowed editing, and confirmed cancellation |
+| `/ngo/requests/submitted` | Implemented mock | Request reference, summary, next steps, and navigation |
 | `/ngo/profile` | Guarded handoff | Working mobile-navigation destination; full Phase 14 module pending |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
@@ -178,7 +191,8 @@ Authentication remains a frontend demonstration. There is no production session,
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - The volunteer dashboard remains a minimal auth handoff page.
-- NGO Demand Request and Profile destinations remain guarded handoffs until their dedicated phases.
+- NGO Profile remains a guarded handoff until its dedicated Phase 14 module.
+- Food-request uploads retain filenames only, and submitted requests reset on a full reload because request state is in memory.
 - NGO dashboard match percentage is a transparent frontend heuristic, not a production recommendation model or guarantee.
 - Discovery match and eligibility values are frontend heuristics for the mock experience; production values must be backend-derived and auditable.
 - Rescue-map pins are intentionally approximate visual placements, not live GPS coordinates or navigation routes.
@@ -195,7 +209,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 12-14: complete NGO requests, delivery/distribution exceptions, impact, notifications, and account experience.
+1. Phases 13-14: complete delivery/distribution exceptions, impact, notifications, and account experience.
 2. Phase 15: cross-device responsive QA.
 3. Phase 16: accessibility, performance, and UX quality.
 4. Phase 17: tests and backend readiness.
