@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ClipboardList, Save, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, ClipboardList, RotateCcw, Save, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { RequestFoodDetailsStep, RequestInfoStep, RequestLocationStep, RequestQuantityTimeStep, RequestReviewStep } from "@/components/request/request-form-steps";
@@ -114,6 +114,16 @@ export function FoodRequestWizard() {
     }
   }
 
+  function resetDraft() {
+    if (!window.confirm("Clear this food request draft and start again?")) return;
+    window.sessionStorage.removeItem(FOOD_REQUEST_DRAFT_STORAGE_KEY);
+    setDraft(createInitialFoodRequestDraft());
+    setCurrentStep(1);
+    setErrors({});
+    setSavedAt(undefined);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validateCompleteFoodRequest(draft);
@@ -190,7 +200,7 @@ export function FoodRequestWizard() {
             </Card>
           </form>
           <aside className="xl:sticky xl:top-6 xl:self-start">
-            <Card><CardHeader title="Request snapshot" description={savedAt ? `Draft saved ${new Date(savedAt).toLocaleTimeString("en-BD", { hour: "numeric", minute: "2-digit" })}` : "Draft autosaves in this browser tab"} /><CardContent className="grid gap-4 text-sm"><div><p className="text-xs font-bold uppercase tracking-wide text-muted-500">Need</p><p className="mt-1 font-black text-ink-900">{draft.title || "Untitled request"}</p></div><div className="grid grid-cols-2 gap-3"><div className="rounded-2xl bg-brand-50 p-3"><p className="text-xs text-muted-600">Meals</p><p className="mt-1 text-xl font-black text-brand-900">{draft.mealsNeeded || "—"}</p></div><div className="rounded-2xl bg-accent-50 p-3"><p className="text-xs text-muted-600">People</p><p className="mt-1 text-xl font-black text-accent-700">{draft.peopleToServe || "—"}</p></div></div><p className="leading-6 text-muted-600">A request asks the network to find a match. It does not reserve an existing donation or create a claim.</p></CardContent></Card>
+            <Card><CardHeader title="Request snapshot" description={savedAt ? `Draft saved ${new Date(savedAt).toLocaleTimeString("en-BD", { hour: "numeric", minute: "2-digit" })}` : "Draft autosaves in this browser tab"} /><CardContent className="grid gap-4 text-sm"><div><p className="text-xs font-bold uppercase tracking-wide text-muted-500">Need</p><p className="mt-1 font-black text-ink-900">{draft.title || "Untitled request"}</p></div><div className="grid grid-cols-2 gap-3"><div className="rounded-2xl bg-brand-50 p-3"><p className="text-xs text-muted-600">Meals</p><p className="mt-1 text-xl font-black text-brand-900">{draft.mealsNeeded || "—"}</p></div><div className="rounded-2xl bg-accent-50 p-3"><p className="text-xs text-muted-600">People</p><p className="mt-1 text-xl font-black text-accent-700">{draft.peopleToServe || "—"}</p></div></div><p className="leading-6 text-muted-600">A request asks the network to find a match. It does not reserve an existing donation or create a claim.</p><Button type="button" size="sm" variant="ghost" leftIcon={<RotateCcw className="size-4" />} onClick={resetDraft}>Clear saved draft</Button></CardContent></Card>
           </aside>
         </div>
       </div>
