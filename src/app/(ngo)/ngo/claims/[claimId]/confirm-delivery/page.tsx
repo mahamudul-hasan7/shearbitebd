@@ -1,9 +1,8 @@
-import { NGOModuleHandoff } from "@/features/ngo-dashboard/ngo-module-handoff";
-import { ROUTES } from "@/lib/routes";
+import { ConfirmDelivery } from "@/features/delivery/confirm-delivery";
 
-export const metadata = { title: "Confirm Delivery | ShareBite BD", description: "Open the guarded delivery confirmation handoff for an NGO rescue claim." };
+export const metadata = { title: "Confirm Delivery | ShareBite BD", description: "Verify a food handover and create the NGO delivery receipt." };
 
-export default async function NGOConfirmDeliveryHandoffPage({ params }: { params: Promise<{ claimId: string }> }) {
+export default async function NGOConfirmDeliveryPage({ params }: { params: Promise<{ claimId: string }> }) {
   const { claimId } = await params;
-  return <NGOModuleHandoff title="Confirm delivery" description="Review the handover before confirming receipt." moduleName="Delivery confirmation arrives in Phase 12" activeHref={ROUTES.ngo.claims} context={claimId} />;
+  return <ConfirmDelivery claimId={claimId} />;
 }
