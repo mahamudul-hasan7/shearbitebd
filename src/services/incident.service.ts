@@ -11,6 +11,7 @@ export interface CreateDonationIncidentInput {
   severity: PriorityLevel;
   description: string;
   preferredContactMethod: IncidentReport["preferredContactMethod"];
+  evidenceFileNames?: string[];
 }
 
 function cloneIncident(incident: IncidentReport) {
@@ -59,9 +60,9 @@ export const incidentService = {
           type: input.type,
           severity: input.severity,
           description,
-          evidenceUrls: [],
+          evidenceUrls: (input.evidenceFileNames ?? []).slice(0, 5).map((name) => `/mock/evidence/${encodeURIComponent(name)}`),
           preferredContactMethod: input.preferredContactMethod,
-          status: IncidentStatus.OPEN,
+          status: IncidentStatus.UNDER_REVIEW,
           createdAt: now,
           updatedAt: now,
         };
