@@ -325,6 +325,9 @@ export function createMockAppState(now = new Date()): MockAppState {
       { id: "impact-banani-month", donorProfileId: "donor-banani", ngoProfileId: "ngo-hope", recordedAt: relativeIso(baseTime, -20_160), mealsRescued: 62, foodWeightKg: 21, beneficiariesServed: 58, estimatedCo2PreventedKg: 52.5, estimateMethodology: "Frontend estimate using configurable meal and food-weight factors; not a measured environmental result." },
     ],
     incidentReports: [],
+    deliveryReceipts: [
+      { id: "receipt-uiu-produce", claimId: "claim-uiu-produce", ngoProfileId: "ngo-hope", expectedQuantity: 24, actualQuantity: 24, quantityUnit: QuantityUnit.KILOGRAMS, foodCondition: "GOOD", quantityMismatchConfirmed: false, distributionBlocked: false, verificationMethod: "QR", notes: "Produce crates arrived sealed and in good condition.", photoNames: ["produce-delivery.jpg"], receivedAt: relativeIso(baseTime, -1_020), createdAt: relativeIso(baseTime, -1_018) },
+    ],
     distributionRecords: [
       { id: "distribution-uiu-produce", claimId: "claim-uiu-produce", ngoProfileId: "ngo-hope", beneficiariesServed: 44, mealsDistributed: 48, adultsServed: 31, childrenServed: 13, distributedAt: relativeIso(baseTime, -600), addressId: "address-hope", notes: "Distributed in reusable produce bags during the evening service.", photoUrls: ["/mock/distribution/produce-bags.jpg"], beneficiaryConsentConfirmed: true, createdAt: relativeIso(baseTime, -595) },
     ],
