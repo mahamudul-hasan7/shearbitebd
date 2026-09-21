@@ -285,6 +285,25 @@ export interface IncidentReport {
   resolvedAt?: ISODateTime;
 }
 
+export type DeliveryFoodCondition = "GOOD" | "ACCEPTABLE" | "DAMAGED_POOR";
+
+export interface DeliveryReceipt {
+  id: EntityId;
+  claimId: EntityId;
+  ngoProfileId: EntityId;
+  expectedQuantity: number;
+  actualQuantity: number;
+  quantityUnit: QuantityUnit;
+  foodCondition: DeliveryFoodCondition;
+  quantityMismatchConfirmed: boolean;
+  distributionBlocked: boolean;
+  verificationMethod: "QR" | "FALLBACK_CODE";
+  notes?: string;
+  photoNames: string[];
+  receivedAt: ISODateTime;
+  createdAt: ISODateTime;
+}
+
 export interface DistributionRecord {
   id: EntityId;
   claimId: EntityId;
@@ -322,5 +341,6 @@ export interface MockAppState {
   userPreferences: UserPreferences[];
   impactRecords: ImpactRecord[];
   incidentReports: IncidentReport[];
+  deliveryReceipts: DeliveryReceipt[];
   distributionRecords: DistributionRecord[];
 }
