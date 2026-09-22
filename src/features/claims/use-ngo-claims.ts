@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { IncidentType, PriorityLevel } from "@/lib/constants/domain";
 import { ClaimStatus } from "@/lib/constants/statuses";
 import { NGO_PROFILE_ID, NGO_VIEWER } from "@/features/ngo-dashboard/use-ngo-dashboard";
 import { ACTIVE_CLAIM_STATUSES, COMPLETED_CLAIM_STATUSES, type ClaimFilter } from "@/features/claims/types";
-import { asyncState, claimService, incidentService, toServiceError, type AsyncState, type ClaimCoordinationDetails } from "@/services";
+import { asyncState, claimService, toServiceError, type AsyncState, type ClaimCoordinationDetails } from "@/services";
 
 const DEMO_VOLUNTEER_ID = "volunteer-demo";
 
@@ -100,7 +99,5 @@ export function useNgoClaim(claimId: string) {
     assignVolunteer: () => runAction(() => claimService.assignDemoVolunteer(claimId, DEMO_VOLUNTEER_ID, NGO_VIEWER), "A verified demo volunteer was assigned."),
     releaseClaim: () => runAction(() => claimService.transitionStatus(claimId, ClaimStatus.CANCELLED, NGO_VIEWER), "The claim was released and the donation is available again."),
     markPickedUp: () => runAction(() => claimService.transitionStatus(claimId, ClaimStatus.PICKED_UP, NGO_VIEWER), "Pickup verification completed in demo mode."),
-    confirmDelivered: () => runAction(() => claimService.transitionStatus(claimId, ClaimStatus.DELIVERED, NGO_VIEWER), "Delivery received and recorded in demo mode."),
-    reportIssue: (description: string) => runAction(() => incidentService.createForDonation(state.data?.donation.id ?? "", { type: IncidentType.OTHER, severity: PriorityLevel.HIGH, description, preferredContactMethod: "IN_APP" }, NGO_VIEWER), "The issue was submitted and normal progression is paused."),
   };
 }
