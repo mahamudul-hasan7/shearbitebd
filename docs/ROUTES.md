@@ -39,15 +39,15 @@
 - `/ngo/discover/map` - implemented in Phase 10; shared filters, approximate pins, NGO area, selected preview, legend, and nearby list
 - `/ngo/donations/[donationId]` - implemented in Phase 10; ID-based details, privacy, safety declaration, eligibility, save, and claim CTA
 - `/ngo/claims` - implemented in Phase 11; searchable claims, status filters, summaries, active/history cards, rescue clocks, volunteers, and ETAs
-- `/ngo/claims/[claimId]` - implemented in Phase 11; authorized coordination detail, lifecycle, separate pickup/delivery mock verification, volunteer contacts, route preview, release, progression, and quick issue reporting
-- `/ngo/claims/[claimId]/confirm-delivery` - guarded Phase 9 delivery-context handoff; full condition/quantity/evidence flow arrives in Phase 13
-- `/ngo/claims/[claimId]/distribution`
-- `/ngo/claims/[claimId]/report-issue`
+- `/ngo/claims/[claimId]` - implemented in Phase 11 and connected to Phase 13; authorized coordination detail, lifecycle, volunteer contacts, route preview, and dedicated handover actions
+- `/ngo/claims/[claimId]/confirm-delivery` - implemented in Phase 13; quantity reconciliation, food condition, optional photos, mock QR/fallback verification, and receipt
+- `/ngo/claims/[claimId]/distribution` - implemented in Phase 13; privacy-safe beneficiary totals, consent, location, photos, claim completion, and impact creation
+- `/ngo/claims/[claimId]/report-issue` - implemented in Phase 13; category, severity, evidence, contact preference, and disputed/under-review state
 - `/ngo/requests` - implemented in Phase 12; searchable/filterable active and historical food requests
 - `/ngo/requests/new` - implemented in Phase 12; five-step request wizard with session draft persistence
 - `/ngo/requests/[requestId]` - implemented in Phase 12; ID-based lifecycle, details, allowed editing, and confirmed cancellation
 - `/ngo/requests/submitted` - implemented in Phase 12; request reference, summary, next steps, and navigation
-- `/ngo/impact`
+- `/ngo/impact` - implemented in Phase 13; distribution-backed totals, recent outcomes, methodology, and source-claim links
 - `/ngo/notifications`
 - `/ngo/profile` - guarded Phase 9 route handoff; full account module arrives in Phase 14
 - `/ngo/profile/edit`
