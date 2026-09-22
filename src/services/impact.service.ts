@@ -31,6 +31,23 @@ export interface NGOImpactOverview {
   recentRecords: ImpactRecord[];
 }
 
+export type NGOImpactPeriod = "WEEK" | "MONTH" | "YEAR";
+
+export interface NGOImpactAnalytics extends NGOImpactOverview {
+  period: NGOImpactPeriod;
+  periodStart: string;
+  estimatedCo2PreventedKg: number;
+  estimatedWaterSavedLitres: number;
+  trend: Array<{ label: string; meals: number; beneficiaries: number }>;
+  topAreas: Array<{ area: string; distributions: number; beneficiaries: number }>;
+}
+
+function periodDays(period: NGOImpactPeriod) {
+  if (period === "WEEK") return 7;
+  if (period === "MONTH") return 30;
+  return 365;
+}
+
 export const impactService = {
   getDonorOverview(donorProfileId: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<DonorImpactOverview> {
     return simulateRequest(() => {
@@ -75,6 +92,44 @@ export const impactService = {
         foodWeightKg: recentRecords.reduce((total, record) => total + record.foodWeightKg, 0),
         completedRescues: profile.completedRescues,
         recentRecords: recentRecords.map((record) => ({ ...record })),
+      };
+    }, options);
+  },
+
+  getNgoAnalytics(ngoProfileId: string, period: NGOImpactPeriod, viewer: ViewerContext, options?: MockServiceOptions): Promise<NGOImpactAnalytics> {
+    return simulateRequest(() => {
+      if (viewer.ngoProfileId !== ngoProfileId && viewer.role !== UserRole.ADMIN) {
+        throw new MockApiError({ code: "FORBIDDEN", message: "This impact summary belongs to another NGO.", status: 403, retryable: false });
+      }
+      const state = mockAppStore.getSnapshot();
+      const profile = state.ngoProfiles.find((item) => item.id === ngoProfileId);
+      if (!profile) throw new MockApiError({ code: "NOT_FOUND", message: "NGO profile not found.", status: 404, retryable: false });
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - periodDays(period));
+      const recentRecords = state.impactRecords
+        .filter((record) => record.ngoProfileId === ngoProfileId && Date.parse(record.recordedAt) >= cutoff.getTime())
+        .sort((left, right) => Date.parse(left.recordedAt) - Date.parse(right.recordedAt));
+      const trend = recentRecords.map((record) => ({
+        label: new Intl.DateTimeFormat("en-BD", { month: "short", day: "numeric" }).format(new Date(record.recordedAt)),
+        meals: record.mealsRescued,
+        beneficiaries: record.beneficiariesServed,
+      }));
+      const areaMap = new Map<string, { distributions: number; beneficiaries: number }>();
+      for (const record of recentRecords) {
+        const distribution = state.distributionRecords.find((item) => item.claimId === record.claimId);
+        const area = state.addresses.find((item) => item.id === distribution?.addressId)?.area ?? "Other service area";
+        const current = areaMap.get(area) ?? { distributions: 0, beneficiaries: 0 };
+        areaMap.set(area, { distributions: current.distributions + 1, beneficiaries: current.beneficiaries + record.beneficiariesServed });
+      }
+      return {
+        period, periodStart: cutoff.toISOString(), completedRescues: profile.completedRescues,
+        mealsDistributed: recentRecords.reduce((total, record) => total + record.mealsRescued, 0),
+        beneficiariesServed: recentRecords.reduce((total, record) => total + record.beneficiariesServed, 0),
+        foodWeightKg: recentRecords.reduce((total, record) => total + record.foodWeightKg, 0),
+        estimatedCo2PreventedKg: recentRecords.reduce((total, record) => total + record.estimatedCo2PreventedKg, 0),
+        estimatedWaterSavedLitres: recentRecords.reduce((total, record) => total + (record.estimatedWaterSavedLitres ?? 0), 0),
+        trend, recentRecords: recentRecords.slice().reverse(),
+        topAreas: [...areaMap.entries()].map(([area, value]) => ({ area, ...value })).sort((left, right) => right.beneficiaries - left.beneficiaries),
       };
     }, options);
   },
