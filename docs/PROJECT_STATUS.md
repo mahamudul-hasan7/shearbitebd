@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
-Last audited: 2026-09-16
-Current milestone: Phase 12 complete
+Last audited: 2026-09-18
+Current milestone: Phase 13 complete
 
 ## Completed foundation
 
@@ -130,6 +130,15 @@ Authentication remains a frontend demonstration. There is no production session,
 - `/ngo/requests/submitted` shows the request ID, summary, transparent frontend-only next steps, and working navigation.
 - Submitted requests appear in My Requests during client-side navigation, and the Request and Claim modules remain separate.
 
+## Completed NGO delivery, distribution, incidents, and impact (Phase 13)
+
+- Picked-up claims open a dedicated receipt workflow with actual quantity reconciliation, food condition, optional evidence, and mock QR/fallback verification.
+- Damaged or poor food creates a receipt but blocks beneficiary distribution and directs the NGO to incident reporting.
+- Delivered claims accept aggregate beneficiary and meal counts, NGO location, consent/privacy confirmation, optional photos, and operational notes.
+- Completing distribution atomically closes the claim and donation, updates NGO totals, and creates a methodology-labelled impact record.
+- Structured incidents capture category, severity, evidence filenames, description, and contact preference while moving the rescue to disputed/under review.
+- `/ngo/impact` summarizes distribution-backed outcomes and links every recent record to its source claim.
+
 ## Implemented routes
 
 | Route | Status | Purpose |
@@ -163,7 +172,10 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/ngo/donations/[donationId]` | Implemented mock | ID-based food, safety, eligibility, privacy, save, and claim details |
 | `/ngo/claims` | Implemented mock | Search, status filters, summaries, active/history cards, volunteer and ETA context |
 | `/ngo/claims/[claimId]` | Implemented mock | Authorized tracking, timeline, mock pickup/delivery verification, contacts, route, and actions |
-| `/ngo/claims/[claimId]/confirm-delivery` | Guarded handoff | Full quantity, condition, evidence, and receipt flow pending Phase 13 |
+| `/ngo/claims/[claimId]/confirm-delivery` | Implemented mock | Quantity reconciliation, condition, photos, QR/fallback verification, and delivery receipt |
+| `/ngo/claims/[claimId]/distribution` | Implemented mock | Aggregate beneficiary outcome, consent/privacy, location, evidence, and impact creation |
+| `/ngo/claims/[claimId]/report-issue` | Implemented mock | Structured incident category, severity, evidence, contact preference, and disputed state |
+| `/ngo/impact` | Implemented mock | Distribution-backed totals, recent records, source-claim links, and estimate methodology |
 | `/ngo/requests` | Implemented mock | Searchable/filterable active and historical NGO food requests |
 | `/ngo/requests/new` | Implemented mock | Five-step NGO food-request wizard with session draft persistence |
 | `/ngo/requests/[requestId]` | Implemented mock | ID-based details, lifecycle, allowed editing, and confirmed cancellation |
@@ -182,7 +194,7 @@ Authentication remains a frontend demonstration. There is no production session,
 - The Phase 3 domain store is in-memory and resets on full reload.
 - Donation wizard drafts use session storage; selected photo names are retained, but files are not uploaded.
 - A newly submitted donation appears in My Donations during client-side navigation in the current app session and resets on full reload.
-- Donation edits, cancellations, issue reports, tracking updates, and claim releases are in-memory mock operations and reset on full reload.
+- Donation edits, cancellations, delivery receipts, distributions, issue reports, tracking updates, and claim releases are in-memory mock operations and reset on full reload.
 - Tracking maps and ETAs are visual placeholders; there is no live GPS, routing, or real-time socket connection.
 - QR/fallback credentials are visibly labelled mock-only and are not production-secure, one-time, or backend-verified.
 - NGO ratings, people-helped totals, completed rescues, capacity, and profile histories are clearly marked mock/demo values until a backend provides reviewed organization data.
@@ -191,6 +203,7 @@ Authentication remains a frontend demonstration. There is no production session,
 - Registration state intentionally survives step navigation only; it is not persisted across refreshes.
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - The volunteer dashboard remains a minimal auth handoff page.
+- Delivery/distribution images and incident evidence retain filenames only; no file is uploaded.
 - NGO Profile remains a guarded handoff until its dedicated Phase 14 module.
 - Food-request uploads retain filenames only, and submitted requests reset on a full reload because request state is in memory.
 - NGO dashboard match percentage is a transparent frontend heuristic, not a production recommendation model or guarantee.
@@ -209,7 +222,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phases 13-14: complete delivery/distribution exceptions, impact, notifications, and account experience.
+1. Phase 14: complete NGO notifications and account experience.
 2. Phase 15: cross-device responsive QA.
 3. Phase 16: accessibility, performance, and UX quality.
 4. Phase 17: tests and backend readiness.
