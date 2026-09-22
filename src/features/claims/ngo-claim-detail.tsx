@@ -62,7 +62,7 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
 
         <ClaimRoutePreview details={details} />
         <Alert tone="info" title="Frontend tracking demonstration" description="ETA, map route, QR blocks, fallback codes, calls, and messages are UI simulations. Real location, one-time tokens, expiry, and secure communication require backend services." />
-        <ClaimActionPanel claim={details.claim} busy={busy} onAssignVolunteer={claimState.assignVolunteer} onRelease={claimState.releaseClaim} onMarkPickedUp={claimState.markPickedUp} onConfirmDelivered={claimState.confirmDelivered} onReportIssue={claimState.reportIssue} />
+        <ClaimActionPanel claim={details.claim} busy={busy} onAssignVolunteer={claimState.assignVolunteer} onRelease={claimState.releaseClaim} onMarkPickedUp={claimState.markPickedUp} />
         <p className="text-center text-xs text-muted-500">Latest claim update: {formatClaimDateTime(details.claim.updatedAt)} · {claimProgressMessage(details.claim)}</p>
       </div>}
     </PortalShell>
