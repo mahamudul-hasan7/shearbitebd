@@ -172,11 +172,13 @@ Notifications are private to the account owner and administrators with an audite
 | Method | Endpoint | Request | Response |
 |---|---|---|---|
 | `GET` | `/impact` | Role-scoped date range | `ImpactRecord[]` and aggregates |
+| `GET` | `/claims/:claimId/delivery-receipt` | Authorized claim participant | `DeliveryReceipt` |
+| `POST` | `/claims/:claimId/delivery-receipt` | Actual quantity, condition, verification, notes, upload references | Created receipt and delivered claim |
 | `POST` | `/claims/:claimId/distribution` | `DistributionRecord` fields | Created record and updated claim |
 | `POST` | `/claims/:claimId/incidents` | `IncidentReport` fields | Created report and disputed state |
 | `GET` | `/incidents/:incidentId` | Authorized incident ID | `IncidentReport` |
 
-Impact records must derive from completed delivery/distribution data. CO2 and water values must always be labelled estimated and return their methodology.
+Delivery confirmation must be restricted to the claiming NGO, reconcile expected and received quantities, consume a one-time backend token, and block distribution when food is marked damaged or poor. Distribution must require a delivery receipt, use aggregate beneficiary counts, record consent confirmation, and atomically complete the claim/donation while creating impact. Incident submission must atomically pause normal progression and retain an auditable review status. Upload fields are backend-issued references, never trusted local filenames. Impact records must derive from completed delivery/distribution data. CO2 and water values must always be labelled estimated and return their methodology.
 
 ## Replacing the mock layer
 
