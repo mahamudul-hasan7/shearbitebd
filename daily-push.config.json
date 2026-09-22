@@ -10,9 +10,9 @@
   },
   "campaign": {
     "enabled": true,
-    "id": "phase-12-2026-09-17",
-    "startDate": "2026-09-17",
-    "batchCounts": [15, 15],
+    "id": "phase-13-2026-09-21",
+    "startDate": "2026-09-21",
+    "batchCounts": [15],
     "maxConsecutivePushDays": 2,
     "restDaysAfterStreak": 1
   },
