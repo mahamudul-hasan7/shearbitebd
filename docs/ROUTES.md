@@ -47,8 +47,8 @@
 - `/ngo/requests/new` - implemented in Phase 12; five-step request wizard with session draft persistence
 - `/ngo/requests/[requestId]` - implemented in Phase 12; ID-based lifecycle, details, allowed editing, and confirmed cancellation
 - `/ngo/requests/submitted` - implemented in Phase 12; request reference, summary, next steps, and navigation
-- `/ngo/impact` - implemented in Phase 13; distribution-backed totals, recent outcomes, methodology, and source-claim links
-- `/ngo/notifications`
+- `/ngo/impact` - expanded in Phase 14; date ranges, distribution trends, top service areas, environmental estimates, recent outcomes, methodology, and source-claim links
+- `/ngo/notifications` - implemented in Phase 14; private categorized inbox, filters, deep links, and read/unread controls
 - `/ngo/profile` - guarded Phase 9 route handoff; full account module arrives in Phase 14
 - `/ngo/profile/edit`
 - `/ngo/team`
