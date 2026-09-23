@@ -18,7 +18,7 @@ export function NGODiscoveryList() {
   const discovery = useNgoDiscovery();
   const { savedIds, toggleSaved } = useSavedDonations();
   const { state, filters, filteredItems, activeFilterCount, updateFilter, resetFilters, retry, queryString } = discovery;
-  return <PortalShell role="ngo" activeHref={ROUTES.ngo.discover} title="Discover food" description="Find safe surplus food that fits your service area, capacity, and community needs." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.dashboard + "#recent-activity"}>
+  return <PortalShell role="ngo" activeHref={ROUTES.ngo.discover} title="Discover food" description="Find safe surplus food that fits your service area, capacity, and community needs." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.notifications}>
     <div className="grid gap-5"><DiscoveryControls mode="list" queryString={queryString} filters={filters} activeFilterCount={activeFilterCount} resultCount={filteredItems.length} updateFilter={updateFilter} resetFilters={resetFilters} />
       {state.status === "loading" && !state.data && <SkeletonGroup label="Loading available donations" className="grid gap-4"><Skeleton className="h-72" /><Skeleton className="h-72" /><Skeleton className="h-72" /></SkeletonGroup>}
       {state.status === "error" && !state.data && <EmptyState icon={RefreshCw} title="Available food could not load" description={state.error.message} action={<Button onClick={retry}>Try again</Button>} />}
