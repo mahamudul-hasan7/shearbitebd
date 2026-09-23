@@ -43,7 +43,7 @@ export function NGODashboard() {
     finally { setClaiming(false); }
   }
 
-  return <PortalShell role="ngo" activeHref={ROUTES.ngo.dashboard} title={data ? `Assalamu Alaikum, ${name}` : "NGO Dashboard"} description="Find safe surplus food, coordinate active rescues, and keep your community impact moving." profileName={name} profileDescription={ngo?.verificationStatus === VerificationStatus.VERIFIED ? "Verified NGO" : "Verification pending"} avatarInitials={getInitials(name)} notificationHref={ROUTES.ngo.dashboard + "#recent-activity"} unreadNotifications={data?.notifications.filter((item) => !item.readAt).length ?? 0} actions={<ButtonLink href={ROUTES.ngo.newRequest} size="sm">Create demand request</ButtonLink>}>
+  return <PortalShell role="ngo" activeHref={ROUTES.ngo.dashboard} title={data ? `Assalamu Alaikum, ${name}` : "NGO Dashboard"} description="Find safe surplus food, coordinate active rescues, and keep your community impact moving." profileName={name} profileDescription={ngo?.verificationStatus === VerificationStatus.VERIFIED ? "Verified NGO" : "Verification pending"} avatarInitials={getInitials(name)} notificationHref={ROUTES.ngo.notifications} unreadNotifications={data?.notifications.filter((item) => !item.readAt).length ?? 0} actions={<ButtonLink href={ROUTES.ngo.newRequest} size="sm">Create demand request</ButtonLink>}>
     {state.status === "loading" && !data && <NGODashboardLoading />}
     {state.status === "error" && !data && <NGODashboardError message={state.error.message} onRetry={retry} />}
     {data && ngo && <div className="grid gap-8">
