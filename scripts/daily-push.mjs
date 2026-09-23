@@ -136,6 +136,12 @@ function validateConfig() {
   if (requestedCount !== undefined && (!Number.isInteger(requestedCount) || requestedCount < 1 || requestedCount > 100)) {
     throw new Error("--count must be an integer between 1 and 100.");
   }
+  if (!Array.isArray(config.schedule?.times) || config.schedule.times.length !== 3 || config.schedule.times.some((time) => !/^([01]\d|2[0-3]):[0-5]\d$/.test(time))) {
+    throw new Error("Configure exactly three valid daily schedule times.");
+  }
+  if (!Number.isInteger(config.schedule.commitsPerRun) || config.schedule.commitsPerRun < 1) {
+    throw new Error("Scheduled commits per run must be a positive integer.");
+  }
   if (config.dateMode?.enabled) {
     if (!config.dateMode.timeZone || !config.dateMode.backupBranchPrefix) throw new Error("Daily date mode requires a time zone and backup branch prefix.");
     new Intl.DateTimeFormat("en-CA", { timeZone: config.dateMode.timeZone }).format(new Date());
@@ -305,7 +311,7 @@ function main() {
     return;
   }
 
-  const dailyLimit = campaign.enabled ? campaign.batchCount : requestedCount ?? randomInt(config.minCommits, config.maxCommits + 1);
+  const dailyLimit = campaign.enabled ? campaign.batchCount : requestedCount ?? config.schedule.commitsPerRun ?? randomInt(config.minCommits, config.maxCommits + 1);
   if (campaign.enabled && pendingCommits.length < dailyLimit) {
     throw new Error(`Campaign batch ${campaign.successfulDates.length + 1} requires ${dailyLimit} queued commits, but only ${pendingCommits.length} remain.`);
   }
