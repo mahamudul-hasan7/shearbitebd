@@ -29,7 +29,7 @@ export function NGOClaimsList() {
   const historyItems = filteredItems.filter((item) => !ACTIVE_CLAIM_STATUSES.has(item.claim.status));
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="My claims" description="Track reserved food, volunteer assignment, pickup, delivery, and completed rescue history." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.dashboard + "#recent-activity"} actions={<ButtonLink href={ROUTES.ngo.discover} variant="outline">Discover food</ButtonLink>}>
+    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="My claims" description="Track reserved food, volunteer assignment, pickup, delivery, and completed rescue history." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.notifications} actions={<ButtonLink href={ROUTES.ngo.discover} variant="outline">Discover food</ButtonLink>}>
       <div className="grid gap-6">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard icon={Box} label="Total claims" value={String(stats.total)} helper="All visible rescue claims" />
