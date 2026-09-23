@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-09-18
-Current milestone: Phase 13 complete
+Current milestone: Phase 14 in progress — analytics and notifications complete
 
 ## Completed foundation
 
@@ -175,7 +175,8 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/ngo/claims/[claimId]/confirm-delivery` | Implemented mock | Quantity reconciliation, condition, photos, QR/fallback verification, and delivery receipt |
 | `/ngo/claims/[claimId]/distribution` | Implemented mock | Aggregate beneficiary outcome, consent/privacy, location, evidence, and impact creation |
 | `/ngo/claims/[claimId]/report-issue` | Implemented mock | Structured incident category, severity, evidence, contact preference, and disputed state |
-| `/ngo/impact` | Implemented mock | Distribution-backed totals, recent records, source-claim links, and estimate methodology |
+| `/ngo/impact` | Implemented mock | Period filters, distribution trend, top areas, environmental estimates, recent records, and methodology |
+| `/ngo/notifications` | Implemented mock | Private categorized rescue/account inbox with filters and read/unread state |
 | `/ngo/requests` | Implemented mock | Searchable/filterable active and historical NGO food requests |
 | `/ngo/requests/new` | Implemented mock | Five-step NGO food-request wizard with session draft persistence |
 | `/ngo/requests/[requestId]` | Implemented mock | ID-based details, lifecycle, allowed editing, and confirmed cancellation |
@@ -222,7 +223,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phase 14: complete NGO notifications and account experience.
+1. Phase 14: complete NGO profile, team, verification, settings, and support.
 2. Phase 15: cross-device responsive QA.
 3. Phase 16: accessibility, performance, and UX quality.
 4. Phase 17: tests and backend readiness.
