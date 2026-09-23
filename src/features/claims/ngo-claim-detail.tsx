@@ -27,7 +27,7 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
   const details = state.data;
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="Claim details" description="Coordinate pickup, verification, volunteer tracking, and delivery for this rescue." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.dashboard + "#recent-activity"} actions={<ButtonLink href={ROUTES.ngo.claims} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Back to claims</ButtonLink>}>
+    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="Claim details" description="Coordinate pickup, verification, volunteer tracking, and delivery for this rescue." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.notifications} actions={<ButtonLink href={ROUTES.ngo.claims} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Back to claims</ButtonLink>}>
       {state.status === "loading" && !details && <SkeletonGroup label="Loading claim details" className="grid gap-5"><Skeleton className="h-80" /><Skeleton className="h-48" /><div className="grid gap-5 xl:grid-cols-2"><Skeleton className="h-80" /><Skeleton className="h-80" /></div></SkeletonGroup>}
       {state.status === "error" && !details && <EmptyState icon={RefreshCw} title="Claim could not load" description={state.error.message} action={<div className="flex flex-wrap justify-center gap-2"><Button onClick={claimState.retry}>Try again</Button><ButtonLink href={ROUTES.ngo.claims} variant="outline">Back to claims</ButtonLink></div>} />}
       {details && <div className="grid gap-6">
