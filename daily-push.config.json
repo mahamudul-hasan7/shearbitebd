@@ -1,18 +1,19 @@
 {
   "remote": "origin",
   "branch": "segmented/16-commits",
-  "minCommits": 15,
-  "maxCommits": 20,
+  "minCommits": 5,
+  "maxCommits": 5,
   "schedule": {
-    "startDate": "2026-09-17",
-    "time": "19:00",
+    "startDate": "2026-09-21",
+    "times": ["17:00", "21:00", "23:00"],
+    "commitsPerRun": 5,
     "runMissed": true
   },
   "campaign": {
-    "enabled": true,
-    "id": "phase-13-2026-09-21",
+    "enabled": false,
+    "id": "three-daily-slots",
     "startDate": "2026-09-21",
-    "batchCounts": [15],
+    "batchCounts": [5],
     "maxConsecutivePushDays": 2,
     "restDaysAfterStreak": 1
   },
