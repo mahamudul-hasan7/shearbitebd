@@ -35,13 +35,13 @@ export function PortalShell({
       <DesktopSidebar role={role} activeHref={activeHref} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} />
       <div className="lg:pl-[var(--sidebar-width)]">
         <AppHeader role={role} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} notificationHref={notificationHref} unreadNotifications={unreadNotifications} />
-        <PageContainer className="pb-32 pt-6 lg:pb-10">
+        <PageContainer className="pb-28 pt-5 lg:pb-10 lg:pt-7">
           <main>
-            <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-bold text-brand-600">{role === "donor" ? "Donor Portal" : "NGO Portal"}</p>
-                <h1 className="mt-1 text-3xl font-black tracking-tight text-ink-900 sm:text-4xl">{title}</h1>
-                {description && <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-600 sm:text-base">{description}</p>}
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">{role === "donor" ? "Donor workspace" : "NGO workspace"}</p>
+                <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">{title}</h1>
+                {description && <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-600">{description}</p>}
               </div>
               {actions}
             </div>
