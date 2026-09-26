@@ -28,11 +28,11 @@ export function Alert({
   const Icon = style.icon;
 
   return (
-    <div role={tone === "danger" ? "alert" : "status"} className={cn("flex items-start gap-3 rounded-2xl border p-4", style.className, className)} {...props}>
+    <div role={tone === "danger" ? "alert" : "status"} className={cn("flex items-start gap-3 rounded-card border p-4", style.className, className)} {...props}>
       <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <p className="font-bold">{title}</p>
-        {description && <p className="mt-1 text-sm leading-6 opacity-85">{description}</p>}
+        <p className="text-sm font-bold">{title}</p>
+        {description && <p className="mt-1 text-sm leading-5 opacity-85">{description}</p>}
       </div>
       {action}
     </div>
