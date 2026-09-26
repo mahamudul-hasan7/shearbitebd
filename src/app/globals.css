@@ -36,14 +36,14 @@
   --color-info-soft: var(--info-soft);
   --color-info-strong: var(--info-strong);
   --font-sans: var(--font-sans);
-  --radius-sm: 0.75rem;
-  --radius-card: 1.5rem;
-  --radius-control: 1rem;
-  --radius-panel: 2rem;
-  --shadow-card: 0 18px 50px rgba(20, 66, 43, 0.08);
-  --shadow-float: 0 20px 55px rgba(0, 87, 52, 0.18);
-  --shadow-dialog: 0 30px 90px rgba(4, 53, 31, 0.24);
-  --shadow-sticky: 0 -12px 35px rgba(4, 53, 31, 0.08);
+  --radius-sm: 0.5rem;
+  --radius-card: 0.875rem;
+  --radius-control: 0.625rem;
+  --radius-panel: 1.125rem;
+  --shadow-card: 0 1px 2px rgba(16, 35, 26, 0.045);
+  --shadow-float: 0 10px 28px rgba(16, 35, 26, 0.12);
+  --shadow-dialog: 0 24px 64px rgba(16, 35, 26, 0.18);
+  --shadow-sticky: 0 -6px 18px rgba(16, 35, 26, 0.07);
   --breakpoint-xs: 30rem;
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
@@ -69,12 +69,12 @@
   --accent-500: #f7931e;
   --accent-600: #dc6d08;
   --surface: #ffffff;
-  --canvas: #fbfcf9;
+  --canvas: #f7f8f6;
   --ink-900: #10231a;
   --ink-700: #263c31;
   --muted-600: #5f6e66;
   --muted-400: #929c96;
-  --line: #e3e9e5;
+  --line: #dde3df;
   --success: #168149;
   --success-soft: #eaf7ef;
   --success-strong: #0b6336;
@@ -88,8 +88,8 @@
   --info-soft: #edf4ff;
   --info-strong: #1746a2;
   --font-sans: Inter, "Noto Sans Bengali", "Segoe UI", Arial, sans-serif;
-  --sidebar-width: 17.5rem;
-  --page-max-width: 100rem;
+  --sidebar-width: 16rem;
+  --page-max-width: 92rem;
 }
 
 * {
@@ -104,12 +104,10 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 10% 0%, rgba(226, 241, 229, 0.7), transparent 30rem),
-    radial-gradient(circle at 100% 10%, rgba(255, 237, 204, 0.5), transparent 28rem),
-    var(--canvas);
+  background: var(--canvas);
   color: var(--ink-900);
   font-family: var(--font-sans);
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
 }
 
