@@ -23,15 +23,15 @@ export function StatCard({
     success: "bg-success-soft text-success-strong",
   };
   return (
-    <Card className="p-5">
+    <Card className="p-4">
       <div className="flex items-start justify-between gap-3">
-        <span className={cn("grid size-11 place-items-center rounded-2xl", tones[tone])}>
+        <span className={cn("grid size-10 place-items-center rounded-control", tones[tone])}>
           <Icon className="size-5" aria-hidden="true" />
         </span>
         {helper && <ArrowUpRight className="size-4 text-brand-500" aria-hidden="true" />}
       </div>
-      <p className="mt-5 text-3xl font-black tracking-tight text-ink-900">{value}</p>
-      <p className="mt-1 text-sm font-bold text-ink-700">{label}</p>
+      <p className="mt-4 text-2xl font-bold tracking-tight text-ink-900">{value}</p>
+      <p className="mt-1 text-sm font-semibold text-ink-700">{label}</p>
       {helper && <p className="mt-2 text-xs text-muted-600">{helper}</p>}
     </Card>
   );
