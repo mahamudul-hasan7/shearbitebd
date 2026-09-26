@@ -24,12 +24,12 @@ export function AppHeader({
   unreadNotifications?: number;
 }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-canvas/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-18 max-w-[var(--page-max-width)] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur-lg">
+      <div className="mx-auto flex h-16 max-w-[var(--page-max-width)] items-center justify-between gap-4 px-4 sm:px-6 xl:px-8">
         <div className="lg:hidden"><BrandLogo compact /></div>
         <div className="hidden lg:block">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">{eyebrow}</p>
-          <p className="mt-1 text-sm text-muted-600">{description}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">{eyebrow}</p>
+          <p className="mt-0.5 text-xs text-muted-600">{description}</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="relative">
