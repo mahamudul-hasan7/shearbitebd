@@ -26,9 +26,9 @@ export function Input({ label, hint, error, leftIcon, id, className, containerCl
           aria-describedby={error || hint ? descriptionId : props["aria-describedby"]}
           aria-invalid={error ? true : props["aria-invalid"]}
           className={cn(
-            "h-12 w-full rounded-control border bg-white px-4 text-sm text-ink-900 shadow-sm outline-none transition placeholder:text-muted-400",
+            "h-11 w-full rounded-control border bg-white px-3.5 text-sm text-ink-900 outline-none transition-colors placeholder:text-muted-400",
             leftIcon ? "pl-11" : undefined,
-            error ? "border-danger focus:border-danger" : "border-line focus:border-brand-500",
+            error ? "border-danger focus:border-danger" : "border-line hover:border-muted-400 focus:border-brand-500",
             className,
           )}
         />
