@@ -7,6 +7,7 @@ export * from "@/services/distribution.service";
 export * from "@/services/impact.service";
 export * from "@/services/incident.service";
 export * from "@/services/ngo.service";
+export * from "@/services/ngo-account.service";
 export * from "@/services/notification.service";
 export * from "@/services/profile.service";
 export * from "@/services/request.service";
