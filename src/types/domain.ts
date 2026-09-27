@@ -89,6 +89,20 @@ export interface NGOProfile {
   updatedAt: ISODateTime;
 }
 
+export type NGOTeamRole = "OWNER" | "COORDINATOR" | "FIELD_STAFF" | "VIEWER";
+export type NGOTeamMemberStatus = "ACTIVE" | "INVITED";
+
+export interface NGOTeamMember {
+  id: EntityId;
+  ngoProfileId: EntityId;
+  name: string;
+  email: string;
+  role: NGOTeamRole;
+  status: NGOTeamMemberStatus;
+  joinedAt?: ISODateTime;
+  createdAt: ISODateTime;
+}
+
 export interface VolunteerProfile {
   id: EntityId;
   userId: EntityId;
@@ -333,6 +347,7 @@ export interface MockAppState {
   addresses: Address[];
   donorProfiles: DonorProfile[];
   ngoProfiles: NGOProfile[];
+  ngoTeamMembers: NGOTeamMember[];
   volunteerProfiles: VolunteerProfile[];
   donations: Donation[];
   claims: Claim[];
