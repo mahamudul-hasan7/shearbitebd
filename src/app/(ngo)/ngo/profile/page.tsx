@@ -1,8 +1,7 @@
-import { NGOModuleHandoff } from "@/features/ngo-dashboard/ngo-module-handoff";
-import { ROUTES } from "@/lib/routes";
+import { NGOProfileView } from "@/features/ngo-account/ngo-profile";
 
-export const metadata = { title: "NGO Profile | ShareBite BD", description: "Open the guarded NGO organization profile and account handoff." };
+export const metadata = { title: "NGO Profile | ShareBite BD", description: "Manage NGO identity, impact, team, verification, and account access." };
 
-export default function NGOProfileHandoffPage() {
-  return <NGOModuleHandoff title="Organization profile" description="Manage identity, verification, service areas, and team access." moduleName="NGO account management arrives in Phase 14" activeHref={ROUTES.ngo.profile} />;
+export default function NGOProfilePage() {
+  return <NGOProfileView />;
 }
