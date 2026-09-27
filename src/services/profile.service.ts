@@ -11,6 +11,18 @@ export interface UpdateDonorProfileInput {
   donorType: DonorProfile["donorType"];
 }
 
+export interface UpdateNGOProfileInput {
+  organizationName: string;
+  summary: string;
+  mission: string;
+  vision: string;
+  serviceAreas: string[];
+  beneficiaryTypes: string[];
+  capacityMealsPerDay: number;
+  publicEmail: string;
+  publicPhone: string;
+}
+
 export interface AddressInput {
   label: string;
   division: string;
@@ -114,6 +126,30 @@ export const profileService = {
         ...state,
         users: state.users.map((user) => user.id === userId ? { ...user, displayName: input.displayName.trim(), email, phone: input.phone.trim(), updatedAt } : user),
         donorProfiles: state.donorProfiles.map((profile) => profile.id === donorProfile.id ? { ...profile, donorType: input.donorType, organizationName: input.organizationName?.trim() || undefined, updatedAt } : profile),
+      }));
+      const user = mockAppStore.getSnapshot().users.find((item) => item.id === userId);
+      if (!user) throw new MockApiError({ code: "NOT_FOUND", message: "User profile not found.", status: 404, retryable: false });
+      return createProfileBundle(user);
+    }, options);
+  },
+
+  updateNGOProfile(userId: string, input: UpdateNGOProfileInput, viewer: ViewerContext, options?: MockServiceOptions): Promise<ProfileBundle> {
+    return simulateRequest(() => {
+      requireProfileOwner(userId, viewer);
+      const ngo = mockAppStore.getSnapshot().ngoProfiles.find((item) => item.userId === userId);
+      if (!ngo) throw new MockApiError({ code: "NOT_FOUND", message: "NGO profile not found.", status: 404, retryable: false });
+      const fieldErrors: Record<string, string> = {};
+      if (input.organizationName.trim().length < 3) fieldErrors.organizationName = "Enter the organization name.";
+      if (input.summary.trim().length < 20) fieldErrors.summary = "Use at least 20 characters.";
+      if (!/^\S+@\S+\.\S+$/.test(input.publicEmail.trim())) fieldErrors.publicEmail = "Enter a valid public email.";
+      if (!/^\+?[0-9]{10,15}$/.test(input.publicPhone.replace(/[\s-]/g, ""))) fieldErrors.publicPhone = "Enter a valid phone number.";
+      if (!Number.isInteger(input.capacityMealsPerDay) || input.capacityMealsPerDay < 1) fieldErrors.capacityMealsPerDay = "Enter a positive whole number.";
+      if (input.serviceAreas.length === 0) fieldErrors.serviceAreas = "Add at least one service area.";
+      if (Object.keys(fieldErrors).length) throw new MockApiError({ code: "VALIDATION_ERROR", message: "Review the NGO profile fields.", status: 422, retryable: false, fieldErrors });
+      const updatedAt = new Date().toISOString();
+      mockAppStore.update((state) => ({ ...state,
+        users: state.users.map((item) => item.id === userId ? { ...item, displayName: input.organizationName.trim(), updatedAt } : item),
+        ngoProfiles: state.ngoProfiles.map((item) => item.id === ngo.id ? { ...item, ...input, organizationName: input.organizationName.trim(), summary: input.summary.trim(), mission: input.mission.trim(), vision: input.vision.trim(), serviceAreas: input.serviceAreas.map((value) => value.trim()).filter(Boolean), beneficiaryTypes: input.beneficiaryTypes.map((value) => value.trim()).filter(Boolean), publicEmail: input.publicEmail.trim().toLowerCase(), publicPhone: input.publicPhone.trim(), updatedAt } : item),
       }));
       const user = mockAppStore.getSnapshot().users.find((item) => item.id === userId);
       if (!user) throw new MockApiError({ code: "NOT_FOUND", message: "User profile not found.", status: 404, retryable: false });
