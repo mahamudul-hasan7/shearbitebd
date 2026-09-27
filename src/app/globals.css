@@ -137,6 +137,21 @@ select {
   outline-offset: 2px;
 }
 
+.icon-interactive svg {
+  transform-origin: center;
+  transition: transform 180ms ease, color 180ms ease, opacity 180ms ease;
+}
+
+.icon-interactive:hover svg,
+.icon-interactive:focus-visible svg {
+  transform: translateY(-1px) scale(1.06);
+}
+
+.icon-nudge:hover svg,
+.icon-nudge:focus-visible svg {
+  transform: translateX(2px);
+}
+
 .safe-bottom {
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
