@@ -29,7 +29,7 @@ export function DesktopSidebar({ role, activeHref, profileName, profileDescripti
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-control px-3 py-2.5 text-sm font-semibold transition-colors",
+                "icon-interactive icon-nudge flex items-center gap-3 rounded-control px-3 py-2.5 text-sm font-semibold transition-colors",
                 active ? "bg-brand-100 text-brand-900" : "text-muted-600 hover:bg-canvas hover:text-ink-900",
               )}
             >
