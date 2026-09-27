@@ -31,7 +31,7 @@ export function buttonClassNames({
   className?: string;
 }) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
+    "icon-interactive inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
     sizes[size],
     fullWidth && "w-full",
