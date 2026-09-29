@@ -8,7 +8,7 @@ import type { PortalRole } from "@/types/navigation";
 export function DesktopSidebar({ role, activeHref, profileName, profileDescription, avatarInitials }: { role: PortalRole; activeHref: string; profileName?: string; profileDescription?: string; avatarInitials?: string }) {
   const items = getNavigation(role, activeHref.startsWith("/preview/"));
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r border-line bg-white px-4 py-5 lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col overflow-y-auto overscroll-contain border-r border-line bg-white px-4 py-5 lg:flex">
       <BrandLogo />
       <div className="mt-7 rounded-card border border-line bg-canvas p-3.5">
         <div className="flex items-center gap-3">
@@ -19,7 +19,7 @@ export function DesktopSidebar({ role, activeHref, profileName, profileDescripti
           </div>
         </div>
       </div>
-      <nav className="mt-5 grid gap-1" aria-label={`${roleMeta[role].label} navigation`}>
+      <nav className="mt-5 grid min-w-0 gap-1" aria-label={`${roleMeta[role].label} navigation`}>
         {items.map((item) => {
           const Icon = item.icon;
           const active = item.href === activeHref;
