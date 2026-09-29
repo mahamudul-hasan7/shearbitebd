@@ -8,5 +8,5 @@ const columns = {
 };
 
 export function ResponsiveGrid({ columns: count = 3, className, ...props }: HTMLAttributes<HTMLDivElement> & { columns?: 2 | 3 | 4 }) {
-  return <div className={cn("grid grid-cols-1 gap-4 sm:gap-5", columns[count], className)} {...props} />;
+  return <div className={cn("grid min-w-0 grid-cols-1 gap-4 sm:gap-5 [&>*]:min-w-0", columns[count], className)} {...props} />;
 }
