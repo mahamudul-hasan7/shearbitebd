@@ -72,6 +72,10 @@ Frontend error codes currently modeled by `MockApiError`:
 | `PATCH` | `/me` | Editable user/profile fields | `ProfileBundle` |
 | `GET` | `/ngos` | Name/area search, cause, accepted food category, service area, verified status, pagination | Public verified `NGODirectoryItem[]` |
 | `GET` | `/ngos/:ngoId` | Verified NGO ID | Public `NGODirectoryItem` with approved profile, impact summary, and recent activities |
+| `PATCH` | `/ngos/:ngoId/profile` | Authorized organization profile fields | Updated private `NGOProfile` |
+| `GET` | `/ngos/:ngoId/team` | Authorized organization member | Private `NGOTeamMember[]` |
+| `POST` | `/ngos/:ngoId/team/invitations` | Name, email, and organization role | Invited `NGOTeamMember` |
+| `POST` | `/ngos/:ngoId/verification-submissions` | Backend-issued document references | Updated review status |
 
 Backend requirements:
 
@@ -79,6 +83,9 @@ Backend requirements:
 - Public NGO responses must expose only approved organization information.
 - Public rating, capacity, people-helped, rescue-history, and impact fields require backend provenance/review; frontend seed values remain clearly labelled mock or demo.
 - NGO public contact fields must be explicitly approved for directory display and kept separate from private account contact data.
+- NGO profile editing, team membership, and verification submissions require organization-scoped authorization and an auditable actor.
+- Team invitations must be unique per organization, role-limited, expiring, and accepted through a backend-issued token.
+- Verification documents must use private upload references; filenames selected by the mock frontend are not evidence uploads.
 - Donor and volunteer private contact/address fields require explicit authorization.
 - Administrator accounts are backend-created or invite-only.
 
