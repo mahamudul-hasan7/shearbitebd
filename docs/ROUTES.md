@@ -49,11 +49,11 @@
 - `/ngo/requests/submitted` - implemented in Phase 12; request reference, summary, next steps, and navigation
 - `/ngo/impact` - expanded in Phase 14; date ranges, distribution trends, top service areas, environmental estimates, recent outcomes, methodology, and source-claim links
 - `/ngo/notifications` - implemented in Phase 14; private categorized inbox, filters, deep links, and read/unread controls
-- `/ngo/profile` - guarded Phase 9 route handoff; full account module arrives in Phase 14
-- `/ngo/profile/edit`
-- `/ngo/team`
-- `/ngo/verification`
-- `/ngo/settings`
-- `/ngo/support`
+- `/ngo/profile` - implemented in Phase 14; verified identity, public contact, service areas, impact, account links, and logout
+- `/ngo/profile/edit` - implemented in Phase 14; validated organization, mission, capacity, audience, and public-contact editing
+- `/ngo/team` - implemented in Phase 14; mock members, roles, statuses, and invitation workflow
+- `/ngo/verification` - implemented in Phase 14; evidence checklist, status, and mock document resubmission
+- `/ngo/settings` - implemented in Phase 14; notification, language, text-size, privacy, and security information
+- `/ngo/support` - implemented in Phase 14; NGO FAQs and validated mock support request
 
 All route strings and dynamic route builders are centralized in `src/lib/routes.ts`. Routes without an implementation note remain unreachable until their planned phase.
