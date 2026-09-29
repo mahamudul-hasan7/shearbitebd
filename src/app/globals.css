@@ -98,17 +98,34 @@
 
 html {
   background: var(--canvas);
+  overflow-x: clip;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+  min-width: 20rem;
   min-height: 100vh;
   background: var(--canvas);
   color: var(--ink-900);
   font-family: var(--font-sans);
   line-height: 1.5;
   text-rendering: optimizeLegibility;
+}
+
+img,
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+p,
+h1,
+h2,
+h3 {
+  overflow-wrap: anywhere;
 }
 
 dialog {
