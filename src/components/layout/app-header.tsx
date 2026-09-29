@@ -25,13 +25,13 @@ export function AppHeader({
 }) {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur-lg">
-      <div className="mx-auto flex h-16 max-w-[var(--page-max-width)] items-center justify-between gap-4 px-4 sm:px-6 xl:px-8">
+      <div className="mx-auto flex h-16 min-w-0 max-w-[var(--page-max-width)] items-center justify-between gap-3 px-3 xs:px-4 sm:px-6 xl:px-8">
         <div className="lg:hidden"><BrandLogo compact /></div>
         <div className="hidden lg:block">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">{eyebrow}</p>
           <p className="mt-0.5 text-xs text-muted-600">{description}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="relative">
             {notificationHref ? (
               <IconButtonLink href={notificationHref} label={`${unreadNotifications} unread notification${unreadNotifications === 1 ? "" : "s"}`}><Bell className="size-5" /></IconButtonLink>
@@ -41,7 +41,7 @@ export function AppHeader({
             {unreadNotifications > 0 && <span className="absolute right-0 top-0 grid size-4 place-items-center rounded-full bg-accent-500 text-[9px] font-black text-white ring-2 ring-canvas" aria-hidden="true">{Math.min(unreadNotifications, 9)}</span>}
           </span>
           {profileName && (
-            <div className="hidden max-w-44 text-right sm:block">
+            <div className="hidden min-w-0 max-w-44 text-right sm:block">
               <p className="truncate text-sm font-black text-ink-900">{profileName}</p>
               {profileDescription && <p className="truncate text-xs text-muted-600">{profileDescription}</p>}
             </div>
