@@ -1,6 +1,6 @@
 # Phase 14 Progress — NGO Analytics and Notifications
 
-Phase 14 is in progress. This delivery completes its first two account modules without claiming the remaining profile, team, verification, settings, or support routes are finished.
+Phase 14 is complete. NGO analytics, notifications, profile, team, verification, settings, and support now share the typed mock service layer.
 
 ## Completed in this delivery
 
@@ -12,11 +12,12 @@ Phase 14 is in progress. This delivery completes its first two account modules w
 - Per-notification read/unread controls and mark-all-read behavior
 - NGO header notification links routed to the dedicated inbox
 
-## Still pending in Phase 14
+## Account modules completed
 
-- Organization profile and editing
+- Organization profile and validated editing
 - Team roles, permissions, and mock invitations
-- Verification checklist and resubmission
-- NGO settings and support
+- Verification checklist, status, and document resubmission
+- Notification, language, accessibility, and privacy settings
+- NGO-specific FAQ and mock support request workflow
 
 All state remains frontend-only and resets on a full reload. Environmental values are estimates, not measured outcomes.
