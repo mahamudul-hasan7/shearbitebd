@@ -1,7 +1,7 @@
 # ShareBite BD Project Status
 
 Last audited: 2026-09-18
-Current milestone: Phase 14 in progress — analytics and notifications complete
+Current milestone: Phase 14 complete
 
 ## Completed foundation
 
@@ -181,7 +181,12 @@ Authentication remains a frontend demonstration. There is no production session,
 | `/ngo/requests/new` | Implemented mock | Five-step NGO food-request wizard with session draft persistence |
 | `/ngo/requests/[requestId]` | Implemented mock | ID-based details, lifecycle, allowed editing, and confirmed cancellation |
 | `/ngo/requests/submitted` | Implemented mock | Request reference, summary, next steps, and navigation |
-| `/ngo/profile` | Guarded handoff | Working mobile-navigation destination; full Phase 14 module pending |
+| `/ngo/profile` | Implemented mock | Organization identity, service areas, impact, account navigation, and logout |
+| `/ngo/profile/edit` | Implemented mock | Validated public profile and operational-capacity editing |
+| `/ngo/team` | Implemented mock | Members, roles, access status, and local invitations |
+| `/ngo/verification` | Implemented mock | Evidence checklist, review status, and document resubmission |
+| `/ngo/settings` | Implemented mock | Notification, language, accessibility, and privacy controls |
+| `/ngo/support` | Implemented mock | NGO FAQ and local support-request confirmation |
 | `/volunteer/dashboard` | Guarded placeholder | Volunteer authentication handoff |
 | `/design-system` | Implemented | Shared component and layout catalogue |
 | `/preview/donor` | Implemented preview | Responsive donor shell demonstration |
@@ -205,7 +210,7 @@ Authentication remains a frontend demonstration. There is no production session,
 - Google login, reset-email delivery, uploads, and verification are clearly labelled frontend placeholders.
 - The volunteer dashboard remains a minimal auth handoff page.
 - Delivery/distribution images and incident evidence retain filenames only; no file is uploaded.
-- NGO Profile remains a guarded handoff until its dedicated Phase 14 module.
+- NGO account changes, team invitations, verification resubmissions, preferences, and support requests remain in-memory mocks until backend integration.
 - Food-request uploads retain filenames only, and submitted requests reset on a full reload because request state is in memory.
 - NGO dashboard match percentage is a transparent frontend heuristic, not a production recommendation model or guarantee.
 - Discovery match and eligibility values are frontend heuristics for the mock experience; production values must be backend-derived and auditable.
@@ -223,8 +228,7 @@ Authentication remains a frontend demonstration. There is no production session,
 
 ## Upcoming phases
 
-1. Phase 14: complete NGO profile, team, verification, settings, and support.
-2. Phase 15: cross-device responsive QA.
+1. Phase 15: cross-device responsive QA.
 3. Phase 16: accessibility, performance, and UX quality.
 4. Phase 17: tests and backend readiness.
 5. Phase 18: final QA and release-candidate documentation.
