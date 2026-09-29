@@ -40,7 +40,7 @@ export function Modal({
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
         }}
-        className={cn("m-auto w-[calc(100%-2rem)] rounded-panel border border-line bg-white p-0 shadow-dialog", sizes[size])}
+        className={cn("m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-1.5rem)] overflow-y-auto overscroll-contain rounded-panel border border-line bg-white p-0 shadow-dialog sm:w-[calc(100%-2rem)]", sizes[size])}
       >
         <div className="flex items-start justify-between gap-4 border-b border-line p-5 sm:p-6">
           <div>
@@ -50,7 +50,7 @@ export function Modal({
           <IconButton autoFocus label="Close dialog" onClick={close} className="shrink-0"><X className="size-5" /></IconButton>
         </div>
         <div className="p-5 sm:p-6">{children}</div>
-        {footer && <div className="flex flex-wrap justify-end gap-3 border-t border-line p-5 sm:p-6">{footer}</div>}
+        {footer && <div className="flex flex-col-reverse gap-3 border-t border-line p-5 sm:flex-row sm:flex-wrap sm:justify-end sm:p-6 [&>*]:w-full sm:[&>*]:w-auto">{footer}</div>}
       </dialog>
     </>
   );
