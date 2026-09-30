@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-card border border-line bg-surface shadow-card", className)}
+      className={cn("min-w-0 rounded-card border border-line bg-surface shadow-card", className)}
       {...props}
     />
   );
@@ -12,8 +12,8 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 
 export function CardHeader({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
-      <div>
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line px-4 py-4 sm:flex-nowrap sm:gap-4 sm:px-5">
+      <div className="min-w-0 flex-1">
         <h3 className="text-base font-bold text-ink-900">{title}</h3>
         {description && <p className="mt-1 max-w-2xl text-sm leading-5 text-muted-600">{description}</p>}
       </div>
@@ -23,5 +23,5 @@ export function CardHeader({ title, description, action }: { title: string; desc
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-5", className)} {...props} />;
+  return <div className={cn("min-w-0 p-4 sm:p-5", className)} {...props} />;
 }
