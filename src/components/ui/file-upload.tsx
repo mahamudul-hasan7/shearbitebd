@@ -61,15 +61,15 @@ export function FileUpload({
   }
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid min-w-0 gap-2", className)}>
       <span className="text-sm font-bold text-ink-700">{label}</span>
-      <label htmlFor={inputId} className="grid min-h-40 cursor-pointer place-items-center rounded-3xl border-2 border-dashed border-brand-200 bg-brand-50/60 p-6 text-center transition hover:border-brand-400 hover:bg-brand-50">
+      <label htmlFor={inputId} className="grid min-h-40 min-w-0 cursor-pointer place-items-center rounded-3xl border-2 border-dashed border-brand-200 bg-brand-50/60 p-4 text-center transition hover:border-brand-400 hover:bg-brand-50 xs:p-6">
         <input id={inputId} name={name} type="file" accept={accept} multiple={multiple} required={required} onChange={handleChange} aria-describedby={descriptionId} aria-invalid={Boolean(error)} className="sr-only" />
         <span>
           <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-white text-brand-700 shadow-sm">
             {visibleFiles.length > 0 ? <FileCheck2 className="size-6" /> : <UploadCloud className="size-6" />}
           </span>
-          <span className="mt-3 block text-sm font-black text-brand-800">{visibleFiles.length > 0 ? visibleFiles.join(", ") : "Select file"}</span>
+          <span className="mt-3 block break-all text-sm font-black text-brand-800">{visibleFiles.length > 0 ? visibleFiles.join(", ") : "Select file"}</span>
           <span id={descriptionId} className={cn("mt-1 block text-xs leading-5", error ? "text-danger" : "text-muted-600")}>{error ?? hint}</span>
         </span>
       </label>
