@@ -13,7 +13,7 @@ export function Textarea({ label, hint, error, id, className, containerClassName
   const textareaId = id ?? props.name ?? generatedId;
   const descriptionId = `${textareaId}-description`;
   return (
-    <label htmlFor={textareaId} className={cn("grid gap-2", containerClassName)}>
+    <label htmlFor={textareaId} className={cn("grid min-w-0 gap-2", containerClassName)}>
       {label && <span className="text-sm font-bold text-ink-700">{label}</span>}
       <textarea
         {...props}
@@ -21,7 +21,7 @@ export function Textarea({ label, hint, error, id, className, containerClassName
         aria-describedby={error || hint ? descriptionId : props["aria-describedby"]}
         aria-invalid={error ? true : props["aria-invalid"]}
         className={cn(
-          "min-h-28 w-full resize-y rounded-control border bg-white px-3.5 py-3 text-sm text-ink-900 outline-none transition-colors placeholder:text-muted-400",
+          "min-h-28 min-w-0 w-full resize-y rounded-control border bg-white px-3.5 py-3 text-sm text-ink-900 outline-none transition-colors placeholder:text-muted-400",
           error ? "border-danger focus:border-danger" : "border-line hover:border-muted-400 focus:border-brand-500",
           className,
         )}
