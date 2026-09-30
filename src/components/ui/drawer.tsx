@@ -34,18 +34,18 @@ export function Drawer({
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
         }}
-        className="ml-auto mr-0 h-dvh max-h-none w-[min(92vw,28rem)] border-0 border-l border-line bg-white p-0 shadow-dialog"
+        className="ml-auto mr-0 h-dvh max-h-none w-[min(100vw,28rem)] overscroll-contain border-0 border-l border-line bg-white p-0 shadow-dialog"
       >
         <div className="flex min-h-full flex-col">
-          <div className="flex items-start justify-between gap-4 border-b border-line p-5">
+          <div className="flex items-start justify-between gap-4 border-b border-line p-4 pt-[max(1rem,env(safe-area-inset-top))] sm:p-5">
             <div>
               <h2 id={titleId} className="text-xl font-black text-ink-900">{title}</h2>
               {description && <p id={descriptionId} className="mt-1 text-sm leading-6 text-muted-600">{description}</p>}
             </div>
             <IconButton autoFocus label="Close drawer" onClick={close}><X className="size-5" /></IconButton>
           </div>
-          <div className="flex-1 overflow-y-auto p-5">{children}</div>
-          <div className="border-t border-line p-5"><Button fullWidth onClick={close}>Done</Button></div>
+          <div className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-5">{children}</div>
+          <div className="safe-bottom border-t border-line p-4 sm:p-5"><Button fullWidth onClick={close}>Done</Button></div>
         </div>
       </dialog>
     </>
