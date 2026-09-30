@@ -9,7 +9,7 @@ export interface StepperItem {
 
 export function Stepper({ steps, current, label = "Progress" }: { steps: StepperItem[]; current: number; label?: string }) {
   return (
-    <ol aria-label={label} className="grid gap-3 sm:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]" style={{ "--step-count": steps.length } as CSSProperties}>
+    <ol aria-label={label} className="grid min-w-0 gap-3 sm:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]" style={{ "--step-count": steps.length } as CSSProperties}>
       {steps.map((step, index) => {
         const number = index + 1;
         const complete = number < current;
@@ -21,8 +21,8 @@ export function Stepper({ steps, current, label = "Progress" }: { steps: Stepper
               {complete ? <Check className="size-5" aria-hidden="true" /> : number}
             </span>
             <span className="min-w-0 sm:mt-3 sm:block">
-              <span className={cn("block text-sm font-bold", active || complete ? "text-brand-800" : "text-muted-600")}>{step.label}</span>
-              {step.description && <span className="mt-1 block text-xs leading-5 text-muted-600">{step.description}</span>}
+              <span className={cn("block break-words text-sm font-bold", active || complete ? "text-brand-800" : "text-muted-600")}>{step.label}</span>
+              {step.description && <span className="mt-1 block break-words text-xs leading-5 text-muted-600">{step.description}</span>}
             </span>
           </li>
         );
