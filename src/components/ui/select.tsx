@@ -13,7 +13,7 @@ export function Select({ label, hint, error, id, className, containerClassName, 
   const selectId = id ?? props.name ?? generatedId;
   const descriptionId = `${selectId}-description`;
   return (
-    <label htmlFor={selectId} className={cn("grid gap-2", containerClassName)}>
+    <label htmlFor={selectId} className={cn("grid min-w-0 gap-2", containerClassName)}>
       {label && <span className="text-sm font-bold text-ink-700">{label}</span>}
       <select
         {...props}
@@ -21,7 +21,7 @@ export function Select({ label, hint, error, id, className, containerClassName, 
         aria-describedby={error || hint ? descriptionId : props["aria-describedby"]}
         aria-invalid={error ? true : props["aria-invalid"]}
         className={cn(
-          "h-11 w-full rounded-control border bg-white px-3.5 text-sm text-ink-900 outline-none transition-colors",
+          "h-11 min-w-0 w-full rounded-control border bg-white px-3.5 text-sm text-ink-900 outline-none transition-colors",
           error ? "border-danger focus:border-danger" : "border-line hover:border-muted-400 focus:border-brand-500",
           className,
         )}
