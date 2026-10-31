@@ -31,19 +31,29 @@ export function PortalShell({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-screen bg-canvas antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900">
       <DesktopSidebar role={role} activeHref={activeHref} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} />
-      <div className="min-w-0 lg:pl-[var(--sidebar-width)]">
+      <div className="min-w-0 flex flex-col min-h-screen lg:pl-[var(--sidebar-width)]">
         <AppHeader role={role} profileName={profileName} profileDescription={profileDescription} avatarInitials={avatarInitials} notificationHref={notificationHref} unreadNotifications={unreadNotifications} />
-        <PageContainer className="pb-28 pt-5 lg:pb-10 lg:pt-7">
+        <PageContainer className="flex-1 pb-32 pt-6 sm:pt-8 lg:pb-12">
           <main className="min-w-0">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">{role === "donor" ? "Donor workspace" : "NGO workspace"}</p>
-                <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">{title}</h1>
-                {description && <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-600">{description}</p>}
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center rounded-md bg-brand-50 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-brand-700 ring-1 ring-inset ring-brand-600/10">
+                    {role === "donor" ? "Donor Workspace" : "NGO Workspace"}
+                  </span>
+                </div>
+                <h1 className="mt-2 text-2xl font-black tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
+                  {title}
+                </h1>
+                {description && (
+                  <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-600">
+                    {description}
+                  </p>
+                )}
               </div>
-              {actions && <div className="w-full sm:w-auto">{actions}</div>}
+              {actions && <div className="shrink-0 self-start sm:self-center">{actions}</div>}
             </div>
             {children}
           </main>
