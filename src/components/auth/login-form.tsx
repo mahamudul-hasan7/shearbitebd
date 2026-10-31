@@ -89,8 +89,9 @@ export function LoginForm() {
         autoComplete="email"
         required
         error={errors.email}
-        leftIcon={<Mail className="size-5" />}
+        leftIcon={<Mail className="size-4.5 text-slate-400" />}
       />
+
       <PasswordInput
         value={password}
         onChange={(event) => {
@@ -101,57 +102,69 @@ export function LoginForm() {
       />
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <label className="flex cursor-pointer items-center gap-2 text-muted-600">
+        <label className="flex cursor-pointer items-center gap-2 text-slate-600 text-xs font-medium">
           <input
             type="checkbox"
             checked={remember}
             onChange={(event) => setRemember(event.target.checked)}
-            className="size-4 rounded border-line accent-brand-600"
+            className="size-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600"
           />
-          Remember this demo session
+          Remember this session
         </label>
-        <Link href={ROUTES.auth.forgotPassword} className="font-bold text-brand-700 hover:text-brand-800">
+        <Link href={ROUTES.auth.forgotPassword} className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 transition-colors">
           Forgot password?
         </Link>
       </div>
 
-      <Button type="submit" size="lg" fullWidth rightIcon={<ArrowRight className="size-5" />} disabled={loading}>
-        {loading ? "Opening workspace..." : "Log in"}
+      <Button type="submit" size="lg" fullWidth rightIcon={<ArrowRight className="size-4.5" />} disabled={loading}>
+        {loading ? "Authenticating..." : "Sign in to Dashboard"}
       </Button>
 
+      {/* Quick Demo Switcher */}
       {process.env.NODE_ENV === "development" && (
-        <div className="rounded-3xl border border-info/20 bg-info-soft p-4">
-          <div className="flex items-start gap-3 text-info-strong">
-            <FlaskConical className="mt-0.5 size-5 shrink-0" />
-            <div>
-              <p className="text-sm font-black">Development demo accounts</p>
-              <p className="mt-1 text-xs leading-5 opacity-80">One-click login uses the shared password Demo1234. Only mock role and profile details are stored.</p>
-            </div>
+        <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <FlaskConical className="size-4 text-emerald-600" />
+            <span>One-Click Demo Access</span>
           </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <p className="mt-1 text-[11px] text-slate-500">
+            Select a role below to sign in instantly with simulated credentials:
+          </p>
+          <div className="mt-3 grid grid-cols-3 gap-2">
             {DEMO_ACCOUNTS.map((account) => (
-              <Button key={account.email} type="button" size="sm" variant="outline" onClick={() => handleDemoLogin(account)} disabled={loading}>
-                {account.role.toLowerCase()} demo
-              </Button>
+              <button
+                key={account.email}
+                type="button"
+                onClick={() => handleDemoLogin(account)}
+                disabled={loading}
+                className="group flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs transition-all hover:border-emerald-500 hover:bg-emerald-50/50 hover:shadow-xs active:scale-95 disabled:pointer-events-none disabled:opacity-50"
+              >
+                <span className="text-xs font-bold text-slate-800 capitalize group-hover:text-emerald-700">
+                  {account.role.toLowerCase()}
+                </span>
+                <span className="text-[10px] text-slate-400 group-hover:text-emerald-600">
+                  1-Click Demo
+                </span>
+              </button>
             ))}
           </div>
         </div>
       )}
 
-      <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-muted-400">
-        <span className="h-px flex-1 bg-line" />
+      <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <span className="h-px flex-1 bg-slate-200" />
         or
-        <span className="h-px flex-1 bg-line" />
+        <span className="h-px flex-1 bg-slate-200" />
       </div>
 
-      <Button type="button" size="lg" variant="outline" fullWidth leftIcon={<Globe className="size-5" />} disabled title="Google authentication will be connected with the backend.">
-        Google sign-in coming later
+      <Button type="button" size="md" variant="outline" fullWidth leftIcon={<Globe className="size-4.5 text-slate-400" />} disabled title="Google authentication will be connected with the backend.">
+        Continue with Google
       </Button>
 
-      <p className="text-center text-sm text-muted-600">
+      <p className="text-center text-xs sm:text-sm text-slate-600">
         Don&apos;t have an account?{" "}
-        <Link href={ROUTES.auth.roleSelection} className="font-black text-brand-700 hover:text-brand-800">
-          Create account
+        <Link href={ROUTES.auth.roleSelection} className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors">
+          Create an account
         </Link>
       </p>
     </form>
