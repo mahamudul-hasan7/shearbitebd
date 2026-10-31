@@ -117,30 +117,40 @@ export function RegisterForm() {
     return (
       <div className="text-center">
         <AuthProgress steps={steps} current={4} />
-        <span className="mx-auto mt-9 grid size-20 place-items-center rounded-full bg-brand-600 text-white shadow-float">
-          <CheckCircle2 className="size-10" />
+        <span className="mx-auto mt-6 grid size-16 place-items-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/30">
+          <CheckCircle2 className="size-8" />
         </span>
-        <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-accent-600">Registration captured</p>
-        <h1 className="mt-3 text-3xl font-black text-brand-900 sm:text-4xl">Frontend flow complete</h1>
-        <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-muted-600 sm:text-base">
-          Your {roleLabels[role].toLowerCase()} registration was captured only in this page. No account, password, or document was sent to a server.
-        </p>
-        <div className="mx-auto mt-7 max-w-md rounded-3xl border border-brand-100 bg-brand-50 p-5 text-left">
+        <div className="mt-5">
+          <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/15">
+            Registration Captured
+          </span>
+          <h1 className="mt-2 text-2xl font-extrabold text-slate-900 sm:text-3xl">Application Complete</h1>
+          <p className="mx-auto mt-3 max-w-md text-xs sm:text-sm leading-relaxed text-slate-600 font-normal">
+            Your {roleLabels[role].toLowerCase()} registration was recorded in this frontend session.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-6 max-w-md rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4.5 text-left shadow-2xs">
           <div className="flex items-start gap-3">
-            <BadgeCheck className="mt-0.5 size-6 shrink-0 text-brand-700" />
+            <BadgeCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" />
             <div>
-              <p className="font-black text-brand-800">{needsReview ? "Verification pending" : "Demo profile ready"}</p>
-              <p className="mt-1 text-sm leading-6 text-muted-600">
+              <p className="text-sm font-bold text-slate-900">{needsReview ? "Verification pending review" : "Demo profile ready"}</p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500 font-normal">
                 {needsReview
-                  ? "Approval remains pending until a future backend review. Use a demo account to preview role-based navigation."
-                  : "Use the donor demo account to preview role-based navigation. Real account creation comes with backend integration."}
+                  ? "Organizational reviews are conducted manually. Meanwhile, you can test features using the demo login."
+                  : "You can explore the donor experience using the one-click demo login on the sign-in page."}
               </p>
             </div>
           </div>
         </div>
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <ButtonLink href={ROUTES.auth.login} size="lg" rightIcon={<ArrowRight className="size-5" />}>Continue to login</ButtonLink>
-          <ButtonLink href={ROUTES.auth.roleSelection} size="lg" variant="outline">Register another role</ButtonLink>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <ButtonLink href={ROUTES.auth.login} size="md" rightIcon={<ArrowRight className="size-4" />}>
+            Go to Login
+          </ButtonLink>
+          <ButtonLink href={ROUTES.auth.roleSelection} size="md" variant="outline">
+            Register Another Role
+          </ButtonLink>
         </div>
       </div>
     );
@@ -150,15 +160,19 @@ export function RegisterForm() {
     <div>
       <AuthProgress steps={steps} current={currentStep} />
 
-      <div className="mt-7 flex flex-col gap-3 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-2 border-b border-slate-200/80 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-accent-600">{roleLabels[role]}</p>
-          <h1 className="mt-2 text-3xl font-black text-brand-900 sm:text-4xl">
-            {currentStep === 1 ? "Create your account" : currentStep === 2 ? "Tell us the details" : "Verify and finish"}
+          <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/15">
+            {roleLabels[role]}
+          </span>
+          <h1 className="mt-2 text-2xl font-extrabold text-slate-900 sm:text-3xl">
+            {currentStep === 1 ? "Create your account" : currentStep === 2 ? "Organization details" : "Review & verification"}
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-600">{roleDescriptions[role]}</p>
+          <p className="mt-1.5 max-w-lg text-xs sm:text-sm text-slate-600 font-normal">{roleDescriptions[role]}</p>
         </div>
-        <Link href={ROUTES.auth.roleSelection} className="shrink-0 text-sm font-black text-brand-700 hover:text-brand-800">Change role</Link>
+        <Link href={ROUTES.auth.roleSelection} className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors">
+          Change role
+        </Link>
       </div>
 
       <form ref={formRef} onSubmit={handleSubmit} noValidate className="mt-6 grid gap-5">
