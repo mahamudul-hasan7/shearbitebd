@@ -8,7 +8,7 @@ export function IconButton({ label, children, className, ...props }: ButtonHTMLA
       type="button"
       aria-label={label}
       className={cn(
-        "icon-interactive grid size-11 place-items-center rounded-full border border-line bg-white text-brand-700 shadow-sm transition hover:bg-brand-50",
+        "group relative grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink-700 shadow-xs transition-all duration-150 hover:bg-slate-50 hover:text-ink-900 active:scale-95 disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       {...props}
@@ -24,7 +24,7 @@ export function IconButtonLink({ href, label, children, className, ...props }: O
       href={href}
       aria-label={label}
       className={cn(
-        "icon-interactive grid size-11 place-items-center rounded-full border border-line bg-white text-brand-700 shadow-sm transition hover:bg-brand-50",
+        "group relative grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink-700 shadow-xs transition-all duration-150 hover:bg-slate-50 hover:text-ink-900 active:scale-95",
         className,
       )}
       {...props}

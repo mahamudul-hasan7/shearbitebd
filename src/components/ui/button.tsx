@@ -6,17 +6,17 @@ export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "dan
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900",
-  secondary: "bg-accent-500 text-white hover:bg-accent-600",
-  outline: "border border-line bg-white text-ink-700 hover:border-brand-300 hover:bg-brand-50",
-  ghost: "bg-transparent text-brand-700 hover:bg-brand-50",
-  danger: "bg-danger text-white hover:brightness-95",
+  primary: "bg-gradient-to-r from-brand-600 to-brand-700 text-white shadow-xs shadow-brand-700/20 hover:from-brand-700 hover:to-brand-800 active:scale-[0.98] ring-1 ring-brand-700/20",
+  secondary: "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-xs shadow-accent-600/20 hover:from-accent-600 hover:to-accent-700 active:scale-[0.98]",
+  outline: "border border-line bg-surface text-ink-700 shadow-2xs hover:bg-slate-50 hover:text-ink-900 active:scale-[0.98]",
+  ghost: "bg-transparent text-slate-700 hover:bg-slate-100 hover:text-ink-900",
+  danger: "bg-danger text-white shadow-xs hover:brightness-95 active:scale-[0.98]",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-3.5 text-sm",
-  md: "h-11 px-4 text-sm",
-  lg: "h-12 px-5 text-base",
+  sm: "h-9 px-3.5 text-xs font-semibold rounded-lg",
+  md: "h-10.5 px-4.5 text-sm font-semibold rounded-xl",
+  lg: "h-12 px-6 text-base font-semibold rounded-xl",
 };
 
 export function buttonClassNames({
