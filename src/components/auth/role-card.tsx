@@ -21,26 +21,36 @@ export function RoleCard({
   badge?: string;
 }) {
   const tones = {
-    brand: "border-brand-200 bg-brand-50/80 text-brand-700 group-hover:border-brand-400",
-    blue: "border-info/20 bg-info-soft text-info-strong group-hover:border-info/40",
-    accent: "border-accent-100 bg-accent-50 text-accent-600 group-hover:border-accent-400",
-    purple: "border-line bg-canvas text-ink-700 group-hover:border-muted-400",
+    brand: "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:border-emerald-500 hover:bg-emerald-50/80",
+    blue: "border-sky-200 bg-sky-50/50 text-sky-700 hover:border-sky-500 hover:bg-sky-50/80",
+    accent: "border-amber-200 bg-amber-50/50 text-amber-700 hover:border-amber-500 hover:bg-amber-50/80",
+    purple: "border-slate-200 bg-slate-50/50 text-slate-700 hover:border-slate-400 hover:bg-slate-50/80",
   };
 
   const content = (
-    <div className={cn("group relative flex min-h-32 items-center gap-4 rounded-3xl border p-4 transition sm:min-h-36 sm:p-5", tones[tone], disabled ? "cursor-not-allowed opacity-65" : "hover:-translate-y-0.5 hover:shadow-card")}>
-      <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-white shadow-sm sm:size-20">
-        <Icon className="size-8 sm:size-10" />
+    <div
+      className={cn(
+        "group relative flex items-center gap-4 rounded-2xl border p-4.5 transition-all duration-200 shadow-2xs",
+        tones[tone],
+        disabled ? "cursor-not-allowed opacity-60 bg-slate-50" : "hover:-translate-y-0.5 hover:shadow-sm"
+      )}
+    >
+      <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-white shadow-xs">
+        <Icon className="size-6 sm:size-7" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2">
-          <span className="text-lg font-black text-ink-900 sm:text-xl">{title}</span>
-          {badge && <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-muted-600">{badge}</span>}
+          <span className="text-base font-bold tracking-tight text-slate-900">{title}</span>
+          {badge && (
+            <span className="rounded-md bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500 shadow-2xs ring-1 ring-slate-200/60">
+              {badge}
+            </span>
+          )}
         </span>
-        <span className="mt-1 block text-sm leading-6 text-muted-600">{description}</span>
+        <span className="mt-1 block text-xs leading-relaxed text-slate-600 font-normal">{description}</span>
       </span>
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white shadow-sm">
-        {disabled ? <LockKeyhole className="size-5" /> : <ArrowRight className="size-5 transition group-hover:translate-x-0.5" />}
+      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white shadow-xs text-slate-400 group-hover:text-slate-900">
+        {disabled ? <LockKeyhole className="size-4" /> : <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />}
       </span>
     </div>
   );
