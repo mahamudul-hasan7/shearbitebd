@@ -8,7 +8,7 @@ export interface AuthProgressStep {
 
 export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; current: number }) {
   return (
-    <ol className="grid grid-cols-4 gap-1" aria-label="Registration progress">
+    <ol className="grid grid-cols-4 gap-2 mb-8" aria-label="Registration progress">
       {steps.map((step, index) => {
         const stepNumber = index + 1;
         const complete = stepNumber < current;
@@ -18,22 +18,26 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
             {index > 0 && (
               <span
                 className={cn(
-                  "absolute right-1/2 top-4 h-0.5 w-full -translate-x-[1px]",
-                  stepNumber <= current ? "bg-brand-600" : "bg-line",
+                  "absolute right-1/2 top-3.5 h-0.5 w-full -translate-x-[1px]",
+                  stepNumber <= current ? "bg-emerald-600" : "bg-slate-200",
                 )}
               />
             )}
             <span
               className={cn(
-                "relative z-10 grid size-8 place-items-center rounded-full border text-xs font-black transition",
-                complete || active
-                  ? "border-brand-600 bg-brand-600 text-white"
-                  : "border-line bg-white text-muted-600",
+                "relative z-10 grid size-7.5 place-items-center rounded-full text-xs font-bold transition-all shadow-2xs",
+                complete
+                  ? "bg-emerald-600 text-white"
+                  : active
+                  ? "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                  : "border border-slate-200 bg-white text-slate-400",
               )}
             >
-              {complete ? <Check className="size-4" /> : stepNumber}
+              {complete ? <Check className="size-3.5" /> : stepNumber}
             </span>
-            <span className={cn("mt-2 truncate text-[11px] font-bold sm:text-xs", active || complete ? "text-brand-700" : "text-muted-600")}>{step.shortLabel ?? step.label}</span>
+            <span className={cn("mt-2 truncate text-[11px] font-semibold", active ? "text-slate-900 font-bold" : complete ? "text-emerald-700" : "text-slate-400")}>
+              {step.shortLabel ?? step.label}
+            </span>
           </li>
         );
       })}
