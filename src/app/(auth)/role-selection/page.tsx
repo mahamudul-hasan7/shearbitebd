@@ -8,25 +8,41 @@ export const metadata = { title: "Choose Your Role", description: "Choose a publ
 
 export default function RoleSelectionPage() {
   return (
-    <AuthShell eyebrow="Join the ShareBite BD community" title="Choose the role that matches your work." description="Each role receives a focused dashboard, permissions, and workflow designed for safe food rescue coordination.">
-      <Link href={ROUTES.auth.onboarding} className="mb-6 inline-flex items-center gap-2 text-sm font-black text-brand-700 hover:text-brand-800"><ArrowLeft className="size-4" /> Back</Link>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-accent-600">Account setup</p>
-      <h1 className="mt-3 text-4xl font-black tracking-tight text-brand-900 sm:text-5xl">Choose your role</h1>
-      <p className="mt-3 max-w-xl text-sm leading-7 text-muted-600 sm:text-base">Select how you would like to join the ShareBite BD pilot.</p>
-
-      <div className="mt-7 grid gap-4 sm:grid-cols-2">
-        <RoleCard icon={UtensilsCrossed} title="Food Donor" description="Post surplus food, coordinate pickup, and track impact." href={ROUTES.auth.registerDonor} />
-        <RoleCard icon={Building2} title="NGO / Organization" description="Discover, claim, receive, and distribute rescued food." href={ROUTES.auth.registerNgo} tone="blue" />
-        <RoleCard icon={UsersRound} title="Volunteer" description="Support verified pickup and delivery tasks nearby." href={ROUTES.auth.registerVolunteer} tone="accent" badge="Future pilot" />
-        <RoleCard icon={UserRoundCog} title="Administrator" description="Manage verification, safety review, disputes, and analytics." href="#" tone="purple" disabled badge="Invite only" />
+    <AuthShell eyebrow="Network Registration" title="Choose the role that matches your mission." description="Each role receives a dedicated dashboard, permissions, and workflow designed for rapid, safe surplus food rescue.">
+      <Link href={ROUTES.auth.login} className="mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+        <ArrowLeft className="size-3.5" /> Back to log in
+      </Link>
+      
+      <div>
+        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/15">
+          Account Setup
+        </span>
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+          Choose your role
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600 font-normal">
+          Select how you or your organization will participate in the surplus food rescue network.
+        </p>
       </div>
 
-      <div className="mt-7 flex items-start gap-3 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-sm leading-6 text-muted-600">
-        <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand-700" />
-        <p>Administrator accounts are not publicly registered. They are created through a controlled invite process for platform safety.</p>
+      <div className="mt-8 grid gap-3.5 sm:grid-cols-2">
+        <RoleCard icon={UtensilsCrossed} title="Food Donor" description="Post surplus meals, coordinate pickup, and monitor community impact." href={ROUTES.auth.registerDonor} />
+        <RoleCard icon={Building2} title="NGO / Charity" description="Discover, claim, receive, and distribute rescued food to communities." href={ROUTES.auth.registerNgo} tone="blue" />
+        <RoleCard icon={UsersRound} title="Volunteer" description="Support verified pickups and delivery routes in your local area." href={ROUTES.auth.registerVolunteer} tone="accent" badge="Open Pilot" />
+        <RoleCard icon={UserRoundCog} title="Administrator" description="Platform oversight, safety verification, audits, and dispute resolution." href="#" tone="purple" disabled badge="Invite only" />
       </div>
 
-      <p className="mt-7 text-center text-sm text-muted-600">Already have an account? <Link href={ROUTES.auth.login} className="font-black text-brand-700 hover:text-brand-800">Log in</Link></p>
+      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-4 text-xs leading-relaxed text-slate-500 font-normal">
+        <ShieldCheck className="mt-0.5 size-4.5 shrink-0 text-emerald-600" />
+        <p>Administrator accounts are invite-only and cannot be registered publicly to ensure platform integrity and verification security.</p>
+      </div>
+
+      <p className="mt-6 text-center text-xs sm:text-sm text-slate-600 font-medium">
+        Already have an account?{" "}
+        <Link href={ROUTES.auth.login} className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors">
+          Log in
+        </Link>
+      </p>
     </AuthShell>
   );
 }

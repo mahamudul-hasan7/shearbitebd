@@ -1,7 +1,6 @@
-import { SplashScreen } from "@/components/auth/splash-screen";
-
-export const metadata = { title: "Welcome", description: "Welcome to ShareBite BD and responsible surplus-food rescue." };
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 
 export default function SplashPage() {
-  return <SplashScreen />;
+  redirect(ROUTES.auth.login);
 }
