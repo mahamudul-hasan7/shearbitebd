@@ -66,7 +66,19 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
   const donation = item?.donation;
   const saved = savedIds.includes(donationId);
   const canClaim = item?.eligibility.eligible && donation?.status === DonationStatus.AVAILABLE && !claimId;
-  return <PortalShell role="ngo" activeHref={ROUTES.ngo.discover} title={donation?.title ?? "Donation details"} description="Review safety declarations, operational fit, and privacy-protected pickup information before claiming." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.notifications} actions={<ButtonLink href={ROUTES.ngo.discover} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Back to discovery</ButtonLink>}>
+  return (
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.discover}
+      title={donation?.title ?? "Donation details"}
+      description="Review safety declarations, operational fit, and privacy-protected pickup information before claiming."
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      notificationHref={ROUTES.ngo.notifications}
+      backHref={ROUTES.ngo.discover}
+      backLabel="Back to discovery"
+    >
     {state.status === "loading" && !item && <SkeletonGroup label="Loading donation details" className="grid gap-5"><Skeleton className="h-96" /><div className="grid gap-5 lg:grid-cols-2"><Skeleton className="h-72" /><Skeleton className="h-72" /></div></SkeletonGroup>}
     {state.status === "error" && !item && <EmptyState icon={RefreshCw} title="Donation could not load" description={state.error.message} action={<div className="flex flex-wrap justify-center gap-2"><Button onClick={() => setRetryKey((value) => value + 1)}>Try again</Button><ButtonLink href={ROUTES.ngo.discover} variant="outline">Browse available food</ButtonLink></div>} />}
     {item && donation && <div className="grid gap-6">
@@ -80,5 +92,6 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
       {claimError && <Alert tone="danger" title="Claim could not be completed" description={claimError} />}{claimId && <Alert tone="success" title="Donation reserved for Hope Foundation" description="A mock claim was created. Continue in My Claims for the authorized rescue workflow." action={<ButtonLink href={ROUTES.ngo.claim(claimId)} variant="outline" size="sm">Open claim</ButtonLink>} />}
       <StickyActionBar><Button variant="outline" leftIcon={<Bookmark className={`size-4 ${saved ? "fill-current" : ""}`} />} onClick={() => toggleSaved(donationId)}>{saved ? "Saved for later" : "Save for later"}</Button><Button disabled={!canClaim || claiming} leftIcon={<ShieldCheck className="size-4" />} onClick={claimDonation}>{claiming ? "Claiming…" : claimId ? "Claimed" : item.eligibility.eligible ? "Claim donation" : "Not eligible to claim"}</Button></StickyActionBar>
     </div>}
-  </PortalShell>;
+    </PortalShell>
+  );
 }
