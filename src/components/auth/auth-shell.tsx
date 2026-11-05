@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
-import { AuthArtwork } from "@/components/auth/auth-artwork";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
 
@@ -16,64 +18,119 @@ interface AuthShellProps {
 
 export function AuthShell({
   children,
-  title = "Rescue food. Respect time. Measure impact.",
-  description = "A trusted coordination platform for donors, verified organizations, and volunteers.",
-  eyebrow = "Smart surplus food rescue",
-  artworkVariant = "community",
+  title = "একটি ক্লিকে খাবার পৌঁছাক অভাবী মানুষের পাতে।",
+  description = "ক্যাফেটেরিয়া ও রেস্তোরাঁর তাজা অতিরিক্ত খাবার বিদ্যানন্দ ও মাস্তুল ফাউন্ডেশনের মতো নিবন্ধিত দাতব্য প্রতিষ্ঠানে পৌঁছে দেওয়ার নিরাপদ প্ল্যাটফর্ম।",
+  eyebrow,
   className,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-slate-50/70 py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <main className="min-h-screen bg-slate-100/70 py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <div
         className={cn(
-          "w-full max-w-[1320px] overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/50 grid min-h-[720px] lg:grid-cols-[minmax(420px,0.95fr)_minmax(520px,1.05fr)]",
+          "w-full max-w-[1360px] overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-300/40 grid min-h-[760px] lg:grid-cols-[minmax(460px,1fr)_minmax(540px,1.15fr)]",
           className,
         )}
       >
-        {/* Left Branding Panel */}
-        <aside className="relative hidden overflow-hidden bg-gradient-to-br from-slate-950 via-emerald-950 to-emerald-900 p-10 text-white lg:flex lg:flex-col xl:p-14">
-          <div className="absolute inset-0 opacity-20 surface-grid" />
-          <div className="absolute -left-20 top-24 size-80 rounded-full bg-emerald-500/20 blur-3xl pointer-events-none" />
-          <div className="absolute -right-24 bottom-10 size-80 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
+        {/* Left Branding Panel with Dhaka Cityscape Image */}
+        <aside className="relative hidden overflow-hidden bg-gradient-to-br from-slate-950 via-[#03271d] to-[#011812] p-10 text-white lg:flex lg:flex-col xl:p-14">
+          {/* Authentic Dhaka Cityscape Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src="/images/dhaka-cityscape-auth.jpg"
+              alt="Dhaka Skyline Hatirjheel at Dusk"
+              fill
+              className="object-cover object-center opacity-30 mix-blend-luminosity scale-105"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#021f17] via-[#02241b]/85 to-[#01150f]/90" />
+            <div className="absolute inset-0 dark-surface-grid opacity-35" />
+          </div>
 
           <div className="relative z-10">
             <BrandLogo href={ROUTES.home} inverse />
-            <div className="mt-12 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-900/30 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-emerald-300 backdrop-blur-md">
-              {eyebrow}
-            </div>
-            <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight xl:text-4xl">
+
+            {eyebrow && (
+              <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-900/60 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-emerald-300 backdrop-blur-md font-heading">
+                <Sparkles className="size-3 text-amber-400" />
+                {eyebrow}
+              </div>
+            )}
+
+            <h1 className={cn("text-3xl font-black leading-tight tracking-tight text-white xl:text-4xl font-heading", eyebrow ? "mt-5" : "mt-10")}>
               {title}
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-emerald-100/80 font-normal xl:text-base">
+
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-emerald-100/80 font-normal xl:text-base max-w-md">
               {description}
             </p>
+
+            {/* Key Value Bullets with Authentic Dhaka Context */}
+            <div className="mt-6 space-y-3 text-xs text-emerald-200/90 font-medium">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="size-4.5 text-emerald-400 shrink-0" />
+                <span>UIU, BRACU ও শীর্ষ ক্যাটারার্স থেকে তাজা অতিরিক্ত খাবার সংগ্রহ</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="size-4.5 text-emerald-400 shrink-0" />
+                <span>বিদ্যানন্দ ও মাস্তুল ফাউন্ডেশনের সাথে কিউআর ভেরিফাইড ওটিপি হ্যান্ডওভার</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="size-4.5 text-emerald-400 shrink-0" />
+                <span>ঢাকা মেট্রো লাইভ জিপিএস রুট ও বিএফএসএ হাইজিন কমপ্লায়েন্ট পরিবহন</span>
+              </div>
+            </div>
           </div>
 
+          {/* Bottom Trust & Impact Cards */}
           <div className="relative z-10 mt-auto pt-8">
-            <AuthArtwork variant={artworkVariant} />
-            <div className="mt-8 grid grid-cols-3 gap-3 text-center">
+            <div className="grid grid-cols-3 gap-3 text-center">
               {[
-                ["Urgency Match", "Real-time alert"],
-                ["Safe Rescue", "Verified PIN / QR"],
-                ["Zero Waste", "Measurable impact"],
+                ["⚡ ১৫ মিনিট", "জরুরি ঢাকা অ্যালার্ট"],
+                ["🛡️ ১০০% ভেরিফাইড", "নিবন্ধিত এনজিও নেটওয়ার্ক"],
+                ["🍱 ৪,৩৪০+ মিল", "আজকের উদ্ধারকৃত খাবার"],
               ].map(([label, helper]) => (
-                <div key={label} className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-md">
-                  <p className="text-xs font-bold text-white">{label}</p>
-                  <p className="mt-0.5 text-[11px] text-emerald-200/70 font-medium">{helper}</p>
+                <div
+                  key={label}
+                  className="rounded-2xl border border-emerald-700/30 bg-emerald-950/60 p-3.5 backdrop-blur-md"
+                >
+                  <p className="text-xs font-black text-white font-heading">{label}</p>
+                  <p className="mt-0.5 text-[10px] text-emerald-300/70 font-medium">{helper}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between text-[11px] text-emerald-300/60 font-mono">
+              <span>CIVIC FOOD TECH INITIATIVE</span>
+              <span>DHAKA · CHATTOGRAM · SYLHET</span>
             </div>
           </div>
         </aside>
 
         {/* Right Form Section */}
         <section className="relative flex min-h-full flex-col bg-white">
+          {/* Top Bar for Desktop */}
+          <div className="hidden lg:flex items-center justify-between border-b border-slate-100 px-8 py-3.5">
+            <Link
+              href={ROUTES.home}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-emerald-700 transition-colors font-heading"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>হোম পেজে ফিরে যান</span>
+            </Link>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-600/15">
+              <ShieldCheck className="size-3 text-emerald-600" />
+              নিরাপদ সিভিক পোর্টাল
+            </span>
+          </div>
+
+          {/* Mobile Top Bar */}
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 lg:hidden">
             <BrandLogo href={ROUTES.home} />
             <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-600/15">
               ShareBite BD
             </span>
           </div>
+
           <div className="flex flex-1 items-center justify-center p-6 sm:p-10 lg:p-12 xl:p-14">
             <div className="w-full max-w-lg">{children}</div>
           </div>
