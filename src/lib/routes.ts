@@ -57,6 +57,10 @@ export const ROUTES = {
   },
   volunteer: {
     dashboard: "/volunteer/dashboard",
+    dispatches: "/volunteer/dispatches",
+    history: "/volunteer/history",
+    mission: (missionId: string) => `/volunteer/missions/${missionId}`,
+    idCard: "/volunteer/id-card",
   },
 } as const;
 

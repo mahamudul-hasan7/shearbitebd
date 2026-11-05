@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-export type PortalRole = "donor" | "ngo";
+export type PortalRole = "donor" | "ngo" | "volunteer";
 
 export type NavigationItem = {
   label: string;

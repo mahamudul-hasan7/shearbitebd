@@ -1,45 +1,95 @@
 import {
+  Bell,
+  Bike,
   Building2,
+  CheckCircle2,
   ClipboardList,
+  Compass,
+  FileQuestion,
   HeartHandshake,
+  History,
   Home,
+  LayoutDashboard,
+  MapPin,
+  Navigation,
   PackageSearch,
   Plus,
+  QrCode,
   Search,
+  Settings,
+  ShieldCheck,
   UserRound,
 } from "lucide-react";
-import type { NavigationItem, PortalRole } from "@/types/navigation";
+import type { LucideIcon } from "lucide-react";
+import type { PortalRole } from "@/types/navigation";
 import { ROUTES } from "@/lib/routes";
 import { USER_ROLE_META, UserRole } from "@/lib/constants/roles";
 
-export const donorNavigation: NavigationItem[] = [
-  { label: "Home", href: ROUTES.donor.dashboard, icon: Home },
-  { label: "Donations", href: ROUTES.donor.donations, icon: PackageSearch },
-  { label: "Add Food", href: ROUTES.donor.newDonation, icon: Plus, isPrimary: true },
-  { label: "NGOs", href: ROUTES.donor.ngos, icon: Building2 },
-  { label: "Profile", href: ROUTES.donor.profile, icon: UserRound },
+export interface DesktopNavItem {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  badge?: string;
+  isPrimary?: boolean;
+  category?: "main" | "operations" | "system";
+}
+
+export const donorDesktopNavigation: DesktopNavItem[] = [
+  { label: "ওভারভিউ হাব", href: ROUTES.donor.dashboard, icon: LayoutDashboard, category: "main" },
+  { label: "আমার অনুদানসমূহ", href: ROUTES.donor.donations, icon: PackageSearch, category: "operations", badge: "লাইভ" },
+  { label: "উদ্বৃত্ত খাবার পোস্ট", href: ROUTES.donor.newDonation, icon: Plus, category: "operations", isPrimary: true },
+  { label: "পার্টনার এনজিও", href: ROUTES.donor.ngos, icon: Building2, category: "operations", badge: "ভেরিফায়েড" },
+  { label: "পিকআপ ঠিকানা", href: ROUTES.donor.addresses, icon: MapPin, category: "operations" },
+  { label: "নোটিফিকেশন", href: ROUTES.donor.notifications, icon: Bell, category: "system" },
+  { label: "দাতা প্রোফাইল", href: ROUTES.donor.profile, icon: ShieldCheck, category: "system" },
+  { label: "অ্যাকাউন্ট সেটিংস", href: ROUTES.donor.settings, icon: Settings, category: "system" },
+  { label: "সহায়তা কেন্দ্র", href: ROUTES.donor.support, icon: FileQuestion, category: "system" },
 ];
 
-export const ngoNavigation: NavigationItem[] = [
-  { label: "Home", href: ROUTES.ngo.dashboard, icon: Home },
-  { label: "Discover", href: ROUTES.ngo.discover, icon: Search },
-  { label: "Request", href: ROUTES.ngo.newRequest, icon: Plus, isPrimary: true },
-  { label: "Claims", href: ROUTES.ngo.claims, icon: ClipboardList },
-  { label: "Profile", href: ROUTES.ngo.profile, icon: UserRound },
+export const ngoDesktopNavigation: DesktopNavItem[] = [
+  { label: "Overview", href: ROUTES.ngo.dashboard, icon: LayoutDashboard, category: "main" },
+  { label: "Discover Food", href: ROUTES.ngo.discover, icon: Search, category: "operations", badge: "Nearby" },
+  { label: "Rescue Radar Map", href: ROUTES.ngo.discoverMap, icon: Compass, category: "operations" },
+  { label: "Claimed Rescues", href: ROUTES.ngo.claims, icon: ClipboardList, category: "operations" },
+  { label: "Submit Food Need", href: ROUTES.ngo.newRequest, icon: Plus, category: "operations", isPrimary: true },
+  { label: "Notifications", href: ROUTES.ngo.notifications, icon: Bell, category: "system" },
+  { label: "NGO Verification", href: ROUTES.ngo.profile, icon: ShieldCheck, category: "system" },
+  { label: "Account Settings", href: ROUTES.ngo.settings, icon: Settings, category: "system" },
+  { label: "Help Desk", href: ROUTES.ngo.support, icon: FileQuestion, category: "system" },
 ];
+
+export const volunteerDesktopNavigation: DesktopNavItem[] = [
+  { label: "কমান্ড হাব", href: ROUTES.volunteer.dashboard, icon: LayoutDashboard, category: "main" },
+  { label: "লাইভ মিশন", href: ROUTES.volunteer.mission("mission-uiu-mastul"), icon: Bike, category: "operations", badge: "লাইভ" },
+  { label: "উন্মুক্ত ডিসপ্যাচ", href: ROUTES.volunteer.dispatches, icon: Navigation, category: "operations", badge: "৪টি নতুন" },
+  { label: "মিশন হিস্ট্রি", href: ROUTES.volunteer.history, icon: History, category: "operations", badge: "৪৮টি" },
+  { label: "ভলান্টিয়ার আইডি কার্ড", href: ROUTES.volunteer.idCard, icon: ShieldCheck, category: "system" },
+];
+
+// Fallback for legacy mobile nav if referenced anywhere
+export const donorNavigation = donorDesktopNavigation.slice(0, 5);
+export const ngoNavigation = ngoDesktopNavigation.slice(0, 5);
+export const volunteerNavigation = volunteerDesktopNavigation.slice(0, 5);
 
 export const roleMeta: Record<PortalRole, { label: string; description: string }> = {
   donor: USER_ROLE_META[UserRole.DONOR],
   ngo: USER_ROLE_META[UserRole.NGO],
+  volunteer: USER_ROLE_META[UserRole.VOLUNTEER],
 };
 
 export function getNavigation(role: PortalRole, preview = false) {
-  const navigation = role === "donor" ? donorNavigation : ngoNavigation;
+  const navigation =
+    role === "donor"
+      ? donorDesktopNavigation
+      : role === "ngo"
+        ? ngoDesktopNavigation
+        : volunteerDesktopNavigation;
+
   if (!preview) return navigation;
 
   return navigation.map((item, index) =>
     index === 0
-      ? { ...item, href: role === "donor" ? ROUTES.preview.donor : ROUTES.preview.ngo }
+      ? { ...item, href: role === "donor" ? ROUTES.preview.donor : role === "ngo" ? ROUTES.preview.ngo : ROUTES.volunteer.dashboard }
       : item,
   );
 }
