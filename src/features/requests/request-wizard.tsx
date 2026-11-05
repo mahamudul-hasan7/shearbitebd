@@ -177,7 +177,19 @@ export function FoodRequestWizard() {
   }
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.newRequest} title="Create food request" description="Publish a verified community need without mixing it with the donation-claim workflow." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.dashboard + "#recent-activity"} actions={<ButtonLink href={ROUTES.ngo.requests} variant="outline" leftIcon={<ClipboardList className="size-4" />}>My requests</ButtonLink>}>
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.newRequest}
+      title="Create food request"
+      description="Publish a verified community need without mixing it with the donation-claim workflow."
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      notificationHref={ROUTES.ngo.dashboard + "#recent-activity"}
+      backHref={ROUTES.ngo.dashboard}
+      backLabel="ড্যাশবোর্ডে ফিরুন"
+      actions={<ButtonLink href={ROUTES.ngo.requests} variant="outline" leftIcon={<ClipboardList className="size-4" />}>My requests</ButtonLink>}
+    >
       <div className="grid gap-6">
         <Stepper steps={steps} current={currentStep} label="Food request progress" />
         {errors.form && <Alert tone="danger" title="Request needs attention" description={errors.form} />}
@@ -193,9 +205,33 @@ export function FoodRequestWizard() {
                 {currentStep === 5 && <RequestReviewStep draft={draft} editStep={editStep} />}
               </CardContent>
               <StickyActionBar className="px-5 sm:px-6">
-                <Button type="button" variant="ghost" leftIcon={<Save className="size-4" />} onClick={saveDraft} className="sm:mr-auto">Save draft</Button>
-                {currentStep === 1 ? <ButtonLink href={ROUTES.ngo.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>Dashboard</ButtonLink> : <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>Back</Button>}
-                {currentStep < 5 ? <Button type="button" rightIcon={<ArrowRight className="size-4" />} onClick={goNext}>Continue</Button> : <Button type="submit" rightIcon={<Send className="size-4" />} disabled={submitting}>{submitting ? "Submitting…" : "Submit request"}</Button>}
+                <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    {currentStep === 1 ? (
+                      <ButtonLink href={ROUTES.ngo.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>
+                        Dashboard
+                      </ButtonLink>
+                    ) : (
+                      <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>
+                        Back
+                      </Button>
+                    )}
+                    <Button type="button" variant="ghost" leftIcon={<Save className="size-4" />} onClick={saveDraft}>
+                      Save draft
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {currentStep < 5 ? (
+                      <Button type="button" rightIcon={<ArrowRight className="size-4" />} onClick={goNext}>
+                        Continue
+                      </Button>
+                    ) : (
+                      <Button type="submit" rightIcon={<Send className="size-4" />} disabled={submitting}>
+                        {submitting ? "Submitting..." : "Submit request"}
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </StickyActionBar>
             </Card>
           </form>

@@ -70,7 +70,18 @@ export function NGORequestDetail({ requestId }: { requestId: string }) {
   const canCancel = [RequestStatus.DRAFT, RequestStatus.PENDING_REVIEW, RequestStatus.FINDING_MATCH, RequestStatus.MATCHED].includes(request.status);
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.newRequest} title={request.title} description={`Request ${request.id}`} profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" notificationHref={ROUTES.ngo.dashboard + "#recent-activity"} actions={<ButtonLink href={ROUTES.ngo.requests} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>My requests</ButtonLink>}>
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.newRequest}
+      title={request.title}
+      description={`Request ${request.id}`}
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      notificationHref={ROUTES.ngo.dashboard + "#recent-activity"}
+      backHref={ROUTES.ngo.requests}
+      backLabel="My requests"
+    >
       <div className="grid gap-6">
         {message && <Alert tone="success" title="Request updated" description={message} />}
         {actionError && <Alert tone="danger" title="Action could not complete" description={actionError} />}
