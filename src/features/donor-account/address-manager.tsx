@@ -66,7 +66,7 @@ export function AddressManager() {
 
   const profile = state.data;
   const name = profile?.user.displayName ?? "UIU Cafeteria";
-  return <PortalShell role="donor" activeHref={ROUTES.donor.profile} title="Saved addresses" description="Manage pickup locations and choose the default used by new donations." profileName={name} profileDescription="Verified food donor" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications} actions={<Button size="sm" leftIcon={showForm ? <X className="size-4" /> : <Plus className="size-4" />} onClick={() => showForm ? closeForm() : setShowForm(true)}>{showForm ? "Close" : "Add address"}</Button>}>
+  return <PortalShell role="donor" activeHref={ROUTES.donor.addresses} title="পিকআপ ঠিকানা ও শাখা ব্যবস্থাপনা" description="উদ্বৃত্ত খাবার সংগ্রহের সঠিক লোকেশন, ল্যান্ডমার্ক ও হ্যান্ডওভার পয়েন্ট পরিচালনা করুন।" profileName={name} profileDescription="ভেরিফায়েড খাদ্য দাতা" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications} actions={<Button size="sm" leftIcon={showForm ? <X className="size-4" /> : <Plus className="size-4" />} onClick={() => showForm ? closeForm() : setShowForm(true)}>{showForm ? "বন্ধ করুন" : "নতুন ঠিকানা যোগ"}</Button>}>
     {state.status === "loading" && !profile && <div className="grid gap-4 sm:grid-cols-2"><Skeleton className="h-60" /><Skeleton className="h-60" /></div>}
     {state.status === "error" && !profile && <EmptyState icon={RefreshCw} title="Addresses could not load" description={state.error.message} action={<Button onClick={() => setRetryKey((value) => value + 1)}>Try again</Button>} />}
     {profile && <div className="grid gap-5">

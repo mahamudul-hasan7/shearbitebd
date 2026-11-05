@@ -43,7 +43,7 @@ export function DonorSettings() {
 
   const data = state.data;
   const name = data?.name ?? "UIU Cafeteria";
-  return <PortalShell role="donor" activeHref={ROUTES.donor.profile} title="Settings" description="Control rescue alerts, accessibility, language, and privacy information." profileName={name} profileDescription="Verified food donor" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications}>
+  return <PortalShell role="donor" activeHref={ROUTES.donor.settings} title="অ্যাকাউন্ট ও প্রেফারেন্স সেটিংস" description="রেসকিউ অ্যালার্ট, নোটিফিকেশন ফ্রিকোয়েন্সি, অ্যাক্সেসিবিলিটি ও ভাষা নিয়ন্ত্রণ করুন।" profileName={name} profileDescription="ভেরিফায়েড খাদ্য দাতা" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications}>
     {state.status === "loading" && !data && <div className="grid gap-5"><Skeleton className="h-64" /><Skeleton className="h-52" /></div>}
     {state.status === "error" && !data && <EmptyState icon={RefreshCw} title="Settings could not load" description={state.error.message} action={<Button onClick={() => setRetryKey((value) => value + 1)}>Try again</Button>} />}
     {data && <div className="grid gap-5 lg:grid-cols-2">

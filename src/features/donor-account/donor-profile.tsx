@@ -54,7 +54,7 @@ export function DonorProfileView() {
     router.replace(ROUTES.auth.login);
   }
 
-  return <PortalShell role="donor" activeHref={ROUTES.donor.profile} title="Your profile" description="Manage your donor identity, pickup locations, privacy, and support." profileName={name} profileDescription="Verified food donor" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications} unreadNotifications={data?.unread ?? 0} actions={data ? <ButtonLink href={ROUTES.donor.editProfile} variant="outline" size="sm" leftIcon={<Edit3 className="size-4" />}>Edit profile</ButtonLink> : undefined}>
+  return <PortalShell role="donor" activeHref={ROUTES.donor.profile} title="দাতা প্রোফাইল ও সনদ" description="খাদ্য দাতার প্রাতিষ্ঠানিক পরিচয়, লাইভ পিকআপ লোকেশন ও ভেরিফিকেশন তথ্য।" profileName={name} profileDescription="ভেরিফায়েড খাদ্য দাতা" avatarInitials={getInitials(name)} notificationHref={ROUTES.donor.notifications} unreadNotifications={data?.unread ?? 0} actions={data ? <ButtonLink href={ROUTES.donor.editProfile} variant="outline" size="sm" leftIcon={<Edit3 className="size-4" />}>প্রোফাইল সম্পাদনা</ButtonLink> : undefined}>
     {state.status === "loading" && !data && <SkeletonGroup label="Loading donor profile" className="grid gap-5"><Skeleton className="h-52" /><div className="grid gap-4 sm:grid-cols-3"><Skeleton className="h-36" /><Skeleton className="h-36" /><Skeleton className="h-36" /></div></SkeletonGroup>}
     {state.status === "error" && !data && <EmptyState icon={RefreshCw} title="Profile could not load" description={state.error.message} action={<Button onClick={() => setRetryKey((value) => value + 1)}>Try again</Button>} />}
     {data && donor && <div className="grid gap-6">
