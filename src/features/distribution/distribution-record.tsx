@@ -85,7 +85,17 @@ export function DistributionRecordScreen({ claimId }: { claimId: string }) {
   }
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="Record distribution" description="Close the rescue with privacy-aware beneficiary and impact details." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" actions={<ButtonLink href={ROUTES.ngo.claim(claimId)} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Claim details</ButtonLink>}>
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.claims}
+      title="Record distribution"
+      description="Close the rescue with privacy-aware beneficiary and impact details."
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      backHref={ROUTES.ngo.claim(claimId)}
+      backLabel="Claim details"
+    >
       {loading && !details && <SkeletonGroup label="Loading distribution record" className="grid gap-5"><Skeleton className="h-48" /><Skeleton className="h-96" /></SkeletonGroup>}
       {error && !details && <EmptyState icon={RefreshCw} title="Distribution details could not load" description={error} action={<Button onClick={() => void load()}>Try again</Button>} />}
       {details && <div className="grid gap-6">

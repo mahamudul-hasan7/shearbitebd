@@ -77,7 +77,17 @@ export function IncidentReportScreen({ claimId }: { claimId: string }) {
 
   const report = created ?? existing;
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="Report a rescue issue" description="Pause the normal workflow and send a structured incident for review." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" actions={<ButtonLink href={ROUTES.ngo.claim(claimId)} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Claim details</ButtonLink>}>
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.claims}
+      title="Report a rescue issue"
+      description="Pause the normal workflow and send a structured incident for review."
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      backHref={ROUTES.ngo.claim(claimId)}
+      backLabel="Claim details"
+    >
       {loading && !details && <SkeletonGroup label="Loading incident workflow" className="grid gap-5"><Skeleton className="h-48" /><Skeleton className="h-96" /></SkeletonGroup>}
       {error && !details && <EmptyState icon={RefreshCw} title="Issue workflow could not load" description={error} action={<Button onClick={() => void load()}>Try again</Button>} />}
       {details && <div className="grid gap-6">

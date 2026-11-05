@@ -102,7 +102,17 @@ export function ConfirmDelivery({ claimId }: { claimId: string }) {
   }
 
   return (
-    <PortalShell role="ngo" activeHref={ROUTES.ngo.claims} title="Confirm delivery" description="Verify what arrived and create a traceable delivery receipt." profileName="Hope Foundation" profileDescription="Verified NGO" avatarInitials="HF" actions={<ButtonLink href={ROUTES.ngo.claim(claimId)} variant="ghost" size="sm" leftIcon={<ArrowLeft className="size-4" />}>Claim details</ButtonLink>}>
+    <PortalShell
+      role="ngo"
+      activeHref={ROUTES.ngo.claims}
+      title="Confirm delivery"
+      description="Verify what arrived and create a traceable delivery receipt."
+      profileName="Hope Foundation"
+      profileDescription="Verified NGO"
+      avatarInitials="HF"
+      backHref={ROUTES.ngo.claim(claimId)}
+      backLabel="Claim details"
+    >
       {loading && !details && <SkeletonGroup label="Loading delivery confirmation" className="grid gap-5"><Skeleton className="h-48" /><Skeleton className="h-96" /></SkeletonGroup>}
       {error && !details && <EmptyState icon={RefreshCw} title="Delivery details could not load" description={error} action={<Button onClick={() => void load()}>Try again</Button>} />}
       {details && <div className="grid gap-6">
