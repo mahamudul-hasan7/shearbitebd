@@ -1,4 +1,6 @@
-import { CalendarClock, PackageOpen } from "lucide-react";
+"use client";
+
+import { CalendarClock, PackageOpen, Sparkles, Utensils } from "lucide-react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -14,13 +16,22 @@ import {
   STORAGE_CONDITION_LABELS,
 } from "@/lib/constants/domain";
 
-const quantityUnitLabels: Record<QuantityUnit, string> = {
-  [QuantityUnit.PORTIONS]: "Portions",
-  [QuantityUnit.MEALS]: "Meals",
-  [QuantityUnit.KILOGRAMS]: "Kilograms",
-  [QuantityUnit.PACKETS]: "Packets",
-  [QuantityUnit.TRAYS]: "Trays",
-  [QuantityUnit.LITRES]: "Litres",
+const quantityUnitLabelsBn: Record<QuantityUnit, string> = {
+  [QuantityUnit.PORTIONS]: "প্যাকেট / প্লেট (Portions)",
+  [QuantityUnit.MEALS]: "মিলস (Meals)",
+  [QuantityUnit.KILOGRAMS]: "কেজি (Kilograms)",
+  [QuantityUnit.PACKETS]: "প্যাকেট (Boxes)",
+  [QuantityUnit.TRAYS]: "ট্রে / ডেকচি (Trays)",
+  [QuantityUnit.LITRES]: "লিটার (Litres)",
+};
+
+const dietaryLabelsBn: Record<DietaryType, string> = {
+  [DietaryType.HALAL]: "১০০% হালাল খাদ্য (Halal)",
+  [DietaryType.VEGETARIAN]: "সম্পূর্ণ নিরামিষ (Vegetarian)",
+  [DietaryType.VEGAN]: "ভেগান (Vegan)",
+  [DietaryType.CONTAINS_MEAT]: "আমিষযুক্ত - মাংস/মাছ (Contains Meat)",
+  [DietaryType.GLUTEN_FREE]: "গ্লুটেন-মুক্ত (Gluten-Free)",
+  [DietaryType.OTHER]: "অন্যান্য বিশেষ খাদ্য শ্রেণি (Other)",
 };
 
 export function FoodDetailsStep({
@@ -34,38 +45,152 @@ export function FoodDetailsStep({
 }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2">
-      <Input label="Food title" name="title" value={draft.title} onChange={(event) => update("title", event.target.value)} error={errors.title} placeholder="Rice, chicken curry, and vegetables" leftIcon={<PackageOpen className="size-5" />} containerClassName="sm:col-span-2" required />
+      <Input
+        label="খাদ্যের শিরোনাম"
+        name="title"
+        value={draft.title}
+        onChange={(event) => update("title", event.target.value)}
+        error={errors.title}
+        placeholder="যেমন: চিকেন কাচ্চি বিরিয়ানি, ডিম ও বোরহানি"
+        leftIcon={<PackageOpen className="size-5" />}
+        containerClassName="sm:col-span-2"
+        required
+      />
 
-      <Select label="Food category" name="category" value={draft.category} onChange={(event) => update("category", event.target.value)}>
-        {Object.values(FoodCategory).map((category) => <option key={category} value={category}>{FOOD_CATEGORY_LABELS[category]}</option>)}
-      </Select>
-      <Select label="Dietary type" name="dietaryType" value={draft.dietaryType} onChange={(event) => update("dietaryType", event.target.value)}>
-        {Object.values(DietaryType).map((dietaryType) => <option key={dietaryType} value={dietaryType}>{DIETARY_TYPE_LABELS[dietaryType]}</option>)}
-      </Select>
-
-      <Input label="Quantity" name="quantity" type="number" min="0.1" step="0.1" value={draft.quantity} onChange={(event) => update("quantity", event.target.value)} error={errors.quantity} placeholder="40" required />
-      <Select label="Quantity unit" name="quantityUnit" value={draft.quantityUnit} onChange={(event) => update("quantityUnit", event.target.value)}>
-        {Object.values(QuantityUnit).map((unit) => <option key={unit} value={unit}>{quantityUnitLabels[unit]}</option>)}
-      </Select>
-
-      <Input label="Preparation date and time" name="preparationTime" type="datetime-local" value={draft.preparationTime} onChange={(event) => update("preparationTime", event.target.value)} error={errors.preparationTime} leftIcon={<CalendarClock className="size-5" />} required />
-      <Input label="Safe pickup deadline" name="safePickupDeadline" type="datetime-local" value={draft.safePickupDeadline} onChange={(event) => update("safePickupDeadline", event.target.value)} error={errors.safePickupDeadline} hint="A traceability deadline—not a medical freshness guarantee." leftIcon={<CalendarClock className="size-5" />} required />
-
-      <Select label="Storage condition" name="storageCondition" value={draft.storageCondition} onChange={(event) => update("storageCondition", event.target.value)}>
-        {Object.values(StorageCondition).map((condition) => <option key={condition} value={condition}>{STORAGE_CONDITION_LABELS[condition]}</option>)}
-      </Select>
-      <Select label="Food condition" name="foodCondition" value={draft.foodCondition} onChange={(event) => update("foodCondition", event.target.value)}>
-        <option value="FRESHLY_PREPARED">Freshly prepared</option>
-        <option value="SAME_DAY">Prepared today</option>
-        <option value="PACKAGED">Sealed / packaged</option>
+      <Select
+        label="খাবারের ক্যাটাগরি"
+        name="category"
+        value={draft.category}
+        onChange={(event) => update("category", event.target.value)}
+      >
+        {Object.values(FoodCategory).map((category) => (
+          <option key={category} value={category}>
+            {FOOD_CATEGORY_LABELS[category]}
+          </option>
+        ))}
       </Select>
 
-      <Textarea label="Allergen information" name="allergenInfo" value={draft.allergenInfo} onChange={(event) => update("allergenInfo", event.target.value)} error={errors.allergenInfo} placeholder="Milk, egg, nuts — or enter ‘None known’" containerClassName="sm:col-span-2" required />
-      <Textarea label="Food description" name="description" value={draft.description} onChange={(event) => update("description", event.target.value)} error={errors.description} placeholder="Describe preparation, packaging, portion size, and visible condition." containerClassName="sm:col-span-2" required />
-      <Textarea label="Special instructions (optional)" name="specialInstructions" value={draft.specialInstructions} onChange={(event) => update("specialInstructions", event.target.value)} placeholder="Insulated carrier, tray return, access instructions..." containerClassName="sm:col-span-2" />
+      <Select
+        label="খাদ্যাভ্যাস শ্রেণি"
+        name="dietaryType"
+        value={draft.dietaryType}
+        onChange={(event) => update("dietaryType", event.target.value)}
+      >
+        {Object.values(DietaryType).map((dietaryType) => (
+          <option key={dietaryType} value={dietaryType}>
+            {dietaryLabelsBn[dietaryType] ?? DIETARY_TYPE_LABELS[dietaryType]}
+          </option>
+        ))}
+      </Select>
+
+      <Input
+        label="খাবারের পরিমাণ"
+        name="quantity"
+        type="number"
+        min="0.1"
+        step="0.1"
+        value={draft.quantity}
+        onChange={(event) => update("quantity", event.target.value)}
+        error={errors.quantity}
+        placeholder="যেমন: ১২০"
+        leftIcon={<Utensils className="size-5" />}
+        required
+      />
+
+      <Select
+        label="পরিমাপের একক"
+        name="quantityUnit"
+        value={draft.quantityUnit}
+        onChange={(event) => update("quantityUnit", event.target.value)}
+      >
+        {Object.values(QuantityUnit).map((unit) => (
+          <option key={unit} value={unit}>
+            {quantityUnitLabelsBn[unit] ?? unit}
+          </option>
+        ))}
+      </Select>
+
+      <Input
+        label="রান্না বা প্রস্তুতির সময়"
+        name="preparationTime"
+        type="datetime-local"
+        value={draft.preparationTime}
+        onChange={(event) => update("preparationTime", event.target.value)}
+        error={errors.preparationTime}
+        leftIcon={<CalendarClock className="size-5" />}
+        hint="খাবারটি কখন কিচেনে রান্না বা প্রস্তুত শেষ হয়েছে।"
+        required
+      />
+
+      <Input
+        label="নিরাপদ ব্যবহারের শেষ সময় (Safe Until)"
+        name="safePickupDeadline"
+        type="datetime-local"
+        value={draft.safePickupDeadline}
+        onChange={(event) => update("safePickupDeadline", event.target.value)}
+        error={errors.safePickupDeadline}
+        hint="BFSA হাইজিন অনুযায়ী খাবারটি যে সময়ের মধ্যে বিতরণ করতে হবে।"
+        leftIcon={<CalendarClock className="size-5" />}
+        required
+      />
+
+      <Select
+        label="তাপমাত্রা ও সংরক্ষণ অবস্থা"
+        name="storageCondition"
+        value={draft.storageCondition}
+        onChange={(event) => update("storageCondition", event.target.value)}
+      >
+        {Object.values(StorageCondition).map((condition) => (
+          <option key={condition} value={condition}>
+            {STORAGE_CONDITION_LABELS[condition]}
+          </option>
+        ))}
+      </Select>
+
+      <Select
+        label="খাদ্যের প্যাকেজিং ও অবস্থা"
+        name="foodCondition"
+        value={draft.foodCondition}
+        onChange={(event) => update("foodCondition", event.target.value)}
+      >
+        <option value="FRESHLY_PREPARED">সদ্য রান্না করা তাজা খাবার (Freshly Prepared)</option>
+        <option value="SAME_DAY">আজকের প্রস্তুতকৃত খাবার (Prepared Today)</option>
+        <option value="PACKAGED">ইনসুলেটেড বাক্সে সিলযুক্ত (Sealed / Packaged)</option>
+      </Select>
+
+      <Textarea
+        label="অ্যালার্জেন সতর্কতা"
+        name="allergenInfo"
+        value={draft.allergenInfo}
+        onChange={(event) => update("allergenInfo", event.target.value)}
+        error={errors.allergenInfo}
+        placeholder="যেমন: দুধ, ডিম, চীনাবাদাম অথবা ‘কোনোটি নেই’ লিখুন"
+        containerClassName="sm:col-span-2"
+        required
+      />
+
+      <Textarea
+        label="খাবারের বিস্তারিত বিবরণ ও প্যাকেজিং"
+        name="description"
+        value={draft.description}
+        onChange={(event) => update("description", event.target.value)}
+        error={errors.description}
+        placeholder="মেনুর ধরন, কয়টি বাটিতে রাখা হয়েছে এবং খাবার প্যাকেজিংয়ের বিস্তারিত লিখুন..."
+        containerClassName="sm:col-span-2"
+        required
+      />
+
+      <Textarea
+        label="বিশেষ পিকআপ বা হ্যান্ডওভার নির্দেশনা (ঐচ্ছিক)"
+        name="specialInstructions"
+        value={draft.specialInstructions}
+        onChange={(event) => update("specialInstructions", event.target.value)}
+        placeholder="যেমন: ৩য় তলার সার্ভিস লিফট ব্যবহার করুন বা কিচেন ম্যানেজারকে ফোন দিন..."
+        containerClassName="sm:col-span-2"
+      />
 
       <FileUpload
-        label="Food photos (optional, up to 5)"
+        label="খাবারের ছবি আপলোড (ঐচ্ছিক, সর্বোচ্চ ৫টি)"
         name="foodPhotos"
         accept="image/jpeg,image/png,image/webp"
         multiple
@@ -73,7 +198,8 @@ export function FoodDetailsStep({
         maxSizeMb={5}
         fileNames={draft.photoNames}
         onFilesChange={(files) => update("photoNames", files.map((file) => file.name))}
-        hint="JPG, PNG, or WebP. Maximum 5 MB each. Files are not uploaded in this frontend demo."
+        buttonText="খাবারের ছবি আপলোড করুন বা ড্রপ করুন"
+        hint="জেপিজি, পিএনজি বা ওয়েবপি ফাইল। সর্বোচ্চ ৫ মেগাবাইট প্রতিটি।"
         className="sm:col-span-2"
       />
     </div>

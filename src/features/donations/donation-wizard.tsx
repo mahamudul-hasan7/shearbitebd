@@ -26,10 +26,10 @@ import { donationService, ngoService, MockApiError, type NGODirectoryItem } from
 import type { ViewerContext } from "@/types/domain";
 
 const wizardSteps = [
-  { label: "Food Details", description: "Food, quantity, time, photos" },
-  { label: "Pickup", description: "Address, contact, window" },
-  { label: "Safety & Review", description: "Declarations and final check" },
-  { label: "Confirmation", description: "Donation created" },
+  { label: "খাবারের বিবরণ", description: "নাম, পরিমাণ, ছবি ও রান্নার সময়" },
+  { label: "পিকআপ লোকেশন", description: "ঠিকানা, যোগাযোগের ব্যক্তি ও সময়সূচি" },
+  { label: "নিরাপত্তা ও অঙ্গীকার", description: "BFSA স্বাস্থ্যবিধি ও চূড়ান্ত রিভিউ" },
+  { label: "অনুদানের স্বীকৃতি", description: "তাজা খাবার সফলভাবে তালিকাভুক্ত" },
 ];
 
 const DONOR_VIEWER: ViewerContext = { userId: "user-donor-uiu", donorProfileId: "donor-uiu", role: UserRole.DONOR };
@@ -219,40 +219,118 @@ export function DonationWizard() {
     <PortalShell
       role="donor"
       activeHref={ROUTES.donor.newDonation}
-      title={currentStep === 4 ? "Donation submitted" : "Add Surplus Food"}
-      description="Create a clear, time-sensitive listing with traceable food and pickup details."
-      profileName="UIU Cafeteria"
-      profileDescription="Mock verified food donor"
-      avatarInitials="UC"
+      title={currentStep === 4 ? "খাদ্য অনুদান সম্পন্ন" : "উদ্বৃত্ত খাবার পোস্ট করুন"}
+      description="ক্যাফেটেরিয়া বা রেস্তোরাঁর তাজা অতিরিক্ত খাবারের বিবরণ ও পিকআপ তথ্য দিয়ে লাইভ ফিডে তালিকাভুক্ত করুন।"
+      profileName="UIU Central Cafeteria"
+      profileDescription="ভেরিফাইড খাদ্য দাতা"
+      avatarInitials="UI"
       notificationHref={ROUTES.donor.notifications}
       unreadNotifications={1}
+      backHref={ROUTES.donor.dashboard}
+      backLabel="ড্যাশবোর্ডে ফিরুন"
     >
-      <Stepper steps={wizardSteps} current={currentStep} label="Add surplus food progress" />
-      {preferredNgo && currentStep !== 4 && <Alert className="mt-6" tone="info" title={`Preferred NGO: ${preferredNgo.profile.organizationName}`} description="This preference is recorded for mock matching context only. It does not guarantee assignment or bypass NGO verification and claim rules." action={<ButtonLink href={ROUTES.donor.ngoProfile(preferredNgo.profile.id)} size="sm" variant="outline">View NGO</ButtonLink>} />}
+      <Stepper steps={wizardSteps} current={currentStep} label="খাদ্য অনুদান পোস্টের অগ্রগতি" />
+      {preferredNgo && currentStep !== 4 && (
+        <Alert
+          className="mt-6"
+          tone="info"
+          title={`পছন্দনীয় এনজিও: ${preferredNgo.profile.organizationName}`}
+          description="আপনার পছন্দের এই সংস্থাটিকে অগ্রাধিকার ভিত্তিতে অবহিত করা হবে।"
+          action={
+            <ButtonLink href={ROUTES.donor.ngoProfile(preferredNgo.profile.id)} size="sm" variant="outline">
+              এনজিও প্রোফাইল দেখুন
+            </ButtonLink>
+          }
+        />
+      )}
 
       {currentStep === 4 && result ? (
-        <div className="mt-10"><DonationConfirmation result={result} addAnother={addAnother} /></div>
+        <div className="mt-10">
+          <DonationConfirmation result={result} addAnother={addAnother} />
+        </div>
       ) : (
         <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_21rem] xl:items-start">
           <Card className="overflow-hidden">
-            <div className="border-b border-line bg-brand-50/60 p-5 sm:p-7">
-              <div className="flex flex-wrap items-center justify-between gap-3"><div><Badge tone="brand">Step {currentStep} of 4</Badge><h2 className="mt-3 text-2xl font-black text-brand-900 sm:text-3xl">{wizardSteps[currentStep - 1]?.label}</h2><p className="mt-2 text-sm text-muted-600">{wizardSteps[currentStep - 1]?.description}</p></div>{savedAt && <Badge tone="success">Draft saved in this browser</Badge>}</div>
+            <div className="border-b border-line bg-emerald-50/40 p-5 sm:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800 font-heading">
+                    ধাপ {currentStep} / ৪
+                  </span>
+                  <h2 className="mt-3 text-2xl font-black text-slate-900 sm:text-3xl font-heading">
+                    {wizardSteps[currentStep - 1]?.label}
+                  </h2>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-600 font-normal">
+                    {wizardSteps[currentStep - 1]?.description}
+                  </p>
+                </div>
+                {savedAt && (
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-600">
+                    খসড়া সংরক্ষিত রয়েছে
+                  </span>
+                )}
+              </div>
             </div>
 
             <form ref={formRef} onSubmit={handleSubmit} noValidate>
               <div className="p-5 sm:p-7">
-                {errors.form && <Alert className="mb-5" tone="danger" title="Donation could not continue" description={errors.form} />}
-                {hasDonationDraftErrors(errors) && !errors.form && <Alert className="mb-5" tone="danger" title="Check the highlighted fields" description="Correct the details below before moving to the next step." />}
+                {errors.form && (
+                  <Alert className="mb-5" tone="danger" title="অগ্রসর হওয়া সম্ভব নয়" description={errors.form} />
+                )}
+                {hasDonationDraftErrors(errors) && !errors.form && (
+                  <Alert
+                    className="mb-5"
+                    tone="danger"
+                    title="চিহ্নিত ঘরগুলো পরীক্ষা করুন"
+                    description="পরবর্তী ধাপে যাওয়ার আগে লাল রঙের ঘরগুলোতে সঠিক তথ্য প্রদান করুন।"
+                  />
+                )}
                 {currentStep === 1 && <FoodDetailsStep draft={draft} errors={errors} update={update} />}
                 {currentStep === 2 && <PickupInformationStep draft={draft} errors={errors} update={update} />}
                 {currentStep === 3 && <SafetyReviewStep draft={draft} errors={errors} update={update} editStep={editStep} />}
               </div>
 
               <StickyActionBar className="px-5 sm:px-7">
-                <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center">
-                  <Button type="button" variant="ghost" leftIcon={<Save className="size-4" />} onClick={persistDraft} className="sm:mr-auto">Save draft</Button>
-                  {currentStep === 1 ? <ButtonLink href={ROUTES.donor.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>Dashboard</ButtonLink> : <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>Back</Button>}
-                  {currentStep < 3 ? <Button type="button" rightIcon={<ArrowRight className="size-4" />} onClick={goNext}>Continue</Button> : <Button type="submit" rightIcon={<Send className="size-4" />} disabled={submitting}>{submitting ? "Submitting..." : "Submit donation"}</Button>}
+                <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  {/* Left Side: Back Navigation & Draft */}
+                  <div className="flex items-center gap-2">
+                    {currentStep === 1 ? (
+                      <ButtonLink href={ROUTES.donor.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>
+                        ড্যাশবোর্ডে ফিরুন
+                      </ButtonLink>
+                    ) : (
+                      <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>
+                        পূর্ববর্তী ধাপ
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      leftIcon={<Save className="size-4" />}
+                      onClick={persistDraft}
+                      className="text-slate-600 hover:text-emerald-700"
+                    >
+                      খসড়া সংরক্ষণ
+                    </Button>
+                  </div>
+
+                  {/* Right Side: Forward Navigation */}
+                  <div className="flex items-center gap-2">
+                    {currentStep < 3 ? (
+                      <Button type="button" rightIcon={<ArrowRight className="size-4" />} onClick={goNext}>
+                        পরবর্তী ধাপ
+                      </Button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-700/20"
+                        rightIcon={<Send className="size-4" />}
+                        disabled={submitting}
+                      >
+                        {submitting ? "পোস্ট হচ্ছে..." : "অনুদানের তালিকা প্রকাশ করুন"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </StickyActionBar>
             </form>
