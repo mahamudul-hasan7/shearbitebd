@@ -18,16 +18,43 @@ export function DonorDashboardLoading() {
 export function DonorDashboardError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div className="grid gap-5">
-      <Alert tone="danger" title="Dashboard data could not load" description={message} />
-      <div className="flex flex-wrap gap-3"><Button onClick={onRetry}>Try again</Button><ButtonLink href={ROUTES.auth.login} variant="outline">Return to login</ButtonLink></div>
+      <Alert tone="danger" title="ড্যাশবোর্ডের তথ্য লোড করা যায়নি" description={message} />
+      <div className="flex flex-wrap gap-3">
+        <Button onClick={onRetry}>পুনরায় চেষ্টা করুন</Button>
+        <ButtonLink href={ROUTES.auth.login} variant="outline">
+          লগইনে ফিরুন
+        </ButtonLink>
+      </div>
     </div>
   );
 }
 
 export function NoActiveDonation() {
-  return <EmptyState icon={PackageOpen} title="No active donation" description="Your active rescue card will appear here after you publish surplus food." action={<ButtonLink href={ROUTES.donor.newDonation}>Add Surplus Food</ButtonLink>} />;
+  return (
+    <EmptyState
+      icon={PackageOpen}
+      title="বর্তমানে কোনো সক্রিয় অনুদান নেই"
+      description="উদ্বৃত্ত খাবার পোস্ট করার সাথে সাথেই লাইভ রেসকিউ স্ট্যাটাস ও ট্র্যাকিং কার্ড এখানে প্রদর্শিত হবে।"
+      action={
+        <ButtonLink href={ROUTES.donor.newDonation} className="font-bold">
+          উদ্বৃত্ত খাবার পোস্ট করুন
+        </ButtonLink>
+      }
+    />
+  );
 }
 
 export function NoDashboardContent() {
-  return <EmptyState icon={AlertTriangle} title="Your donor dashboard is ready" description="Add the first surplus food listing to start tracking rescue activity and impact." action={<ButtonLink href={ROUTES.donor.newDonation}>Create first donation</ButtonLink>} />;
+  return (
+    <EmptyState
+      icon={AlertTriangle}
+      title="আপনার ডোনার ড্যাশবোর্ড প্রস্তুত"
+      description="প্রথম উদ্বৃত্ত খাবার তালিকাভুক্ত করে লাইভ উদ্ধার কার্যক্রম ও কমিউনিটি ইমপ্যাক্ট শুরু করুন।"
+      action={
+        <ButtonLink href={ROUTES.donor.newDonation} className="font-bold">
+          প্রথম অনুদান পোস্ট করুন
+        </ButtonLink>
+      }
+    />
+  );
 }

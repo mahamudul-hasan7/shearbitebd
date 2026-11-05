@@ -59,7 +59,7 @@ export function useDonorDashboard() {
         id: `activity-${donation.id}`,
         kind: "donation",
         title: donation.title,
-        description: `Donation is ${STATUS_META[donation.status].label.toLowerCase()}.`,
+        description: `অনুদানের বর্তমান অবস্থা: ${STATUS_META[donation.status].label}`,
         timestamp: donation.updatedAt,
         href: `/donor/donations/${donation.id}`,
       }));
@@ -74,8 +74,8 @@ export function useDonorDashboard() {
       const impactActivities: DashboardActivity[] = impact.recentRecords.slice(0, 3).map((record) => ({
         id: `activity-${record.id}`,
         kind: "impact",
-        title: `${record.mealsRescued} meals added to impact`,
-        description: `${record.foodWeightKg} kg of food was recorded as rescued. Environmental values remain estimated.`,
+        title: `${record.mealsRescued}টি মিল উদ্ধার ও বিতরণ সম্পন্ন`,
+        description: `মোট ${record.foodWeightKg} কেজি খাবার নষ্ট হওয়া থেকে বাঁচানো হয়েছে।`,
         timestamp: record.recordedAt,
         href: "/donor/donations",
       }));
@@ -109,7 +109,7 @@ export function useDonorDashboard() {
           name: profile.user.displayName,
           email: profile.user.email,
           initials: getInitials(profile.user.displayName),
-          description: donorProfile.organizationName ? "Verified food donor" : "Food donor",
+          description: donorProfile.organizationName ? "ভেরিফায়েড খাদ্য দাতা" : "খাদ্য দাতা",
         },
         stats: {
           totalDonations: impact.totalDonations,

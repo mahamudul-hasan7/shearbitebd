@@ -31,12 +31,12 @@ export function RescueClock({ deadline, compact = false }: { deadline: string; c
   return (
     <div className={cn("rounded-3xl border p-4", remaining?.isExpired ? "border-muted-400/30 bg-canvas" : "border-danger/15 bg-danger-soft", compact ? "min-w-40" : "sm:min-w-48")}>
       <div className={cn("flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em]", remaining?.isExpired ? "text-muted-600" : "text-danger-strong")}>
-        <Clock3 className="size-4" aria-hidden="true" /> Safe pickup
+        <Clock3 className="size-4" aria-hidden="true" /> নিরাপদ পিকআপ সময়সীমা
       </div>
-      <p role="timer" aria-live="off" aria-label={remaining?.label ?? "Loading rescue time"} className={cn("mt-2 font-black tabular-nums tracking-tight", compact ? "text-2xl" : "text-3xl sm:text-4xl", remaining?.isExpired ? "text-muted-600" : "text-danger")}>
-        {now === undefined ? "--:--:--" : remaining?.isExpired ? "Closed" : `${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}`}
+      <p role="timer" aria-live="off" aria-label={remaining?.label ?? "Loading rescue time"} className={cn("mt-2 font-black tabular-nums tracking-tight font-mono", compact ? "text-2xl" : "text-3xl sm:text-4xl", remaining?.isExpired ? "text-muted-600" : "text-danger")}>
+        {now === undefined ? "--:--:--" : remaining?.isExpired ? "সময় শেষ" : `${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}`}
       </p>
-      <p className="mt-1 text-xs text-muted-600">{remaining?.isExpired ? "The listed rescue window has ended." : "Deadline, not a freshness guarantee."}</p>
+      <p className="mt-1 text-xs text-muted-600">{remaining?.isExpired ? "নির্ধারিত পিকআপের সময়সীমা উত্তীর্ণ হয়েছে।" : "এই সময়ের মধ্যে ভলান্টিয়ার খাবার সংগ্রহ করবেন।"}</p>
     </div>
   );
 }
