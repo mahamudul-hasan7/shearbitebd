@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme inline {
@@ -35,7 +36,8 @@
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
   --color-info-strong: var(--info-strong);
-  --font-sans: var(--font-sans);
+  --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Hind Siliguri', sans-serif;
   --radius-sm: 0.5rem;
   --radius-card: 0.875rem;
   --radius-control: 0.625rem;
@@ -62,7 +64,7 @@
   --brand-600: #059669;
   --brand-700: #047857;
   --brand-800: #065f46;
-  --brand-900: #064e3b;
+  --brand-900: #022c22;
   --accent-50: #fffbeb;
   --accent-100: #fef3c7;
   --accent-400: #fbbf24;
@@ -87,9 +89,17 @@
   --info: #3b82f6;
   --info-soft: #eff6ff;
   --info-strong: #1d4ed8;
-  --font-sans: Inter, "Noto Sans Bengali", system-ui, -apple-system, sans-serif;
-  --sidebar-width: 17rem;
-  --page-max-width: 88rem;
+  --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Hind Siliguri', sans-serif;
+  --sidebar-width: 17.5rem;
+  --page-max-width: 90rem;
+
+  /* Executive NagarAI Desktop Theme Tokens */
+  --executive-sidebar-bg: #03271d;
+  --executive-sidebar-surface: #063c2e;
+  --executive-sidebar-border: #0a4f3d;
+  --executive-sidebar-active: #059669;
+  --executive-sidebar-glow: rgba(16, 185, 129, 0.28);
 }
 
 * {
@@ -113,6 +123,12 @@ body {
   font-family: var(--font-sans);
   line-height: 1.5;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.028em;
 }
 
 img,
@@ -133,8 +149,8 @@ dialog {
 }
 
 dialog::backdrop {
-  background: rgba(4, 53, 31, 0.52);
-  backdrop-filter: blur(4px);
+  background: rgba(3, 39, 29, 0.65);
+  backdrop-filter: blur(6px);
 }
 
 button,
@@ -150,7 +166,7 @@ select {
 }
 
 :focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--brand-500) 38%, transparent);
+  outline: 3px solid color-mix(in srgb, var(--brand-500) 45%, transparent);
   outline-offset: 2px;
 }
 
@@ -164,20 +180,18 @@ select {
   transform: translateY(-1px) scale(1.06);
 }
 
-.icon-nudge:hover svg,
-.icon-nudge:focus-visible svg {
-  transform: translateX(2px);
-}
-
-.safe-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
-}
-
 .surface-grid {
   background-image:
-    linear-gradient(to right, rgba(14, 107, 64, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14, 107, 64, 0.045) 1px, transparent 1px);
-  background-size: 28px 28px;
+    linear-gradient(to right, rgba(14, 107, 64, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 107, 64, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.dark-surface-grid {
+  background-image:
+    linear-gradient(to right, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 .auth-surface {
@@ -187,14 +201,36 @@ select {
     var(--surface);
 }
 
-.splash-landscape {
-  background: linear-gradient(
-    165deg,
-    transparent 35%,
-    color-mix(in srgb, var(--brand-100) 75%, transparent) 35%,
-    color-mix(in srgb, var(--brand-100) 75%, transparent) 55%,
-    color-mix(in srgb, var(--accent-100) 75%, transparent) 55%
-  );
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
