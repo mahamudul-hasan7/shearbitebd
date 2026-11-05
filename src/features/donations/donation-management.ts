@@ -1,15 +1,48 @@
 import { DONATION_LIFECYCLE, DonationStatus } from "@/lib/constants/statuses";
 
-export type DonationTabKey = "all" | "active" | "matched" | "scheduled" | "completed" | "cancelled" | "expired";
+export type DonationTabKey =
+  | "all"
+  | "active"
+  | "completed"
+  | "archived"
+  | "matched"
+  | "scheduled"
+  | "cancelled"
+  | "expired";
 
-export const DONATION_TABS: ReadonlyArray<{ key: DonationTabKey; label: string; statuses?: readonly DonationStatus[] }> = [
-  { key: "all", label: "All" },
-  { key: "active", label: "Available / active", statuses: [DonationStatus.DRAFT, DonationStatus.PUBLISHED, DonationStatus.AVAILABLE] },
-  { key: "matched", label: "Matched", statuses: [DonationStatus.RESERVED] },
-  { key: "scheduled", label: "Scheduled", statuses: [DonationStatus.ASSIGNED, DonationStatus.PICKED_UP, DonationStatus.DELIVERED] },
-  { key: "completed", label: "Completed", statuses: [DonationStatus.DISTRIBUTED] },
-  { key: "cancelled", label: "Cancelled", statuses: [DonationStatus.CANCELLED] },
-  { key: "expired", label: "Expired", statuses: [DonationStatus.EXPIRED] },
+export const DONATION_TABS: ReadonlyArray<{
+  key: DonationTabKey;
+  label: string;
+  statuses?: readonly DonationStatus[];
+}> = [
+  { key: "all", label: "সকল অনুদান" },
+  {
+    key: "active",
+    label: "চলমান ও পিকআপ",
+    statuses: [
+      DonationStatus.DRAFT,
+      DonationStatus.PUBLISHED,
+      DonationStatus.AVAILABLE,
+      DonationStatus.RESERVED,
+      DonationStatus.ASSIGNED,
+      DonationStatus.PICKED_UP,
+      DonationStatus.DELIVERED,
+    ],
+  },
+  {
+    key: "completed",
+    label: "বিতরণ সম্পন্ন",
+    statuses: [DonationStatus.DISTRIBUTED],
+  },
+  {
+    key: "archived",
+    label: "আর্কাইভ / অন্যান্য",
+    statuses: [
+      DonationStatus.CANCELLED,
+      DonationStatus.EXPIRED,
+      DonationStatus.DISPUTED,
+    ],
+  },
 ];
 
 const EDITABLE_STATUSES = new Set<DonationStatus>([
