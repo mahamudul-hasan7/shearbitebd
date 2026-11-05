@@ -6,17 +6,22 @@ export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "dan
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-gradient-to-r from-brand-600 to-brand-700 text-white shadow-xs shadow-brand-700/20 hover:from-brand-700 hover:to-brand-800 active:scale-[0.98] ring-1 ring-brand-700/20",
-  secondary: "bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-xs shadow-accent-600/20 hover:from-accent-600 hover:to-accent-700 active:scale-[0.98]",
-  outline: "border border-line bg-surface text-ink-700 shadow-2xs hover:bg-slate-50 hover:text-ink-900 active:scale-[0.98]",
-  ghost: "bg-transparent text-slate-700 hover:bg-slate-100 hover:text-ink-900",
-  danger: "bg-danger text-white shadow-xs hover:brightness-95 active:scale-[0.98]",
+  primary:
+    "bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-md shadow-emerald-700/20 hover:from-emerald-700 hover:to-teal-900 active:scale-[0.98] ring-1 ring-emerald-600/30",
+  secondary:
+    "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-600/20 hover:from-amber-600 hover:to-amber-700 active:scale-[0.98] ring-1 ring-amber-600/30",
+  outline:
+    "border border-slate-200/90 bg-white text-slate-800 shadow-2xs hover:bg-slate-50 hover:border-slate-300 hover:text-slate-950 active:scale-[0.98]",
+  ghost:
+    "bg-transparent text-slate-700 hover:bg-slate-100/80 hover:text-slate-950 active:scale-[0.98]",
+  danger:
+    "bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md shadow-red-600/20 hover:from-rose-700 hover:to-red-700 active:scale-[0.98] ring-1 ring-rose-600/30",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-3.5 text-xs font-semibold rounded-lg",
-  md: "h-10.5 px-4.5 text-sm font-semibold rounded-xl",
-  lg: "h-12 px-6 text-base font-semibold rounded-xl",
+  sm: "h-9 px-3.5 text-xs font-bold rounded-xl",
+  md: "h-11 px-5 text-xs sm:text-sm font-bold rounded-xl",
+  lg: "h-12.5 px-6.5 text-sm sm:text-base font-bold rounded-2xl",
 };
 
 export function buttonClassNames({
@@ -31,7 +36,7 @@ export function buttonClassNames({
   className?: string;
 }) {
   return cn(
-    "icon-interactive inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50",
+    "icon-interactive inline-flex items-center justify-center gap-2 font-heading font-bold tracking-wide transition-all duration-150 disabled:pointer-events-none disabled:opacity-50 select-none",
     variants[variant],
     sizes[size],
     fullWidth && "w-full",

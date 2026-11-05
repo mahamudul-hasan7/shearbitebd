@@ -6,7 +6,7 @@ import { ROUTES } from "@/lib/routes";
 export function BrandLogo({
   compact = false,
   className,
-  href = ROUTES.auth.login,
+  href = ROUTES.home,
   inverse = false,
 }: {
   compact?: boolean;
@@ -15,21 +15,37 @@ export function BrandLogo({
   inverse?: boolean;
 }) {
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-3 transition-opacity hover:opacity-95", className)} aria-label="ShareBite BD home">
-      <span className={cn(
-        "relative grid size-10 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform duration-200 group-hover:scale-105",
-        inverse ? "bg-white/15 ring-1 ring-white/30 backdrop-blur-md" : "bg-gradient-to-tr from-brand-700 via-brand-600 to-brand-500 shadow-brand-700/20 shadow-md"
-      )}>
-        <HeartHandshake className="size-5" aria-hidden="true" />
-        <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-gradient-to-br from-accent-400 to-accent-600 text-white ring-2 ring-white shadow-xs">
+    <Link
+      href={href}
+      className={cn("group inline-flex items-center gap-3 transition-opacity hover:opacity-95 select-none", className)}
+      aria-label="ShareBite BD home"
+    >
+      <span
+        className={cn(
+          "relative grid size-11 shrink-0 place-items-center rounded-2xl text-white shadow-md transition-transform duration-200 group-hover:scale-105",
+          inverse
+            ? "bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 ring-1 ring-emerald-400/40 shadow-lg shadow-emerald-950/50"
+            : "bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 shadow-emerald-700/25 ring-1 ring-emerald-600/30"
+        )}
+      >
+        <HeartHandshake className="size-6" aria-hidden="true" />
+        <span className="absolute -right-1 -top-1 grid size-4.5 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-amber-500 text-slate-950 ring-2 ring-white shadow-xs">
           <Leaf className="size-2.5" aria-hidden="true" />
         </span>
       </span>
+
       {!compact && (
-        <span className="leading-tight">
-          <span className="flex items-center gap-1">
-            <span className={cn("text-lg font-black tracking-tight", inverse ? "text-white" : "text-ink-900")}>ShareBite</span>
-            <span className="rounded-md bg-accent-100 px-1.5 py-0.5 text-xs font-black uppercase tracking-wider text-accent-600">BD</span>
+        <span className="flex items-center gap-1.5 select-none">
+          <span
+            className={cn(
+              "text-2xl font-black tracking-tight font-heading leading-none",
+              inverse ? "text-white" : "text-slate-900"
+            )}
+          >
+            ShareBite
+          </span>
+          <span className="rounded-md bg-gradient-to-r from-amber-400 to-amber-500 px-1.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-2xs font-heading leading-none">
+            BD
           </span>
         </span>
       )}

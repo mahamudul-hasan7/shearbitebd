@@ -4,18 +4,35 @@ import { cn } from "@/lib/utils";
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("min-w-0 rounded-2xl border border-line bg-surface shadow-xs transition-shadow duration-150", className)}
+      className={cn(
+        "min-w-0 rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xs transition-all duration-200",
+        className
+      )}
       {...props}
     />
   );
 }
 
-export function CardHeader({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
+export function CardHeader({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description?: string;
+  action?: ReactNode;
+}) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-line px-5 py-4 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4.5">
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4.5">
       <div className="min-w-0 flex-1">
-        <h3 className="text-base font-bold tracking-tight text-ink-900">{title}</h3>
-        {description && <p className="mt-1 text-xs leading-relaxed text-muted-600">{description}</p>}
+        <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 font-heading">
+          {title}
+        </h3>
+        {description && (
+          <p className="mt-1 text-xs leading-relaxed text-slate-500 font-normal">
+            {description}
+          </p>
+        )}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>
