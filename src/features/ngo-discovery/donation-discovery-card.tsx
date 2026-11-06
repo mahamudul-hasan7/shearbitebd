@@ -39,6 +39,15 @@ const TITLE_TRANSLATIONS: Record<string, string> = {
   "Seasonal fruit and vegetables": "তাজা মৌসুমি ফলমূল ও কাঁচা শাকসবজি",
   "Warm vegetable biryani with egg": "গরম ভেজিটেবল বিরিয়ানি ও সিদ্ধ ডিম",
   "Fresh bakery buns and rolls": "তাজা বেকারি বান ও সুস্বাদু রোলস",
+  "Sealed pantry rescue packs": "সিল্ড খাদ্যশস্য, চাল, মসুর ডাল ও তেল প্যাক",
+  "Fresh fruit and vegetable crates": "তাজা ফলমূল ও মৌসুমী শাকসবজির ক্র্যাট",
+  "Chilled yoghurt cups": "হিমায়িত মিষ্টি ও টক দইয়ের কাপ",
+  "Fresh buffet meal boxes": "বুফে লাঞ্চ মিল বক্স (চিকেন, রাইস ও ডাল)",
+  "Mutton kacchi biryani and chicken roast portions": "খাসির ঐতিহ্যবাহী কাচ্চি বিরিয়ানি ও চিকেন রোস্ট",
+  "Bhuna khichuri, boiled eggs, and vegetable curry": "গরম ভুনা খিচুড়ি, ডিম ভুনা ও মিক্সড সবজি",
+  "Fresh chicken patties, vegetable rolls, and sweet buns": "তাজা চিকেন প্যাটিস, ভেজিটেবল রোল ও মিষ্টি বান",
+  "Farm fresh carrots, potatoes, tomatoes, and ripe bananas": "তাজা গাজর, আলু, টমেটো ও পাকা কলার ক্র্যাট",
+  "Steamed aromatic rice, lentils, and fresh fish curry": "সুগন্ধি ভাত, ঘন মসুর ডাল ও তাজা রুই মাছের ঝোল",
 };
 
 const DESCRIPTION_TRANSLATIONS: Record<string, string> = {
@@ -48,6 +57,24 @@ const DESCRIPTION_TRANSLATIONS: Record<string, string> = {
     "ক্যাম্পাস ইভেন্ট শেষে উদ্বৃত্ত অক্ষত প্যাকেটজাত রুটি ও নিরামিষ স্ন্যাক্স। দ্রুত পিকআপের জন্য প্রস্তুত।",
   "Uncut produce sorted into reusable crates for community distribution.":
     "রি-ইউজেবল ক্র্যাটে সংরক্ষিত তাজা শাকসবজি ও ফল, যা সুবিধাবঞ্চিতদের মাঝে বিতরণের জন্য আদর্শ।",
+  "Sealed rice, lentils, cooking oil, and spice packs prepared for community meal programs.":
+    "কমিউনিটি মিলের জন্য প্রস্তুতকৃত অক্ষত চাল, ডাল, ভোজ্যতেল ও মশলার সিল্ড খাদ্যপ্যাক।",
+  "Sorted uncut seasonal produce in reusable crates for same-day community distribution.":
+    "একই দিনে বিতরণের জন্য পুনঃব্যবহারযোগ্য ক্র্যাটে সংরক্ষিত তাজা মৌসুমি ফলমূল ও শাকসবজি।",
+  "Factory-sealed yoghurt cups held under refrigeration and ready for quick collection.":
+    "রেফ্রিজারেশনে সংরক্ষিত ফ্যাক্টরি-সিল্ড তাজা দইয়ের কাপ, কোল্ড ক্যারিয়ারে দ্রুত সংগ্রহের জন্য প্রস্তুত।",
+  "Covered rice, grilled chicken, lentils, and mixed vegetables packed after a corporate lunch service.":
+    "করপোরেট লাঞ্চ সার্ভিসের পর হট-হোল্ডিং কন্টেইনারে সিল্ড সুস্বাদু গ্রিল্ড চিকেন, পোলাও ও সবজি।",
+  "Freshly prepared wedding reception surplus. Kept in food-grade insulated hot boxes at >65°C. Complete meals with boiled eggs.":
+    "বিবাহোত্তর সংবর্ধনা অনুষ্ঠানের পর ৬৫°C এর অধিক তাপে ইনসুলেটেড হট-বক্সে সংরক্ষিত প্রিমিয়াম কাচ্চি বিরিয়ানি ও রোস্ট।",
+  "Surplus lunch from university seminar hall. Sealed in high-grade catering trays, warm and fresh.":
+    "সেমিনার হল থেকে উদ্বৃত্ত গরম ও তাজা ভুনা খিচুড়ি ও ডিমের ক্যাটারিং ট্রে। সম্পূর্ণ স্বাস্থ্যসম্মত ও সিল্ড।",
+  "Evening batch bakery products packaged in individual food-grade wrapping from today's afternoon baking.":
+    "আজ বিকেলের বেকিং সেশন থেকে প্রস্তুত তাজা চিকেন প্যাটিস ও রোল। ফুড-গ্রেড র্যাপিংয়ে সিল করা।",
+  "Wholesale farm surplus produce crates suitable for direct distribution to orphanage meal programs.":
+    "এতিমখানা ও আশ্রয়কেন্দ্রের রান্নাঘরের জন্য সরাসরি খামার থেকে সংগৃহীত তাজা শাকসবজি ও ফলমূল।",
+  "Hygienically covered dinner meal portions remaining after cafeteria service window.":
+    "ক্যাফেটেরিয়া ডিনার সার্ভিসের পর স্বাস্থ্যসম্মত উপায়ে সংরক্ষিত গরম ভাত, ডাল ও তাজা মাছের তরকারি।",
 };
 
 function priorityBadgeConfig(priority: PriorityLevel, isBn: boolean): { tone: BadgeTone; label: string } {

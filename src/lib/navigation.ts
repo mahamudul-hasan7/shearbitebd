@@ -41,21 +41,21 @@ export const donorDesktopNavigation: DesktopNavItem[] = [
   { label: "পার্টনার এনজিও", href: ROUTES.donor.ngos, icon: Building2, category: "operations", badge: "ভেরিফায়েড" },
   { label: "পিকআপ ঠিকানা", href: ROUTES.donor.addresses, icon: MapPin, category: "operations" },
   { label: "নোটিফিকেশন", href: ROUTES.donor.notifications, icon: Bell, category: "system" },
-  { label: "দাতা প্রোফাইল", href: ROUTES.donor.profile, icon: ShieldCheck, category: "system" },
+  { label: "দাতা প্রোফাইল ও সনদ", href: ROUTES.donor.profile, icon: ShieldCheck, category: "system" },
   { label: "অ্যাকাউন্ট সেটিংস", href: ROUTES.donor.settings, icon: Settings, category: "system" },
   { label: "সহায়তা কেন্দ্র", href: ROUTES.donor.support, icon: FileQuestion, category: "system" },
 ];
 
 export const ngoDesktopNavigation: DesktopNavItem[] = [
-  { label: "Overview", href: ROUTES.ngo.dashboard, icon: LayoutDashboard, category: "main" },
-  { label: "Discover Food", href: ROUTES.ngo.discover, icon: Search, category: "operations", badge: "Nearby" },
-  { label: "Rescue Radar Map", href: ROUTES.ngo.discoverMap, icon: Compass, category: "operations" },
-  { label: "Claimed Rescues", href: ROUTES.ngo.claims, icon: ClipboardList, category: "operations" },
-  { label: "Submit Food Need", href: ROUTES.ngo.newRequest, icon: Plus, category: "operations", isPrimary: true },
-  { label: "Notifications", href: ROUTES.ngo.notifications, icon: Bell, category: "system" },
-  { label: "NGO Verification", href: ROUTES.ngo.profile, icon: ShieldCheck, category: "system" },
-  { label: "Account Settings", href: ROUTES.ngo.settings, icon: Settings, category: "system" },
-  { label: "Help Desk", href: ROUTES.ngo.support, icon: FileQuestion, category: "system" },
+  { label: "ওভারভিউ হাব", href: ROUTES.ngo.dashboard, icon: LayoutDashboard, category: "main" },
+  { label: "উদ্বৃত্ত খাদ্য অনুসন্ধান", href: ROUTES.ngo.discover, icon: Search, category: "operations", badge: "কাছাকাছি" },
+  { label: "রেসকিউ রাডার ম্যাপ", href: ROUTES.ngo.discoverMap, icon: Compass, category: "operations" },
+  { label: "ক্লেইমকৃত উদ্ধারসমূহ", href: ROUTES.ngo.claims, icon: ClipboardList, category: "operations", badge: "সক্রিয়" },
+  { label: "খাদ্য চাহিদা দাখিল", href: ROUTES.ngo.newRequest, icon: Plus, category: "operations", isPrimary: true },
+  { label: "নোটিফিকেশন", href: ROUTES.ngo.notifications, icon: Bell, category: "system" },
+  { label: "এনজিও ভেরিফিকেশন ও প্রোফাইল", href: ROUTES.ngo.profile, icon: ShieldCheck, category: "system" },
+  { label: "অ্যাকাউন্ট সেটিংস", href: ROUTES.ngo.settings, icon: Settings, category: "system" },
+  { label: "সহায়তা ও হেল্পডেস্ক", href: ROUTES.ngo.support, icon: FileQuestion, category: "system" },
 ];
 
 export const volunteerDesktopNavigation: DesktopNavItem[] = [
@@ -95,7 +95,7 @@ export function getNavigation(role: PortalRole, preview = false) {
 }
 
 export const productLinks = [
-  { label: "Design System", href: ROUTES.designSystem, icon: HeartHandshake },
-  { label: "Donor Preview", href: ROUTES.preview.donor, icon: PackageSearch },
-  { label: "NGO Preview", href: ROUTES.preview.ngo, icon: Building2 },
+  { label: "ডিজাইন সিস্টেম", href: ROUTES.designSystem, icon: HeartHandshake },
+  { label: "ডোনার প্রিভিউ", href: ROUTES.preview.donor, icon: PackageSearch },
+  { label: "এনজিও প্রিভিউ", href: ROUTES.preview.ngo, icon: Building2 },
 ];

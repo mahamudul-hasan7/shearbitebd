@@ -46,6 +46,11 @@ const PIN_POSITIONS: Record<string, { left: string; top: string; zone: string; z
   "donation-banani-produce": { left: "42%", top: "32%", zone: "Banani", zoneId: "banani" },
   "donation-banani-dairy": { left: "48%", top: "38%", zone: "Banani", zoneId: "banani" },
   "donation-gulshan-buffet": { left: "64%", top: "26%", zone: "Gulshan-2", zoneId: "gulshan" },
+  "donation-dhanmondi-kacchi": { left: "34%", top: "64%", zone: "Dhanmondi", zoneId: "dhanmondi" },
+  "donation-uttara-khichuri": { left: "52%", top: "14%", zone: "Uttara", zoneId: "uttara" },
+  "donation-mirpur-bakery": { left: "28%", top: "22%", zone: "Mirpur-10", zoneId: "mirpur" },
+  "donation-karwan-produce": { left: "44%", top: "54%", zone: "Karwan Bazar", zoneId: "dhanmondi" },
+  "donation-mohakhali-dinner": { left: "56%", top: "36%", zone: "Mohakhali", zoneId: "gulshan" },
 };
 
 function fallbackPosition(index: number) {

@@ -75,10 +75,10 @@ export function PortalShell({
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/70 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-800 ring-1 ring-inset ring-emerald-700/10">
                     <span className="size-1.5 rounded-full bg-emerald-600" />
                     {role === "donor"
-                      ? "Donor Workspace · Bangladesh"
+                      ? "দাতা ওয়ার্কস্পেস · বাংলাদেশ"
                       : role === "volunteer"
-                      ? "Volunteer Squad · Bangladesh"
-                      : "NGO Workspace · Bangladesh"}
+                      ? "ভলান্টিয়ার স্কোয়াড · বাংলাদেশ"
+                      : "এনজিও ওয়ার্কস্পেস · বাংলাদেশ"}
                   </span>
                 </div>
                 <h1 className="mt-2 text-2xl font-black tracking-tight text-ink-900 sm:text-3xl lg:text-4xl">
