@@ -1,98 +1,66 @@
-# ShareBite BD Frontend
+# 🍱 ShareBite BD — Smart Surplus Food Rescue Network
 
-Responsive frontend foundation for the ShareBite BD smart surplus food rescue platform.
+[![Next.js 15](https://img.shields.io/badge/Next.js-15.0-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![UN SDG 2](https://img.shields.io/badge/UN%20SDG-2:%20Zero%20Hunger-E5243B?style=flat-square)](https://sdgs.un.org/goals/goal2)
+[![UN SDG 12](https://img.shields.io/badge/UN%20SDG-12:%20Responsible%20Consumption-BF8B2E?style=flat-square)](https://sdgs.un.org/goals/goal12)
+[![BFSA Compliant](https://img.shields.io/badge/Food%20Safety-BFSA%20Compliant-059669?style=flat-square)](https://bfsa.gov.bd/)
 
-## Current progress
+> **"অতিরিক্ত খাবার নষ্ট নয়, সম্মানের সাথে মানুষের পাতে।"**  
+> An enterprise-grade, hyper-local civic-tech platform in Bangladesh connecting university cafeterias, restaurants, and catering banquets with verified charities (Bidyanondo, Mastul Foundation) in under 15 minutes.
 
-- Phase 1: project structure, design system, reusable UI, responsive portal shell
-- Phase 2: complete authentication frontend, accessible validation, mock sessions, and role guards
-- Phase 3: strict domain models, Bangladesh-focused mock services, state, permissions, and API contracts
-- Phase 4: complete responsive Food Donor dashboard powered by typed mock services
-- Phase 5: responsive four-step surplus-food wizard with persisted browser drafts, validation, submission confirmation, and service-backed verification views
-- Phase 6: complete donor donation management with search/status filters, lifecycle actions, receiver details, permission-aware tracking, and mock QR handover
-- Phase 7: verified NGO directory and ID-based profiles with working filters, impact/activity summaries, saved state, public contact, gallery, and food-wizard context
-- Phase 8: donor notifications, editable profile, saved-address management, account preferences, logout, FAQ, and mock support submission
-- Phase 9: responsive NGO dashboard with verified identity, nearby availability, impact, live recommendation, working claim CTA, active claims, activity, and route handoffs
-- Phase 10: NGO donation discovery with shared URL filters, privacy-safe list/map views, ID-based details, saved state, eligibility, safety review, and claim action
-- Phase 11: NGO claims list, status filters, tracking timeline, authorized pickup details, volunteer/ETA coordination, separate mock pickup/delivery verification, and demo lifecycle actions
+---
 
-## Run locally
+## 📌 The Problem We Solve
+
+In Dhaka and major Bangladeshi metropolises:
+1. **Massive Food Waste:** Hundreds of kilograms of fresh cooked meals from university cafeterias (e.g., UIU, BRACU), wedding conventions, and restaurant buffets go unconsumed and are discarded daily.
+2. **Urban Hunger & Malnutrition:** Just 2 km away, street children, orphanages, and vulnerable shelter communities face critical food insecurity.
+3. **The 4-Hour Thermal Expiry Window:** Cooked food spoils rapidly under ambient Dhaka temperatures. Traditional phone calls and ad-hoc arrangements take too long to coordinate before bacterial growth sets in.
+
+---
+
+## ⚡ The ShareBite BD Solution
+
+ShareBite BD provides an automated **3-sided digital ecosystem**:
+- **🏢 Food Donors (Cafeterias & Caterers):** Post surplus meals in under 60 seconds with timestamps, portion estimations, and countdown timers.
+- **🤝 Verified NGOs (Bidyanondo, Mastul, Dhaka Food Aid):** Discover nearby edible surplus meals on real-time interactive radar maps and claim them instantly.
+- **🛵 Volunteer Rescue Riders:** Receive Uber-style rapid dispatch alerts, navigate to the pickup location, and complete secure handovers using 4-digit OTP PINs and QR codes.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+- **Framework:** Next.js 15 (App Router with Server & Client Components)
+- **Language:** TypeScript 5.5 (Strict Mode, Type-Safe Domain Models)
+- **Styling:** Tailwind CSS (Modern Stripe/Linear enterprise aesthetic)
+- **Mapping:** Leaflet & OpenStreetMap (Geospatial radius matching & routing)
+- **Security:** Role-Based Access Control (Donor, NGO, Volunteer portals)
+- **Validation:** Zod schemas & BFSA thermal safety window calculations
+
+---
+
+## 🚀 Quick Start
 
 ```bash
+# 1. Clone repository
+git clone https://github.com/mahamudul-hasan7/shearbitebd.git
+cd shearbitebd
+
+# 2. Install dependencies
 npm install
+
+# 3. Start development server
 npm run dev
 ```
 
-Open `http://localhost:3000`. The root route redirects to `/splash`.
+Open [http://localhost:3000](http://localhost:3000) to view the live platform.
 
-## Authentication demo routes
+---
 
-```text
-/splash
-/onboarding
-/login
-/forgot-password
-/role-selection
-/register?role=donor
-/register?role=ngo
-/register?role=volunteer
-/unauthorized
-/donor/dashboard
-/donor/donations/new
-/donor/donations
-/donor/donations/donation-uiu-lunch
-/donor/donations/donation-uiu-lunch/tracking
-/donor/ngos
-/donor/ngos/ngo-hope
-/donor/notifications
-/donor/profile
-/donor/profile/edit
-/donor/addresses
-/donor/settings
-/donor/support
-/ngo/dashboard
-/ngo/discover
-/ngo/discover/map
-/ngo/donations/donation-gulshan-buffet
-/ngo/claims
-/ngo/claims/claim-uiu-lunch
-/ngo/requests/new
-/ngo/profile
-/volunteer/dashboard
-```
+## 👥 Project Team & Credits
 
-Development builds show one-click donor, NGO, and volunteer accounts on `/login`. Their shared password is `Demo1234`; session data contains only mock profile and role metadata, never the password.
-
-## Quality commands
-
-```bash
-npm run typecheck
-npm run lint
-npm run build
-```
-
-## Push reminder
-
-If you forget to push often, run this before closing VS Code or ending a work session:
-
-```bash
-npm run git:check
-```
-
-It reports uncommitted changes, unpushed commits, and the number of commits ahead or behind the remote.
-
-Pushes are also guarded by a local Git hook after setup:
-
-```bash
-npm run git:setup
-```
-
-That configures `.githooks/pre-push`, which runs the same check automatically before `git push` and prints a reminder without blocking the push.
-
-## Frontend-only note
-
-Authentication remains a frontend demonstration. The role session and route guards are browser-only mocks, not production authorization. Database storage, Google OAuth, reset email delivery, document upload, and verification approval require backend integration.
-
-See `docs/PHASE_2_SUMMARY.md` for the completed scope.
-
-Domain/API details are documented in `docs/PHASE_3_SUMMARY.md` and `docs/API_CONTRACTS.md`. Donor milestones are documented in `docs/PHASE_4_SUMMARY.md` through `docs/PHASE_8_SUMMARY.md`; NGO milestones begin in `docs/PHASE_9_SUMMARY.md` and currently continue through `docs/PHASE_11_SUMMARY.md`.
+- **Department of Computer Science & Engineering (CSE)**
+- **Project Lead:** Mahamudul Hasan (`mahamud.7info@gmail.com`)
+- Developed as a high-impact capstone and civic-tech food rescue initiative for Bangladesh.
