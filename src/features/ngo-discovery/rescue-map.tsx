@@ -29,6 +29,7 @@ import { useLanguage } from "@/lib/i18n/language-context";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import type { NGODiscoveryItem } from "@/services";
+import { RealInteractiveMap } from "@/features/ngo-discovery/real-interactive-map";
 
 const DHAKA_ZONES = [
   { id: "all", name: "All Dhaka", left: "50%", top: "50%" },
@@ -69,6 +70,7 @@ export function RescueMap({ items }: { items: NGODiscoveryItem[] }) {
   const [selectedId, setSelectedId] = useState<string>(items[0]?.donation?.id ?? "");
   const [filterMode, setFilterMode] = useState<"all" | "urgent" | "high_match">("all");
   const [selectedZone, setSelectedZone] = useState<string>("all");
+  const [mapType, setMapType] = useState<"real" | "radar">("real");
 
   const filteredItems = useMemo(() => {
     let list = items;
@@ -110,74 +112,115 @@ export function RescueMap({ items }: { items: NGODiscoveryItem[] }) {
             </div>
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 rounded-xl bg-emerald-950/70 p-1 border border-emerald-800/40 text-xs">
-            <button
-              type="button"
-              onClick={() => setFilterMode("all")}
-              className={cn(
-                "rounded-lg px-2.5 py-1 font-bold transition-all",
-                filterMode === "all"
-                  ? "bg-emerald-500 text-white shadow-xs"
-                  : "text-emerald-300/70 hover:text-white"
-              )}
-            >
-              {isBn ? "সব খাবার" : "All"} ({items.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode("urgent")}
-              className={cn(
-                "rounded-lg px-2.5 py-1 font-bold transition-all",
-                filterMode === "urgent"
-                  ? "bg-rose-600 text-white shadow-xs"
-                  : "text-rose-300/80 hover:text-white"
-              )}
-            >
-              {isBn ? "জরুরি" : "Urgent"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterMode("high_match")}
-              className={cn(
-                "rounded-lg px-2.5 py-1 font-bold transition-all",
-                filterMode === "high_match"
-                  ? "bg-amber-500 text-ink-950 shadow-xs"
-                  : "text-amber-300/80 hover:text-white"
-              )}
-            >
-              {isBn ? "সেরা মিল" : "Top Match"}
-            </button>
+          {/* Map View Switcher & Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Real Street Map vs Radar Grid Switcher */}
+            <div className="flex items-center gap-1 rounded-xl bg-emerald-950/80 p-1 border border-emerald-700/50 text-xs">
+              <button
+                type="button"
+                onClick={() => setMapType("real")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-bold transition-all",
+                  mapType === "real"
+                    ? "bg-emerald-500 text-white shadow-xs"
+                    : "text-emerald-300/80 hover:text-white"
+                )}
+              >
+                <MapPin className="size-3.5" />
+                <span>{isBn ? "রিয়েল স্ট্রিট ম্যাপ (Free)" : "Real Street Map"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMapType("radar")}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-bold transition-all",
+                  mapType === "radar"
+                    ? "bg-emerald-500 text-white shadow-xs"
+                    : "text-emerald-300/80 hover:text-white"
+                )}
+              >
+                <Compass className="size-3.5" />
+                <span>{isBn ? "রাডার গ্রিড" : "Tactical Radar"}</span>
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 rounded-xl bg-emerald-950/70 p-1 border border-emerald-800/40 text-xs">
+              <button
+                type="button"
+                onClick={() => setFilterMode("all")}
+                className={cn(
+                  "rounded-lg px-2.5 py-1 font-bold transition-all",
+                  filterMode === "all"
+                    ? "bg-emerald-500 text-white shadow-xs"
+                    : "text-emerald-300/70 hover:text-white"
+                )}
+              >
+                {isBn ? "সব খাবার" : "All"} ({items.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterMode("urgent")}
+                className={cn(
+                  "rounded-lg px-2.5 py-1 font-bold transition-all",
+                  filterMode === "urgent"
+                    ? "bg-rose-600 text-white shadow-xs"
+                    : "text-rose-300/80 hover:text-white"
+                )}
+              >
+                {isBn ? "জরুরি" : "Urgent"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterMode("high_match")}
+                className={cn(
+                  "rounded-lg px-2.5 py-1 font-bold transition-all",
+                  filterMode === "high_match"
+                    ? "bg-amber-500 text-ink-950 shadow-xs"
+                    : "text-amber-300/80 hover:text-white"
+                )}
+              >
+                {isBn ? "সেরা মিল" : "Top Match"}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Zone Fast-Select Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto border-b border-emerald-900/60 bg-[#021f17] px-4 py-2 text-xs">
-          <span className="shrink-0 text-[10px] font-black uppercase tracking-wider text-emerald-400/80">
-            {isBn ? "এলাকা নির্বাচন:" : "Zone Focus:"}
-          </span>
-          {DHAKA_ZONES.map((zone) => (
-            <button
-              key={zone.id}
-              type="button"
-              onClick={() => setSelectedZone(zone.id)}
-              className={cn(
-                "shrink-0 rounded-lg px-2.5 py-0.5 text-[11px] font-bold transition-all",
-                selectedZone === zone.id
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40"
-                  : "text-slate-400 hover:text-white hover:bg-emerald-900/30"
-              )}
-            >
-              {zone.name}
-            </button>
-          ))}
-        </div>
+        {mapType === "real" ? (
+          <RealInteractiveMap
+            items={filteredItems}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
+        ) : (
+          <>
+            {/* Zone Fast-Select Bar */}
+            <div className="flex items-center gap-2 overflow-x-auto border-b border-emerald-900/60 bg-[#021f17] px-4 py-2 text-xs">
+              <span className="shrink-0 text-[10px] font-black uppercase tracking-wider text-emerald-400/80">
+                {isBn ? "এলাকা নির্বাচন:" : "Zone Focus:"}
+              </span>
+              {DHAKA_ZONES.map((zone) => (
+                <button
+                  key={zone.id}
+                  type="button"
+                  onClick={() => setSelectedZone(zone.id)}
+                  className={cn(
+                    "shrink-0 rounded-lg px-2.5 py-0.5 text-[11px] font-bold transition-all",
+                    selectedZone === zone.id
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40"
+                      : "text-slate-400 hover:text-white hover:bg-emerald-900/30"
+                  )}
+                >
+                  {zone.name}
+                </button>
+              ))}
+            </div>
 
-        {/* Radar Map Canvas */}
-        <div
-          className="relative h-[34rem] overflow-hidden bg-gradient-to-br from-[#011611] via-[#022a20] to-[#01140e] sm:h-[40rem]"
-          aria-label="Dhaka Rescue Radar Map"
-        >
+            {/* Radar Map Canvas */}
+            <div
+              className="relative h-[34rem] overflow-hidden bg-gradient-to-br from-[#011611] via-[#022a20] to-[#01140e] sm:h-[40rem]"
+              aria-label="Dhaka Rescue Radar Map"
+            >
           {/* Subtle Grid Pattern */}
           <div
             className="absolute inset-0 opacity-15"
@@ -345,6 +388,8 @@ export function RescueMap({ items }: { items: NGODiscoveryItem[] }) {
             </span>
           </div>
         </div>
+        </>
+        )}
       </Card>
 
       {/* Selected Item Drawer & Quick List */}
