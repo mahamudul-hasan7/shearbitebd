@@ -2,27 +2,59 @@
 title ShareBite BD - Smart Surplus Food Rescue Platform
 color 0A
 
+:: 1. Dynamically locate project folder (100% portable on any PC / drive)
+set "PROJECT_DIR=%~dp0"
+
+:: If run from outside, search current dir, subfolder, or user desktop
+if not exist "%PROJECT_DIR%package.json" (
+    if exist "%PROJECT_DIR%sharebite-bd-frontend\package.json" (
+        set "PROJECT_DIR=%PROJECT_DIR%sharebite-bd-frontend\"
+    ) else if exist "%USERPROFILE%\Desktop\sharebite-bd-frontend\package.json" (
+        set "PROJECT_DIR=%USERPROFILE%\Desktop\sharebite-bd-frontend\"
+    )
+)
+
+cd /d "%PROJECT_DIR%"
+
 echo ============================================================
 echo        ShareBite BD - Smart Surplus Food Rescue Platform
 echo ============================================================
+echo [*] Detected Project Folder: %CD%
 echo.
 
-:: Navigate to project directory
-if exist "%~dp0package.json" (
-    cd /d "%~dp0"
-) else (
-    cd /d "C:\Users\rakib\Desktop\sharebite-bd-frontend"
+:: 2. Check if Node.js is installed on this PC
+where node >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [ERROR] Node.js is not installed on this PC!
+    echo Please install Node.js (LTS version) from: https://nodejs.org
+    echo.
+    pause
+    exit /b
 )
 
-echo [*] Working Directory: %CD%
-echo [*] Launching browser at http://localhost:3000 ...
-echo [*] Starting Next.js Development Server...
-echo.
+:: 3. Auto-install dependencies if node_modules is missing (e.g. copied via pendrive)
+if not exist "node_modules\" (
+    echo [*] First-time setup detected on this PC!
+    echo [*] Installing dependencies via npm install, please wait...
+    echo.
+    call npm install
+    if %errorlevel% neq 0 (
+        echo [ERROR] npm install encountered an error. Please check your internet connection.
+        pause
+        exit /b
+    )
+    echo.
+    echo [*] Dependencies installed successfully!
+    echo.
+)
 
-:: Automatically open browser after 3 seconds
+:: 4. Auto-launch browser after 3 seconds
+echo [*] Launching browser at http://localhost:3000 ...
 start "" cmd /c "timeout /t 3 /nobreak >nul && start http://localhost:3000"
 
-:: Start Next.js development server
+:: 5. Start Next.js Development Server
+echo [*] Starting Next.js Server on http://localhost:3000 ...
+echo.
 npm run dev
 
 pause
