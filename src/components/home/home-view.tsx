@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { HeroTicker } from "@/components/home/hero-ticker";
-import { HeroRescueSimulator } from "@/components/home/hero-rescue-simulator";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -877,10 +876,8 @@ export function HomeView() {
               <HeroTicker lang={lang} />
             </div>
 
-            {/* Right 5 Columns: Interactive Food Rescue Simulator Cockpit */}
-            <div className="lg:col-span-5 mt-8 lg:mt-0">
-              <HeroRescueSimulator lang={lang} />
-            </div>
+            {/* Right 5 Columns: Kept clear so the emotional background image remains visible */}
+            <div className="hidden lg:block lg:col-span-5" />
           </div>
         </div>
       </section>
