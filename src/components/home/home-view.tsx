@@ -29,6 +29,8 @@ import {
   Zap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { HeroTicker } from "@/components/home/hero-ticker";
+import { HeroRescueSimulator } from "@/components/home/hero-rescue-simulator";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -871,25 +873,14 @@ export function HomeView() {
                 </Link>
               </div>
 
-              {/* Trust Counters */}
-              <div className="grid grid-cols-3 gap-4 border-t border-emerald-800/40 pt-6">
-                <div>
-                  <p className="text-2xl font-black text-white sm:text-3xl font-heading">{t.hero.stat1Val}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-emerald-200/80">{t.hero.stat1Lbl}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-emerald-400 sm:text-3xl font-heading">{t.hero.stat2Val}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-emerald-200/80">{t.hero.stat2Lbl}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-amber-300 sm:text-3xl font-heading">{t.hero.stat3Val}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-emerald-200/80">{t.hero.stat3Lbl}</p>
-                </div>
-              </div>
+              {/* Dynamic Live Metric Ticker with Telemetry Pulses */}
+              <HeroTicker lang={lang} />
             </div>
 
-            {/* Right 5 Columns: Kept completely EMPTY so background image remains visible */}
-            <div className="hidden lg:block lg:col-span-5" />
+            {/* Right 5 Columns: Interactive Food Rescue Simulator Cockpit */}
+            <div className="lg:col-span-5 mt-8 lg:mt-0">
+              <HeroRescueSimulator lang={lang} />
+            </div>
           </div>
         </div>
       </section>
