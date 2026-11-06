@@ -1,13 +1,13 @@
-import type { NotificationView } from "@/types/domain";
+import type { Notification } from "@/types/domain";
 
 export type NotificationGroupKey = "today" | "yesterday" | "earlier";
 
-export function groupNotificationsByDate(notifications: NotificationView[]): Record<NotificationGroupKey, NotificationView[]> {
+export function groupNotificationsByDate(notifications: Notification[]): Record<NotificationGroupKey, Notification[]> {
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000;
 
-  const grouped: Record<NotificationGroupKey, NotificationView[]> = {
+  const grouped: Record<NotificationGroupKey, Notification[]> = {
     today: [],
     yesterday: [],
     earlier: []
@@ -27,6 +27,6 @@ export function groupNotificationsByDate(notifications: NotificationView[]): Rec
   return grouped;
 }
 
-export function countUnreadNotifications(notifications: NotificationView[]): number {
+export function countUnreadNotifications(notifications: Notification[]): number {
   return notifications.filter((item) => !item.readAt).length;
 }
