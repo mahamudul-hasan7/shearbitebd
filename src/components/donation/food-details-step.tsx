@@ -1,7 +1,9 @@
 "use client";
 
-import { CalendarClock, PackageOpen, Sparkles, Utensils } from "lucide-react";
-import { FileUpload } from "@/components/ui/file-upload";
+import { CalendarClock, PackageOpen, Utensils } from "lucide-react";
+import { AiSpoilageMeter } from "@/components/donation/ai-spoilage-meter";
+import { FoodPhotoDropzone } from "@/components/donation/food-photo-dropzone";
+import { SmartQuantityConverter } from "@/components/donation/smart-quantity-converter";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +47,7 @@ export function FoodDetailsStep({
 }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2">
+      {/* 1. Food Title */}
       <Input
         label="খাদ্যের শিরোনাম"
         name="title"
@@ -57,6 +60,7 @@ export function FoodDetailsStep({
         required
       />
 
+      {/* 2. Category & Dietary Type */}
       <Select
         label="খাবারের ক্যাটাগরি"
         name="category"
@@ -83,6 +87,7 @@ export function FoodDetailsStep({
         ))}
       </Select>
 
+      {/* 3. Quantity & Unit */}
       <Input
         label="খাবারের পরিমাণ"
         name="quantity"
@@ -92,7 +97,7 @@ export function FoodDetailsStep({
         value={draft.quantity}
         onChange={(event) => update("quantity", event.target.value)}
         error={errors.quantity}
-        placeholder="যেমন: ১২০"
+        placeholder="যেমন: ৪০"
         leftIcon={<Utensils className="size-5" />}
         required
       />
@@ -110,6 +115,19 @@ export function FoodDetailsStep({
         ))}
       </Select>
 
+      {/* 4. Smart Quantity Converter & Preset Pills */}
+      <div className="sm:col-span-2">
+        <SmartQuantityConverter
+          quantity={draft.quantity}
+          quantityUnit={draft.quantityUnit}
+          onSelectPreset={(qty, unit) => {
+            update("quantity", qty);
+            update("quantityUnit", unit);
+          }}
+        />
+      </div>
+
+      {/* 5. Times and Preservation */}
       <Input
         label="রান্না বা প্রস্তুতির সময়"
         name="preparationTime"
@@ -158,6 +176,17 @@ export function FoodDetailsStep({
         <option value="PACKAGED">ইনসুলেটেড বাক্সে সিলযুক্ত (Sealed / Packaged)</option>
       </Select>
 
+      {/* 6. AI Spoilage & Food Safety Meter */}
+      <div className="sm:col-span-2">
+        <AiSpoilageMeter
+          category={draft.category}
+          storageCondition={draft.storageCondition}
+          preparationTime={draft.preparationTime}
+          safePickupDeadline={draft.safePickupDeadline}
+        />
+      </div>
+
+      {/* 7. Allergen, Description, Special Instructions */}
       <Textarea
         label="অ্যালার্জেন সতর্কতা"
         name="allergenInfo"
@@ -189,17 +218,11 @@ export function FoodDetailsStep({
         containerClassName="sm:col-span-2"
       />
 
-      <FileUpload
-        label="খাবারের ছবি আপলোড (ঐচ্ছিক, সর্বোচ্চ ৫টি)"
-        name="foodPhotos"
-        accept="image/jpeg,image/png,image/webp"
-        multiple
+      {/* 8. Modern Photo Dropzone */}
+      <FoodPhotoDropzone
+        photoNames={draft.photoNames}
+        onPhotosChange={(photos) => update("photoNames", photos)}
         maxFiles={5}
-        maxSizeMb={5}
-        fileNames={draft.photoNames}
-        onFilesChange={(files) => update("photoNames", files.map((file) => file.name))}
-        buttonText="খাবারের ছবি আপলোড করুন বা ড্রপ করুন"
-        hint="জেপিজি, পিএনজি বা ওয়েবপি ফাইল। সর্বোচ্চ ৫ মেগাবাইট প্রতিটি।"
         className="sm:col-span-2"
       />
     </div>

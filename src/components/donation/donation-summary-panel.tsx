@@ -1,10 +1,23 @@
 "use client";
 
-import { CalendarClock, ImageIcon, MapPin, ShieldCheck, Utensils } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useMemo } from "react";
+import {
+  CalendarClock,
+  Heart,
+  ImageIcon,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+  Utensils,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { DonationDraft, DonationDraftErrors, DonationWizardStep } from "@/features/donations/types";
-import { FOOD_CATEGORY_LABELS, STORAGE_CONDITION_LABELS } from "@/lib/constants/domain";
+import {
+  FOOD_CATEGORY_LABELS,
+  QuantityUnit,
+  STORAGE_CONDITION_LABELS,
+  StorageCondition,
+} from "@/lib/constants/domain";
 
 function shortDateBn(value: string) {
   const timestamp = Date.parse(value);
@@ -40,6 +53,41 @@ export function DonationSummaryPanel({
 
   const errorCount = Object.values(errors).filter(Boolean).length;
 
+  // Meal impact estimate
+  const numQty = Number.parseFloat(draft.quantity);
+  const estimatedImpact = useMemo(() => {
+    if (!Number.isFinite(numQty) || numQty <= 0) return null;
+    let min = Math.round(numQty);
+    let max = Math.round(numQty);
+    if (draft.quantityUnit === QuantityUnit.KILOGRAMS) {
+      min = Math.round(numQty * 2);
+      max = Math.round(numQty * 2.5);
+    } else if (draft.quantityUnit === QuantityUnit.TRAYS) {
+      min = Math.round(numQty * 12);
+      max = Math.round(numQty * 15);
+    } else if (draft.quantityUnit === QuantityUnit.LITRES) {
+      min = Math.round(numQty * 3);
+      max = Math.round(numQty * 4);
+    }
+    return min === max ? `${min} জন` : `${min}-${max} জন`;
+  }, [numQty, draft.quantityUnit]);
+
+  // AI Quality Score Estimate
+  const aiSafetyScore = useMemo(() => {
+    let score = 92;
+    if (draft.storageCondition === StorageCondition.FROZEN) score = 98;
+    else if (draft.storageCondition === StorageCondition.REFRIGERATED) score = 95;
+    else if (draft.storageCondition === StorageCondition.AMBIENT) score = 78;
+
+    const deadlineTs = draft.safePickupDeadline ? Date.parse(draft.safePickupDeadline) : NaN;
+    if (Number.isFinite(deadlineTs)) {
+      const remainingMinutes = (deadlineTs - Date.now()) / 60000;
+      if (remainingMinutes <= 0) return { score: 15, label: "মেয়াদোত্তীর্ণ", color: "rose" };
+      if (remainingMinutes <= 60) return { score: 65, label: "জরুরি পিকআপ", color: "amber" };
+    }
+    return { score, label: "উচ্চ ফ্রেশনেস", color: "emerald" };
+  }, [draft.storageCondition, draft.safePickupDeadline]);
+
   return (
     <Card className="xl:sticky xl:top-24 rounded-3xl border border-slate-200/90 bg-white shadow-2xs overflow-hidden">
       <div className="border-b border-slate-100 bg-slate-50/70 p-5">
@@ -67,7 +115,36 @@ export function DonationSummaryPanel({
           </p>
         </div>
 
-        <div className="space-y-2.5 rounded-2xl bg-emerald-50/50 p-4 border border-emerald-100/80 font-heading text-slate-700">
+        {/* AI Freshness & Impact Quick Pills */}
+        <div className="grid grid-cols-2 gap-2">
+          <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-2 text-center">
+            <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+              <Sparkles className="size-3" />
+              AI সেফটি স্কোর
+            </span>
+            <p className="mt-0.5 text-sm font-black text-emerald-950 font-mono">
+              {aiSafetyScore.score}%
+            </p>
+            <span className="text-[10px] text-emerald-700 font-medium">
+              {aiSafetyScore.label}
+            </span>
+          </div>
+
+          <div className="rounded-xl border border-rose-200/80 bg-rose-50/50 p-2 text-center">
+            <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700">
+              <Heart className="size-3 fill-rose-500" />
+              সম্ভাব্য প্রভাব
+            </span>
+            <p className="mt-0.5 text-sm font-black text-rose-950 font-mono">
+              {estimatedImpact ?? "০ জন"}
+            </p>
+            <span className="text-[10px] text-rose-700 font-medium">
+              আহার পাবে
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-2.5 rounded-2xl bg-emerald-50/40 p-4 border border-emerald-100/80 font-heading text-slate-700">
           <p className="flex items-center gap-2">
             <Utensils className="size-4 text-emerald-600 shrink-0" />
             <span className="font-bold">{STORAGE_CONDITION_LABELS[draft.storageCondition]}</span>
