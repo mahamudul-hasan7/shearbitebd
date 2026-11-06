@@ -1,0 +1,545 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------------------------------------
+// ENUMS
+// -------------------------------------------------------------
+
+enum UserRole {
+  DONOR
+  NGO
+  VOLUNTEER
+  ADMIN
+}
+
+enum DonorType {
+  INDIVIDUAL
+  CAFETERIA
+  RESTAURANT
+  BAKERY
+  EVENT_ORGANIZER
+}
+
+enum VerificationStatus {
+  NOT_SUBMITTED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum FoodCategory {
+  COOKED_MEAL
+  BAKERY
+  PRODUCE
+  GROCERIES
+  DAIRY
+  BEVERAGE
+  OTHER
+}
+
+enum DietaryType {
+  HALAL
+  VEGETARIAN
+  VEGAN
+  CONTAINS_MEAT
+  GLUTEN_FREE
+  OTHER
+}
+
+enum StorageCondition {
+  AMBIENT
+  REFRIGERATED
+  FROZEN
+  HOT_HOLDING
+}
+
+enum FoodCondition {
+  FRESHLY_PREPARED
+  SAME_DAY
+  PACKAGED
+}
+
+enum QuantityUnit {
+  PORTIONS
+  MEALS
+  KILOGRAMS
+  PACKETS
+  TRAYS
+  LITRES
+}
+
+enum PriorityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum DonationStatus {
+  DRAFT
+  PUBLISHED
+  AVAILABLE
+  RESERVED
+  ASSIGNED
+  PICKED_UP
+  DELIVERED
+  DISTRIBUTED
+  EXPIRED
+  CANCELLED
+  DISPUTED
+}
+
+enum ClaimStatus {
+  RESERVED
+  ASSIGNED
+  PICKED_UP
+  DELIVERED
+  DISTRIBUTED
+  CANCELLED
+  EXPIRED
+  DISPUTED
+}
+
+enum RequestStatus {
+  DRAFT
+  PENDING_REVIEW
+  FINDING_MATCH
+  MATCHED
+  FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum RequestType {
+  ONE_TIME
+  RECURRING
+}
+
+enum TransportMethod {
+  WALKING
+  BICYCLE
+  MOTORCYCLE
+  VAN
+  CAR
+}
+
+enum NotificationType {
+  URGENT
+  CLAIM
+  VOLUNTEER
+  PICKUP
+  DELIVERY
+  NEARBY_DONATION
+  IMPACT
+  SYSTEM
+}
+
+enum IncidentType {
+  DAMAGED_FOOD
+  WRONG_QUANTITY
+  LATE_DELIVERY
+  WRONG_ITEM
+  SAFETY_CONCERN
+  OTHER
+}
+
+enum IncidentStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
+}
+
+enum NGOTeamRole {
+  OWNER
+  COORDINATOR
+  FIELD_STAFF
+  VIEWER
+}
+
+enum NGOTeamMemberStatus {
+  ACTIVE
+  INVITED
+}
+
+// -------------------------------------------------------------
+// MODELS
+// -------------------------------------------------------------
+
+model User {
+  id               String            @id @default(cuid())
+  email            String            @unique
+  displayName      String
+  phone            String?
+  avatarUrl        String?
+  role             UserRole          @default(DONOR)
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  donorProfile     DonorProfile?
+  ngoProfile       NGOProfile?
+  volunteerProfile VolunteerProfile?
+  notifications    Notification[]
+  preferences      UserPreference?
+  reportedIncidents IncidentReport[]
+
+  @@map("users")
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  label       String
+  division    String   @default("Dhaka")
+  district    String   @default("Dhaka")
+  city        String   @default("Dhaka")
+  area        String
+  addressLine String
+  postalCode  String?
+  landmark    String?
+  latitude    Float?
+  longitude   Float?
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  donations   Donation[]
+  volunteerProfiles VolunteerProfile[]
+  distributions DistributionRecord[]
+
+  @@map("addresses")
+}
+
+model DonorProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  donorType          DonorType          @default(RESTAURANT)
+  organizationName   String?
+  verificationStatus VerificationStatus @default(PENDING)
+  bfsaCertNumber     String?
+  rating             Float?             @default(5.0)
+  totalDonations     Int                @default(0)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  donations          Donation[]
+  impactRecords      ImpactRecord[]
+
+  @@map("donor_profiles")
+}
+
+model NGOProfile {
+  id                      String             @id @default(cuid())
+  userId                  String             @unique
+  organizationName        String
+  registrationNumber      String
+  summary                 String
+  mission                 String
+  vision                  String
+  values                  String[]           @default([])
+  beneficiaryTypes        String[]           @default([])
+  acceptedFoodCategories  FoodCategory[]     @default([])
+  authorizedContactUserId String?
+  serviceAreas            String[]           @default([])
+  capacityMealsPerDay     Int                @default(100)
+  peopleHelped            Int                @default(0)
+  foundedYear             Int                @default(2020)
+  publicEmail             String
+  publicPhone             String
+  galleryUrls             String[]           @default([])
+  verificationStatus      VerificationStatus @default(VERIFIED)
+  verificationDocName     String?
+  rating                  Float?             @default(5.0)
+  completedRescues        Int                @default(0)
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  user                    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamMembers             NGOTeamMember[]
+  claims                  Claim[]
+  requests                FoodRequest[]
+  receipts                DeliveryReceipt[]
+  distributionRecords     DistributionRecord[]
+  impactRecords           ImpactRecord[]
+
+  @@map("ngo_profiles")
+}
+
+model NGOTeamMember {
+  id           String              @id @default(cuid())
+  ngoProfileId String
+  name         String
+  email        String
+  role         NGOTeamRole         @default(COORDINATOR)
+  status       NGOTeamMemberStatus @default(ACTIVE)
+  joinedAt     DateTime?
+  createdAt    DateTime            @default(now())
+
+  ngoProfile   NGOProfile          @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+
+  @@map("ngo_team_members")
+}
+
+model VolunteerProfile {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  addressId            String?
+  serviceAreas         String[]           @default([])
+  transportMethod      TransportMethod    @default(BICYCLE)
+  availability         String[]           @default([])
+  verificationStatus   VerificationStatus @default(VERIFIED)
+  identityDocumentName String?
+  completedRescues     Int                @default(0)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address              Address?           @relation(fields: [addressId], references: [id])
+  claims               Claim[]
+
+  @@map("volunteer_profiles")
+}
+
+model Donation {
+  id                    String            @id @default(cuid())
+  donorProfileId        String
+  preferredNgoProfileId String?
+  title                 String
+  description           String
+  category              FoodCategory
+  dietaryTypes          DietaryType[]     @default([HALAL])
+  quantityValue         Float
+  quantityUnit          QuantityUnit      @default(MEALS)
+  estimatedMeals        Int
+  preparationTime       DateTime
+  safePickupDeadline    DateTime
+  storageCondition      StorageCondition  @default(HOT_HOLDING)
+  foodCondition         FoodCondition     @default(FRESHLY_PREPARED)
+  allergens             String[]          @default([])
+  photoUrls             String[]          @default([])
+  specialInstructions   String?
+  priority              PriorityLevel     @default(HIGH)
+  status                DonationStatus    @default(AVAILABLE)
+
+  // Pickup fields
+  pickupAddressId       String
+  approximateArea       String
+  distanceKm            Float?
+  contactName           String
+  contactPhone          String
+  contactEmail          String?
+  windowStart           DateTime
+  windowEnd             DateTime
+  directions            String?
+
+  // Safety Declaration
+  safetyFreshlyPrepared Boolean           @default(true)
+  safetyProperlyCovered Boolean           @default(true)
+  safetyNoSpoilage      Boolean           @default(true)
+  safetyStoredCorrectly Boolean           @default(true)
+  safetyAllergensDisclosed Boolean        @default(true)
+  safetyDeadlineConfirmed Boolean         @default(true)
+  safetyDeclaredAt      DateTime          @default(now())
+
+  publishedAt           DateTime?
+  cancelledAt           DateTime?
+  cancellationReason    String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  donor                 DonorProfile      @relation(fields: [donorProfileId], references: [id], onDelete: Cascade)
+  pickupAddress         Address           @relation(fields: [pickupAddressId], references: [id])
+  claim                 Claim?
+
+  @@map("donations")
+}
+
+model Claim {
+  id                        String             @id @default(cuid())
+  donationId                String             @unique
+  ngoProfileId              String
+  volunteerProfileId        String?
+  status                    ClaimStatus        @default(RESERVED)
+  matchScore                Int                @default(90)
+  reservedAt                DateTime           @default(now())
+  assignedAt                DateTime?
+  pickedUpAt                DateTime?
+  deliveredAt               DateTime?
+  distributedAt             DateTime?
+  estimatedPickupAt         DateTime?
+  estimatedDeliveryAt       DateTime?
+  pickupVerificationToken   String?
+  deliveryVerificationToken String?
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+
+  donation                  Donation           @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  ngo                       NGOProfile         @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+  volunteer                 VolunteerProfile?  @relation(fields: [volunteerProfileId], references: [id])
+  deliveryReceipt           DeliveryReceipt?
+  distributionRecord        DistributionRecord?
+  impactRecord              ImpactRecord?
+  incidentReports           IncidentReport[]
+
+  @@map("claims")
+}
+
+model FoodRequest {
+  id                      String          @id @default(cuid())
+  ngoProfileId            String
+  title                   String
+  requestType             RequestType     @default(ONE_TIME)
+  priority                PriorityLevel   @default(HIGH)
+  priorityReason          String?
+  supportingDocumentNames String[]        @default([])
+  purpose                 String
+  recipientType           String
+  categories              FoodCategory[]  @default([])
+  dietaryTypes            DietaryType[]   @default([HALAL])
+  specificPreferences     String?
+  allergensOrRestrictions String[]        @default([])
+  peopleToServe           Int
+  mealsNeeded             Int
+  neededWhen              String          @default("TODAY")
+  neededBy                DateTime
+  preferredTimeSlot       String?
+  locationType            String          @default("SHELTER")
+  deliveryArea            String
+  deliveryCity            String          @default("Dhaka")
+  deliveryAddressLine     String
+  deliveryLandmark        String?
+  deliveryInstructions    String?
+  notes                   String?
+  status                  RequestStatus   @default(PENDING_REVIEW)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+
+  ngo                     NGOProfile      @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+
+  @@map("food_requests")
+}
+
+model DeliveryReceipt {
+  id                        String       @id @default(cuid())
+  claimId                   String       @unique
+  ngoProfileId              String
+  expectedQuantity          Float
+  actualQuantity            Float
+  quantityUnit              QuantityUnit @default(MEALS)
+  foodCondition             String       @default("GOOD")
+  quantityMismatchConfirmed Boolean      @default(false)
+  distributionBlocked       Boolean      @default(false)
+  verificationMethod        String       @default("QR")
+  notes                     String?
+  photoNames                String[]     @default([])
+  receivedAt                DateTime     @default(now())
+  createdAt                 DateTime     @default(now())
+
+  claim                     Claim        @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  ngo                       NGOProfile   @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+
+  @@map("delivery_receipts")
+}
+
+model DistributionRecord {
+  id                          String     @id @default(cuid())
+  claimId                     String     @unique
+  ngoProfileId                String
+  beneficiariesServed         Int
+  mealsDistributed            Int
+  adultsServed                Int?
+  childrenServed              Int?
+  distributedAt               DateTime   @default(now())
+  addressId                   String
+  notes                       String?
+  photoUrls                   String[]   @default([])
+  beneficiaryConsentConfirmed Boolean    @default(true)
+  createdAt                   DateTime   @default(now())
+
+  claim                       Claim      @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  ngo                         NGOProfile @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+  distributionAddress         Address    @relation(fields: [addressId], references: [id])
+
+  @@map("distribution_records")
+}
+
+model ImpactRecord {
+  id                        String        @id @default(cuid())
+  claimId                   String?       @unique
+  donorProfileId            String?
+  ngoProfileId              String?
+  recordedAt                DateTime      @default(now())
+  mealsRescued              Int
+  foodWeightKg              Float
+  beneficiariesServed       Int
+  estimatedCo2PreventedKg   Float
+  estimatedWaterSavedLitres Float?
+  estimateMethodology       String
+
+  claim                     Claim?        @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  donor                     DonorProfile? @relation(fields: [donorProfileId], references: [id], onDelete: SetNull)
+  ngo                       NGOProfile?   @relation(fields: [ngoProfileId], references: [id], onDelete: SetNull)
+
+  @@map("impact_records")
+}
+
+model IncidentReport {
+  id                     String         @id @default(cuid())
+  claimId                String
+  reportedByUserId       String
+  type                   IncidentType   @default(SAFETY_CONCERN)
+  severity               PriorityLevel  @default(HIGH)
+  description            String
+  evidenceUrls           String[]       @default([])
+  preferredContactMethod String         @default("PHONE")
+  status                 IncidentStatus @default(SUBMITTED)
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  resolvedAt             DateTime?
+
+  claim                  Claim          @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  reportedByUser         User           @relation(fields: [reportedByUserId], references: [id], onDelete: Cascade)
+
+  @@map("incident_reports")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType @default(SYSTEM)
+  priority  PriorityLevel    @default(MEDIUM)
+  title     String
+  message   String
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model UserPreference {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  pushNotifications  Boolean  @default(true)
+  emailNotifications Boolean  @default(true)
+  locationPermission String   @default("GRANTED")
+  language           String   @default("BN")
+  textSize           String   @default("MEDIUM")
+  updatedAt          DateTime @updatedAt
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
