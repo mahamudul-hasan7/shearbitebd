@@ -98,3 +98,38 @@ export function formatDonationQuantityBn(donation: DonationView) {
   return `${donation.quantity.value} ${unitBn}`;
 }
 
+export const TITLE_TRANSLATIONS: Record<string, string> = {
+  "Rice, chicken curry, and vegetables": "ভাত, মুরগির মাংসের তরকারি ও তাজা সবজি",
+  "Packaged bread and snack boxes": "প্যাকেটজাত রুটি ও নিরামিষ স্ন্যাক্স বক্স",
+  "Seasonal fruit and vegetables": "তাজা মৌসুমি ফলমূল ও কাঁচা শাকসবজি",
+  "Warm vegetable biryani with egg": "গরম ভেজিটেবল বিরিয়ানি ও সিদ্ধ ডিম",
+  "Fresh bakery buns and rolls": "তাজা বেকারি বান ও সুস্বাদু রোলস",
+  "Sealed pantry rescue packs": "সিল্ড খাদ্যশস্য, চাল, মসুর ডাল ও তেল প্যাক",
+  "Fresh fruit and vegetable crates": "তাজা ফলমূল ও মৌসুমী শাকসবজির ক্র্যাট",
+  "Chilled yoghurt cups": "হিমায়িত মিষ্টি ও টক দইয়ের কাপ",
+  "Fresh buffet meal boxes": "বুফে লাঞ্চ মিল বক্স (চিকেন, রাইস ও ডাল)",
+  "Mutton kacchi biryani and chicken roast portions": "খাসির ঐতিহ্যবাহী কাচ্চি বিরিয়ানি ও চিকেন রোস্ট",
+  "Bhuna khichuri, boiled eggs, and vegetable curry": "গরম ভুনা খিচুড়ি, ডিম ভুনা ও মিক্সড সবজি",
+  "Fresh chicken patties, vegetable rolls, and sweet buns": "তাজা চিকেন প্যাটিস, ভেজিটেবল রোল ও মিষ্টি বান",
+  "Farm fresh carrots, potatoes, tomatoes, and ripe bananas": "তাজা গাজর, আলু, টমেটো ও পাকা কলার ক্র্যাট",
+  "Steamed aromatic rice, lentils, and fresh fish curry": "সুগন্ধি ভাত, ঘন মসুর ডাল ও তাজা রুই মাছের ঝোল",
+  "Chicken biryani portions": "চিকেন বিরিয়ানি ও ডিমের পুষ্টিকর অংশ",
+};
+
+export const DONOR_ORGANIZATION_TRANSLATIONS: Record<string, string> = {
+  "UIU Cafeteria": "UIU সেন্ট্রাল ক্যাফেটেরিয়া",
+  "Banani Breadworks": "বনানী ব্রেডওয়ার্কস অ্যান্ড ক্যাফে",
+  "Badda Community Bites": "বাড্ডা কমিউনিটি কিচেন",
+  "Hope Foundation": "মাস্তুল ফাউন্ডেশন",
+};
+
+export function getDonationTitleBn(title?: string): string {
+  if (!title) return "";
+  return TITLE_TRANSLATIONS[title] || title;
+}
+
+export function getDonorOrganizationBn(org?: string): string {
+  if (!org) return "";
+  return DONOR_ORGANIZATION_TRANSLATIONS[org] || org;
+}
+

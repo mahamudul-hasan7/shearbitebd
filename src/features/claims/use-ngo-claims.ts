@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ClaimStatus } from "@/lib/constants/statuses";
 import { NGO_PROFILE_ID, NGO_VIEWER } from "@/features/ngo-dashboard/use-ngo-dashboard";
 import { ACTIVE_CLAIM_STATUSES, COMPLETED_CLAIM_STATUSES, type ClaimFilter } from "@/features/claims/types";
+import { claimStatusLabelBn } from "@/features/claims/claim-presentation";
+import { getDonationTitleBn, getDonorOrganizationBn } from "@/features/donations/donation-presentation";
 import { asyncState, claimService, toServiceError, type AsyncState, type ClaimCoordinationDetails } from "@/services";
 
 const DEMO_VOLUNTEER_ID = "volunteer-demo";
@@ -32,7 +34,11 @@ export function useNgoClaims() {
     return (state.data ?? []).filter((item) => {
       if (filter !== "ALL" && item.claim.status !== filter) return false;
       if (!query) return true;
-      return `${item.claim.id} ${item.donation.title} ${item.donorOrganization} ${item.donation.pickup.approximateArea} ${item.volunteer?.displayName ?? ""}`.toLowerCase().includes(query);
+      const titleBn = getDonationTitleBn(item.donation.title);
+      const donorBn = getDonorOrganizationBn(item.donorOrganization);
+      const statusBn = claimStatusLabelBn(item.claim.status);
+      const haystack = `${item.claim.id} ${item.donation.title} ${titleBn} ${item.donorOrganization} ${donorBn} ${statusBn} ${item.donation.pickup.approximateArea} ${item.volunteer?.displayName ?? ""}`.toLowerCase();
+      return haystack.includes(query);
     });
   }, [filter, search, state.data]);
 

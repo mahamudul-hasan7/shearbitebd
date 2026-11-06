@@ -303,7 +303,7 @@ export function createMockAppState(now = new Date()): MockAppState {
         pickup: { addressId: "address-banani-bread", approximateArea: "Mirpur 10, Dhaka", distanceKm: 6.2, contact: { name: "Private until claimed", phone: "+8801700000003" }, windowStart: relativeIso(baseTime, 30), windowEnd: relativeIso(baseTime, 360), directions: "Shared only after a verified claim." },
         safetyDeclaration: declaration(baseTime, "user-donor-banani", 40),
         priority: PriorityLevel.MEDIUM,
-        status: DonationStatus.AVAILABLE,
+        status: DonationStatus.DELIVERED,
         publishedAt: relativeIso(baseTime, -35),
         createdAt: relativeIso(baseTime, -50),
         updatedAt: relativeIso(baseTime, -12),
@@ -469,6 +469,7 @@ export function createMockAppState(now = new Date()): MockAppState {
       { id: "claim-uiu-lunch", donationId: "donation-uiu-lunch", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.PICKED_UP, matchScore: 96, reservedAt: relativeIso(baseTime, -25), assignedAt: relativeIso(baseTime, -15), pickedUpAt: relativeIso(baseTime, -5), estimatedPickupAt: relativeIso(baseTime, -5), estimatedDeliveryAt: relativeIso(baseTime, 45), pickupVerificationToken: "MOCK-PICKUP-624819", deliveryVerificationToken: "MOCK-DELIVERY-381507", updatedAt: relativeIso(baseTime, -5) },
       { id: "claim-banani-bread", donationId: "donation-banani-bread", ngoProfileId: "ngo-hope", status: ClaimStatus.RESERVED, matchScore: 86, reservedAt: relativeIso(baseTime, -15), estimatedPickupAt: relativeIso(baseTime, 150), updatedAt: relativeIso(baseTime, -15) },
       { id: "claim-badda-biryani", donationId: "donation-badda-biryani", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.ASSIGNED, matchScore: 94, reservedAt: relativeIso(baseTime, -30), assignedAt: relativeIso(baseTime, -5), estimatedPickupAt: relativeIso(baseTime, 35), estimatedDeliveryAt: relativeIso(baseTime, 80), pickupVerificationToken: "MOCK-PICKUP-482913", deliveryVerificationToken: "MOCK-DELIVERY-735204", updatedAt: relativeIso(baseTime, -5) },
+      { id: "claim-mirpur-bakery", donationId: "donation-mirpur-bakery", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.DELIVERED, matchScore: 97, reservedAt: relativeIso(baseTime, -90), assignedAt: relativeIso(baseTime, -75), pickedUpAt: relativeIso(baseTime, -45), deliveredAt: relativeIso(baseTime, -10), pickupVerificationToken: "MOCK-PICKUP-819234", deliveryVerificationToken: "MOCK-DELIVERY-512890", updatedAt: relativeIso(baseTime, -10) },
       { id: "claim-uiu-produce", donationId: "donation-uiu-produce", ngoProfileId: "ngo-hope", volunteerProfileId: "volunteer-demo", status: ClaimStatus.DISTRIBUTED, matchScore: 91, reservedAt: relativeIso(baseTime, -1_440), assignedAt: relativeIso(baseTime, -1_380), pickedUpAt: relativeIso(baseTime, -1_200), deliveredAt: relativeIso(baseTime, -1_020), distributedAt: relativeIso(baseTime, -600), updatedAt: relativeIso(baseTime, -600) },
     ],
     requests: [
