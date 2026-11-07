@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react";
 import { AppHeader } from "@/components/layout/app-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { DesktopSidebar } from "@/components/navigation/desktop-sidebar";
-import { UniversalRoleSwitcher } from "@/components/navigation/universal-role-switcher";
 import type { PortalRole } from "@/types/navigation";
 
 export function PortalShell({
@@ -46,7 +45,6 @@ export function PortalShell({
         avatarInitials={avatarInitials}
       />
       <div className="min-w-0 flex flex-col min-h-screen lg:pl-[var(--sidebar-width)]">
-        <UniversalRoleSwitcher currentRole={role} />
         <AppHeader
           role={role}
           activeHref={activeHref}

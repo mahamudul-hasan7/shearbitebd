@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { HeroTicker } from "@/components/home/hero-ticker";
-import { UniversalRoleSwitcher } from "@/components/navigation/universal-role-switcher";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -620,9 +619,6 @@ export function HomeView() {
 
   return (
     <div className="min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
-      {/* 0. Top Presentation Role Switcher */}
-      <UniversalRoleSwitcher currentRole="home" />
-
       {/* 1. Header / Navbar with Language Switcher and Mobile Drawer */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
