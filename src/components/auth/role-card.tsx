@@ -5,9 +5,7 @@ import {
   ArrowRight,
   Bike,
   Building2,
-  CheckCircle2,
   LockKeyhole,
-  Sparkles,
   UserRoundCog,
   UtensilsCrossed,
 } from "lucide-react";
@@ -24,13 +22,10 @@ const DEFAULT_ICONS: Record<"donor" | "ngo" | "volunteer" | "admin", LucideIcon>
 export interface RoleCardProps {
   icon?: LucideIcon;
   title: string;
-  englishSubtitle: string;
-  badge?: string;
-  liveStatus?: string;
+  subtitle?: string;
   description: string;
-  features: readonly string[];
-  ctaText: string;
   href: string;
+  badge?: string;
   tone?: "donor" | "ngo" | "volunteer" | "admin";
   disabled?: boolean;
 }
@@ -38,141 +33,110 @@ export interface RoleCardProps {
 export function RoleCard({
   icon: customIcon,
   title,
-  englishSubtitle,
-  badge,
-  liveStatus,
+  subtitle,
   description,
-  features,
-  ctaText,
   href,
+  badge,
   tone = "donor",
   disabled = false,
 }: RoleCardProps) {
   const Icon = customIcon ?? DEFAULT_ICONS[tone];
 
-  const toneStyles = {
+  const toneConfig = {
     donor: {
-      card: "border-emerald-200/90 bg-gradient-to-b from-emerald-50/50 via-white to-white hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/10",
-      iconBox: "bg-emerald-600 text-white shadow-md shadow-emerald-600/25",
-      badge: "border-emerald-300 bg-emerald-100/80 text-emerald-800",
-      featureTag: "bg-emerald-50/80 text-emerald-900 border-emerald-200/80",
-      cta: "bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white shadow-md shadow-emerald-700/20 group-hover:shadow-lg group-hover:shadow-emerald-700/30",
+      cardHover: "hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-900/5",
+      iconStyle: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/15 group-hover:bg-emerald-600 group-hover:text-white",
+      arrowStyle: "group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600",
+      linkText: "text-emerald-700",
     },
     ngo: {
-      card: "border-blue-200/90 bg-gradient-to-b from-blue-50/50 via-white to-white hover:border-blue-500 hover:shadow-xl hover:shadow-blue-900/10",
-      iconBox: "bg-blue-600 text-white shadow-md shadow-blue-600/25",
-      badge: "border-blue-300 bg-blue-100/80 text-blue-800",
-      featureTag: "bg-blue-50/80 text-blue-900 border-blue-200/80",
-      cta: "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white shadow-md shadow-blue-700/20 group-hover:shadow-lg group-hover:shadow-blue-700/30",
+      cardHover: "hover:border-blue-400 hover:shadow-lg hover:shadow-blue-900/5",
+      iconStyle: "bg-blue-50 text-blue-700 ring-1 ring-blue-600/15 group-hover:bg-blue-600 group-hover:text-white",
+      arrowStyle: "group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600",
+      linkText: "text-blue-700",
     },
     volunteer: {
-      card: "border-amber-200/90 bg-gradient-to-b from-amber-50/50 via-white to-white hover:border-amber-500 hover:shadow-xl hover:shadow-amber-900/10",
-      iconBox: "bg-amber-500 text-white shadow-md shadow-amber-500/25",
-      badge: "border-amber-300 bg-amber-100/80 text-amber-900",
-      featureTag: "bg-amber-50/80 text-amber-950 border-amber-200/80",
-      cta: "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white shadow-md shadow-amber-600/20 group-hover:shadow-lg group-hover:shadow-amber-600/30",
+      cardHover: "hover:border-amber-400 hover:shadow-lg hover:shadow-amber-900/5",
+      iconStyle: "bg-amber-50 text-amber-700 ring-1 ring-amber-600/15 group-hover:bg-amber-500 group-hover:text-white",
+      arrowStyle: "group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500",
+      linkText: "text-amber-700",
     },
     admin: {
-      card: "border-slate-200 bg-gradient-to-b from-slate-50 via-white to-slate-50 opacity-75",
-      iconBox: "bg-slate-700 text-white shadow-sm",
-      badge: "border-slate-300 bg-slate-100 text-slate-700",
-      featureTag: "bg-slate-100 text-slate-600 border-slate-200",
-      cta: "bg-slate-200 text-slate-500 cursor-not-allowed",
+      cardHover: "opacity-60",
+      iconStyle: "bg-slate-100 text-slate-500 ring-1 ring-slate-200",
+      arrowStyle: "bg-slate-100 text-slate-400 border-slate-200",
+      linkText: "text-slate-500",
     },
   };
 
-  const currentTone = toneStyles[tone];
+  const current = toneConfig[tone];
 
-  const cardContent = (
+  const content = (
     <div
       className={cn(
-        "group relative flex h-full flex-col justify-between rounded-3xl border-2 p-6 transition-all duration-300 shadow-xs",
-        currentTone.card,
+        "group relative flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 transition-all duration-200 shadow-2xs select-none",
+        current.cardHover,
         disabled
-          ? "cursor-not-allowed select-none"
-          : "cursor-pointer hover:-translate-y-1.5 active:translate-y-0 active:scale-[0.99]",
+          ? "cursor-not-allowed bg-slate-50/50"
+          : "cursor-pointer hover:-translate-y-1 active:translate-y-0 active:scale-[0.99]",
       )}
     >
-      {/* Top Header Row */}
       <div>
-        <div className="flex items-start justify-between gap-3">
-          {/* Icon Container */}
+        {/* Top Icon & Badge Row */}
+        <div className="flex items-center justify-between gap-3">
           <div
             className={cn(
-              "grid size-13 place-items-center rounded-2xl transition-transform duration-300 group-hover:scale-110",
-              currentTone.iconBox,
+              "grid size-12 place-items-center rounded-xl transition-all duration-300 shadow-2xs",
+              current.iconStyle,
             )}
           >
-            <Icon className="size-6.5 transition-transform duration-300 group-hover:rotate-6" />
+            <Icon className="size-5.5 transition-transform duration-300 group-hover:scale-110" />
           </div>
 
-          {/* Badges / Live Status */}
-          <div className="flex flex-col items-end gap-1.5">
-            {badge && (
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-black tracking-wider uppercase font-heading shadow-2xs",
-                  currentTone.badge,
-                )}
-              >
-                <Sparkles className="size-3" />
-                {badge}
-              </span>
-            )}
-            {liveStatus && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/90 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 border border-slate-200/80">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {liveStatus}
-              </span>
-            )}
-          </div>
+          {badge && (
+            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-600 border border-slate-200/80">
+              {badge}
+            </span>
+          )}
         </div>
 
-        {/* Title and English subtitle */}
+        {/* Title & Short Subtitle */}
         <div className="mt-4">
-          <h3 className="text-xl font-black tracking-tight text-slate-900 font-heading">
+          <h3 className="text-base font-black text-slate-900 font-heading">
             {title}
+            {subtitle && (
+              <span className="ml-1.5 text-xs font-medium text-slate-400 font-sans">
+                ({subtitle})
+              </span>
+            )}
           </h3>
-          <p className="text-xs font-semibold text-slate-500 font-sans tracking-wide">
-            {englishSubtitle}
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 font-normal">
+            {description}
           </p>
-        </div>
-
-        {/* Description */}
-        <p className="mt-2.5 text-xs leading-relaxed text-slate-600 font-normal">
-          {description}
-        </p>
-
-        {/* Key Features Chips */}
-        <div className="mt-4 space-y-1.5">
-          {features.map((feature) => (
-            <div
-              key={feature}
-              className={cn(
-                "flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-[11px] font-medium leading-snug transition-colors",
-                currentTone.featureTag,
-              )}
-            >
-              <CheckCircle2 className="size-3.5 shrink-0 opacity-80" />
-              <span className="truncate">{feature}</span>
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* Bottom CTA Button */}
-      <div className="mt-6 pt-4 border-t border-slate-100">
-        <div
+      {/* Bottom Minimal Action Link */}
+      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5">
+        <span
           className={cn(
-            "flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 select-none font-heading",
-            currentTone.cta,
+            "text-xs font-bold font-heading transition-colors",
+            disabled ? "text-slate-400" : current.linkText,
           )}
         >
-          <span>{ctaText}</span>
+          {disabled ? "সংরক্ষিত পোর্টাল" : "রেজিস্ট্রেশন করুন"}
+        </span>
+
+        <div
+          className={cn(
+            "grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-400 transition-all duration-200",
+            disabled ? "" : current.arrowStyle,
+          )}
+        >
           {disabled ? (
-            <LockKeyhole className="size-4 shrink-0" />
+            <LockKeyhole className="size-3.5" />
           ) : (
-            <ArrowRight className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+            <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
           )}
         </div>
       </div>
@@ -180,12 +144,15 @@ export function RoleCard({
   );
 
   if (disabled) {
-    return cardContent;
+    return content;
   }
 
   return (
-    <Link href={href} className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 rounded-3xl">
-      {cardContent}
+    <Link
+      href={href}
+      className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 rounded-2xl"
+    >
+      {content}
     </Link>
   );
 }
