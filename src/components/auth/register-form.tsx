@@ -102,16 +102,6 @@ export function RegisterForm() {
 
   const activeMeta = ROLE_METAS[role];
 
-  function handleRoleSwitch(nextRole: RegistrationRole) {
-    if (nextRole === role) return;
-    setRole(nextRole);
-    setErrors({});
-    // Sync URL without reloading
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("role", nextRole);
-    window.history.replaceState(null, "", `?${params.toString()}`);
-  }
-
   const verificationNotice = useMemo(() => {
     if (role === "ngo") {
       return "সংস্থার সরকারি নিবন্ধন (সমাজসেবা বা এনজিও বিষয়ক ব্যুরো) সার্টিফিকেট আপলোড করা বাধ্যতামূলক। প্রাথমিক জমা দেওয়ার পর অ্যাডমিন টিম তথ্য যাচাই করবে।";
@@ -273,62 +263,7 @@ export function RegisterForm() {
 
   return (
     <div>
-      {/* 1. Interactive 1-Click Role Switcher */}
-      <div className="mb-6 space-y-2.5">
-        <div className="flex items-center justify-between text-xs font-bold font-heading">
-          <span className="flex items-center gap-1.5 text-slate-700">
-            <span className="inline-block size-2 rounded-full bg-emerald-500 animate-pulse" />
-            রেজিস্ট্রেশন ভূমিকা বেছে নিন:
-          </span>
-          <Link
-            href={ROUTES.auth.roleSelection}
-            className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
-          >
-            সব ভূমিকা দেখুন ↗
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          {(["donor", "ngo", "volunteer"] as const).map((r) => {
-            const meta = ROLE_METAS[r];
-            const Icon = meta.icon;
-            const isSelected = role === r;
-            return (
-              <button
-                key={r}
-                type="button"
-                onClick={() => handleRoleSwitch(r)}
-                className={cn(
-                  "group relative flex flex-col items-center justify-center rounded-2xl border p-2.5 sm:p-3 text-center transition-all cursor-pointer font-heading active:scale-95",
-                  isSelected
-                    ? "border-emerald-600 bg-emerald-50/80 shadow-xs ring-2 ring-emerald-600/20"
-                    : "border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50"
-                )}
-              >
-                <span
-                  className={cn(
-                    "grid size-9 place-items-center rounded-xl text-white shadow-xs transition-colors",
-                    isSelected ? "bg-emerald-600" : "bg-slate-700 group-hover:bg-emerald-600"
-                  )}
-                >
-                  <Icon className="size-4.5" />
-                </span>
-                <span className="mt-2 text-xs font-black text-slate-900">{meta.title}</span>
-                <span className="hidden sm:inline-block text-[10px] text-slate-500 font-medium truncate max-w-[110px]">
-                  {meta.subtitle.split(" ")[0]}
-                </span>
-                {isSelected && (
-                  <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
-                    <CheckCircle2 className="size-3.5" />
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 2. Step Stepper Indicator */}
+      {/* 1. Step Stepper Indicator */}
       <AuthProgress steps={steps} current={currentStep} />
 
       {/* 3. Step Header */}
