@@ -202,6 +202,21 @@ select {
     var(--surface);
 }
 
+/* Global Button Affordance: Ensure all interactive controls show hand cursor & clear click cues */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a[href]:not([aria-disabled="true"]),
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.95);

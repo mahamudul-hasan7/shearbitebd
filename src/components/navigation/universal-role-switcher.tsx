@@ -53,10 +53,10 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.donor.dashboard}
             title="খাদ্যদাতা ড্যাশবোর্ডে যান"
             className={cn(
-              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "donor"
-                ? "bg-emerald-600 text-white shadow-sm font-black"
-                : "text-white/80 hover:text-white hover:bg-white/15",
+                ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white shadow-md shadow-emerald-950/50 font-black ring-1 ring-white/30"
+                : "border border-transparent text-white/80 hover:border-white/20 hover:bg-white/15 hover:text-white hover:-translate-y-0.5 active:translate-y-0",
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">👨‍🍳</span>
@@ -68,10 +68,10 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.ngo.dashboard}
             title="মাস্তুল এনজিও ড্যাশবোর্ডে যান"
             className={cn(
-              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "ngo"
-                ? "bg-emerald-600 text-white shadow-sm font-black"
-                : "text-white/80 hover:text-white hover:bg-white/15",
+                ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white shadow-md shadow-emerald-950/50 font-black ring-1 ring-white/30"
+                : "border border-transparent text-white/80 hover:border-white/20 hover:bg-white/15 hover:text-white hover:-translate-y-0.5 active:translate-y-0",
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">🏢</span>
@@ -83,10 +83,10 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.volunteer.dashboard}
             title="ভলান্টিয়ার কমান্ড হাবে যান"
             className={cn(
-              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "volunteer"
-                ? "bg-emerald-600 text-white shadow-sm font-black"
-                : "text-white/80 hover:text-white hover:bg-white/15",
+                ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white shadow-md shadow-emerald-950/50 font-black ring-1 ring-white/30"
+                : "border border-transparent text-white/80 hover:border-white/20 hover:bg-white/15 hover:text-white hover:-translate-y-0.5 active:translate-y-0",
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-6">🚴</span>

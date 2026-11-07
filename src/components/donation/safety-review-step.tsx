@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CalendarClock, CheckCircle2, MapPin, PackageCheck, ShieldCheck, Utensils, Zap } from "lucide-react";
+import { AlertTriangle, CalendarClock, CheckCircle2, Edit3, MapPin, PackageCheck, ShieldCheck, Utensils, Zap } from "lucide-react";
 import { RescueClock } from "@/components/donor/rescue-clock";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -120,9 +120,10 @@ export function SafetyReviewStep({
             <button
               type="button"
               onClick={() => editStep(1)}
-              className="text-xs font-bold text-emerald-700 hover:underline font-heading"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-2 border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:border-emerald-600 hover:bg-emerald-600 hover:text-white hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 font-heading"
             >
-              পরিবর্তন করুন
+              <Edit3 className="size-3.5" />
+              <span>পরিবর্তন করুন</span>
             </button>
           </div>
 
@@ -155,9 +156,10 @@ export function SafetyReviewStep({
             <button
               type="button"
               onClick={() => editStep(2)}
-              className="text-xs font-bold text-emerald-700 hover:underline font-heading"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-2 border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:border-emerald-600 hover:bg-emerald-600 hover:text-white hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 font-heading"
             >
-              পরিবর্তন করুন
+              <Edit3 className="size-3.5" />
+              <span>পরিবর্তন করুন</span>
             </button>
           </div>
 

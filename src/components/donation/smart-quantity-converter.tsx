@@ -136,13 +136,16 @@ export function SmartQuantityConverter({
       {/* Quick Preset Pills */}
       {onSelectPreset && (
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              কুইক সিলেক্ট প্রিসেট (Quick Quantity)
+          <div className="mb-2 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-[11px] font-black text-slate-600 uppercase tracking-wider font-heading">
+              <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+              কুইক সিলেক্ট প্রিসেট বাটন (১-ক্লিক পূরণ)
             </span>
-            <span className="text-[10px] text-slate-400">ক্লিক করে পূরণ করুন</span>
+            <span className="rounded-md bg-emerald-100/70 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+              ক্লিকযোগ্য বাটন
+            </span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {PRESETS.map((preset) => {
               const isSelected =
                 quantity === preset.qty && quantityUnit === preset.unit;
@@ -152,10 +155,10 @@ export function SmartQuantityConverter({
                   type="button"
                   onClick={() => onSelectPreset(preset.qty, preset.unit)}
                   className={cn(
-                    "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-95",
+                    "group inline-flex cursor-pointer items-center gap-1.5 rounded-full border-2 px-3.5 py-1.5 text-xs font-bold transition-all duration-200 select-none hover:-translate-y-0.5 active:translate-y-0 active:scale-95",
                     isSelected
-                      ? "border-emerald-600 bg-emerald-600 text-white shadow-xs"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-800",
+                      ? "border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-2 ring-emerald-500/20"
+                      : "border-slate-300 bg-white text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 hover:shadow-xs",
                   )}
                 >
                   <UtensilsCrossed
@@ -167,11 +170,11 @@ export function SmartQuantityConverter({
                   <span>{preset.label}</span>
                   <span
                     className={cn(
-                      "text-[10px] font-normal",
-                      isSelected ? "text-emerald-100" : "text-slate-400",
+                      "text-[10px] font-medium rounded-full px-1.5 py-0.2",
+                      isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-800",
                     )}
                   >
-                    ({preset.description})
+                    {preset.description}
                   </span>
                 </button>
               );

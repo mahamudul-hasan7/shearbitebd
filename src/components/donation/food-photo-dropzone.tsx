@@ -197,13 +197,14 @@ export function FoodPhotoDropzone({
           <UploadCloud className="size-6 text-emerald-600 animate-icon-float transition-transform group-hover:-translate-y-0.5" />
         </div>
 
-        <p className="mt-3 text-xs font-bold text-slate-800">
-          ছবি ড্র্যাগ করে এনে ছেড়ে দিন, অথবা{" "}
-          <span className="text-emerald-700 underline underline-offset-2">
-            ব্রাউজ করে আপলোড করুন
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <span className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-emerald-600 bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
+            <Camera className="size-4" />
+            <span>ডিভাইস থেকে ছবি বেছে নিন</span>
           </span>
-        </p>
-        <p className="mt-1 text-[11px] text-slate-400">
+          <span className="text-xs text-slate-500 font-medium">অথবা ড্র্যাগ করে ড্রপ করুন</span>
+        </div>
+        <p className="mt-2 text-[11px] text-slate-400">
           জেপিজি, পিএনজি বা ওয়েবপি ফাইল (প্রতিটি সর্বোচ্চ ৫ মেগাবাইট)
         </p>
 
@@ -240,10 +241,10 @@ export function FoodPhotoDropzone({
                 onClick={() => handleAddPreset(preset)}
                 disabled={isAdded || photoNames.length >= maxFiles}
                 className={cn(
-                  "group flex items-center gap-2 rounded-xl border p-2 text-left text-xs transition-all",
+                  "group relative flex items-center gap-2.5 rounded-xl border-2 p-2.5 text-left text-xs transition-all duration-200 select-none",
                   isAdded
-                    ? "border-emerald-300 bg-emerald-50/70 text-emerald-800 cursor-default"
-                    : "border-slate-200 bg-slate-50/60 hover:border-emerald-300 hover:bg-emerald-50/40 hover:scale-[1.02]",
+                    ? "border-emerald-400 bg-emerald-50/80 text-emerald-900 shadow-2xs cursor-default ring-1 ring-emerald-400/30"
+                    : "border-slate-300 bg-white text-slate-800 shadow-xs hover:border-emerald-500 hover:bg-emerald-50/60 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer active:translate-y-0 active:scale-95",
                 )}
               >
                 <span className="text-xl shrink-0 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">
@@ -254,9 +255,13 @@ export function FoodPhotoDropzone({
                   <p className="text-[9px] text-slate-500">{preset.badge}</p>
                 </div>
                 {isAdded ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0 animate-pulse" />
+                  <span className="flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800">
+                    <CheckCircle2 className="size-3 text-emerald-600" /> যুক্ত
+                  </span>
                 ) : (
-                  <Plus className="size-3.5 text-slate-400 shrink-0 transition-transform duration-300 group-hover:rotate-90 group-hover:text-emerald-600" />
+                  <span className="flex items-center gap-1 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                    <Plus className="size-3" /> যোগ
+                  </span>
                 )}
               </button>
             );

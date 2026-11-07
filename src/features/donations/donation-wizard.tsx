@@ -229,7 +229,12 @@ export function DonationWizard() {
       backHref={ROUTES.donor.dashboard}
       backLabel="ড্যাশবোর্ডে ফিরুন"
     >
-      <Stepper steps={wizardSteps} current={currentStep} label="খাদ্য অনুদান পোস্টের অগ্রগতি" />
+      <Stepper
+        steps={wizardSteps}
+        current={currentStep}
+        label="খাদ্য অনুদান পোস্টের অগ্রগতি"
+        onStepClick={(step) => editStep(step as DonationWizardStep)}
+      />
       {preferredNgo && currentStep !== 4 && (
         <Alert
           className="mt-6"
@@ -293,22 +298,31 @@ export function DonationWizard() {
               <StickyActionBar className="px-5 sm:px-7">
                 <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                   {/* Left Side: Back Navigation & Draft */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     {currentStep === 1 ? (
-                      <ButtonLink href={ROUTES.donor.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>
+                      <ButtonLink
+                        href={ROUTES.donor.dashboard}
+                        variant="outline"
+                        leftIcon={<ArrowLeft className="size-4" />}
+                      >
                         ড্যাশবোর্ডে ফিরুন
                       </ButtonLink>
                     ) : (
-                      <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        leftIcon={<ArrowLeft className="size-4" />}
+                        onClick={goBack}
+                      >
                         পূর্ববর্তী ধাপ
                       </Button>
                     )}
                     <Button
                       type="button"
-                      variant="ghost"
-                      leftIcon={<Save className="size-4" />}
+                      variant="outline"
+                      leftIcon={<Save className="size-4 text-emerald-600 animate-icon-breathe" />}
                       onClick={persistDraft}
-                      className="text-slate-600 hover:text-emerald-700"
+                      className="border-slate-300 bg-slate-50/70 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-800"
                     >
                       খসড়া সংরক্ষণ
                     </Button>
@@ -317,14 +331,21 @@ export function DonationWizard() {
                   {/* Right Side: Forward Navigation */}
                   <div className="flex items-center gap-2">
                     {currentStep < 3 ? (
-                      <Button type="button" rightIcon={<ArrowRight className="size-4" />} onClick={goNext}>
+                      <Button
+                        type="button"
+                        variant="primary"
+                        rightIcon={<ArrowRight className="size-4" />}
+                        onClick={goNext}
+                        className="px-6 text-sm sm:text-base shadow-lg shadow-emerald-700/25 ring-2 ring-emerald-500/30"
+                      >
                         পরবর্তী ধাপ
                       </Button>
                     ) : (
                       <Button
                         type="submit"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-700/20"
-                        rightIcon={<Send className="size-4" />}
+                        variant="primary"
+                        className="bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 px-6 text-sm sm:text-base shadow-xl shadow-emerald-700/30 ring-2 ring-emerald-500/30"
+                        rightIcon={<Send className="size-4 animate-icon-float" />}
                         disabled={submitting}
                       >
                         {submitting ? "পোস্ট হচ্ছে..." : "অনুদানের তালিকা প্রকাশ করুন"}

@@ -73,12 +73,12 @@ export function ClaimFilters({
               aria-pressed={active}
               onClick={() => onFilterChange(item.value)}
               className={cn(
-                "group inline-flex min-w-max items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:text-sm",
+                "group inline-flex min-w-max cursor-pointer items-center gap-2 rounded-xl border-2 px-3.5 py-2 text-xs font-bold transition-all duration-200 select-none hover:-translate-y-0.5 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:text-sm",
                 active
                   ? isException
-                    ? "border-rose-600 bg-rose-600 text-white shadow-sm"
-                    : "border-emerald-700 bg-emerald-700 text-white shadow-sm"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-800",
+                    ? "border-rose-600 bg-rose-600 text-white shadow-md shadow-rose-600/25"
+                    : "border-emerald-700 bg-emerald-700 text-white shadow-md shadow-emerald-700/25"
+                  : "border-slate-300 bg-white text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 hover:shadow-xs",
               )}
             >
               <span>{isBn ? item.labelBn : item.label}</span>
