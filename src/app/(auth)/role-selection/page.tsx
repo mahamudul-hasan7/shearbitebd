@@ -1,13 +1,10 @@
-import { Bike, Building2, ShieldCheck, Sparkles, UserRoundCog, UtensilsCrossed } from "lucide-react";
+"use client";
+
 import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RoleCard } from "@/components/auth/role-card";
 import { ROUTES } from "@/lib/routes";
-
-export const metadata = {
-  title: "আপনার ভূমিকা নির্বাচন করুন | ShareBite BD",
-  description: "খাদ্য দাতা, নিবন্ধিত এনজিও বা স্বেচ্ছাসেবী হিসেবে রেজিস্ট্রেশন করুন।",
-};
 
 export default function RoleSelectionPage() {
   return (
@@ -47,7 +44,6 @@ export default function RoleSelectionPage() {
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
         {/* Role 1: Food Donor */}
         <RoleCard
-          icon={UtensilsCrossed}
           title="খাদ্য দাতা ও ক্যাটারার্স"
           englishSubtitle="Food Donor / Commercial Kitchen"
           badge="ক্যাফেটেরিয়া ও রেস্তোরাঁ"
@@ -65,7 +61,6 @@ export default function RoleSelectionPage() {
 
         {/* Role 2: NGO / Charity */}
         <RoleCard
-          icon={Building2}
           title="এনজিও ও দাতব্য সংস্থা"
           englishSubtitle="NGO & Charity Organization"
           badge="মাস্তুল ও বিদ্যানন্দ নেটওয়ার্ক"
@@ -83,7 +78,6 @@ export default function RoleSelectionPage() {
 
         {/* Role 3: Volunteer Squad */}
         <RoleCard
-          icon={Bike}
           title="ভলান্টিয়ার স্কোয়াড"
           englishSubtitle="Volunteer Rescue Rider"
           badge="ওপেন পাইলট (ঢাকা মেট্রো)"
@@ -101,7 +95,6 @@ export default function RoleSelectionPage() {
 
         {/* Role 4: Super Admin */}
         <RoleCard
-          icon={UserRoundCog}
           title="সুপার অ্যাডমিন পোর্টাল"
           englishSubtitle="Civic Governance & Audit"
           badge="ইনভাইট ওনলি"

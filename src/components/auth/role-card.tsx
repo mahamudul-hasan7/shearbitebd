@@ -1,12 +1,28 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, CheckCircle2, LockKeyhole, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Bike,
+  Building2,
+  CheckCircle2,
+  LockKeyhole,
+  Sparkles,
+  UserRoundCog,
+  UtensilsCrossed,
+} from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+const DEFAULT_ICONS: Record<"donor" | "ngo" | "volunteer" | "admin", LucideIcon> = {
+  donor: UtensilsCrossed,
+  ngo: Building2,
+  volunteer: Bike,
+  admin: UserRoundCog,
+};
+
 export interface RoleCardProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   englishSubtitle: string;
   badge?: string;
@@ -20,7 +36,7 @@ export interface RoleCardProps {
 }
 
 export function RoleCard({
-  icon: Icon,
+  icon: customIcon,
   title,
   englishSubtitle,
   badge,
@@ -32,6 +48,8 @@ export function RoleCard({
   tone = "donor",
   disabled = false,
 }: RoleCardProps) {
+  const Icon = customIcon ?? DEFAULT_ICONS[tone];
+
   const toneStyles = {
     donor: {
       card: "border-emerald-200/90 bg-gradient-to-b from-emerald-50/50 via-white to-white hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/10",
