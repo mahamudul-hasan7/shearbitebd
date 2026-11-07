@@ -119,14 +119,14 @@ export function AiSpoilageMeter({
       {/* Top Banner */}
       <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-emerald-600 animate-pulse" />
+          <Sparkles className="size-4 text-emerald-600 animate-icon-breathe" />
           <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
             AI Spoilage & Food Safety Meter
           </h4>
         </div>
         <span
           className={cn(
-            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shadow-2xs",
+            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shadow-2xs transition-transform hover:scale-105",
             statusTone === "safe"
               ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
               : statusTone === "warning"
@@ -135,9 +135,9 @@ export function AiSpoilageMeter({
           )}
         >
           {statusTone === "safe" ? (
-            <CheckCircle2 className="size-3" />
+            <CheckCircle2 className="size-3 animate-pulse" />
           ) : (
-            <AlertTriangle className="size-3" />
+            <AlertTriangle className="size-3 animate-icon-wiggle" />
           )}
           {freshnessScore}% স্কোর
         </span>
@@ -198,16 +198,20 @@ export function AiSpoilageMeter({
 
         {/* Realtime Telemetry Stats */}
         <div className="space-y-2 text-xs">
-          <div className="flex items-center gap-2 rounded-xl bg-white/90 p-2.5 border border-slate-200/80 shadow-2xs">
-            <ThermometerSun className="size-4 text-amber-600 shrink-0" />
+          <div className="group flex items-center gap-2.5 rounded-xl bg-white/90 p-2.5 border border-slate-200/80 shadow-2xs hover:border-amber-300 hover:shadow-xs transition-all">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600 group-hover:bg-amber-100 transition-colors">
+              <ThermometerSun className="size-4 animate-icon-breathe group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300" />
+            </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">খাদ্যের তাপমাত্রা</p>
               <p className="font-black text-slate-900">{tempLabel}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl bg-white/90 p-2.5 border border-slate-200/80 shadow-2xs">
-            <Clock className="size-4 text-emerald-600 shrink-0" />
+          <div className="group flex items-center gap-2.5 rounded-xl bg-white/90 p-2.5 border border-slate-200/80 shadow-2xs hover:border-emerald-300 hover:shadow-xs transition-all">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+              <Clock className="size-4 animate-icon-float group-hover:scale-125 group-hover:rotate-45 transition-transform duration-300" />
+            </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">সেফ পিকআপ উইন্ডো</p>
               <p className="font-black text-slate-900 flex items-center gap-1.5">
@@ -222,8 +226,10 @@ export function AiSpoilageMeter({
       </div>
 
       {/* AI Advice Pill */}
-      <div className="mt-3.5 flex items-start gap-2 rounded-xl bg-white/80 p-2.5 text-[11px] leading-5 text-slate-600 border border-slate-200/60">
-        <ShieldCheck className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+      <div className="mt-3.5 flex items-start gap-2.5 rounded-xl bg-white/80 p-2.5 text-[11px] leading-5 text-slate-600 border border-slate-200/60 hover:bg-white transition-colors">
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 mt-0.5 shadow-2xs">
+          <ShieldCheck className="size-3.5 animate-icon-breathe" />
+        </div>
         <p>
           <strong className="text-slate-800">এআই কোয়ালিটি অ্যাডভাইস: </strong>
           {advice}

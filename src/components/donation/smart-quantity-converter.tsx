@@ -106,8 +106,8 @@ export function SmartQuantityConverter({
       {/* Live Meal Conversion Banner */}
       {conversion ? (
         <div className="flex items-start gap-3 rounded-2xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 via-teal-50/60 to-white p-3.5 shadow-2xs transition-all">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
-            <Users className="size-5" />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20 animate-icon-float">
+            <Users className="size-5 transition-transform duration-300 hover:scale-110" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 text-xs font-black text-slate-800">
@@ -120,15 +120,15 @@ export function SmartQuantityConverter({
                 {conversion.rangeText} অনাহারী মানুষের খাবার
               </span>
             </div>
-            <p className="mt-1 flex items-center gap-1 text-[11px] text-slate-600 font-medium">
-              <Heart className="size-3 text-rose-500 fill-rose-500 shrink-0" />
+            <p className="mt-1 flex items-center gap-1.5 text-[11px] text-slate-600 font-medium">
+              <Heart className="size-3.5 text-rose-500 fill-rose-500 shrink-0 animate-heart-beat" />
               <span>{conversion.impactText}</span>
             </p>
           </div>
         </div>
       ) : (
         <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-500 border border-slate-200/60">
-          <Sparkles className="size-3.5 text-emerald-600" />
+          <Sparkles className="size-3.5 text-emerald-600 animate-icon-breathe" />
           <span>খাবারের পরিমাণ লিখুন, স্বয়ংক্রিয়ভাবে মোট আহার ও ইমপ্যাক্ট হিসাব করা হবে।</span>
         </div>
       )}
@@ -160,7 +160,7 @@ export function SmartQuantityConverter({
                 >
                   <UtensilsCrossed
                     className={cn(
-                      "size-3 transition-colors",
+                      "size-3 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12",
                       isSelected ? "text-white" : "text-slate-400 group-hover:text-emerald-600",
                     )}
                   />

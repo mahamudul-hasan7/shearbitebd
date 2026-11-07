@@ -117,9 +117,9 @@ export function DonationSummaryPanel({
 
         {/* AI Freshness & Impact Quick Pills */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-2 text-center">
+          <div className="group rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-2 text-center hover:border-emerald-300 hover:shadow-xs transition-all">
             <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-              <Sparkles className="size-3" />
+              <Sparkles className="size-3 animate-icon-breathe text-emerald-600 group-hover:scale-125 transition-transform" />
               AI সেফটি স্কোর
             </span>
             <p className="mt-0.5 text-sm font-black text-emerald-950 font-mono">
@@ -130,9 +130,9 @@ export function DonationSummaryPanel({
             </span>
           </div>
 
-          <div className="rounded-xl border border-rose-200/80 bg-rose-50/50 p-2 text-center">
+          <div className="group rounded-xl border border-rose-200/80 bg-rose-50/50 p-2 text-center hover:border-rose-300 hover:shadow-xs transition-all">
             <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700">
-              <Heart className="size-3 fill-rose-500" />
+              <Heart className="size-3 text-rose-500 fill-rose-500 animate-heart-beat group-hover:scale-125 transition-transform" />
               সম্ভাব্য প্রভাব
             </span>
             <p className="mt-0.5 text-sm font-black text-rose-950 font-mono">
@@ -146,23 +146,23 @@ export function DonationSummaryPanel({
 
         <div className="space-y-2.5 rounded-2xl bg-emerald-50/40 p-4 border border-emerald-100/80 font-heading text-slate-700">
           <p className="flex items-center gap-2">
-            <Utensils className="size-4 text-emerald-600 shrink-0" />
+            <Utensils className="size-4 text-emerald-600 shrink-0 animate-icon-breathe" />
             <span className="font-bold">{STORAGE_CONDITION_LABELS[draft.storageCondition]}</span>
           </p>
           <p className="flex items-start gap-2">
-            <CalendarClock className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+            <CalendarClock className="mt-0.5 size-4 shrink-0 text-emerald-600 animate-icon-float" />
             <span>নিরাপদ মেয়াদ: <strong className="text-slate-900">{shortDateBn(draft.safePickupDeadline)}</strong></span>
           </p>
           <p className="flex items-start gap-2">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+            <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600 animate-icon-breathe" />
             <span className="truncate">{draft.approximateArea || "পিকআপ এলাকা নির্ধারিত হয়নি"}</span>
           </p>
           <p className="flex items-center gap-2">
-            <ImageIcon className="size-4 text-emerald-600 shrink-0" />
+            <ImageIcon className="size-4 text-emerald-600 shrink-0 animate-icon-float" />
             <span>{draft.photoNames.length}/৫টি ছবি সংযুক্ত</span>
           </p>
           <p className="flex items-center gap-2">
-            <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
+            <ShieldCheck className="size-4 text-emerald-600 shrink-0 animate-pulse" />
             <span>{declarationCount}/৭টি স্বাস্থ্যবিধি ঘোষণা</span>
           </p>
         </div>

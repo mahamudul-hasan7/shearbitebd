@@ -30,10 +30,10 @@ export function HeroTicker({ lang }: HeroTickerProps) {
   return (
     <div className="grid grid-cols-2 gap-3.5 border-t border-emerald-500/20 pt-6 sm:grid-cols-4 sm:gap-4">
       {/* Stat 1: Meals Rescued */}
-      <div className="relative overflow-hidden rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-950/60 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-emerald-400/50">
+      <div className="group relative overflow-hidden rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-950/60 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-emerald-400/50 hover:shadow-emerald-900/20">
         <div className="flex items-center justify-between">
-          <span className="grid size-7 place-items-center rounded-lg bg-emerald-500/20 text-emerald-300">
-            <Utensils className="size-3.5" />
+          <span className="grid size-7 place-items-center rounded-lg bg-emerald-500/20 text-emerald-300 group-hover:scale-110 group-hover:bg-emerald-500/30 transition-all duration-300">
+            <Utensils className="size-3.5 animate-icon-breathe" />
           </span>
           <span className="relative flex size-2">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -49,10 +49,10 @@ export function HeroTicker({ lang }: HeroTickerProps) {
       </div>
 
       {/* Stat 2: Active Volunteers */}
-      <div className="relative overflow-hidden rounded-2xl border border-blue-500/25 bg-gradient-to-br from-blue-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-blue-400/50">
+      <div className="group relative overflow-hidden rounded-2xl border border-blue-500/25 bg-gradient-to-br from-blue-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-blue-400/50 hover:shadow-blue-900/20">
         <div className="flex items-center justify-between">
-          <span className="grid size-7 place-items-center rounded-lg bg-blue-500/20 text-blue-300">
-            <Truck className="size-3.5" />
+          <span className="grid size-7 place-items-center rounded-lg bg-blue-500/20 text-blue-300 group-hover:scale-110 group-hover:bg-blue-500/30 transition-all duration-300">
+            <Truck className="size-3.5 animate-icon-float" />
           </span>
           <span className="relative flex size-2">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-blue-400 opacity-75" />
@@ -68,10 +68,10 @@ export function HeroTicker({ lang }: HeroTickerProps) {
       </div>
 
       {/* Stat 3: Average Rescue Time */}
-      <div className="relative overflow-hidden rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-amber-400/50">
+      <div className="group relative overflow-hidden rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-amber-400/50 hover:shadow-amber-900/20">
         <div className="flex items-center justify-between">
-          <span className="grid size-7 place-items-center rounded-lg bg-amber-500/20 text-amber-300">
-            <Flame className="size-3.5" />
+          <span className="grid size-7 place-items-center rounded-lg bg-amber-500/20 text-amber-300 group-hover:scale-110 group-hover:bg-amber-500/30 transition-all duration-300">
+            <Flame className="size-3.5 animate-icon-wiggle" />
           </span>
           <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-300">
             {isBn ? "গরম" : "Hot"}
@@ -86,10 +86,10 @@ export function HeroTicker({ lang }: HeroTickerProps) {
       </div>
 
       {/* Stat 4: Safety & BFSA Compliance */}
-      <div className="relative overflow-hidden rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-teal-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-teal-400/50">
+      <div className="group relative overflow-hidden rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-teal-950/50 to-black/40 p-3.5 shadow-lg backdrop-blur-md transition hover:border-teal-400/50 hover:shadow-teal-900/20">
         <div className="flex items-center justify-between">
-          <span className="grid size-7 place-items-center rounded-lg bg-teal-500/20 text-teal-300">
-            <ShieldCheck className="size-3.5" />
+          <span className="grid size-7 place-items-center rounded-lg bg-teal-500/20 text-teal-300 group-hover:scale-110 group-hover:bg-teal-500/30 transition-all duration-300">
+            <ShieldCheck className="size-3.5 animate-icon-breathe" />
           </span>
           <span className="rounded-full bg-teal-500/20 px-1.5 py-0.5 text-[10px] font-bold text-teal-300">
             BFSA

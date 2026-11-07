@@ -53,13 +53,13 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.donor.dashboard}
             title="খাদ্যদাতা ড্যাশবোর্ডে যান"
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
               activeRole === "donor"
                 ? "bg-emerald-600 text-white shadow-sm font-black"
                 : "text-white/80 hover:text-white hover:bg-white/15",
             )}
           >
-            <span>👨‍🍳</span>
+            <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">👨‍🍳</span>
             <span>খাদ্যদাতা</span>
           </Link>
 
@@ -68,13 +68,13 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.ngo.dashboard}
             title="মাস্তুল এনজিও ড্যাশবোর্ডে যান"
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
               activeRole === "ngo"
                 ? "bg-emerald-600 text-white shadow-sm font-black"
                 : "text-white/80 hover:text-white hover:bg-white/15",
             )}
           >
-            <span>🏢</span>
+            <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">🏢</span>
             <span>মাস্তুল এনজিও</span>
           </Link>
 
@@ -83,13 +83,13 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             href={ROUTES.volunteer.dashboard}
             title="ভলান্টিয়ার কমান্ড হাবে যান"
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
+              "group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition-all duration-200 cursor-pointer",
               activeRole === "volunteer"
                 ? "bg-emerald-600 text-white shadow-sm font-black"
                 : "text-white/80 hover:text-white hover:bg-white/15",
             )}
           >
-            <span>🚴</span>
+            <span className="transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-6">🚴</span>
             <span>ভলান্টিয়ার রাইডার</span>
           </Link>
         </div>

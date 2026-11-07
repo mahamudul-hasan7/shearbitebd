@@ -16,9 +16,11 @@ export function Input({ label, hint, error, leftIcon, id, className, containerCl
   return (
     <label htmlFor={inputId} className={cn("grid min-w-0 gap-2", containerClassName)}>
       {label && <span className="text-sm font-bold text-ink-700">{label}</span>}
-      <span className="relative block">
+      <span className="relative block group">
         {leftIcon && (
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-600">{leftIcon}</span>
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-600 transition-all duration-300 group-hover:scale-110 group-focus-within:scale-115 group-focus-within:text-brand-700">
+            {leftIcon}
+          </span>
         )}
         <input
           {...props}

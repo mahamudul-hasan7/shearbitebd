@@ -151,7 +151,7 @@ export function FoodPhotoDropzone({
             htmlFor={inputId}
             className="flex items-center gap-1.5 text-xs font-bold text-slate-700 uppercase tracking-wider"
           >
-            <Camera className="size-4 text-emerald-600" />
+            <Camera className="size-4 text-emerald-600 animate-icon-breathe" />
             <span>খাবারের ছবি আপলোড জোন (Dropzone)</span>
           </label>
           <p className="mt-0.5 text-[11px] text-slate-500">
@@ -193,8 +193,8 @@ export function FoodPhotoDropzone({
           onChange={handleInputChange}
         />
 
-        <div className="flex size-12 items-center justify-center rounded-2xl bg-white shadow-xs border border-slate-200/80 group-hover:scale-110 transition-transform">
-          <UploadCloud className="size-6 text-emerald-600" />
+        <div className="relative flex size-12 items-center justify-center rounded-2xl bg-white shadow-xs border border-slate-200/80 group-hover:scale-110 group-hover:border-emerald-400 group-hover:shadow-md group-hover:shadow-emerald-500/20 transition-all duration-300">
+          <UploadCloud className="size-6 text-emerald-600 animate-icon-float transition-transform group-hover:-translate-y-0.5" />
         </div>
 
         <p className="mt-3 text-xs font-bold text-slate-800">
@@ -209,7 +209,7 @@ export function FoodPhotoDropzone({
 
         {/* BFSA Quality Assurance Pill */}
         <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200/70 shadow-2xs">
-          <CheckCircle2 className="size-3 text-emerald-600" />
+          <CheckCircle2 className="size-3 text-emerald-600 animate-pulse" />
           <span>BFSA স্ট্যান্ডার্ড: মেয়াদ, কন্টেইনার সিল ও স্টিম পরিষ্কার দৃশ্যমান হতে হবে</span>
         </div>
       </div>
@@ -225,7 +225,7 @@ export function FoodPhotoDropzone({
       <div className="rounded-2xl border border-slate-200/70 bg-white p-3 shadow-2xs">
         <div className="mb-2 flex items-center justify-between">
           <span className="flex items-center gap-1 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-            <Sparkles className="size-3.5 text-amber-500" />
+            <Sparkles className="size-3.5 text-amber-500 animate-icon-breathe" />
             <span>ডেমো ও টেস্ট প্রিসেট ছবি (১-ক্লিক সংযোগ)</span>
           </span>
           <span className="text-[10px] text-slate-400">প্রেজেন্টেশনের সুবিধার্থে</span>
@@ -240,21 +240,23 @@ export function FoodPhotoDropzone({
                 onClick={() => handleAddPreset(preset)}
                 disabled={isAdded || photoNames.length >= maxFiles}
                 className={cn(
-                  "flex items-center gap-2 rounded-xl border p-2 text-left text-xs transition-all",
+                  "group flex items-center gap-2 rounded-xl border p-2 text-left text-xs transition-all",
                   isAdded
                     ? "border-emerald-300 bg-emerald-50/70 text-emerald-800 cursor-default"
                     : "border-slate-200 bg-slate-50/60 hover:border-emerald-300 hover:bg-emerald-50/40 hover:scale-[1.02]",
                 )}
               >
-                <span className="text-xl shrink-0">{preset.emoji}</span>
+                <span className="text-xl shrink-0 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">
+                  {preset.emoji}
+                </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-bold text-slate-800 text-[11px]">{preset.label}</p>
                   <p className="text-[9px] text-slate-500">{preset.badge}</p>
                 </div>
                 {isAdded ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0 animate-pulse" />
                 ) : (
-                  <Plus className="size-3.5 text-slate-400 shrink-0" />
+                  <Plus className="size-3.5 text-slate-400 shrink-0 transition-transform duration-300 group-hover:rotate-90 group-hover:text-emerald-600" />
                 )}
               </button>
             );
