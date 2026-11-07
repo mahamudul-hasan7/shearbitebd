@@ -13,6 +13,8 @@ export default function RegisterPage() {
       artworkVariant="security"
       title="খাবার বাঁচিয়ে মানুষের মুখে হাসি ফোটানোর অঙ্গীকার।"
       description="ক্যাফেটেরিয়া, রেস্তোরাঁ ও দাতব্য সংস্থাগুলোর জন্য সমন্বিত অনবোর্ডিং। মাত্র ৩টি সহজ ধাপে আপনার ভূমিকা নির্বাচন করে নেটওয়ার্কে যুক্ত হোন।"
+      eyebrow="সিভিক ফুড অনবোর্ডিং"
+      contentClassName="max-w-2xl"
     >
       <Suspense
         fallback={
