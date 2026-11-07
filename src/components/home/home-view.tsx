@@ -849,29 +849,6 @@ export function HomeView() {
                 </div>
               </form>
 
-              {/* Fast Demo Links */}
-              <div className="flex flex-wrap items-center gap-3 text-xs font-bold font-heading">
-                <span className="text-emerald-200/80">{t.hero.demoLabel}</span>
-                <Link
-                  href={ROUTES.donor.dashboard}
-                  className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-white shadow-xs hover:bg-white/20 hover:border-emerald-400 transition-all"
-                >
-                  {t.hero.donorDemo}
-                </Link>
-                <Link
-                  href={ROUTES.ngo.dashboard}
-                  className="rounded-lg border border-emerald-400/40 bg-emerald-950/60 px-3 py-1.5 text-emerald-200 shadow-xs hover:bg-emerald-800/60 transition-all"
-                >
-                  {t.hero.ngoDemo}
-                </Link>
-                <Link
-                  href={ROUTES.volunteer.dashboard}
-                  className="rounded-lg border border-amber-400/40 bg-amber-950/60 px-3 py-1.5 text-amber-300 shadow-xs hover:bg-amber-900/60 transition-all"
-                >
-                  {t.hero.volunteerDemo}
-                </Link>
-              </div>
-
               {/* Dynamic Live Metric Ticker with Telemetry Pulses */}
               <HeroTicker lang={lang} />
             </div>
