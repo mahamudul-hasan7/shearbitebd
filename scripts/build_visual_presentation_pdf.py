@@ -1,0 +1,494 @@
+# -*- coding: utf-8 -*-
+"""
+Generates visual landscape HTML and PDF presentation with embedded images and minimal key points.
+"""
+
+import os
+import subprocess
+
+base_dir = os.getcwd().replace("\\", "/")
+
+html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShareBite BD — SE Lab Presentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    @page {{
+      size: A4 landscape;
+      margin: 0;
+    }}
+
+    * {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }}
+
+    body {{
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #0b1329;
+      color: #1e293b;
+      line-height: 1.45;
+    }}
+
+    .deck {{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0;
+    }}
+
+    .slide {{
+      width: 297mm;
+      height: 210mm;
+      min-height: 210mm;
+      max-height: 210mm;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      position: relative;
+      background: #ffffff;
+      padding: 13mm 16mm 10mm 16mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }}
+
+    .slide-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 7px;
+      border-bottom: 2px solid #e2e8f0;
+    }}
+
+    .slide-header .brand {{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #064e3b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+
+    .slide-header .section-tag {{
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #059669;
+      background: #ecfdf5;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      border: 1px solid #a7f3d0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }}
+
+    .slide-footer {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 7px;
+      border-top: 1.5px solid #e2e8f0;
+      font-size: 9.5px;
+      color: #64748b;
+      font-weight: 600;
+    }}
+
+    .slide-content {{
+      flex: 1;
+      padding: 8px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }}
+
+    .slide-title {{
+      font-size: 23px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }}
+
+    .slide-subtitle {{
+      font-size: 12px;
+      color: #475569;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }}
+
+    .card {{
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 9px;
+      padding: 10px 12px;
+    }}
+
+    .card-accent {{ border-left: 4px solid #059669; background: #f0fdf4; }}
+    .card-rose {{ border-left: 4px solid #e11d48; background: #fff1f2; }}
+    .card-amber {{ border-left: 4px solid #d97706; background: #fffbeb; }}
+    .card-blue {{ border-left: 4px solid #2563eb; background: #eff6ff; }}
+
+    .card h4 {{
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }}
+
+    .card p {{
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.45;
+    }}
+
+    .slide-img {{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+    }}
+
+    .title-slide {{
+      background: linear-gradient(145deg, #064e3b 0%, #065f46 45%, #022c22 100%);
+      color: #ffffff;
+    }}
+
+    .title-slide .slide-header, .title-slide .slide-footer {{
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #a7f3d0;
+    }}
+
+    @media print {{
+      body {{ background: none; }}
+      .deck {{ padding: 0; gap: 0; }}
+      .slide {{ box-shadow: none; }}
+    }}
+  </style>
+</head>
+<body>
+
+  <div class="deck">
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide title-slide">
+      <div class="slide-header">
+        <div class="brand" style="color: #6ee7b7;">ShareBite BD</div>
+        <div>SOFTWARE ENGINEERING LAB &bull; PROJECT PROPOSAL</div>
+      </div>
+      <div class="slide-content">
+        <div style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); padding: 4px 14px; border-radius: 9999px; font-size: 10.5px; font-weight: 700; color: #a7f3d0; width: fit-content; margin-bottom: 10px;">
+          🚀 SE LAB 10-MINUTE PROJECT PROPOSAL
+        </div>
+        <h1 style="font-size: 46px; font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 6px;">ShareBite <span style="color: #34d399;">BD</span></h1>
+        <p style="font-size: 19px; font-weight: 600; color: #cbd5e1; margin-bottom: 14px;">Smart Surplus Food Rescue & Safety-Compliant Redistribution Network</p>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <span style="background: #022c22; border: 1px solid #34d399; color: #a7f3d0; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;">📍 Pilot: UIU Campus & Badda</span>
+          <span style="background: #022c22; border: 1px solid #34d399; color: #a7f3d0; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;">🎯 UN SDG 2 (Zero Hunger) & 12</span>
+          <span style="background: #022c22; border: 1px solid #34d399; color: #a7f3d0; padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;">⚡ 15–30 Min Rescue Velocity</span>
+        </div>
+
+        <div style="background: rgba(2,44,34,0.7); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 12px 16px;">
+          <div style="font-size: 10.5px; font-weight: 800; color: #a7f3d0;">Course: Software Engineering Lab (CSE 4xxx) &bull; Tech: Next.js, Prisma, Leaflet GIS</div>
+          <div style="font-size: 11.5px; font-weight: 700; color: #fff; margin-top: 3px;">Team Roster: [Member 1 (Lead), Member 2 (Backend), Member 3 (GIS), Member 4 (QA) | Student IDs: 011 2X1 XXX]</div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>Department of Computer Science & Engineering (CSE)</div>
+        <div>Slide 1 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: PROBLEM (SPLIT) -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 1: Problem Identification</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">1. Problem Identification: What Problem Are We Solving?</h2>
+        <p class="slide-subtitle">The critical paradox of urban food waste vs. street hunger in Dhaka City</p>
+        <div style="display: grid; grid-template-columns: 4.8fr 6.2fr; gap: 14px; height: 135mm;">
+          <div>
+            <img src="file:///{base_dir}/public/images/surplus-food-containers.jpg" class="slide-img" alt="Food Waste">
+          </div>
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card card-rose">
+              <h4 style="color: #be123c;">🔴 The Daily Food Dump</h4>
+              <p>Every night, university cafeterias (like UIU), caterers & restaurants throw massive pots of safe, cooked meals into city dumpsters due to zero instant charity links.</p>
+            </div>
+            <div class="card card-amber">
+              <h4 style="color: #b45309;">⏳ The 4-Hour Biological Clock</h4>
+              <p>Cooked food enters the bacterial danger zone (5°C–60°C). Under BFSA guidelines, food spoils before slow manual phone calls can coordinate a pickup.</p>
+            </div>
+            <div class="card card-blue">
+              <h4 style="color: #1d4ed8;">🚫 The Missing Logistics Link</h4>
+              <p>Charities lack standby transport at 10 PM. Food exists, hungry people are 2 km away, but zero automated micro-logistics platform connects them in time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 2 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: EVIDENCE & DATA -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 1: Evidence & Data</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">1. Evidence & Data: Backed by Research & Real Impact</h2>
+        <p class="slide-subtitle">Authoritative statistics, biological thresholds, and social impact indicators</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px;">
+          <div class="card" style="text-align: center; border-top: 3.5px solid #e11d48; background: #fff1f2;">
+            <div style="font-size: 24px; font-weight: 900; color: #e11d48;">10.7M Tons</div>
+            <div style="font-size: 11px; font-weight: 700;">Food Wasted / Year</div>
+            <div style="font-size: 9px; color: #64748b;">UNEP Food Waste Index (BD)</div>
+          </div>
+          <div class="card" style="text-align: center; border-top: 3.5px solid #d97706; background: #fffbeb;">
+            <div style="font-size: 24px; font-weight: 900; color: #d97706;">4 Hours</div>
+            <div style="font-size: 11px; font-weight: 700;">Biological Window</div>
+            <div style="font-size: 9px; color: #64748b;">BFSA Danger Zone (5°C-60°C)</div>
+          </div>
+          <div class="card" style="text-align: center; border-top: 3.5px solid #2563eb; background: #eff6ff;">
+            <div style="font-size: 24px; font-weight: 900; color: #2563eb;">3.8M People</div>
+            <div style="font-size: 11px; font-weight: 700;">Urban Food-Insecure</div>
+            <div style="font-size: 9px; color: #64748b;">BBS & World Bank Slum Data</div>
+          </div>
+          <div class="card" style="text-align: center; border-top: 3.5px solid #059669; background: #ecfdf5;">
+            <div style="font-size: 24px; font-weight: 900; color: #059669;">0% Digital</div>
+            <div style="font-size: 11px; font-weight: 700;">Traceability Today</div>
+            <div style="font-size: 9px; color: #64748b;">Zero Audit Trail in Charity</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 4.5fr 6.5fr; gap: 14px; height: 80mm;">
+          <div>
+            <img src="file:///{base_dir}/public/images/dhaka-children-empty-plates.jpg" class="slide-img" alt="Hungry Children">
+          </div>
+          <div class="card card-accent" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <h4 style="color: #065f46; font-size: 14px;">🌍 Tangible Real-World Impact (Key Takeaways):</h4>
+            <p><strong>• Zero Hunger (SDG 2):</strong> Feeds orphanages, street children & laborers with preserved human dignity.</p>
+            <p><strong>• Food Safety Enforcement:</strong> Strict BFSA thermal holding standards (&gt;65°C hot, &lt;4°C cold) prevent foodborne illnesses.</p>
+            <p><strong>• Climate Action (SDG 12):</strong> Rescuing food stops rotting in open landfills, eliminating potent urban methane emissions.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 3 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: SOLUTION APPROACH -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 2: Solution Approach</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">2. Solution: The Core Idea & System Approach</h2>
+        <p class="slide-subtitle">A synchronized 3-sided micro-logistics platform engineered for 15–30 minute rescue velocity</p>
+
+        <div style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 12px; border: 1.5px solid #34d399;">
+          <div style="font-size: 10.5px; font-weight: 800; color: #a7f3d0; text-transform: uppercase;">🌟 ONE SINGLE LINE (For a kid or parent):</div>
+          <div style="font-size: 15.5px; font-weight: 700; margin-top: 2px;">
+            "An Uber-like app where university cafeterias post extra hot food, and nearby charities and student volunteers get alerted to pick it up and feed hungry people before it gets cold and goes bad!"
+          </div>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">The 3-Sided Hyper-Local Ecosystem:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+          <div class="card" style="border-top: 3.5px solid #059669; background: #ecfdf5;">
+            <h4 style="color: #065f46;">🍲 1. Food Donors</h4>
+            <p style="font-weight: 700; color: #64748b; font-size: 10px;">Cafeterias & Caterers</p>
+            <p style="margin-top: 4px;">• 60-Sec listing form<br>• AI Spoilage & Safety Meter<br>• Automated meal quantity calculator</p>
+          </div>
+          <div class="card" style="border-top: 3.5px solid #2563eb; background: #eff6ff;">
+            <h4 style="color: #1d4ed8;">🏢 2. Verified NGOs</h4>
+            <p style="font-weight: 700; color: #64748b; font-size: 10px;">Charities & Shelters</p>
+            <p style="margin-top: 4px;">• Proximity Radar Map (3–5 km)<br>• 1-Click rescue claim<br>• Digital QR delivery verification</p>
+          </div>
+          <div class="card" style="border-top: 3.5px solid #d97706; background: #fffbeb;">
+            <h4 style="color: #b45309;">🚴 3. Student Volunteers</h4>
+            <p style="font-weight: 700; color: #64748b; font-size: 10px;">Campus Biker Squad</p>
+            <p style="margin-top: 4px;">• Uber-style instant dispatch<br>• Turn-by-turn route navigation<br>• Insulated thermal carrier check</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 4 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: MAIN FEATURES -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 2: Main Features & Outputs</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">2. Main Features: What Will the End System Perform?</h2>
+        <p class="slide-subtitle">Idea-driven key functionalities solving real friction in food rescue</p>
+        <div style="display: grid; grid-template-columns: 4.5fr 6.5fr; gap: 14px; height: 135mm;">
+          <div>
+            <img src="file:///{base_dir}/public/images/bangladesh-food-rescue-hero.jpg" class="slide-img" alt="Food Rescue Hero">
+          </div>
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card card-accent">
+              <h4 style="color: #065f46;">⚡ 1. 60-Sec Listing & AI Spoilage Meter</h4>
+              <p>Live temperature gauge (&gt;65°C safe holding) + countdown clock. Converts weight to child meals (e.g., '40 kg Biryani = 80–100 meals').</p>
+            </div>
+            <div class="card card-blue">
+              <h4 style="color: #1d4ed8;">📍 2. Proximity Radar Map (3–5 km)</h4>
+              <p>Filters donations strictly within short radius to bypass Dhaka traffic. Batches under 2 hours flash as '🚨 Urgent Rescues'.</p>
+            </div>
+            <div class="card card-amber">
+              <h4 style="color: #b45309;">🚴 3. Uber-Style Volunteer Dispatch</h4>
+              <p>Crowdsources campus student cyclists and bikers on daily commutes with verified thermal bag checklists.</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #7c3aed; background: #faf5ff;">
+              <h4 style="color: #6b21a8;">🔒 4. 4-Digit OTP & QR Code Anti-Fraud</h4>
+              <p>Zero theft: Donors verify volunteer's 4-digit PIN before handover; shelter scans QR token on arrival.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 5 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: PLAN OF ACTION -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 3: Plan of Action (Tech Overview)</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">3. Plan of Action: High-Level Technology Overview</h2>
+        <p class="slide-subtitle">Modern open-source stack chosen for velocity, type-safety, and zero hosting cost</p>
+        <div style="display: grid; grid-template-columns: 7fr 4fr; gap: 14px; height: 135mm;">
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card card-accent">
+              <h4 style="color: #065f46;">💻 Frontend: Next.js 16 + React 19 + Tailwind CSS v4</h4>
+              <p><strong>Why:</strong> Server-Side Rendering (SSR) delivers sub-100ms load times and full mobile responsiveness without native app installation friction.</p>
+            </div>
+            <div class="card card-blue">
+              <h4 style="color: #1d4ed8;">🗄️ Backend: Prisma ORM + PostgreSQL + TypeScript / Zod</h4>
+              <p><strong>Why:</strong> Strongly-typed relational data models (Users, Donations, Claims, Receipts) with atomic state transitions and zero runtime type errors.</p>
+            </div>
+            <div class="card card-amber">
+              <h4 style="color: #b45309;">🗺️ Geospatial Maps: Leaflet.js + OpenStreetMap</h4>
+              <p><strong>Why:</strong> 100% free, open-source geospatial routing & Haversine distance calculations without requiring expensive Google Maps API billing.</p>
+            </div>
+          </div>
+          <div>
+            <img src="file:///{base_dir}/public/images/bangladesh-3d-map-hero.png" class="slide-img" alt="Dhaka GIS Map">
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 6 of 7</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: TIMELINE -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="brand">ShareBite BD</div>
+        <div class="section-tag">Section 4: Timeline & Conclusion</div>
+      </div>
+      <div class="slide-content">
+        <h2 class="slide-title">4. Project Timeline: 16-Week Implementation Roadmap</h2>
+        <p class="slide-subtitle">Structured semester milestones leading to a live campus pilot and defense readiness</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px;">
+          <div class="card" style="border-top: 3.5px solid #059669;">
+            <div style="font-size: 10px; font-weight: 800; color: #059669;">WEEKS 1 – 4</div>
+            <h4 style="font-size: 12px; margin-top: 2px;">Sprint 1: Architecture</h4>
+            <p style="font-size: 10.5px; color: #64748b; margin-top: 4px;">• Requirements (SRS)<br>• Prisma DB Models<br>• Responsive 3-Portal UI<br>• Role-Based Auth</p>
+          </div>
+          <div class="card" style="border-top: 3.5px solid #2563eb;">
+            <div style="font-size: 10px; font-weight: 800; color: #2563eb;">WEEKS 5 – 8</div>
+            <h4 style="font-size: 12px; margin-top: 2px;">Sprint 2: Core Engine</h4>
+            <p style="font-size: 10.5px; color: #64748b; margin-top: 4px;">• AI Spoilage Countdown<br>• Leaflet Radar GIS<br>• 4-Digit OTP Handover<br>• Claim State Machine</p>
+          </div>
+          <div class="card" style="border-top: 3.5px solid #d97706;">
+            <div style="font-size: 10px; font-weight: 800; color: #d97706;">WEEKS 9 – 12</div>
+            <h4 style="font-size: 12px; margin-top: 2px;">Sprint 3: Campus Pilot</h4>
+            <p style="font-size: 10.5px; color: #64748b; margin-top: 4px;">• UIU Cafeteria Live Run<br>• Badda Local Eateries<br>• Student Biker Squad<br>• Mastul NGO Delivery</p>
+          </div>
+          <div class="card" style="border-top: 3.5px solid #7c3aed;">
+            <div style="font-size: 10px; font-weight: 800; color: #7c3aed;">WEEKS 13 – 16</div>
+            <h4 style="font-size: 12px; margin-top: 2px;">Sprint 4: Defense</h4>
+            <p style="font-size: 10.5px; color: #64748b; margin-top: 4px;">• End-to-End Testing<br>• CSR Impact Engine<br>• Security & Load Audit<br>• Final Defense Deck</p>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color: #fff; border-radius: 10px; padding: 14px 18px; border: 1.5px solid #34d399; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #a7f3d0;">🚀 Summary: Zero Waste, Zero Hunger</div>
+            <div style="font-size: 11px; color: #f1f5f9; margin-top: 2px;">ShareBite BD addresses food waste with zero hosting cost, an authentic UIU campus pilot, and strict food safety compliance.</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 15px; font-weight: 900; color: #fff;">Thank You!</div>
+            <div style="font-size: 11px; font-weight: 700; color: #34d399;">Floor Open for Q&amp;A 🤝</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">
+        <div>SE Lab Project Proposal &bull; 10-Minute Presentation</div>
+        <div>Slide 7 of 7 &bull; Final Slide</div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
+"""
+
+html_path = os.path.join(os.getcwd(), "ShareBite_BD_SE_Lab_Presentation.html")
+pdf_path = os.path.join(os.getcwd(), "ShareBite_BD_SE_Lab_Presentation.pdf")
+
+with open(html_path, "wb") as f:
+    f.write(html_content.encode("utf-8"))
+
+print(f"Visual HTML generated cleanly ({len(html_content.encode('utf-8'))} bytes)")
+
+chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+args = [
+    chrome_path,
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    "--run-all-compositor-stages-before-draw",
+    f"--print-to-pdf={pdf_path}",
+    "--no-pdf-header-footer",
+    f"file:///{html_path.replace(os.sep, '/')}",
+]
+
+res = subprocess.run(args, capture_output=True, text=True)
+if os.path.exists(pdf_path):
+    print(f"SUCCESS: Visual PDF generated ({os.path.getsize(pdf_path) / 1024:.1f} KB) at: {pdf_path}")
+else:
+    print(f"ERROR: PDF generation failed. Stderr: {res.stderr}")
