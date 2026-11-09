@@ -21,8 +21,8 @@
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: #030712;
-      color: #f8fafc;
+      background-color: #f1f5f9;
+      color: #0f172a;
       line-height: 1.45;
     }
 
@@ -43,13 +43,13 @@
       page-break-after: always;
       break-after: page;
       position: relative;
-      background: radial-gradient(circle at 15% 15%, #0f1d36 0%, #080d1a 60%, #030712 100%);
+      background: #ffffff;
       padding: 42px 55px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
     }
 
     /* Slide Header */
@@ -57,66 +57,41 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid #e2e8f0;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
-      color: #ffffff;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-    }
-
-    .brand-name {
-      font-size: 18px;
+    .header-category {
+      font-size: 11.5px;
       font-weight: 800;
-      letter-spacing: -0.3px;
-      color: #ffffff;
-    }
-
-    .brand-name span {
-      color: #34d399;
-    }
-
-    .section-pill {
-      font-size: 12px;
-      font-weight: 700;
       letter-spacing: 0.8px;
       text-transform: uppercase;
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      color: #6ee7b7;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #059669;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .section-pill::before {
+    .header-category::before {
       content: '';
-      width: 7px;
-      height: 7px;
-      background: #10b981;
+      width: 6px;
+      height: 6px;
+      background: #059669;
       border-radius: 50%;
-      box-shadow: 0 0 8px #10b981;
     }
 
-    /* Slide Content Container */
+    .brand-meta {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.3px;
+    }
+
+    /* Slide Body */
     .slide-body {
       flex: 1;
       display: flex;
@@ -126,26 +101,82 @@
     }
 
     .title-block {
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .slide-title {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 900;
-      letter-spacing: -0.8px;
-      color: #ffffff;
+      letter-spacing: -0.6px;
+      color: #0f172a;
       line-height: 1.15;
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
 
     .slide-subtitle {
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 500;
-      color: #94a3b8;
-      margin-top: 6px;
-      letter-spacing: -0.2px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+      position: relative;
+    }
+
+    .card-num {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* KPI Stat Boxes */
+    .stat-box {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
     }
 
     /* Slide Footer */
@@ -153,128 +184,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 12px;
+      border-top: 1.5px solid #e2e8f0;
       font-size: 12px;
       font-weight: 600;
       color: #64748b;
     }
 
-    .slide-footer .badge {
-      color: #94a3b8;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 4px 10px;
+    .footer-pill {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 3px 10px;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    /* Modern Card Styles */
-    .glass-card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 22px 24px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    }
-
-    .glass-card-glow {
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #f1f5f9;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .card-desc {
-      font-size: 14px;
-      color: #94a3b8;
-      line-height: 1.5;
-    }
-
-    .card-desc strong {
-      color: #e2e8f0;
-    }
-
-    /* Image Container */
-    .img-frame {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-      height: 100%;
-    }
-
-    .img-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .img-overlay-tag {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      background: rgba(3, 7, 18, 0.85);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
       font-weight: 700;
-      color: #cbd5e1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Stat Box */
-    .stat-kpi {
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 18px 20px;
-      text-align: center;
-      position: relative;
-    }
-
-    .stat-kpi .num {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 38px;
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -1px;
-      margin-bottom: 6px;
-    }
-
-    .stat-kpi .label {
-      font-size: 13px;
-      font-weight: 700;
-      color: #e2e8f0;
-      margin-bottom: 3px;
-    }
-
-    .stat-kpi .sub {
-      font-size: 11px;
-      color: #64748b;
-      font-weight: 500;
+      color: #475569;
     }
 
     @media print {
       body { background: transparent; }
       .deck { padding: 0; gap: 0; }
-      .slide { box-shadow: none; }
+      .slide { box-shadow: none; border: none; }
     }
   </style>
 </head>
@@ -283,48 +212,69 @@
   <div class="deck">
 
     <!-- ========================================== -->
-    <!-- SLIDE 1: TITLE (HERO KEYNOTE) -->
+    <!-- SLIDE 1: TITLE SLIDE (CLEAN ACADEMIC) -->
     <!-- ========================================== -->
-    <section class="slide" style="background: radial-gradient(circle at 75% 20%, #064e3b 0%, #0a241e 40%, #030712 100%);">
-      <div class="slide-header" style="border-bottom: none;">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill" style="background: rgba(52, 211, 153, 0.15); border-color: #34d399;">
-          SE LAB PROJECT PROPOSAL &bull; 10-MIN PRESENTATION
-        </div>
+    <section class="slide">
+      <div class="slide-header">
+        <div class="header-category">CSE LAB &bull; 10-MINUTE PROJECT PROPOSAL</div>
+        <div class="brand-meta">Department of Computer Science & Engineering (CSE) &bull; UIU</div>
       </div>
 
-      <div class="slide-body" style="justify-content: center; max-width: 1200px;">
-        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-          <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; padding: 5px 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;">🎯 UN SDG 2 (Zero Hunger)</span>
-          <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; padding: 5px 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;">🌱 UN SDG 12 (Responsible Consumption)</span>
-          <span style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; padding: 5px 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;">⚡ 15–30 Min Rescue Velocity</span>
+      <div class="slide-body">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 52px; font-weight: 900; color: #064e3b; letter-spacing: -1px; margin-bottom: 6px;">
+            ShareBite <span style="color: #059669;">BD</span>
+          </h1>
+          <p style="font-size: 22px; font-weight: 700; color: #334155;">
+            Hyper-Local Surplus Food Rescue & Safety-Compliant Redistribution Network
+          </p>
         </div>
 
-        <h1 style="font-size: 58px; font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; color: #ffffff; margin-bottom: 14px;">
-          ShareBite <span style="background: linear-gradient(135deg, #34d399 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BD</span>
-        </h1>
-        <p style="font-size: 24px; font-weight: 600; color: #cbd5e1; max-width: 1050px; line-height: 1.35; margin-bottom: 30px;">
-          A Hyper-Local, Crowd-Sourced Food Rescue & Safety-Compliant Redistribution Platform for Dhaka City
-        </p>
+        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+          <span style="background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 700;">🎯 UN SDG 2: Zero Hunger</span>
+          <span style="background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 700;">🌱 UN SDG 12: Responsible Consumption</span>
+          <span style="background: #f0f9ff; border: 1px solid #bae6fd; color: #0284c7; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 700;">⚡ 15–30 Min Rescue Velocity</span>
+        </div>
 
-        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px;">
-          <div class="glass-card" style="border-left: 4px solid #10b981; padding: 18px 22px;">
-            <div style="font-size: 12px; font-weight: 700; color: #34d399; text-transform: uppercase; letter-spacing: 0.5px;">Target Pilot Ecosystem</div>
-            <div style="font-size: 15px; font-weight: 700; color: #f8fafc; margin-top: 4px;">United International University (UIU) Central Cafeteria, Local Caterers & Satarkul/Badda Shelters</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div class="card" style="border-top: 4px solid #059669;">
+            <div class="card-num" style="color: #059669;">01</div>
+            <div class="card-title">TARGET ECOSYSTEM</div>
+            <p class="card-desc">
+              <strong>Focused Campus Pilot:</strong><br>
+              &bull; UIU Central Cafeteria<br>
+              &bull; Dhanmondi & Badda Local Caterers<br>
+              &bull; Nearby Orphanages & Day Shelters
+            </p>
           </div>
-          <div class="glass-card" style="border-left: 4px solid #38bdf8; padding: 18px 22px;">
-            <div style="font-size: 12px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px;">Core Software Engineering Goal</div>
-            <div style="font-size: 15px; font-weight: 700; color: #f8fafc; margin-top: 4px;">Eliminate cooked food dumping via sub-60s listing, proximity radar GIS, and zero-trust OTP handovers.</div>
+
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <div class="card-num" style="color: #0284c7;">02</div>
+            <div class="card-title">CORE SOFTWARE GOAL</div>
+            <p class="card-desc">
+              <strong>Eliminate Cooked Food Dumping:</strong><br>
+              &bull; Sub-60s rapid listing module<br>
+              &bull; 3–5 km proximity radar GIS filter<br>
+              &bull; 4-Digit OTP handshake delivery verification
+            </p>
+          </div>
+
+          <div class="card" style="border-top: 4px solid #7c3aed;">
+            <div class="card-num" style="color: #7c3aed;">03</div>
+            <div class="card-title">ACADEMIC SCOPE</div>
+            <p class="card-desc">
+              <strong>16-Week Implementation:</strong><br>
+              &bull; Next.js 16 SSR & Prisma ORM<br>
+              &bull; PostgreSQL ACID claim state engine<br>
+              &bull; Leaflet.js GIS without paid API billing
+            </p>
           </div>
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>Department of Computer Science & Engineering (CSE) &bull; Software Engineering Lab</div>
-        <div class="badge">Team Presentation Deck &bull; Slide 1 of 7</div>
+        <div>Software Engineering Lab &bull; Project Proposal Deck</div>
+        <div class="footer-pill">Slide 1 / 7</div>
       </div>
     </section>
 
@@ -334,63 +284,70 @@
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 1: Problem Identification</div>
+        <div class="header-category">PROBLEM STATEMENT</div>
+        <div class="brand-meta">Section 1: Problem Identification &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
           <h2 class="slide-title">1. Problem Identification: What Problem Are We Solving?</h2>
-          <p class="slide-subtitle">Dhaka's critical paradox: Mountains of fresh cooked food discarded nightly while street children sleep hungry</p>
+          <p class="slide-subtitle">The critical paradox of urban food waste vs. street hunger in Dhaka City</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 30px; height: 470px;">
-          <!-- Left: New High-Res Photo -->
-          <div class="img-frame">
-            <img src="file:///C:/Users/rakib/Desktop/sharebite-bd-frontend/public/images/slides/slide2_cafeteria_waste.jpg" alt="Dhaka Cafeteria Food Waste">
-            <div class="img-overlay-tag">
-              📸 Commercial Kitchen / UIU Cafeteria &bull; 40–80 kg Daily Surplus Discarded
-            </div>
-          </div>
-
-          <!-- Right: 3 Punchy Problem Cards -->
-          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
-            <div class="glass-card" style="border-left: 4px solid #f43f5e; background: rgba(30, 20, 30, 0.6);">
-              <div class="card-title" style="color: #fb7185;">
-                <span>🗑️</span> 1. The Daily Midnight Dump
-              </div>
-              <p class="card-desc">
-                University cafeterias (e.g. UIU), event halls, and restaurants cook in bulk. Every night, huge pots of hygienic, edible food are thrown straight into dumpsters simply because donors lack an instant charity contact.
-              </p>
-            </div>
-
-            <div class="glass-card" style="border-left: 4px solid #f59e0b; background: rgba(35, 28, 15, 0.6);">
-              <div class="card-title" style="color: #fbbf24;">
-                <span>⏱️</span> 2. The 4-Hour Biological Clock
-              </div>
-              <p class="card-desc">
-                Cooked food enters the bacterial danger zone (5°C–60°C). Under <strong>BFSA safety guidelines</strong>, food must be consumed within 4 hours. Manual phone calls and bureaucratic arrangements take 6+ hours—resulting in total spoilage.
-              </p>
-            </div>
-
-            <div class="glass-card" style="border-left: 4px solid #38bdf8; background: rgba(15, 28, 40, 0.6);">
-              <div class="card-title" style="color: #38bdf8;">
-                <span>🚫</span> 3. The Missing Micro-Logistics Link
-              </div>
-              <p class="card-desc">
-                Local orphanages and shelters have zero transport vehicles or fuel budgets at 10 PM. While 100 children starve only 2 km away, there is no automated micro-logistics platform to dispatch student couriers to bridge the gap.
+        <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; margin-bottom: 18px;">
+          <!-- Left: Diagnosis Card -->
+          <div class="card" style="border-left: 4px solid #059669; background: #f8fafc; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 11px; font-weight: 800; color: #059669; text-transform: uppercase;">CORE DIAGNOSIS</div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 4px 0 10px 0;">Why Does Good Food Go to Waste?</div>
+              <p style="font-size: 13.5px; color: #334155; line-height: 1.55;">
+                In Dhaka, food waste is <strong>NOT</strong> caused by food shortage.<br><br>
+                It is fundamentally an <strong>INFORMATION, COORDINATION, and MICRO-LOGISTICS failure</strong>.<br><br>
+                Institutional kitchens cook in bulk. When trays remain at night, donors have zero rapid, verified channels to reach hungry communities within the critical biological safety window.
               </p>
             </div>
           </div>
+
+          <!-- Right: 3 Numbered Problem Drivers -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card" style="border-left: 4px solid #e11d48; padding: 14px 18px;">
+              <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
+                <span style="color: #e11d48; font-weight: 900;">01</span> THE DAILY MIDNIGHT FOOD DUMP
+              </div>
+              <p style="font-size: 12.5px; color: #475569; margin-top: 3px;">
+                University cafeterias (e.g. UIU Central Cafeteria), event caterers, and eateries discard 40–80 kg of untouched hot meals every night into municipal dumpsters due to zero instant charity links.
+              </p>
+            </div>
+
+            <div class="card" style="border-left: 4px solid #d97706; padding: 14px 18px;">
+              <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
+                <span style="color: #d97706; font-weight: 900;">02</span> THE 4-HOUR BIOLOGICAL SAFETY CLOCK
+              </div>
+              <p style="font-size: 12.5px; color: #475569; margin-top: 3px;">
+                Cooked food enters the bacterial danger zone (5°C–60°C). Under Bangladesh Food Safety Authority (BFSA) guidelines, cooked meals must be eaten within 4 hours. Manual coordination takes 5+ hours.
+              </p>
+            </div>
+
+            <div class="card" style="border-left: 4px solid #0284c7; padding: 14px 18px;">
+              <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
+                <span style="color: #0284c7; font-weight: 900;">03</span> THE MISSING MICRO-LOGISTICS LINK
+              </div>
+              <p style="font-size: 12.5px; color: #475569; margin-top: 3px;">
+                Nearby orphanages and shelters lack vehicles or night staff. Food is available just 2 km away, but there is zero automated courier dispatch system to transport it in time.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Takeaway -->
+        <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 10px; padding: 10px 18px; text-align: center; font-size: 13px; font-weight: 700; color: #064e3b;">
+          💡 KEY TAKEAWAY: Food surplus and severe hunger exist within 3 km of each other, but lack an automated software platform to bridge the 4-hour safety window.
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>Root Cause: Communication failure & lack of automated hyper-local dispatch, NOT food shortage.</div>
-        <div class="badge">Slide 2 of 7</div>
+        <div>Problem Context: Information asymmetry and micro-transport bottleneck</div>
+        <div class="footer-pill">Slide 2 / 7</div>
       </div>
     </section>
 
@@ -400,177 +357,143 @@
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 1: Evidence & Real-World Impact</div>
+        <div class="header-category">EVIDENCE & REAL-WORLD IMPACT</div>
+        <div class="brand-meta">Section 1: Evidence & Data &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
           <h2 class="slide-title">1. Evidence & Data: Backed by Hard Statistics</h2>
-          <p class="slide-subtitle">Quantifying the urban food crisis, biological decay limits, and social urgency in Dhaka</p>
+          <p class="slide-subtitle">Authoritative research on food waste, biological danger limits, and urban food insecurity</p>
         </div>
 
-        <!-- 4 Big KPI Metric Boxes -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px;">
-          <div class="stat-kpi" style="border-top: 4px solid #f43f5e;">
-            <div class="num" style="color: #f43f5e;">10.7M Tons</div>
-            <div class="label">Annual Food Waste</div>
-            <div class="sub">UNEP Food Waste Index 2024 (BD)</div>
+        <!-- 4 Big Metric Cards -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 22px;">
+          <div class="stat-box" style="border-top: 4px solid #e11d48;">
+            <div class="stat-num" style="color: #e11d48;">10.7M Tons</div>
+            <div class="stat-label">Annual Food Waste</div>
+            <div class="stat-sub">UNEP Food Waste Index 2024 (BD)</div>
           </div>
-          <div class="stat-kpi" style="border-top: 4px solid #f59e0b;">
-            <div class="num" style="color: #f59e0b;">4 Hours</div>
-            <div class="label">Biological Safety Limit</div>
-            <div class="sub">BFSA Danger Zone (5°C – 60°C)</div>
+
+          <div class="stat-box" style="border-top: 4px solid #d97706;">
+            <div class="stat-num" style="color: #d97706;">4 Hours</div>
+            <div class="stat-label">Biological Safety Limit</div>
+            <div class="stat-sub">BFSA Danger Zone (5°C – 60°C)</div>
           </div>
-          <div class="stat-kpi" style="border-top: 4px solid #38bdf8;">
-            <div class="num" style="color: #38bdf8;">3.8 Million</div>
-            <div class="label">Urban Food-Insecure</div>
-            <div class="sub">BBS & World Bank Slum Report</div>
+
+          <div class="stat-box" style="border-top: 4px solid #0284c7;">
+            <div class="stat-num" style="color: #0284c7;">3.8 Million</div>
+            <div class="stat-label">Urban Food-Insecure</div>
+            <div class="stat-sub">BBS & World Bank Slum Report</div>
           </div>
-          <div class="stat-kpi" style="border-top: 4px solid #10b981;">
-            <div class="num" style="color: #10b981;">0% Digital</div>
-            <div class="label">Current Traceability</div>
-            <div class="sub">Zero Audit Trail or OTP Safety</div>
+
+          <div class="stat-box" style="border-top: 4px solid #059669;">
+            <div class="stat-num" style="color: #059669;">0% Digital</div>
+            <div class="stat-label">Campus Traceability Today</div>
+            <div class="stat-sub">Zero Audit Trail or Safety Records</div>
           </div>
         </div>
 
-        <!-- Split: Poignant Photo + Impact Points -->
-        <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 30px; height: 260px;">
-          <div class="img-frame">
-            <img src="file:///C:/Users/rakib/Desktop/sharebite-bd-frontend/public/images/slides/slide3_child_hunger.jpg" alt="Hunger in Dhaka">
-            <div class="img-overlay-tag">
-              📸 The Reality: Millions of children in Dhaka lack access to a single hot meal daily
-            </div>
+        <!-- Bottom: 3 Core Real-World Impact Takeaway Cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div class="card" style="border-top: 4px solid #059669;">
+            <div class="card-num" style="color: #059669;">01</div>
+            <div class="card-title">SOCIAL IMPACT: ZERO HUNGER (SDG 2)</div>
+            <p class="card-desc">
+              Directly feeds destitute children, orphanages, and street laborers with preserved human dignity. Rescuing a single 40 kg batch feeds <strong>80–100 hungry people</strong> every night.
+            </p>
           </div>
 
-          <div class="glass-card glass-card-glow" style="display: flex; flex-direction: column; justify-content: space-between; padding: 22px 28px;">
-            <div style="font-size: 16px; font-weight: 800; color: #34d399; margin-bottom: 8px;">
-              🌍 Real-World Impact Pillars (Why This System Matters):
-            </div>
-            <div style="display: flex; gap: 14px; align-items: flex-start;">
-              <span style="font-size: 20px;">🍲</span>
-              <div>
-                <strong style="color: #f1f5f9; font-size: 14.5px;">Dignified Hunger Relief (SDG 2):</strong>
-                <p style="font-size: 13.5px; color: #94a3b8;">Transforms cafeteria surplus into 80–120 fresh hot meals daily for orphanages and street children with zero humiliation.</p>
-              </div>
-            </div>
-            <div style="display: flex; gap: 14px; align-items: flex-start;">
-              <span style="font-size: 20px;">🛡️</span>
-              <div>
-                <strong style="color: #f1f5f9; font-size: 14.5px;">Food Safety & Legal Immunity:</strong>
-                <p style="font-size: 13.5px; color: #94a3b8;">Strict BFSA thermal tracking protects donors and recipients; bad food is automatically rejected before pickup.</p>
-              </div>
-            </div>
-            <div style="display: flex; gap: 14px; align-items: flex-start;">
-              <span style="font-size: 20px;">🌱</span>
-              <div>
-                <strong style="color: #f1f5f9; font-size: 14.5px;">Climate Action & Methane Prevention (SDG 12):</strong>
-                <p style="font-size: 13.5px; color: #94a3b8;">Prevents tons of rotting organic waste in Dhaka city dumpsters, slashing lethal urban methane emissions.</p>
-              </div>
-            </div>
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <div class="card-num" style="color: #0284c7;">02</div>
+            <div class="card-title">HEALTH & SAFETY: BFSA COMPLIANCE</div>
+            <p class="card-desc">
+              Enforces mandatory digital timestamping and temperature monitoring. Food exceeding the 4-hour threshold is automatically locked out, completely eliminating food poisoning risks.
+            </p>
+          </div>
+
+          <div class="card" style="border-top: 4px solid #7c3aed;">
+            <div class="card-num" style="color: #7c3aed;">03</div>
+            <div class="card-title">ENVIRONMENT: METHANE PREVENTION (SDG 12)</div>
+            <p class="card-desc">
+              Diverts tons of decomposing organic food from open city landfills in Aminbazar and Matuail, slashing lethal greenhouse gas emissions and urban environmental decay.
+            </p>
           </div>
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>Data Sources: UNEP Food Waste Index 2024, Bangladesh Food Safety Authority (BFSA), BBS Urban Slum Survey</div>
-        <div class="badge">Slide 3 of 7</div>
+        <div>Data Sources: UNEP Food Waste Index 2024, Bangladesh Food Safety Authority (BFSA), BBS Urban Survey</div>
+        <div class="footer-pill">Slide 3 / 7</div>
       </div>
     </section>
 
 
     <!-- ========================================== -->
-    <!-- SLIDE 4: SOLUTION (THE CORE IDEA) -->
+    <!-- SLIDE 4: SOLUTION (THE CORE IDEA & ECOSYSTEM) -->
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 2: The Solution Approach</div>
+        <div class="header-category">SOLUTION ARCHITECTURE</div>
+        <div class="brand-meta">Section 2: Solution &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
-          <h2 class="slide-title">2. Solution: The Core Idea & System Model</h2>
-          <p class="slide-subtitle">A synchronized 3-sided micro-logistics platform engineered for 15–30 minute rescue velocity</p>
+          <h2 class="slide-title">2. Solution: The Core Idea & 3-Sided Ecosystem</h2>
+          <p class="slide-subtitle">A synchronized hyper-local network engineered for 15–30 minute rescue turnaround</p>
         </div>
 
-        <!-- Mandatory Guideline One-Liner Hero Box -->
-        <div class="glass-card glass-card-glow" style="background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%); border: 1.5px solid #10b981; padding: 22px 28px; margin-bottom: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 12px; font-weight: 800; color: #34d399; text-transform: uppercase; letter-spacing: 0.8px;">
-              🌟 ONE SINGLE LINE (Explaining the project to a kid or parent)
-            </span>
-            <span style="background: #10b981; color: #022c22; font-size: 11px; font-weight: 800; padding: 2px 10px; border-radius: 9999px;">
-              CORE FORMULA
-            </span>
+        <!-- Mandatory One-Liner Box -->
+        <div style="background: #ecfdf5; border: 2px solid #059669; border-radius: 12px; padding: 18px 24px; margin-bottom: 22px;">
+          <div style="font-size: 11px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+            🌟 ONE SINGLE LINE (Explaining the project to a kid or parent):
           </div>
-          <div style="font-size: 21px; font-weight: 800; color: #ffffff; line-height: 1.35;">
-            "An Uber-like app where university cafeterias post extra hot food, and nearby charities and student volunteers get alerted to pick it up and feed hungry children in 30 minutes before it gets cold!"
+          <div style="font-size: 20px; font-weight: 800; color: #064e3b; line-height: 1.35;">
+            "An Uber-like platform where university cafeterias post extra hot food, and student volunteers bike it to nearby orphanages in 30 minutes before it spoils!"
           </div>
         </div>
 
-        <!-- 3-Sided Ecosystem Pillar Cards -->
-        <div style="font-size: 16px; font-weight: 800; color: #f1f5f9; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <span>⚡</span> The 3-Sided Hyper-Local Ecosystem:
-        </div>
-
+        <!-- 3-Sided Pillar Cards -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-          <!-- Pillar 1: Donors -->
-          <div class="glass-card" style="border-top: 4px solid #10b981;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 26px;">🍲</span>
-              <span style="font-size: 11px; font-weight: 700; color: #34d399; background: rgba(52,211,153,0.1); padding: 3px 8px; border-radius: 6px;">DONORS</span>
-            </div>
-            <div class="card-title" style="color: #34d399; font-size: 17px;">1. Food Donors</div>
-            <p style="font-size: 12px; color: #cbd5e1; font-weight: 700; margin-bottom: 8px;">Cafeterias, Caterers & Restaurants</p>
-            <p class="card-desc" style="font-size: 13px;">
-              &bull; <strong>60-Second Listing:</strong> Title, quantity & cook time.<br>
-              &bull; <strong>AI Spoilage Clock:</strong> Automatic countdown dial.<br>
-              &bull; <strong>Meal Converter:</strong> '40 kg Biryani = 80–100 kids'.
+          <div class="card" style="border-top: 4px solid #059669;">
+            <div class="card-num" style="color: #059669;">01</div>
+            <div class="card-title">FOOD DONORS</div>
+            <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 8px;">Cafeterias, Caterers & Restaurants</div>
+            <p class="card-desc">
+              &bull; <strong>60-Second Posting:</strong> Quick 3-field listing form.<br>
+              &bull; <strong>AI Spoilage Gauge:</strong> Visual countdown dial.<br>
+              &bull; <strong>Meal Converter:</strong> '40 kg Biryani = 80 meals'.
             </p>
           </div>
 
-          <!-- Pillar 2: NGOs -->
-          <div class="glass-card" style="border-top: 4px solid #38bdf8;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 26px;">🏢</span>
-              <span style="font-size: 11px; font-weight: 700; color: #38bdf8; background: rgba(56,189,248,0.1); padding: 3px 8px; border-radius: 6px;">RECIPIENTS</span>
-            </div>
-            <div class="card-title" style="color: #38bdf8; font-size: 17px;">2. Verified NGOs</div>
-            <p style="font-size: 12px; color: #cbd5e1; font-weight: 700; margin-bottom: 8px;">Orphanages & Local Shelters</p>
-            <p class="card-desc" style="font-size: 13px;">
-              &bull; <strong>Proximity Radar Map:</strong> Filtered within 3–5 km.<br>
-              &bull; <strong>1-Click Claim:</strong> Instantly reserves surplus batch.<br>
-              &bull; <strong>Digital QR Receipts:</strong> Automated distribution audit.
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <div class="card-num" style="color: #0284c7;">02</div>
+            <div class="card-title">VERIFIED NGOS</div>
+            <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 8px;">Orphanages & Local Shelters</div>
+            <p class="card-desc">
+              &bull; <strong>Proximity Radar Map:</strong> Filtered to 3–5 km.<br>
+              &bull; <strong>1-Click Claim Engine:</strong> Instant reservation.<br>
+              &bull; <strong>Digital CSR Receipts:</strong> Automated audit reports.
             </p>
           </div>
 
-          <!-- Pillar 3: Volunteers -->
-          <div class="glass-card" style="border-top: 4px solid #f59e0b;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 26px;">🚴</span>
-              <span style="font-size: 11px; font-weight: 700; color: #f59e0b; background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px;">COURIERS</span>
-            </div>
-            <div class="card-title" style="color: #fbbf24; font-size: 17px;">3. Student Volunteers</div>
-            <p style="font-size: 12px; color: #cbd5e1; font-weight: 700; margin-bottom: 8px;">Campus Cyclists & Bikers</p>
-            <p class="card-desc" style="font-size: 13px;">
-              &bull; <strong>Uber-Style Alerts:</strong> Notified during commutes.<br>
-              &bull; <strong>Fast Delivery:</strong> 15–30 min pick & drop.<br>
-              &bull; <strong>Insulated Bags:</strong> Maintain thermal safety.
+          <div class="card" style="border-top: 4px solid #d97706;">
+            <div class="card-num" style="color: #d97706;">03</div>
+            <div class="card-title">STUDENT VOLUNTEERS</div>
+            <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 8px;">Campus Cyclists & Bikers Squad</div>
+            <p class="card-desc">
+              &bull; <strong>Uber-Style Push Alerts:</strong> Notified during commutes.<br>
+              &bull; <strong>15–30 Min Velocity:</strong> Rapid drop-off.<br>
+              &bull; <strong>Thermal Bag Check:</strong> Insulated food safety.
             </p>
           </div>
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>Ecosystem Synchronicity: Donor posts &rarr; NGO reserves &rarr; Student biker delivers &rarr; Handshake verified.</div>
-        <div class="badge">Slide 4 of 7</div>
+        <div>Ecosystem Flow: Donor Posts &rarr; NGO Claims &rarr; Volunteer Delivers &rarr; Handover Verified</div>
+        <div class="footer-pill">Slide 4 / 7</div>
       </div>
     </section>
 
@@ -580,72 +503,71 @@
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 2: Key Features & Deliverables</div>
+        <div class="header-category">CORE FUNCTIONALITIES</div>
+        <div class="brand-meta">Section 2: Key Features &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
           <h2 class="slide-title">2. Main Features: What Will the End System Perform?</h2>
-          <p class="slide-subtitle">Four core algorithmic and operational modules solving real friction in food rescue</p>
+          <p class="slide-subtitle">Four engineered modules eliminating the primary failure points in food rescue</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1.25fr; gap: 30px; height: 470px;">
-          <!-- Left: New High-Res Photo -->
-          <div class="img-frame">
-            <img src="file:///C:/Users/rakib/Desktop/sharebite-bd-frontend/public/images/slides/slide5_volunteer_cyclist.jpg" alt="Campus Food Rescue Volunteer">
-            <div class="img-overlay-tag">
-              📸 Student Volunteer Squad &bull; Rapid 15–30 Min Campus-to-Shelter Rescue
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 18px;">
+          <div class="card" style="border-left: 4px solid #059669;">
+            <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+              <span style="color: #059669; font-weight: 900;">01</span> AI SPOILAGE METER & TIMEOUT LOCK
             </div>
+            <p class="card-desc">
+              <strong>Input:</strong> Cooking timestamp & storage type.<br>
+              <strong>Mechanism:</strong> Dynamic biological decay countdown enforcing the BFSA 4-hour window.<br>
+              <strong>Output:</strong> Real-time visual dial; automatically de-lists batches when time runs out to ensure 100% food safety.
+            </p>
           </div>
 
-          <!-- Right: 4 High-Tech Feature Cards -->
-          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
-            <div class="glass-card" style="border-left: 4px solid #10b981; padding: 16px 20px;">
-              <div class="card-title" style="color: #34d399; font-size: 16px;">
-                <span>⏱️</span> 1. 60-Sec Post & AI Spoilage Countdown Meter
-              </div>
-              <p class="card-desc" style="font-size: 13px;">
-                Donor inputs food title and cooking timestamp. The system calculates a dynamic biological expiration countdown based on BFSA parameters and flashes urgency rings.
-              </p>
+          <div class="card" style="border-left: 4px solid #0284c7;">
+            <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+              <span style="color: #0284c7; font-weight: 900;">02</span> 3–5 KM HYPER-LOCAL RADAR MAP
             </div>
-
-            <div class="glass-card" style="border-left: 4px solid #38bdf8; padding: 16px 20px;">
-              <div class="card-title" style="color: #38bdf8; font-size: 16px;">
-                <span>📍</span> 2. Proximity Radar Map (3 km / 5 km Radial Filter)
-              </div>
-              <p class="card-desc" style="font-size: 13px;">
-                Bypasses notorious Dhaka gridlock by strictly clustering donations within walkable/cycling distance. Food under 2 hours flashes as <strong>'🚨 Critical Priority'</strong>.
-              </p>
-            </div>
-
-            <div class="glass-card" style="border-left: 4px solid #f59e0b; padding: 16px 20px;">
-              <div class="card-title" style="color: #fbbf24; font-size: 16px;">
-                <span>🚴</span> 3. Uber-Style Crowdsourced Student Volunteer Dispatch
-              </div>
-              <p class="card-desc" style="font-size: 13px;">
-                Broadcasts micro-rescue notifications to university students commuting home on bicycles/motorcycles with an instant route view and thermal packaging checklist.
-              </p>
-            </div>
-
-            <div class="glass-card" style="border-left: 4px solid #a855f7; padding: 16px 20px;">
-              <div class="card-title" style="color: #c084fc; font-size: 16px;">
-                <span>🔒</span> 4. 4-Digit OTP & QR Code Anti-Fraud Protocol
-              </div>
-              <p class="card-desc" style="font-size: 13px;">
-                Zero leakage: The donor only releases food when the volunteer provides a secret 4-digit PIN. Shelter confirms final receipt via dynamic QR code scan.
-              </p>
-            </div>
+            <p class="card-desc">
+              <strong>Input:</strong> GPS coordinates of donors and recipient shelters.<br>
+              <strong>Mechanism:</strong> Client-side Haversine circular radius queries on OpenStreetMap.<br>
+              <strong>Output:</strong> Eliminates Dhaka traffic gridlock by strictly matching donations within a 15-minute cycling/walking radius.
+            </p>
           </div>
+
+          <div class="card" style="border-left: 4px solid #d97706;">
+            <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+              <span style="color: #d97706; font-weight: 900;">03</span> UBER-STYLE VOLUNTEER DISPATCH
+            </div>
+            <p class="card-desc">
+              <strong>Input:</strong> Active verified claims & volunteer locations.<br>
+              <strong>Mechanism:</strong> Instant broadcast push alerts to registered student cyclists/bikers.<br>
+              <strong>Output:</strong> Provides turn-by-turn route directions, donor contact, pickup deadline, and thermal bag checklist.
+            </p>
+          </div>
+
+          <div class="card" style="border-left: 4px solid #7c3aed;">
+            <div style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">
+              <span style="color: #7c3aed; font-weight: 900;">04</span> 4-DIGIT OTP & QR ANTI-FRAUD PROTOCOL
+            </div>
+            <p class="card-desc">
+              <strong>Input:</strong> Donor secret PIN & NGO receipt token.<br>
+              <strong>Mechanism:</strong> Dual-layer cryptographic handshake at pickup and drop-off.<br>
+              <strong>Output:</strong> Eliminates food diversion or black-market resale; guarantees food reaches intended children with 100% audit trail.
+            </p>
+          </div>
+        </div>
+
+        <!-- Process Flow Strip -->
+        <div style="background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 10px 18px; text-align: center; font-size: 12.5px; font-weight: 700; color: #0369a1;">
+          WORKFLOW: 60s Post ➔ AI Spoilage Verification ➔ 3km Radar Alert ➔ Student Biker Dispatch ➔ OTP Handshake Handover
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>System Output: Guaranteed hot, safe food delivered in under 30 minutes with 100% digital audit trace.</div>
-        <div class="badge">Slide 5 of 7</div>
+        <div>Key Outputs: Sub-30 minute delivery velocity & complete digital traceability</div>
+        <div class="footer-pill">Slide 5 / 7</div>
       </div>
     </section>
 
@@ -655,91 +577,82 @@
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 3: Plan of Action & Architecture</div>
+        <div class="header-category">TECHNOLOGY & ARCHITECTURE</div>
+        <div class="brand-meta">Section 3: Plan of Action &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
           <h2 class="slide-title">3. Plan of Action: High-Level Technology Overview</h2>
-          <p class="slide-subtitle">Modern open-source stack chosen for rapid response time, relational integrity, and zero hosting expense</p>
+          <p class="slide-subtitle">Modern open-source stack chosen for rapid response time, relational integrity, and zero operating costs</p>
         </div>
 
-        <!-- High-Level Architecture Flowchart -->
-        <div class="glass-card" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(52, 211, 153, 0.3); padding: 16px 20px; margin-bottom: 20px;">
-          <div style="font-size: 12px; font-weight: 800; color: #34d399; margin-bottom: 10px; text-transform: uppercase;">
-            🏗️ System Architecture & Data Flow Pipeline:
+        <!-- Architecture Flow Pipeline Box -->
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 20px;">
+          <div style="font-size: 11px; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 8px;">
+            🏗️ SYSTEM ARCHITECTURE & DATA FLOW PIPELINE
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-            <div style="background: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 10px 14px; text-align: center; flex: 1;">
-              <div style="font-size: 11px; color: #a7f3d0; font-weight: 700;">1. DONOR PORTAL</div>
-              <div style="font-size: 13px; font-weight: 800; color: #fff;">Next.js 16 SSR</div>
-              <div style="font-size: 10px; color: #cbd5e1;">60s Listing & AI Meter</div>
-            </div>
-            <div style="color: #34d399; font-size: 20px; font-weight: 900;">&rarr;</div>
-            <div style="background: #0f2b46; border: 1px solid #38bdf8; border-radius: 8px; padding: 10px 14px; text-align: center; flex: 1;">
-              <div style="font-size: 11px; color: #bae6fd; font-weight: 700;">2. API & LOGIC</div>
-              <div style="font-size: 13px; font-weight: 800; color: #fff;">TypeScript / Zod</div>
-              <div style="font-size: 10px; color: #cbd5e1;">Spoilage Algorithm</div>
-            </div>
-            <div style="color: #38bdf8; font-size: 20px; font-weight: 900;">&rarr;</div>
-            <div style="background: #3b1c54; border: 1px solid #c084fc; border-radius: 8px; padding: 10px 14px; text-align: center; flex: 1;">
-              <div style="font-size: 11px; color: #f5d0fe; font-weight: 700;">3. DATABASE</div>
-              <div style="font-size: 13px; font-weight: 800; color: #fff;">Prisma + PostgreSQL</div>
-              <div style="font-size: 10px; color: #cbd5e1;">ACID Claim Locks</div>
-            </div>
-            <div style="color: #c084fc; font-size: 20px; font-weight: 900;">&rarr;</div>
-            <div style="background: #451a03; border: 1px solid #fbbf24; border-radius: 8px; padding: 10px 14px; text-align: center; flex: 1;">
-              <div style="font-size: 11px; color: #fde68a; font-weight: 700;">4. RADAR GIS</div>
-              <div style="font-size: 13px; font-weight: 800; color: #fff;">Leaflet + OSM</div>
-              <div style="font-size: 10px; color: #cbd5e1;">3–5km Radius Filter</div>
-            </div>
-            <div style="color: #fbbf24; font-size: 20px; font-weight: 900;">&rarr;</div>
-            <div style="background: #022c22; border: 1px solid #34d399; border-radius: 8px; padding: 10px 14px; text-align: center; flex: 1;">
-              <div style="font-size: 11px; color: #a7f3d0; font-weight: 700;">5. DISPATCH PWA</div>
-              <div style="font-size: 13px; font-weight: 800; color: #fff;">WebSockets & FCM</div>
-              <div style="font-size: 10px; color: #cbd5e1;">4-Digit OTP Verify</div>
-            </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0f172a;">
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">01 DONOR WEB<br><span style="font-size: 10px; color: #059669;">Next.js 16 SSR</span></div>
+            <div style="color: #64748b; font-size: 16px;">➔</div>
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">02 API LOGIC<br><span style="font-size: 10px; color: #0284c7;">TypeScript / Zod</span></div>
+            <div style="color: #64748b; font-size: 16px;">➔</div>
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">03 DATABASE<br><span style="font-size: 10px; color: #7c3aed;">Prisma + PostgreSQL</span></div>
+            <div style="color: #64748b; font-size: 16px;">➔</div>
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">04 RADAR GIS<br><span style="font-size: 10px; color: #d97706;">Leaflet + OSM</span></div>
+            <div style="color: #64748b; font-size: 16px;">➔</div>
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">05 VOLUNTEER PWA<br><span style="font-size: 10px; color: #059669;">WebSockets & FCM</span></div>
+            <div style="color: #64748b; font-size: 16px;">➔</div>
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; text-align: center;">06 OTP HANDOVER<br><span style="font-size: 10px; color: #e11d48;">Tamper-Proof PIN</span></div>
           </div>
         </div>
 
-        <!-- 3 Technology Choice Justification Cards -->
+        <!-- 3 Tech Cards (With Clear Rationale) -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-          <div class="glass-card" style="border-left: 4px solid #10b981;">
-            <div class="card-title" style="color: #34d399; font-size: 16px;">
-              <span>💻</span> Frontend & PWA: Next.js 16
-            </div>
-            <p class="card-desc" style="font-size: 13px;">
-              <strong>Why Chosen:</strong> Server-Side Rendering (SSR) delivers sub-100ms cold start times on 4G cellular data. Progressive Web App (PWA) enables instant volunteer dispatch without app store friction.
+          <div class="card" style="border-top: 4px solid #059669;">
+            <div class="card-num" style="color: #059669;">01</div>
+            <div class="card-title">FRONTEND & MOBILE PWA</div>
+            <div style="font-size: 12px; font-weight: 700; color: #059669; margin-bottom: 8px;">Next.js 16 + React 19 + Tailwind CSS</div>
+            <p class="card-desc">
+              <strong>Role:</strong> Unified web portal & mobile PWA for all 3 user roles.<br><br>
+              <strong>Why Chosen:</strong><br>
+              &bull; Sub-100ms cold start times over 4G cellular data<br>
+              &bull; Progressive Web App (PWA) eliminates app-store install barrier<br>
+              &bull; Tailwind CSS v4 provides lightweight, responsive UI
             </p>
           </div>
 
-          <div class="glass-card" style="border-left: 4px solid #38bdf8;">
-            <div class="card-title" style="color: #38bdf8; font-size: 16px;">
-              <span>🗄️</span> Data Layer: Prisma + PostgreSQL
-            </div>
-            <p class="card-desc" style="font-size: 13px;">
-              <strong>Why Chosen:</strong> Strict ACID transactional guarantees prevent double-claiming of food batches. Type-safe Prisma models ensure zero runtime schema mismatch across the entire stack.
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <div class="card-num" style="color: #0284c7;">02</div>
+            <div class="card-title">BACKEND & DATA LAYER</div>
+            <div style="font-size: 12px; font-weight: 700; color: #0284c7; margin-bottom: 8px;">Prisma ORM + PostgreSQL + TypeScript</div>
+            <p class="card-desc">
+              <strong>Role:</strong> Data persistence, auth & claim state machine.<br><br>
+              <strong>Why Chosen:</strong><br>
+              &bull; ACID transactions prevent race conditions (no double-claims)<br>
+              &bull; End-to-end type safety eliminates runtime schema errors<br>
+              &bull; Relational integrity links Donors, NGOs, and Couriers
             </p>
           </div>
 
-          <div class="glass-card" style="border-left: 4px solid #f59e0b;">
-            <div class="card-title" style="color: #fbbf24; font-size: 16px;">
-              <span>🗺️</span> Spatial GIS: Leaflet.js + OSM
-            </div>
-            <p class="card-desc" style="font-size: 13px;">
-              <strong>Why Chosen:</strong> 100% open-source mapping engine without expensive Google Maps API credit card billing. Performs fast client-side Haversine circular radius queries on low-spec phones.
+          <div class="card" style="border-top: 4px solid #d97706;">
+            <div class="card-num" style="color: #d97706;">03</div>
+            <div class="card-title">GEOSPATIAL ENGINE</div>
+            <div style="font-size: 12px; font-weight: 700; color: #d97706; margin-bottom: 8px;">Leaflet.js + OpenStreetMap (OSM)</div>
+            <p class="card-desc">
+              <strong>Role:</strong> Interactive radar map, circular radius query & distance.<br><br>
+              <strong>Why Chosen:</strong><br>
+              &bull; 100% open-source without Google Maps billing/credit card limits<br>
+              &bull; Fast client-side Haversine circular radius queries<br>
+              &bull; Low memory footprint runs smoothly on student smartphones
             </p>
           </div>
         </div>
       </div>
 
       <div class="slide-footer">
-        <div>Rationale: Zero cloud subscription costs, end-to-end TypeScript safety, and instantaneous mobile performance.</div>
-        <div class="badge">Slide 6 of 7</div>
+        <div>Architecture Justification: Zero cloud fees, complete type-safety, and instant mobile response</div>
+        <div class="footer-pill">Slide 6 / 7</div>
       </div>
     </section>
 
@@ -749,102 +662,99 @@
     <!-- ========================================== -->
     <section class="slide">
       <div class="slide-header">
-        <div class="brand-group">
-          <div class="brand-logo">SB</div>
-          <div class="brand-name">ShareBite <span>BD</span></div>
-        </div>
-        <div class="section-pill">Section 4: Phased Roadmap & Defense</div>
+        <div class="header-category">SEMESTER MILESTONES & DEFENSE</div>
+        <div class="brand-meta">Section 4: Timeline &bull; ShareBite BD</div>
       </div>
 
       <div class="slide-body">
         <div class="title-block">
-          <h2 class="slide-title">4. Project Timeline: 16-Week Agile Milestone Roadmap</h2>
+          <h2 class="slide-title">4. Project Timeline: 16-Week Implementation Roadmap</h2>
           <p class="slide-subtitle">Structured semester progression from system architecture to live UIU campus field pilot and defense</p>
         </div>
 
-        <!-- 4 Milestone Sprints -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px;">
-          <!-- Sprint 1 -->
-          <div class="glass-card" style="border-top: 4px solid #10b981; padding: 20px 18px;">
-            <div style="font-size: 11px; font-weight: 800; color: #10b981; letter-spacing: 0.5px;">WEEKS 1 – 4</div>
-            <div class="card-title" style="font-size: 15px; margin: 4px 0 8px 0; color: #ffffff;">Phase 1: Architecture</div>
-            <p class="card-desc" style="font-size: 12.5px; line-height: 1.55;">
-              &bull; Comprehensive SRS documentation<br>
-              &bull; Prisma relational schema modeling<br>
+        <!-- 4 Sprints (01, 02, 03, 04) -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+          <div class="card" style="border-top: 4px solid #059669;">
+            <div class="card-num" style="color: #059669;">01</div>
+            <div class="card-title" style="font-size: 14px;">PHASE 1: ARCHITECTURE</div>
+            <div style="font-size: 11px; font-weight: 800; color: #059669; margin-bottom: 6px;">WEEKS 1 – 4</div>
+            <p class="card-desc" style="font-size: 12px; line-height: 1.55;">
+              &bull; System Requirements (SRS)<br>
+              &bull; Prisma relational schema models<br>
               &bull; 3-Portal responsive UI setup<br>
               &bull; Role-based authentication
             </p>
-            <div style="margin-top: 10px; font-size: 11px; font-weight: 700; color: #34d399; background: rgba(52,211,153,0.1); padding: 4px 8px; border-radius: 6px;">
+            <div style="margin-top: 8px; font-size: 10.5px; font-weight: 700; color: #059669; background: #ecfdf5; padding: 3px 6px; border-radius: 6px; width: fit-content;">
               Status: 100% Completed
             </div>
           </div>
 
-          <!-- Sprint 2 -->
-          <div class="glass-card" style="border-top: 4px solid #38bdf8; padding: 20px 18px;">
-            <div style="font-size: 11px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px;">WEEKS 5 – 8</div>
-            <div class="card-title" style="font-size: 15px; margin: 4px 0 8px 0; color: #ffffff;">Phase 2: Core Engine</div>
-            <p class="card-desc" style="font-size: 12.5px; line-height: 1.55;">
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <div class="card-num" style="color: #0284c7;">02</div>
+            <div class="card-title" style="font-size: 14px;">PHASE 2: CORE LOGIC</div>
+            <div style="font-size: 11px; font-weight: 800; color: #0284c7; margin-bottom: 6px;">WEEKS 5 – 8</div>
+            <p class="card-desc" style="font-size: 12px; line-height: 1.55;">
+              &bull; 60s listing form & meal calculator<br>
               &bull; AI Spoilage dynamic countdown<br>
-              &bull; Leaflet geospatial radar GIS (3km)<br>
-              &bull; 4-Digit OTP handshake logic<br>
-              &bull; Atomic claim transaction engine
+              &bull; Leaflet geospatial radar (3km)<br>
+              &bull; 4-Digit OTP & QR handshake
             </p>
-            <div style="margin-top: 10px; font-size: 11px; font-weight: 700; color: #38bdf8; background: rgba(56,189,248,0.1); padding: 4px 8px; border-radius: 6px;">
+            <div style="margin-top: 8px; font-size: 10.5px; font-weight: 700; color: #0284c7; background: #f0f9ff; padding: 3px 6px; border-radius: 6px; width: fit-content;">
               Status: 90% Completed
             </div>
           </div>
 
-          <!-- Sprint 3 -->
-          <div class="glass-card" style="border-top: 4px solid #f59e0b; padding: 20px 18px;">
-            <div style="font-size: 11px; font-weight: 800; color: #f59e0b; letter-spacing: 0.5px;">WEEKS 9 – 12</div>
-            <div class="card-title" style="font-size: 15px; margin: 4px 0 8px 0; color: #ffffff;">Phase 3: Campus Pilot</div>
-            <p class="card-desc" style="font-size: 12.5px; line-height: 1.55;">
+          <div class="card" style="border-top: 4px solid #d97706;">
+            <div class="card-num" style="color: #d97706;">03</div>
+            <div class="card-title" style="font-size: 14px;">PHASE 3: CAMPUS PILOT</div>
+            <div style="font-size: 11px; font-weight: 800; color: #d97706; margin-bottom: 6px;">WEEKS 9 – 12</div>
+            <p class="card-desc" style="font-size: 12px; line-height: 1.55;">
               &bull; UIU Cafeteria live trial run<br>
-              &bull; Student cyclist volunteer onboarding<br>
+              &bull; Student cyclist squad onboarding<br>
               &bull; Satarkul orphanage delivery test<br>
-              &bull; Turnaround latency optimization
+              &bull; Turnaround latency tuning
             </p>
-            <div style="margin-top: 10px; font-size: 11px; font-weight: 700; color: #fbbf24; background: rgba(245,158,11,0.1); padding: 4px 8px; border-radius: 6px;">
+            <div style="margin-top: 8px; font-size: 10.5px; font-weight: 700; color: #d97706; background: #fffbeb; padding: 3px 6px; border-radius: 6px; width: fit-content;">
               Target: Live Field Run
             </div>
           </div>
 
-          <!-- Sprint 4 -->
-          <div class="glass-card" style="border-top: 4px solid #c084fc; padding: 20px 18px;">
-            <div style="font-size: 11px; font-weight: 800; color: #c084fc; letter-spacing: 0.5px;">WEEKS 13 – 16</div>
-            <div class="card-title" style="font-size: 15px; margin: 4px 0 8px 0; color: #ffffff;">Phase 4: Audit & Defense</div>
-            <p class="card-desc" style="font-size: 12.5px; line-height: 1.55;">
+          <div class="card" style="border-top: 4px solid #7c3aed;">
+            <div class="card-num" style="color: #7c3aed;">04</div>
+            <div class="card-title" style="font-size: 14px;">PHASE 4: AUDIT & DEFENSE</div>
+            <div style="font-size: 11px; font-weight: 800; color: #7c3aed; margin-bottom: 6px;">WEEKS 13 – 16</div>
+            <p class="card-desc" style="font-size: 12px; line-height: 1.55;">
               &bull; Concurrency & stress testing<br>
               &bull; Anti-fraud security penetration test<br>
-              &bull; Project impact report & analytics<br>
+              &bull; Project impact analytics report<br>
               &bull; Final SE Lab defense presentation
             </p>
-            <div style="margin-top: 10px; font-size: 11px; font-weight: 700; color: #c084fc; background: rgba(192,132,252,0.1); padding: 4px 8px; border-radius: 6px;">
+            <div style="margin-top: 8px; font-size: 10.5px; font-weight: 700; color: #7c3aed; background: #faf5ff; padding: 3px 6px; border-radius: 6px; width: fit-content;">
               Target: Final Defense
             </div>
           </div>
         </div>
 
-        <!-- Executive Closing Card -->
-        <div class="glass-card glass-card-glow" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <!-- Bottom Summary & Q&A Strip -->
+        <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 14px 22px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 17px; font-weight: 800; color: #ffffff;">
-              🚀 Ready to Transform Campus Food Surplus into Immediate Hunger Relief
+            <div style="font-size: 15px; font-weight: 800; color: #064e3b;">
+              🚀 Ready to Transform Campus Surplus into Immediate Hunger Relief
             </div>
-            <div style="font-size: 13.5px; color: #a7f3d0; margin-top: 3px;">
-              Zero commercial barrier &bull; Real community impact &bull; Rigorous Software Engineering execution
+            <div style="font-size: 12.5px; color: #047857; margin-top: 2px;">
+              Zero commercial barrier &bull; Real community impact at UIU &bull; Rigorous Software Engineering execution
             </div>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 14px; font-weight: 800; color: #34d399;">Q & A SESSION</div>
-            <div style="font-size: 12px; color: #94a3b8;">Thank you! Questions are welcome.</div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #059669;">Q & A SESSION</div>
+            <div style="font-size: 11.5px; color: #475569;">Open for Evaluation, Faculty Guidance & Feedback</div>
           </div>
         </div>
       </div>
 
       <div class="slide-footer">
         <div>Software Engineering Lab Proposal &bull; 10-Minute Presentation Deck</div>
-        <div class="badge">Slide 7 of 7 &bull; End of Deck</div>
+        <div class="footer-pill">Slide 7 / 7 &bull; End of Deck</div>
       </div>
     </section>
 
