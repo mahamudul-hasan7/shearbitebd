@@ -42,6 +42,12 @@ if not exist "node_modules\" (
 )
 
 :: 4. Start Server and Auto-Open Browser when 100% Ready
+echo [*] Launching ShareBite BD engine...
 node scripts/start-and-open.mjs
+if %errorlevel% neq 0 (
+    echo [*] Fallback mode: Starting Next.js directly...
+    start "" cmd /c "timeout /t 4 /nobreak >nul && start http://localhost:3000"
+    call npm run dev
+)
 
 pause
