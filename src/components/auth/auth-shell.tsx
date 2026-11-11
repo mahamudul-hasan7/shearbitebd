@@ -27,10 +27,10 @@ export function AuthShell({
   contentClassName,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-slate-100/70 py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <main className="min-h-screen bg-slate-100/70 py-4 sm:py-6 px-3 sm:px-6 lg:px-8 flex items-center justify-center">
       <div
         className={cn(
-          "w-full max-w-[1400px] overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-300/40 grid min-h-[760px] lg:grid-cols-[minmax(380px,0.85fr)_minmax(600px,1.35fr)]",
+          "w-full max-w-[1400px] overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-300/40 grid min-h-0 lg:min-h-[760px] lg:grid-cols-[minmax(380px,0.85fr)_minmax(600px,1.35fr)]",
           className,
         )}
       >
