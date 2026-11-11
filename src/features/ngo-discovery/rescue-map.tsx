@@ -390,10 +390,55 @@ export function RescueMap({ items }: { items: NGODiscoveryItem[] }) {
         </div>
         </>
         )}
+
+        {/* Mobile Floating Bottom Sheet for Selected Donation (< xl) */}
+        {selected && (
+          <div className="xl:hidden border-t border-emerald-900/60 bg-white p-3.5 shadow-2xl transition-all animate-in slide-in-from-bottom-4 duration-200">
+            <div className="flex items-center gap-3">
+              <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-slate-900">
+                <Image
+                  src="/images/surplus-food-containers.jpg"
+                  alt={selected.donation.title}
+                  fill
+                  className="object-cover"
+                />
+                <span className="absolute bottom-1 right-1 rounded-md bg-emerald-600 px-1 py-0.2 text-[9px] font-black text-white">
+                  {selected.matchScore}%
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <h4 className="font-heading text-sm font-black text-slate-900 truncate">
+                    {selected.donation.title}
+                  </h4>
+                  <span className="rounded-full bg-emerald-100 px-1.5 py-0.2 text-[10px] font-bold text-emerald-800 shrink-0">
+                    {selected.donation.pickup.distanceKm?.toFixed(1)} কিমি
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
+                  <Building2 className="size-3 text-emerald-600 shrink-0" />
+                  <span>{selected.donorOrganization}</span>
+                  <span>·</span>
+                  <span className="font-bold text-slate-700">{selected.donation.quantity.estimatedMeals} meals</span>
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <ButtonLink
+                    href={ROUTES.ngo.donation(selected.donation.id)}
+                    variant="primary"
+                    size="sm"
+                    className="flex-1 justify-center text-xs font-bold py-1.5 shadow-md shadow-emerald-700/20"
+                  >
+                    {isBn ? "ক্লেইম করুন ও বিস্তারিত" : "Inspect & Claim"}
+                  </ButtonLink>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </Card>
 
-      {/* Selected Item Drawer & Quick List */}
-      <div className="space-y-4">
+      {/* Selected Item Desktop Sidebar Drawer & Quick List */}
+      <div className="hidden xl:block space-y-4">
         {selected ? (
           <Card className="overflow-hidden border border-slate-200 shadow-lg">
             {/* Header Image */}

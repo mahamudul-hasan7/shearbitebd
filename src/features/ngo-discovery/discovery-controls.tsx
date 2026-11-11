@@ -169,12 +169,12 @@ export function DiscoveryControls({
           </div>
         </div>
 
-        {/* 2. QUICK CATEGORY PILLS BAR */}
-        <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
-          <span className="text-[11px] font-bold text-slate-500">
+        {/* 2. QUICK CATEGORY PILLS BAR (Mobile Smooth Horizontal Carousel) */}
+        <div className="mt-3.5 flex items-center gap-2 border-t border-slate-100 pt-3 overflow-x-auto no-scrollbar pb-0.5">
+          <span className="shrink-0 text-[11px] font-bold text-slate-500">
             {isBn ? "ক্যাটাগরি:" : "Category:"}
           </span>
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1.5">
             {QUICK_CATEGORIES.map((cat) => {
               const active = filters.category === cat.key;
               return (
@@ -182,9 +182,9 @@ export function DiscoveryControls({
                   key={cat.key}
                   type="button"
                   onClick={() => updateFilter("category", cat.key)}
-                  className={`rounded-full px-3 py-1 text-xs font-bold transition ${
+                  className={`rounded-full px-3 py-1 text-xs font-bold transition whitespace-nowrap active:scale-95 cursor-pointer ${
                     active
-                      ? "bg-emerald-600 text-white shadow-xs"
+                      ? "bg-emerald-600 text-white shadow-xs font-black"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                   }`}
                 >

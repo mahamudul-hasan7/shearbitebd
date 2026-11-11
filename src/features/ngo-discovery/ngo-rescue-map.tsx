@@ -1,8 +1,8 @@
 "use client";
 
-import { Compass, RefreshCw } from "lucide-react";
+import { Compass, List, RefreshCw } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,6 +102,19 @@ export function NGORescueMap() {
             <RescueMap items={filteredItems} />
           </div>
         )}
+
+        {/* Mobile Floating View Switcher FAB (< lg) */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden pointer-events-auto">
+          <ButtonLink
+            href={ROUTES.ngo.discover}
+            variant="primary"
+            size="sm"
+            className="rounded-full bg-slate-900/95 text-white hover:bg-slate-800 shadow-xl shadow-slate-900/35 px-5 py-2.5 text-xs font-black backdrop-blur-md border border-slate-700/60 active:scale-95 transition-all flex items-center gap-2"
+          >
+            <List className="size-4 text-emerald-400" />
+            <span>{isBn ? "তালিকা ভিউ" : "List View"}</span>
+          </ButtonLink>
+        </div>
       </div>
     </PortalShell>
   );

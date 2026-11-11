@@ -250,6 +250,19 @@ export function NGODiscoveryList() {
             </section>
           </div>
         )}
+
+        {/* Mobile Floating View Switcher FAB (< lg) */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 lg:hidden pointer-events-auto">
+          <ButtonLink
+            href={ROUTES.ngo.discoverMap}
+            variant="primary"
+            size="sm"
+            className="rounded-full bg-slate-900/95 text-white hover:bg-slate-800 shadow-xl shadow-slate-900/35 px-5 py-2.5 text-xs font-black backdrop-blur-md border border-slate-700/60 active:scale-95 transition-all flex items-center gap-2"
+          >
+            <Map className="size-4 text-emerald-400" />
+            <span>{isBn ? "রাডার ম্যাপ ভিউ" : "Radar Map View"}</span>
+          </ButtonLink>
+        </div>
       </div>
     </PortalShell>
   );
