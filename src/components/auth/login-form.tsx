@@ -50,9 +50,19 @@ export function LoginForm() {
     window.location.href = targetRoute;
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const validationErrors = validateLogin({ email, password });
+  function handleDirectRoleLogin(roleName: "donor" | "ngo" | "volunteer") {
+    const account = DEMO_ACCOUNTS.find((a) => a.role.toLowerCase() === roleName);
+    if (account) {
+      setLoading(true);
+      completeDemoLogin(account);
+    }
+  }
+
+  async function executeLogin(targetEmail: string, targetPass: string) {
+    const cleanEmail = targetEmail.trim();
+    const cleanPass = targetPass.trim();
+
+    const validationErrors = validateLogin({ email: cleanEmail, password: cleanPass });
     if (validationErrors.email || validationErrors.password) {
       setErrors(validationErrors);
       return;
@@ -66,7 +76,7 @@ export function LoginForm() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
       });
 
       const resData = await res.json();
@@ -86,19 +96,13 @@ export function LoginForm() {
           role: resData.user.role,
           password: "",
         });
-        // Force direct window navigation to ensure clean session reload on mobile browsers
         window.location.href = targetRoute;
         return;
       }
 
       // 2. Fallback check for static demo accounts
-      const account = findDemoAccount(email);
+      const account = findDemoAccount(cleanEmail);
       if (account) {
-        if (password !== account.password) {
-          setErrors({ password: "ডেমো পাসওয়ার্ড হলো: Demo1234" });
-          setLoading(false);
-          return;
-        }
         completeDemoLogin(account);
         return;
       }
@@ -107,7 +111,7 @@ export function LoginForm() {
         form: resData.error || "লগইন ব্যর্থ হয়েছে। প্রদত্ত ইমেইল ও পাসওয়ার্ড সঠিক কিনা যাচাই করুন।",
       });
     } catch {
-      const account = findDemoAccount(email);
+      const account = findDemoAccount(cleanEmail);
       if (account) {
         completeDemoLogin(account);
         return;
@@ -118,8 +122,37 @@ export function LoginForm() {
     }
   }
 
+  // Handle URL query parameters if browser performed a fallback GET
+  useEffect(() => {
+    const qEmail = searchParams.get("email");
+    const qPass = searchParams.get("password");
+    if (qEmail && qPass) {
+      setEmail(qEmail);
+      setPassword(qPass);
+      executeLogin(qEmail, qPass);
+    }
+  }, [searchParams]);
+
+  function handleSubmit(event?: FormEvent) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    executeLogin(email, password);
+  }
+
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-6">
+    <form
+      action="#"
+      method="POST"
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSubmit();
+      }}
+      noValidate
+      className="space-y-6"
+    >
       {errors.form && (
         <Alert
           tone="danger"
@@ -127,6 +160,43 @@ export function LoginForm() {
           description={errors.form}
         />
       )}
+
+      {/* 1-Tap Instant Lab Direct Access (Guaranteed 1-Click Entry) */}
+      <div className="rounded-2xl bg-gradient-to-br from-emerald-950 to-[#022b20] p-3 text-white border border-emerald-700/60 space-y-2 shadow-lg">
+        <div className="flex items-center justify-between text-[11px] font-bold">
+          <span className="text-emerald-300">১-ক্লিক সরাসরি ড্যাশবোর্ডে প্রবেশ:</span>
+          <span className="text-amber-400 font-mono text-[10px]">ইনস্ট্যান্ট</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => handleDirectRoleLogin("donor")}
+            disabled={loading || redirecting}
+            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
+          >
+            <span className="text-base">👨‍🍳</span>
+            <span className="text-xs font-black mt-1 text-white">ডোনার</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDirectRoleLogin("ngo")}
+            disabled={loading || redirecting}
+            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
+          >
+            <span className="text-base">🏢</span>
+            <span className="text-xs font-black mt-1 text-white">এনজিও</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDirectRoleLogin("volunteer")}
+            disabled={loading || redirecting}
+            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
+          >
+            <span className="text-base">🚴</span>
+            <span className="text-xs font-black mt-1 text-white">ভলান্টিয়ার</span>
+          </button>
+        </div>
+      </div>
 
       {/* Credentials Form */}
       <div className="space-y-4">
@@ -254,7 +324,12 @@ export function LoginForm() {
 
       {/* 4. Submit Button */}
       <button
-        type="submit"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          handleSubmit();
+        }}
         disabled={loading || redirecting}
         className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 text-sm font-black uppercase tracking-wider text-white shadow-md shadow-emerald-700/25 hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none font-heading cursor-pointer touch-manipulation"
       >
