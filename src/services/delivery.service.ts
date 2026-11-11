@@ -1,6 +1,7 @@
 import { UserRole } from "@/lib/constants/roles";
 import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
 import { createMockId, MockApiError, simulateRequest, type MockServiceOptions } from "@/services/shared";
+import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import { mockAppStore } from "@/store/mock-app-store";
 import type { DeliveryFoodCondition, DeliveryReceipt, ViewerContext } from "@/types/domain";
 
@@ -95,6 +96,15 @@ export const deliveryService = {
         };
       });
       if (!created) throw new MockApiError({ code: "MOCK_FAILURE", message: "The delivery receipt was not created.", status: 500, retryable: true });
+
+      void createRealNotification({
+        title: "ডেলিভারি রিসিট কনফার্ম হয়েছে! 📋",
+        message: "এনজিও সেন্টারে খাদ্য গ্রহণের রিসিট সফলভাবে রেকর্ড করা হয়েছে।",
+        href: "/donor/donations",
+        type: "DELIVERY",
+        role: "DONOR",
+      });
+
       return cloneReceipt(created);
     }, options);
   },

@@ -6,6 +6,7 @@ import { canTransitionClaim } from "@/lib/status-transitions";
 import { mockAppStore } from "@/store/mock-app-store";
 import type { Address, Claim, DonationView, ViewerContext } from "@/types/domain";
 import { createMockId, MockApiError, simulateRequest, type MockServiceOptions } from "@/services/shared";
+import { createRealNotification } from "@/lib/notifications/real-notification-client";
 
 const CLAIM_DONATION_STATUS: Partial<Record<ClaimStatus, DonationStatus>> = {
   [ClaimStatus.RESERVED]: DonationStatus.RESERVED,
@@ -155,6 +156,32 @@ export const claimService = {
         claims: [claim, ...current.claims],
         donations: current.donations.map((item) => item.id === donation.id ? { ...item, status: DonationStatus.RESERVED, updatedAt: now } : item),
       }));
+
+      // Trigger Real Notifications for Food Claim
+      void createRealNotification({
+        title: "আপনার খাবারটি এনজিও কর্তৃক ক্লেইম করা হয়েছে!",
+        message: `${donation.title} এর জন্য ${ngo?.organizationName || "একটি নিবন্ধিত এনজিও"} ক্লেইম নিশ্চিত করেছে। পিকআপ ওটিপি ও রাইডার প্রস্তুত হচ্ছে।`,
+        href: "/donor/donations",
+        type: "CLAIM",
+        role: "DONOR",
+      });
+
+      void createRealNotification({
+        title: "খাদ্য ক্লেইম নিশ্চিত হয়েছে!",
+        message: `${donation.title} সফলভাবে আপনার এনজিওর জন্য সংরক্ষিত হয়েছে। রাইডার পিকআপের অপেক্ষা করুন।`,
+        href: "/ngo/claims",
+        type: "CLAIM",
+        role: "NGO",
+      });
+
+      void createRealNotification({
+        title: "জরুরি রাইডার অ্যালার্ট: মিশন অ্যাসাইনমেন্ট!",
+        message: `${donation.title} এর জন্য পিকআপ মিশন অপেক্ষা করছে। দ্রুত গ্রহণ করুন!`,
+        href: "/volunteer/dispatches",
+        type: "VOLUNTEER",
+        role: "VOLUNTEER",
+      });
+
       return cloneClaim(claim);
     }, options);
   },
@@ -197,6 +224,24 @@ export const claimService = {
         };
       });
       if (!result) throw new MockApiError({ code: "MOCK_FAILURE", message: "The mock volunteer assignment was not created.", status: 500, retryable: true });
+
+      // Trigger Real Notifications for Volunteer Assignment
+      void createRealNotification({
+        title: "ভলান্টিয়ার রাইডার বরাদ্দ হয়েছে!",
+        message: "আপনার উদ্বৃত্ত খাদ্য সংগ্রহ করতে রাইডার নির্ধারিত হয়েছে। পিকআপের প্রস্তুতি রাখুন।",
+        href: "/donor/donations",
+        type: "VOLUNTEER",
+        role: "DONOR",
+      });
+
+      void createRealNotification({
+        title: "মিশন অ্যাসাইনমেন্ট বরাদ্দ হয়েছে!",
+        message: "আপনাকে একটি খাদ্য উদ্ধার মিশনে রাইডার হিসেবে যুক্ত করা হয়েছে। পিকআপ পিন: 7429 প্রস্তুত।",
+        href: "/volunteer/dashboard",
+        type: "VOLUNTEER",
+        role: "VOLUNTEER",
+      });
+
       return cloneClaim(result);
     }, options);
   },

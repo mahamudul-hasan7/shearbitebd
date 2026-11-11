@@ -23,6 +23,18 @@ export interface DBUser {
   };
 }
 
+export interface DBNotification {
+  id: string;
+  userId?: string;
+  role?: string;
+  type: string;
+  title: string;
+  message: string;
+  href: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface DBDocuments {
   users: DBUser[];
   donations: Array<{
@@ -47,6 +59,7 @@ export interface DBDocuments {
     status: string;
     claimedAt: string;
   }>;
+  notifications: DBNotification[];
 }
 
 const DATA_DIR = path.resolve(process.cwd(), "data");
@@ -100,6 +113,39 @@ const SEED_USERS: DBUser[] = [
   },
 ];
 
+const SEED_NOTIFICATIONS: DBNotification[] = [
+  {
+    id: "notif_seed_001",
+    role: "DONOR",
+    type: "SYSTEM",
+    title: "স্বাগতম! আপনার ফুড ডোনার পোর্টাল সক্রিয়",
+    message: "ক্যাফেটেরিয়ার উদ্বৃত্ত খাবার নষ্ট না করে মাত্র ৬০ সেকেন্ডে পোস্ট করে আশেপাশের এতিমখানা ও চ্যারিটিতে পৌঁছে দিন।",
+    href: "/donor/donations/new",
+    read: false,
+    createdAt: new Date(Date.now() - 5 * 60_000).toISOString(),
+  },
+  {
+    id: "notif_seed_002",
+    role: "NGO",
+    type: "NEARBY_DONATION",
+    title: "লাইভ রাডার অ্যালার্ট সক্রিয় রয়েছে",
+    message: "মাদানী এভিনিউ ও বাড্ডা জোনের নতুন উদ্বৃত্ত খাবারের ব্যাচ সরাসরি আপনার ম্যাপে প্রদর্শিত হবে।",
+    href: "/ngo/discover/map",
+    read: false,
+    createdAt: new Date(Date.now() - 12 * 60_000).toISOString(),
+  },
+  {
+    id: "notif_seed_003",
+    role: "VOLUNTEER",
+    type: "VOLUNTEER",
+    title: "ভলান্টিয়ার রাইডার স্কোয়াডে স্বাগতম",
+    message: "আপনার ১৫ মিনিটের সাইক্লিং করিডোরে যেকোনো খাদ্য উদ্ধার রিকোয়েস্টে লাইভ ডিসপ্যাচ অ্যালার্ট পাবেন।",
+    href: "/volunteer/dispatches",
+    read: false,
+    createdAt: new Date(Date.now() - 20 * 60_000).toISOString(),
+  },
+];
+
 function ensureDbFile(): DBDocuments {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -110,6 +156,7 @@ function ensureDbFile(): DBDocuments {
       users: SEED_USERS,
       donations: [],
       claims: [],
+      notifications: SEED_NOTIFICATIONS,
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), "utf8");
     return initialDb;
@@ -121,11 +168,13 @@ function ensureDbFile(): DBDocuments {
     if (!parsed.users || !Array.isArray(parsed.users)) {
       parsed.users = SEED_USERS;
     }
-    // Ensure seed users exist in DB
     for (const seed of SEED_USERS) {
       if (!parsed.users.some((u) => u.email.toLowerCase() === seed.email.toLowerCase())) {
         parsed.users.push(seed);
       }
+    }
+    if (!parsed.notifications || !Array.isArray(parsed.notifications)) {
+      parsed.notifications = SEED_NOTIFICATIONS;
     }
     return parsed;
   } catch {
@@ -133,6 +182,7 @@ function ensureDbFile(): DBDocuments {
       users: SEED_USERS,
       donations: [],
       claims: [],
+      notifications: SEED_NOTIFICATIONS,
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(freshDb, null, 2), "utf8");
     return freshDb;
@@ -228,6 +278,68 @@ export const db = {
       dbData.claims.unshift(claim);
       saveDb(dbData);
       return claim;
+    },
+  },
+
+  notifications: {
+    findMany(filters?: { userId?: string; role?: string }): DBNotification[] {
+      const dbData = ensureDbFile();
+      let list = dbData.notifications || [];
+      if (filters?.userId || filters?.role) {
+        list = list.filter((n) => {
+          if (n.userId) {
+            return filters.userId ? n.userId.toLowerCase() === filters.userId.toLowerCase() : false;
+          }
+          if (filters.role) {
+            return !n.role || n.role === filters.role || n.role === "ALL";
+          }
+          return true;
+        });
+      }
+      return list.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+    },
+
+    create(notification: Omit<DBNotification, "id" | "createdAt" | "read">): DBNotification {
+      const dbData = ensureDbFile();
+      if (!dbData.notifications) dbData.notifications = [];
+      const newNotif: DBNotification = {
+        ...notification,
+        id: `notif_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        read: false,
+        createdAt: new Date().toISOString(),
+      };
+      dbData.notifications.unshift(newNotif);
+      saveDb(dbData);
+      return newNotif;
+    },
+
+    markRead(id: string) {
+      const dbData = ensureDbFile();
+      if (!dbData.notifications) return;
+      const target = dbData.notifications.find((n) => n.id === id);
+      if (target) {
+        target.read = true;
+        saveDb(dbData);
+      }
+    },
+
+    markAllRead(filters?: { userId?: string; role?: string }) {
+      const dbData = ensureDbFile();
+      if (!dbData.notifications) return;
+      for (const notif of dbData.notifications) {
+        if (!filters) {
+          notif.read = true;
+        } else if (notif.userId && filters.userId) {
+          if (notif.userId.toLowerCase() === filters.userId.toLowerCase()) {
+            notif.read = true;
+          }
+        } else if (!notif.userId && filters.role) {
+          if (notif.role === filters.role || notif.role === "ALL") {
+            notif.read = true;
+          }
+        }
+      }
+      saveDb(dbData);
     },
   },
 };

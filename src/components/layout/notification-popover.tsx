@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  AlertTriangle,
   Bell,
   CheckCheck,
   Clock,
@@ -16,65 +15,66 @@ import {
   Sparkles,
   Truck,
   UsersRound,
-  X,
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import { NotificationType, PriorityLevel } from "@/lib/constants/domain";
-import { UserRole } from "@/lib/constants/roles";
-import { mockAppStore } from "@/store/mock-app-store";
-import { notificationService } from "@/services/notification.service";
-import type { Notification, ViewerContext } from "@/types/domain";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import {
+  fetchRealNotifications,
+  markAllRealNotificationsRead,
+  markRealNotificationRead,
+  type RealNotification,
+} from "@/lib/notifications/real-notification-client";
 import type { PortalRole } from "@/types/navigation";
 import { cn } from "@/lib/utils";
 
 const NOTIFICATION_ICONS: Record<
-  NotificationType,
+  string,
   { icon: LucideIcon; bg: string; text: string; label: string }
 > = {
-  [NotificationType.URGENT]: {
+  URGENT: {
     icon: Zap,
     bg: "bg-rose-50 border-rose-200",
     text: "text-rose-600",
     label: "জরুরি রেসকিউ",
   },
-  [NotificationType.PICKUP]: {
+  PICKUP: {
     icon: Truck,
     bg: "bg-amber-50 border-amber-200",
     text: "text-amber-700",
     label: "পিকআপ উইন্ডো",
   },
-  [NotificationType.VOLUNTEER]: {
+  VOLUNTEER: {
     icon: UsersRound,
     bg: "bg-sky-50 border-sky-200",
     text: "text-sky-700",
     label: "ভলান্টিয়ার রাইডার",
   },
-  [NotificationType.CLAIM]: {
+  CLAIM: {
     icon: HandHeart,
     bg: "bg-emerald-50 border-emerald-200",
     text: "text-emerald-700",
     label: "খাদ্য ক্লেইম",
   },
-  [NotificationType.NEARBY_DONATION]: {
+  NEARBY_DONATION: {
     icon: MapPin,
     bg: "bg-teal-50 border-teal-200",
     text: "text-teal-700",
     label: "নিকটস্থ খাদ্য",
   },
-  [NotificationType.DELIVERY]: {
+  DELIVERY: {
     icon: PackageCheck,
     bg: "bg-emerald-50 border-emerald-200",
     text: "text-emerald-800",
     label: "বিতরণ সম্পন্ন",
   },
-  [NotificationType.IMPACT]: {
+  IMPACT: {
     icon: Sparkles,
     bg: "bg-purple-50 border-purple-200",
     text: "text-purple-700",
     label: "ইমপ্যাক্ট আপডেট",
   },
-  [NotificationType.SYSTEM]: {
+  SYSTEM: {
     icon: ShieldCheck,
     bg: "bg-slate-100 border-slate-200",
     text: "text-slate-700",
@@ -104,62 +104,72 @@ export function NotificationPopover({
   className?: string;
 }) {
   const router = useRouter();
+  const { session } = useMockAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"ALL" | "UNREAD">("ALL");
   const [busy, setBusy] = useState(false);
+  const [notifications, setNotifications] = useState<RealNotification[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Resolve user and viewer context
-  const { userId, viewer } = useMemo(() => {
-    if (role === "ngo") {
-      return {
-        userId: "user-ngo-hope",
-        viewer: {
-          userId: "user-ngo-hope",
-          ngoProfileId: "ngo-hope",
-          role: UserRole.NGO,
-        } as ViewerContext,
-      };
-    }
-    if (role === "volunteer") {
-      return {
-        userId: "user-volunteer-demo",
-        viewer: {
-          userId: "user-volunteer-demo",
-          role: UserRole.VOLUNTEER,
-        } as ViewerContext,
-      };
-    }
-    return {
-      userId: "user-donor-uiu",
-      viewer: {
-        userId: "user-donor-uiu",
-        donorProfileId: "donor-uiu",
-        role: UserRole.DONOR,
-      } as ViewerContext,
-    };
-  }, [role]);
-
-  // Read notifications directly from mockAppStore and subscribe
-  const [notifications, setNotifications] = useState<Notification[]>(() => {
-    return mockAppStore
-      .getSnapshot()
-      .notifications.filter((n) => n.userId === userId)
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  });
+  const loadNotifications = useCallback(async () => {
+    const res = await fetchRealNotifications(role, session?.email);
+    setNotifications(res.notifications);
+  }, [role, session?.email]);
 
   useEffect(() => {
-    const updateList = () => {
-      const items = mockAppStore
-        .getSnapshot()
-        .notifications.filter((n) => n.userId === userId)
-        .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-      setNotifications(items);
+    void loadNotifications();
+
+    // 5-second polling interval for multi-device sync
+    const interval = window.setInterval(() => {
+      void loadNotifications();
+    }, 5000);
+
+    // Event listeners for instant local tab and broadcasted updates
+    const handleNotification = (event: Event) => {
+      const customEvent = event as CustomEvent<RealNotification>;
+      const notif = customEvent.detail;
+      if (!notif) {
+        void loadNotifications();
+        return;
+      }
+
+      // Check if notification is meant for this role or user
+      const matchesRole = !notif.role || notif.role === "ALL" || notif.role.toLowerCase() === role.toLowerCase();
+      const matchesUser = !notif.userId || notif.userId.toLowerCase() === (session?.email ?? "").toLowerCase();
+
+      if (matchesRole && matchesUser) {
+        setNotifications((prev) => {
+          if (prev.some((item) => item.id === notif.id)) return prev;
+          return [notif, ...prev];
+        });
+      }
     };
 
-    updateList();
-    return mockAppStore.subscribe(updateList);
-  }, [userId]);
+    const handleReadAll = () => {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    };
+
+    const handleReadOne = (event: Event) => {
+      const customEvent = event as CustomEvent<{ id: string }>;
+      const id = customEvent.detail?.id;
+      if (id) {
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+      }
+    };
+
+    window.addEventListener("sharebite:notification", handleNotification);
+    window.addEventListener("sharebite:notification-read-all", handleReadAll);
+    window.addEventListener("sharebite:notification-read", handleReadOne);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("sharebite:notification", handleNotification);
+      window.removeEventListener("sharebite:notification-read-all", handleReadAll);
+      window.removeEventListener("sharebite:notification-read", handleReadOne);
+    };
+  }, [loadNotifications, role, session?.email]);
 
   // Click outside listener
   useEffect(() => {
@@ -178,12 +188,12 @@ export function NotificationPopover({
   }, [isOpen]);
 
   const unreadCount = useMemo(() => {
-    return notifications.filter((n) => !n.readAt).length;
+    return notifications.filter((n) => !n.read).length;
   }, [notifications]);
 
   const visibleNotifications = useMemo(() => {
     if (activeTab === "UNREAD") {
-      return notifications.filter((n) => !n.readAt);
+      return notifications.filter((n) => !n.read);
     }
     return notifications;
   }, [notifications, activeTab]);
@@ -191,18 +201,22 @@ export function NotificationPopover({
   async function handleMarkAllAsRead() {
     setBusy(true);
     try {
-      await notificationService.markAllRead(userId, viewer);
+      await markAllRealNotificationsRead(role, session?.email);
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } finally {
       setBusy(false);
     }
   }
 
-  async function handleItemClick(item: Notification) {
-    if (!item.readAt) {
-      void notificationService.markRead(item.id, viewer);
+  async function handleItemClick(item: RealNotification) {
+    if (!item.read) {
+      void markRealNotificationRead(item.id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === item.id ? { ...n, read: true } : n))
+      );
     }
     setIsOpen(false);
-    if (item.href) {
+    if (item.href && item.href !== "#") {
       router.push(item.href);
     }
   }
@@ -230,14 +244,14 @@ export function NotificationPopover({
         )}
       </button>
 
-      {/* Facebook-Style Floating Notification Popover Dropdown */}
+      {/* Modern Popover Dropdown */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2.5 w-[330px] sm:w-[390px] rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-400/30 z-50 overflow-hidden text-left animate-in fade-in zoom-in-95 duration-150">
           {/* Header Bar */}
           <div className="flex items-center justify-between border-b border-slate-100 p-4 bg-slate-50/70">
             <div className="flex items-center gap-2">
               <h3 className="text-base font-black text-slate-900 font-heading">
-                নোটিফিকেশন
+                লাইভ নোটিফিকেশন
               </h3>
               {unreadCount > 0 && (
                 <span className="rounded-full bg-emerald-100/90 px-2.5 py-0.5 text-[11px] font-black text-emerald-800 font-heading">
@@ -305,9 +319,10 @@ export function NotificationPopover({
               </div>
             ) : (
               visibleNotifications.map((item) => {
-                const meta = NOTIFICATION_ICONS[item.type] ?? NOTIFICATION_ICONS[NotificationType.SYSTEM];
+                const meta =
+                  NOTIFICATION_ICONS[item.type] ?? NOTIFICATION_ICONS.SYSTEM;
                 const Icon = meta.icon;
-                const isUnread = !item.readAt;
+                const isUnread = !item.read;
 
                 return (
                   <div
@@ -359,7 +374,7 @@ export function NotificationPopover({
                       </p>
                     </div>
 
-                    {/* Unread Blue/Emerald Dot */}
+                    {/* Unread Indicator */}
                     {isUnread && (
                       <span className="mt-2 size-2.5 shrink-0 rounded-full bg-emerald-600 shadow-xs ring-2 ring-emerald-100" />
                     )}

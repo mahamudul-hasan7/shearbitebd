@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import type {
   AvailableDispatch,
   CompletedMissionRecord,
@@ -466,12 +467,64 @@ class VolunteerStore {
         : mission.dropoffOtp;
 
     if (inputPin.trim() === targetPin || inputPin.trim() === "7429" || inputPin.trim() === "9814") {
-      const nextStage: MissionStage =
-        mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup"
-          ? "cargo_loaded"
-          : "completed";
+      const isPickup =
+        mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup";
+      const nextStage: MissionStage = isPickup ? "cargo_loaded" : "completed";
 
       this.advanceStage(nextStage);
+
+      if (isPickup) {
+        // Real notifications for Pickup Verification
+        void createRealNotification({
+          title: "খাদ্য পিকআপ সম্পন্ন হয়েছে! 🛵",
+          message: "ভলান্টিয়ার রাইডার সফলভাবে খাদ্য সংগ্রহ করেছেন। এনজিও ড্রপঅফ লোকেশনের দিকে রওনা হয়েছেন।",
+          href: "/donor/donations",
+          type: "PICKUP",
+          role: "DONOR",
+        });
+
+        void createRealNotification({
+          title: "রাইডার খাদ্য সংগ্রহ করেছেন!",
+          message: "ভলান্টিয়ার রাইডার সফলভাবে খাদ্য তুলেছেন এবং এনজিও সেন্টারের উদ্দেশ্যে ট্রানজিটে আছেন।",
+          href: "/ngo/claims",
+          type: "PICKUP",
+          role: "NGO",
+        });
+
+        void createRealNotification({
+          title: "পিকআপ সফল হয়েছে!",
+          message: "ইনসুলেটেড ব্যাগে খাবার সুরক্ষিত রাখুন। ড্রপঅফে পৌঁছে ডেলিভারি ওটিপি: 9814 যাচাই করুন।",
+          href: "/volunteer/dashboard",
+          type: "PICKUP",
+          role: "VOLUNTEER",
+        });
+      } else {
+        // Real notifications for Drop-off Verification
+        void createRealNotification({
+          title: "খাদ্য বিতরণ ও মিশন সফল! 🎉",
+          message: "আপনার দান করা খাবার নিরাপদে গন্তব্যে পৌঁছে গেছে। অসংখ্য মানুষের মুখে হাসি ফোটানোর জন্য ধন্যবাদ!",
+          href: "/donor/donations",
+          type: "DELIVERY",
+          role: "DONOR",
+        });
+
+        void createRealNotification({
+          title: "খাদ্য ড্রপ-অফ সফলভাবে সম্পন্ন! 📦",
+          message: "রাইডার খাদ্য সেন্টারে পৌঁছে দিয়েছেন। এবার সুবিধাবঞ্চিতদের মাঝে বিতরণ সম্পন্ন করুন।",
+          href: "/ngo/claims",
+          type: "DELIVERY",
+          role: "NGO",
+        });
+
+        void createRealNotification({
+          title: "রেসকিউ মিশন সম্পূর্ণ! 🌟",
+          message: "অভিনন্দন! আপনি সফলভাবে খাদ্য উদ্ধার ও সুবিধাবঞ্চিত মানুষের সেবায় ভূমিকা রাখলেন। +৫০ পয়েন্ট যোগ হয়েছে!",
+          href: "/volunteer/dashboard",
+          type: "DELIVERY",
+          role: "VOLUNTEER",
+        });
+      }
+
       return { success: true, message: "ওটিপি সফলভাবে যাচাই হয়েছে!" };
     }
 
@@ -486,6 +539,14 @@ class VolunteerStore {
       sosDelayAlert: alertMsg,
     };
     this.notify();
+
+    void createRealNotification({
+      title: "🚨 ট্রানজিট বিলম্ব ও জরুরি আপডেট!",
+      message: `রাইডার ট্রানজিটে বিলম্বের তথ্য জানিয়েছেন: ${reason} (বিলম্ব +${delayMins} মিনিট)।`,
+      href: "/ngo/claims",
+      type: "URGENT",
+      role: "NGO",
+    });
   };
 
   dismissSos = () => {

@@ -1,17 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import {
-  AlertTriangle,
   Bell,
   BellRing,
   Check,
   CheckCheck,
-  CheckCircle2,
   Clock,
   ExternalLink,
-  Filter,
   HandHeart,
   Mail,
   MapPin,
@@ -31,71 +28,73 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
-import { NotificationType, PriorityLevel } from "@/lib/constants/domain";
-import { UserRole } from "@/lib/constants/roles";
 import { ROUTES } from "@/lib/routes";
-import { notificationService } from "@/services/notification.service";
-import { mockAppStore } from "@/store/mock-app-store";
-import type { Notification, ViewerContext } from "@/types/domain";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import {
+  fetchRealNotifications,
+  markAllRealNotificationsRead,
+  markRealNotificationRead,
+  type RealNotification,
+} from "@/lib/notifications/real-notification-client";
 import type { PortalRole } from "@/types/navigation";
 import { cn } from "@/lib/utils";
 
 type FilterTab = "ALL" | "UNREAD" | "URGENT" | "CLAIMS" | "LOGISTICS" | "SYSTEM";
 
 const TYPE_CONFIG: Record<
-  NotificationType,
+  string,
   { label: string; icon: LucideIcon; badgeColor: string; iconBg: string; iconColor: string }
 > = {
-  [NotificationType.URGENT]: {
+  URGENT: {
     label: "অতি জরুরি",
     icon: Zap,
     badgeColor: "bg-rose-50 text-rose-800 ring-rose-600/20",
     iconBg: "bg-rose-50 border-rose-200",
     iconColor: "text-rose-600",
   },
-  [NotificationType.PICKUP]: {
+  PICKUP: {
     label: "পিকআপ উইন্ডো",
     icon: Truck,
     badgeColor: "bg-amber-50 text-amber-800 ring-amber-600/20",
     iconBg: "bg-amber-50 border-amber-200",
     iconColor: "text-amber-700",
   },
-  [NotificationType.VOLUNTEER]: {
+  VOLUNTEER: {
     label: "ভলান্টিয়ার রাইডার",
     icon: UsersRound,
     badgeColor: "bg-sky-50 text-sky-800 ring-sky-600/20",
     iconBg: "bg-sky-50 border-sky-200",
     iconColor: "text-sky-700",
   },
-  [NotificationType.CLAIM]: {
+  CLAIM: {
     label: "খাদ্য ক্লেইম ও ম্যাচ",
     icon: HandHeart,
     badgeColor: "bg-emerald-50 text-emerald-800 ring-emerald-600/20",
     iconBg: "bg-emerald-50 border-emerald-200",
     iconColor: "text-emerald-700",
   },
-  [NotificationType.NEARBY_DONATION]: {
+  NEARBY_DONATION: {
     label: "নিকটস্থ খাদ্য অ্যালার্ট",
     icon: MapPin,
     badgeColor: "bg-teal-50 text-teal-800 ring-teal-600/20",
     iconBg: "bg-teal-50 border-teal-200",
     iconColor: "text-teal-700",
   },
-  [NotificationType.DELIVERY]: {
+  DELIVERY: {
     label: "বিতরণ সম্পন্ন",
     icon: PackageCheck,
     badgeColor: "bg-emerald-50 text-emerald-800 ring-emerald-600/20",
     iconBg: "bg-emerald-50 border-emerald-200",
     iconColor: "text-emerald-800",
   },
-  [NotificationType.IMPACT]: {
+  IMPACT: {
     label: "ইমপ্যাক্ট রেকর্ড",
     icon: Sparkles,
     badgeColor: "bg-purple-50 text-purple-800 ring-purple-600/20",
     iconBg: "bg-purple-50 border-purple-200",
     iconColor: "text-purple-700",
   },
-  [NotificationType.SYSTEM]: {
+  SYSTEM: {
     label: "সিস্টেম ও সিকিউরিটি",
     icon: ShieldCheck,
     badgeColor: "bg-slate-100 text-slate-800 ring-slate-400/20",
@@ -103,6 +102,7 @@ const TYPE_CONFIG: Record<
     iconColor: "text-slate-700",
   },
 };
+
 
 function formatDetailedDate(dateString: string) {
   const date = new Date(dateString);
@@ -140,6 +140,7 @@ export function NotificationCenterView({
   profileDescription?: string;
   avatarInitials?: string;
 }) {
+  const { session } = useMockAuth();
   const [filterTab, setFilterTab] = useState<FilterTab>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [busyId, setBusyId] = useState<string>();
@@ -151,68 +152,76 @@ export function NotificationCenterView({
   const [emailDigest, setEmailDigest] = useState(false);
   const [soundAlerts, setSoundAlerts] = useState(true);
 
-  // Resolve user identity
-  const { userId, viewer } = useMemo(() => {
-    if (role === "ngo") {
-      return {
-        userId: "user-ngo-hope",
-        viewer: {
-          userId: "user-ngo-hope",
-          ngoProfileId: "ngo-hope",
-          role: UserRole.NGO,
-        } as ViewerContext,
-      };
-    }
-    if (role === "volunteer") {
-      return {
-        userId: "user-volunteer-demo",
-        viewer: {
-          userId: "user-volunteer-demo",
-          role: UserRole.VOLUNTEER,
-        } as ViewerContext,
-      };
-    }
-    return {
-      userId: "user-donor-uiu",
-      viewer: {
-        userId: "user-donor-uiu",
-        donorProfileId: "donor-uiu",
-        role: UserRole.DONOR,
-      } as ViewerContext,
-    };
-  }, [role]);
+  // Notifications state from live DB API
+  const [notifications, setNotifications] = useState<RealNotification[]>([]);
 
-  // Notifications state from store
-  const [notifications, setNotifications] = useState<Notification[]>(() => {
-    return mockAppStore
-      .getSnapshot()
-      .notifications.filter((n) => n.userId === userId)
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  });
+  const loadNotifications = useCallback(async () => {
+    const res = await fetchRealNotifications(role, session?.email);
+    setNotifications(res.notifications);
+  }, [role, session?.email]);
 
   useEffect(() => {
-    const updateList = () => {
-      const items = mockAppStore
-        .getSnapshot()
-        .notifications.filter((n) => n.userId === userId)
-        .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-      setNotifications(items);
+    void loadNotifications();
+
+    const interval = window.setInterval(() => {
+      void loadNotifications();
+    }, 5000);
+
+    const handleNotification = (event: Event) => {
+      const customEvent = event as CustomEvent<RealNotification>;
+      const notif = customEvent.detail;
+      if (!notif) {
+        void loadNotifications();
+        return;
+      }
+
+      const matchesRole = !notif.role || notif.role === "ALL" || notif.role.toLowerCase() === role.toLowerCase();
+      const matchesUser = !notif.userId || notif.userId.toLowerCase() === (session?.email ?? "").toLowerCase();
+
+      if (matchesRole && matchesUser) {
+        setNotifications((prev) => {
+          if (prev.some((item) => item.id === notif.id)) return prev;
+          return [notif, ...prev];
+        });
+      }
     };
 
-    updateList();
-    return mockAppStore.subscribe(updateList);
-  }, [userId]);
+    const handleReadAll = () => {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    };
+
+    const handleReadOne = (event: Event) => {
+      const customEvent = event as CustomEvent<{ id: string }>;
+      const id = customEvent.detail?.id;
+      if (id) {
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+      }
+    };
+
+    window.addEventListener("sharebite:notification", handleNotification);
+    window.addEventListener("sharebite:notification-read-all", handleReadAll);
+    window.addEventListener("sharebite:notification-read", handleReadOne);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("sharebite:notification", handleNotification);
+      window.removeEventListener("sharebite:notification-read-all", handleReadAll);
+      window.removeEventListener("sharebite:notification-read", handleReadOne);
+    };
+  }, [loadNotifications, role, session?.email]);
 
   const unreadCount = useMemo(() => {
-    return notifications.filter((n) => !n.readAt).length;
+    return notifications.filter((n) => !n.read).length;
   }, [notifications]);
 
   const urgentCount = useMemo(() => {
-    return notifications.filter((n) => n.priority === PriorityLevel.URGENT || n.type === NotificationType.URGENT).length;
+    return notifications.filter((n) => n.type === "URGENT").length;
   }, [notifications]);
 
   const completedCount = useMemo(() => {
-    return notifications.filter((n) => n.type === NotificationType.DELIVERY).length;
+    return notifications.filter((n) => n.type === "DELIVERY").length;
   }, [notifications]);
 
   // Filtered list
@@ -220,11 +229,11 @@ export function NotificationCenterView({
     return notifications.filter((item) => {
       // Tab matching
       let tabMatch = true;
-      if (filterTab === "UNREAD") tabMatch = !item.readAt;
-      else if (filterTab === "URGENT") tabMatch = item.priority === PriorityLevel.URGENT || item.type === NotificationType.URGENT;
-      else if (filterTab === "CLAIMS") tabMatch = item.type === NotificationType.CLAIM || item.type === NotificationType.NEARBY_DONATION;
-      else if (filterTab === "LOGISTICS") tabMatch = item.type === NotificationType.VOLUNTEER || item.type === NotificationType.PICKUP || item.type === NotificationType.DELIVERY;
-      else if (filterTab === "SYSTEM") tabMatch = item.type === NotificationType.SYSTEM || item.type === NotificationType.IMPACT;
+      if (filterTab === "UNREAD") tabMatch = !item.read;
+      else if (filterTab === "URGENT") tabMatch = item.type === "URGENT";
+      else if (filterTab === "CLAIMS") tabMatch = item.type === "CLAIM" || item.type === "NEARBY_DONATION";
+      else if (filterTab === "LOGISTICS") tabMatch = item.type === "VOLUNTEER" || item.type === "PICKUP" || item.type === "DELIVERY";
+      else if (filterTab === "SYSTEM") tabMatch = item.type === "SYSTEM" || item.type === "IMPACT";
 
       // Search query matching
       const query = searchQuery.trim().toLowerCase();
@@ -241,9 +250,9 @@ export function NotificationCenterView({
 
   // Group by Time
   const groupedNotifications = useMemo(() => {
-    const today: Notification[] = [];
-    const yesterday: Notification[] = [];
-    const earlier: Notification[] = [];
+    const today: RealNotification[] = [];
+    const yesterday: RealNotification[] = [];
+    const earlier: RealNotification[] = [];
 
     filteredNotifications.forEach((item) => {
       const category = getTimeCategory(item.createdAt);
@@ -255,14 +264,13 @@ export function NotificationCenterView({
     return { today, yesterday, earlier };
   }, [filteredNotifications]);
 
-  async function toggleRead(item: Notification) {
+  async function toggleRead(item: RealNotification) {
     setBusyId(item.id);
     try {
-      if (item.readAt) {
-        await notificationService.markUnread(item.id, viewer);
-      } else {
-        await notificationService.markRead(item.id, viewer);
-      }
+      await markRealNotificationRead(item.id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === item.id ? { ...n, read: true } : n))
+      );
     } finally {
       setBusyId(undefined);
     }
@@ -271,17 +279,15 @@ export function NotificationCenterView({
   async function markAllRead() {
     setBusyId("all");
     try {
-      await notificationService.markAllRead(userId, viewer);
+      await markAllRealNotificationsRead(role, session?.email);
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } finally {
       setBusyId(undefined);
     }
   }
 
   function handleDismiss(id: string) {
-    mockAppStore.update((state) => ({
-      ...state,
-      notifications: state.notifications.filter((n) => n.id !== id),
-    }));
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
   }
 
   const notificationHref = role === "donor" ? ROUTES.donor.notifications : ROUTES.ngo.notifications;
@@ -397,7 +403,7 @@ export function NotificationCenterView({
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                 >
                   <X className="size-3.5" />
                 </button>
@@ -415,7 +421,7 @@ export function NotificationCenterView({
                     key: "CLAIMS",
                     label: "খাদ্য ক্লেইম",
                     count: notifications.filter(
-                      (n) => n.type === NotificationType.CLAIM || n.type === NotificationType.NEARBY_DONATION
+                      (n) => n.type === "CLAIM" || n.type === "NEARBY_DONATION"
                     ).length,
                   },
                   {
@@ -423,16 +429,16 @@ export function NotificationCenterView({
                     label: "লজিস্টিক্স",
                     count: notifications.filter(
                       (n) =>
-                        n.type === NotificationType.VOLUNTEER ||
-                        n.type === NotificationType.PICKUP ||
-                        n.type === NotificationType.DELIVERY
+                        n.type === "VOLUNTEER" ||
+                        n.type === "PICKUP" ||
+                        n.type === "DELIVERY"
                     ).length,
                   },
                   {
                     key: "SYSTEM",
                     label: "সিস্টেম",
                     count: notifications.filter(
-                      (n) => n.type === NotificationType.SYSTEM || n.type === NotificationType.IMPACT
+                      (n) => n.type === "SYSTEM" || n.type === "IMPACT"
                     ).length,
                   },
                 ] as const
@@ -453,8 +459,8 @@ export function NotificationCenterView({
                     <span>{tab.label}</span>
                     <span
                       className={cn(
-                        "rounded-md px-1.5 py-0.2 text-[10px]",
-                        isActive ? "bg-emerald-700 text-white" : "bg-slate-200/70 text-slate-600"
+                        "rounded-full px-1.5 py-0.2 text-[10px] font-bold",
+                        isActive ? "bg-white/20 text-white" : "bg-slate-200/70 text-slate-700"
                       )}
                     >
                       {tab.count}
@@ -466,7 +472,7 @@ export function NotificationCenterView({
           </div>
         </div>
 
-        {/* 3. Grouped Notifications Stream */}
+        {/* 3. Grouped Notifications List */}
         {filteredNotifications.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-16 text-center shadow-2xs">
             <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400">
@@ -618,11 +624,11 @@ export function NotificationCenterView({
               <div className="flex items-center justify-between pt-3.5">
                 <div className="pr-4">
                   <p className="font-bold text-slate-900 font-heading flex items-center gap-1.5">
-                    <BellRing className="size-3.5 text-emerald-600" />
+                    <Bell className="size-3.5 text-emerald-600" />
                     ব্রাউজার পুশ নোটিফিকেশন
                   </p>
                   <p className="text-[11px] text-slate-500 font-normal mt-0.5">
-                    নতুন খাবার পোস্ট বা রাইডার ট্র্যাকিংয়ে স্ক্রিন নোটিফিকেশন পপআপ।
+                    ট্যাব ব্যাকগ্রাউন্ডে থাকলেও লাইভ খাদ্য উদ্ধার আপডেট প্রদর্শিত হবে।
                   </p>
                 </div>
                 <button
@@ -721,14 +727,14 @@ function NotificationItemCard({
   onToggleRead,
   onDismiss,
 }: {
-  item: Notification;
+  item: RealNotification;
   busy: boolean;
   onToggleRead: () => void;
   onDismiss: () => void;
 }) {
-  const meta = TYPE_CONFIG[item.type] ?? TYPE_CONFIG[NotificationType.SYSTEM];
+  const meta = TYPE_CONFIG[item.type] ?? TYPE_CONFIG.SYSTEM;
   const Icon = meta.icon;
-  const isUnread = !item.readAt;
+  const isUnread = !item.read;
 
   return (
     <div
@@ -751,12 +757,12 @@ function NotificationItemCard({
           <Icon className="size-5" />
         </span>
 
-        {/* Content */}
-        <div className="min-w-0 flex-1">
+        {/* Content Details */}
+        <div className="min-w-0 flex-1 text-left">
           <div className="flex flex-wrap items-center gap-2">
             <span
               className={cn(
-                "inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold ring-1 font-heading uppercase tracking-wide",
+                "rounded-md px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ring-1 font-heading",
                 meta.badgeColor
               )}
             >
@@ -764,63 +770,67 @@ function NotificationItemCard({
             </span>
 
             {isUnread && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-700 font-heading">
-                <span className="size-2 rounded-full bg-emerald-600 animate-pulse" />
+              <span className="flex items-center gap-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-black text-white font-heading">
+                <span className="size-1.5 rounded-full bg-white animate-pulse" />
                 নতুন
               </span>
             )}
 
-            <span className="text-[11px] text-slate-400 font-medium">
+            <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1 ml-auto">
+              <Clock className="size-3 text-slate-400" />
               {formatDetailedDate(item.createdAt)}
             </span>
           </div>
 
-          <h3
+          <h4
             className={cn(
               "mt-1.5 text-sm font-heading leading-snug",
-              isUnread ? "font-black text-slate-900" : "font-bold text-slate-800"
+              isUnread ? "font-black text-slate-900" : "font-bold text-slate-700"
             )}
           >
             {item.title}
-          </h3>
+          </h4>
 
-          <p className="mt-1 text-xs leading-relaxed text-slate-600 font-normal">
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 line-clamp-2">
             {item.message}
           </p>
-
-          {/* Action Links */}
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-bold font-heading">
-            {item.href && (
-              <Link
-                href={item.href}
-                className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 hover:underline"
-              >
-                <span>বিস্তারিত দেখুন ও ট্র্যাক করুন</span>
-                <ExternalLink className="size-3" />
-              </Link>
-            )}
-
-            <button
-              type="button"
-              disabled={busy}
-              onClick={onToggleRead}
-              className="text-slate-500 hover:text-slate-800 transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              {isUnread ? "পঠিত চিহ্নিত করুন" : "অপঠিত করুন"}
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Right Controls */}
-      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 pt-2 sm:pt-0 shrink-0">
+      {/* Right Side Action Buttons */}
+      <div className="flex items-center gap-2 self-end sm:self-center shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 w-full sm:w-auto justify-end">
+        {item.href && item.href !== "#" && (
+          <Link
+            href={item.href}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-2xs hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 transition-colors font-heading"
+          >
+            <span>কার্যক্রম দেখুন</span>
+            <ExternalLink className="size-3.5" />
+          </Link>
+        )}
+
+        <button
+          type="button"
+          disabled={busy}
+          onClick={onToggleRead}
+          title={isUnread ? "পঠিত হিসেবে চিহ্নিত করুন" : "অপঠিত করুন"}
+          className={cn(
+            "grid size-8 place-items-center rounded-xl border transition-colors cursor-pointer disabled:opacity-50",
+            isUnread
+              ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              : "border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+          )}
+        >
+          {isUnread ? <Check className="size-4" /> : <Clock className="size-4" />}
+        </button>
+
         <button
           type="button"
           onClick={onDismiss}
-          title="নোটিফিকেশনটি মুছে ফেলুন"
-          className="rounded-lg p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+          title="মুছে ফেলুন"
+          className="grid size-8 place-items-center rounded-xl border border-slate-200 bg-white text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors cursor-pointer"
         >
-          <Trash2 className="size-4" />
+          <Trash2 className="size-3.5" />
         </button>
       </div>
     </div>

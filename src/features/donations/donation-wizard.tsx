@@ -23,6 +23,8 @@ import { DonationStatus } from "@/lib/constants/statuses";
 import { calculateUrgencyScore } from "@/lib/selectors/donation-selectors";
 import { ROUTES } from "@/lib/routes";
 import { donationService, ngoService, MockApiError, type NGODirectoryItem } from "@/services";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import type { ViewerContext } from "@/types/domain";
 
 const wizardSteps = [
@@ -55,6 +57,7 @@ function allergensFromDraft(value: string) {
 }
 
 export function DonationWizard() {
+  const { session } = useMockAuth();
   const [currentStep, setCurrentStep] = useState<DonationWizardStep>(1);
   const [draft, setDraft] = useState<DonationDraft>(() => createInitialDonationDraft());
   const [errors, setErrors] = useState<DonationDraftErrors>({});
@@ -196,6 +199,32 @@ export function DonationWizard() {
       setCurrentStep(4);
       setErrors({});
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Trigger Real Database & Platform Notifications
+      void createRealNotification({
+        title: "উদ্বৃত্ত খাবার পোস্ট সফল হয়েছে!",
+        message: `${draft.title} (${draft.quantity} ${draft.quantityUnit}) সফলভাবে পোস্ট করা হয়েছে। ভলান্টিয়ার ও এনজিওরা এখন এটি গ্রহণ করতে পারবে।`,
+        href: "/donor/donations",
+        type: "PICKUP",
+        role: "DONOR",
+        userId: session?.email,
+      });
+
+      void createRealNotification({
+        title: "নতুন উদ্বৃত্ত খাবার উপলব্ধ!",
+        message: `${draft.title} - ${draft.approximateArea || "মাদানী এভিনিউ"} থেকে চ্যারিটির জন্য পোস্ট করা হয়েছে। এখনই ক্লেইম করুন।`,
+        href: "/ngo/discover/map",
+        type: "NEARBY_DONATION",
+        role: "NGO",
+      });
+
+      void createRealNotification({
+        title: "নতুন ফুড রেসকিউ মিশন!",
+        message: `${draft.approximateArea || "নিকটবর্তী এলাকা"} থেকে খাদ্য সংগ্রহের জন্য নতুন ব্যাচ উন্মুক্ত হয়েছে। প্রস্তুত থাকুন!`,
+        href: "/volunteer/dispatches",
+        type: "VOLUNTEER",
+        role: "VOLUNTEER",
+      });
     } catch (error: unknown) {
       if (error instanceof MockApiError) {
         setErrors({ ...error.fieldErrors, form: error.message });
