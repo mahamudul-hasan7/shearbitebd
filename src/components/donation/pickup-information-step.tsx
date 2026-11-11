@@ -117,16 +117,32 @@ export function PickupInformationStep({
         required
       />
 
-      <Input
-        label="পিকআপ শেষের সময়"
-        name="pickupWindowEnd"
-        type="datetime-local"
-        value={draft.pickupWindowEnd}
-        onChange={(event) => update("pickupWindowEnd", event.target.value)}
-        error={errors.pickupWindowEnd}
-        leftIcon={<CalendarClock className="size-5" />}
-        required
-      />
+      <div className="space-y-1.5">
+        <Input
+          label="পিকআপ শেষের সময়"
+          name="pickupWindowEnd"
+          type="datetime-local"
+          value={draft.pickupWindowEnd}
+          onChange={(event) => update("pickupWindowEnd", event.target.value)}
+          error={errors.pickupWindowEnd}
+          leftIcon={<CalendarClock className="size-5" />}
+          hint={
+            draft.safePickupDeadline
+              ? `খাবারের নিরাপদ মেয়াদ (Safe Until): ${draft.safePickupDeadline.replace("T", " ")}। পিকআপ এর আগে শেষ হতে হবে।`
+              : "খাবার নষ্ট হওয়ার আগেই পিকআপ সম্পন্ন করতে হবে।"
+          }
+          required
+        />
+        {draft.safePickupDeadline && (
+          <button
+            type="button"
+            onClick={() => update("pickupWindowEnd", draft.safePickupDeadline)}
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 underline cursor-pointer"
+          >
+            ⚡ নিরাপদ মেয়াদের সাথে মিলিয়ে দিন ({draft.safePickupDeadline.replace("T", " ")})
+          </button>
+        )}
+      </div>
 
       <Textarea
         label="পিকআপ পয়েন্টের বিস্তারিত নির্দেশনা (ঐচ্ছিক)"
