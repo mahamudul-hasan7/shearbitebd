@@ -54,8 +54,11 @@ In Dhaka and major Bangladeshi metropolises:
 * **Node.js:** `v18.18.0` or `v20.x+` (LTS recommended) — [Download Node.js](https://nodejs.org/)
 * **Git:** (Optional if downloaded via ZIP)
 
-### 1-Click Launch on Windows
-Simply double-click the **`run-project.bat`** file in the root directory. It automatically checks Node.js, installs dependencies if missing, and opens `http://localhost:3000` in your browser.
+### 1-Click Launch on Windows ⚡
+Simply double-click the **`run-project.bat`** file in the root directory.
+* Automatically verifies Node.js presence.
+* Auto-installs missing dependencies safely on first run.
+* **Zero-lag Smart Healthcheck:** Launches your browser directly to `http://localhost:3000` the exact millisecond the Next.js server is 100% compiled and ready.
 
 ---
 
@@ -99,6 +102,8 @@ sharebite-bd-frontend/
 │   ├── components/              # Modular UI components (Map, Radar, Countdown, Modals)
 │   ├── lib/                     # Domain utilities, mock stores, and Prisma client singleton
 │   └── types/                   # TypeScript interfaces and domain schemas
+├── scripts/                     # Smart launcher & presentation generators
+│   └── start-and-open.mjs       # Zero-lag auto-browser launch engine
 ├── run-project.bat              # Portable 1-click launcher for Windows
 └── package.json                 # Project scripts and dependencies
 ```
