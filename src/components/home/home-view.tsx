@@ -795,40 +795,6 @@ export function HomeView() {
               ))}
             </nav>
 
-            {/* Direct Demo Portal Switcher for 1-Tap Mobile Testing */}
-            <div className="mt-4 rounded-2xl bg-slate-100/90 p-3 border border-slate-200/80 space-y-2">
-              <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 font-heading">
-                <span>সরাসরি ডেমো পোর্টাল টেস্ট করুন</span>
-                <span className="font-mono text-emerald-700 font-black">১-ক্লিক</span>
-              </div>
-              <div className="grid grid-cols-3 gap-1.5">
-                <a
-                  href={ROUTES.donor.dashboard}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
-                >
-                  <span className="text-base">👨‍🍳</span>
-                  <span className="text-[11px] font-bold text-slate-800 mt-1">ফুড ডোনার</span>
-                </a>
-                <a
-                  href={ROUTES.ngo.dashboard}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
-                >
-                  <span className="text-base">🏢</span>
-                  <span className="text-[11px] font-bold text-slate-800 mt-1">এনজিও হাব</span>
-                </a>
-                <a
-                  href={ROUTES.volunteer.dashboard}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
-                >
-                  <span className="text-base">🚴</span>
-                  <span className="text-[11px] font-bold text-slate-800 mt-1">ভলান্টিয়ার</span>
-                </a>
-              </div>
-            </div>
-
             <div className="mt-4 border-t border-slate-100 pt-4 space-y-2.5">
               <Link
                 href={ROUTES.auth.roleSelection}

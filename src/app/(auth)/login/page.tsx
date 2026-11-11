@@ -25,7 +25,7 @@ export default function LoginPage() {
             স্বাগতম! লগইন করুন
           </h1>
           <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600">
-            আপনার ড্যাশবোর্ডে প্রবেশ করতে নিচে ভূমিকা নির্বাচন করুন অথবা তথ্য দিন।
+            আপনার ড্যাশবোর্ডে প্রবেশ করতে আপনার নিবন্ধিত ইমেইল ও পাসওয়ার্ড প্রদান করুন।
           </p>
         </div>
 

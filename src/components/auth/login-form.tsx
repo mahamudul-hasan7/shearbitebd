@@ -5,20 +5,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
-  CheckCircle2,
-  HeartHandshake,
-  Lock,
   Mail,
   ShieldCheck,
-  Sparkles,
-  Truck,
-  Utensils,
 } from "lucide-react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { DEMO_ACCOUNTS, findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
-import { UserRole } from "@/lib/constants/roles";
+import { findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { validateLogin } from "@/features/auth/validation";
 import { ROUTES } from "@/lib/routes";
@@ -38,9 +30,8 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { signIn } = useMockAuth();
 
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(UserRole.DONOR);
-  const [email, setEmail] = useState("donor@sharebite.demo");
-  const [password, setPassword] = useState("Demo1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -57,27 +48,6 @@ export function LoginForm() {
     const targetRoute = getSafeDestination(searchParams.get("next"), account);
     // Force direct window navigation to ensure clean session reload on mobile browsers
     window.location.href = targetRoute;
-  }
-
-  function handleRoleQuickSelect(role: UserRole) {
-    const account = DEMO_ACCOUNTS.find((acc) => acc.role === role);
-    if (account) {
-      setSelectedRole(role);
-      setEmail(account.email);
-      setPassword(account.password);
-      setErrors({});
-    }
-  }
-
-  function handleQuickDirectLogin(role: UserRole) {
-    const account = DEMO_ACCOUNTS.find((acc) => acc.role === role);
-    if (account) {
-      setSelectedRole(role);
-      setEmail(account.email);
-      setPassword(account.password);
-      setLoading(true);
-      completeDemoLogin(account);
-    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -158,129 +128,7 @@ export function LoginForm() {
         />
       )}
 
-      {/* 1. Fast Role Selector (১-ক্লিক ভূমিকা নির্বাচন) */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between text-xs font-bold font-heading">
-          <span className="text-slate-700 flex items-center gap-1.5">
-            <span className="inline-block size-2 rounded-full bg-emerald-500 animate-pulse" />
-            দ্রুত ডেমো রোল সিলেক্ট করুন:
-          </span>
-          <span className="text-[11px] text-slate-400 font-normal">১-ক্লিক অটো-ফিল</span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2.5">
-          {/* Card 1: Donor */}
-          <button
-            type="button"
-            onClick={() => handleRoleQuickSelect(UserRole.DONOR)}
-            className={cn(
-              "group relative flex flex-col items-center justify-center rounded-2xl border p-3 text-center transition-all cursor-pointer font-heading active:scale-95",
-              selectedRole === UserRole.DONOR
-                ? "border-emerald-600 bg-emerald-50/80 shadow-xs ring-2 ring-emerald-600/20"
-                : "border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50"
-            )}
-          >
-            <span
-              className={cn(
-                "grid size-9 place-items-center rounded-xl text-white shadow-xs transition-colors",
-                selectedRole === UserRole.DONOR ? "bg-emerald-600" : "bg-slate-700 group-hover:bg-emerald-600"
-              )}
-            >
-              <Utensils className="size-4.5" />
-            </span>
-            <span className="mt-2 text-xs font-black text-slate-900">ফুড ডোনার</span>
-            <span className="text-[10px] text-emerald-700 font-semibold truncate max-w-[90px]">
-              UIU Cafeteria
-            </span>
-            {selectedRole === UserRole.DONOR && (
-              <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-emerald-600 text-white shadow-xs">
-                <CheckCircle2 className="size-3.5" />
-              </span>
-            )}
-          </button>
-
-          {/* Card 2: NGO */}
-          <button
-            type="button"
-            onClick={() => handleRoleQuickSelect(UserRole.NGO)}
-            className={cn(
-              "group relative flex flex-col items-center justify-center rounded-2xl border p-3 text-center transition-all cursor-pointer font-heading active:scale-95",
-              selectedRole === UserRole.NGO
-                ? "border-teal-600 bg-teal-50/80 shadow-xs ring-2 ring-teal-600/20"
-                : "border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50"
-            )}
-          >
-            <span
-              className={cn(
-                "grid size-9 place-items-center rounded-xl text-white shadow-xs transition-colors",
-                selectedRole === UserRole.NGO ? "bg-teal-600" : "bg-slate-700 group-hover:bg-teal-600"
-              )}
-            >
-              <HeartHandshake className="size-4.5" />
-            </span>
-            <span className="mt-2 text-xs font-black text-slate-900">এনজিও ডেস্ক</span>
-            <span className="text-[10px] text-teal-700 font-semibold truncate max-w-[90px]">
-              Hope / Mastul
-            </span>
-            {selectedRole === UserRole.NGO && (
-              <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-teal-600 text-white shadow-xs">
-                <CheckCircle2 className="size-3.5" />
-              </span>
-            )}
-          </button>
-
-          {/* Card 3: Volunteer */}
-          <button
-            type="button"
-            onClick={() => handleRoleQuickSelect(UserRole.VOLUNTEER)}
-            className={cn(
-              "group relative flex flex-col items-center justify-center rounded-2xl border p-3 text-center transition-all cursor-pointer font-heading active:scale-95",
-              selectedRole === UserRole.VOLUNTEER
-                ? "border-amber-600 bg-amber-50/80 shadow-xs ring-2 ring-amber-600/20"
-                : "border-slate-200/90 bg-white hover:border-slate-300 hover:bg-slate-50"
-            )}
-          >
-            <span
-              className={cn(
-                "grid size-9 place-items-center rounded-xl text-white shadow-xs transition-colors",
-                selectedRole === UserRole.VOLUNTEER ? "bg-amber-600" : "bg-slate-700 group-hover:bg-amber-600"
-              )}
-            >
-              <Truck className="size-4.5" />
-            </span>
-            <span className="mt-2 text-xs font-black text-slate-900">ভলান্টিয়ার</span>
-            <span className="text-[10px] text-amber-700 font-semibold truncate max-w-[90px]">
-              Tanvir Squad
-            </span>
-            {selectedRole === UserRole.VOLUNTEER && (
-              <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-amber-600 text-white shadow-xs">
-                <CheckCircle2 className="size-3.5" />
-              </span>
-            )}
-          </button>
-        </div>
-
-        {/* Instant 1-Tap Mobile Action */}
-        <button
-          type="button"
-          onClick={() => handleQuickDirectLogin(selectedRole || UserRole.DONOR)}
-          disabled={loading || redirecting}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300/80 py-2.5 px-4 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 active:scale-98 transition-all font-heading cursor-pointer touch-manipulation"
-        >
-          <Sparkles className="size-4 text-emerald-600 shrink-0" />
-          <span className="truncate">
-            {selectedRole === UserRole.DONOR
-              ? "ফুড ডোনার"
-              : selectedRole === UserRole.NGO
-              ? "এনজিও ডেস্ক"
-              : "ভলান্টিয়ার"}{" "}
-            হিসেবে ১-ট্যাপে সরাসরি ড্যাশবোর্ডে প্রবেশ করুন
-          </span>
-          <ArrowRight className="size-3.5 text-emerald-700 shrink-0" />
-        </button>
-      </div>
-
-      {/* 2. Manual Credentials Form */}
+      {/* Credentials Form */}
       <div className="space-y-4">
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
@@ -294,7 +142,6 @@ export function LoginForm() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setSelectedRole(null);
                 setErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
               }}
               placeholder="donor@sharebite.demo"

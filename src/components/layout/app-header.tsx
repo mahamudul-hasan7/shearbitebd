@@ -407,55 +407,6 @@ export function AppHeader({
               </div>
             </div>
 
-            {/* Quick 1-Tap Demo Role Switcher Section */}
-            <div className="p-3 bg-emerald-950/80 border-b border-emerald-800/40 space-y-1.5">
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-emerald-400/80">
-                <span>১-ক্লিক রোল পরিবর্তন</span>
-                <span className="text-amber-300 font-mono">ডেমো মোড</span>
-              </div>
-              <div className="grid grid-cols-3 gap-1 rounded-xl bg-black/30 p-1 border border-emerald-800/50">
-                <a
-                  href={ROUTES.donor.dashboard}
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
-                    role === "donor"
-                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
-                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
-                  )}
-                >
-                  <span className="text-xs">👨‍🍳</span>
-                  <span className="text-[10px] font-bold mt-0.5">খাদ্যদাতা</span>
-                </a>
-                <a
-                  href={ROUTES.ngo.dashboard}
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
-                    role === "ngo"
-                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
-                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
-                  )}
-                >
-                  <span className="text-xs">🏢</span>
-                  <span className="text-[10px] font-bold mt-0.5">এনজিও</span>
-                </a>
-                <a
-                  href={ROUTES.volunteer.dashboard}
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
-                    role === "volunteer"
-                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
-                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
-                  )}
-                >
-                  <span className="text-xs">🚴</span>
-                  <span className="text-[10px] font-bold mt-0.5">ভলান্টিয়ার</span>
-                </a>
-              </div>
-            </div>
-
             {/* Navigation Links */}
             <nav className="flex-1 overflow-y-auto p-4 space-y-1 overscroll-contain">
               <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pb-1">
