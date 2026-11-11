@@ -69,13 +69,50 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
     : 0;
 
   function handleNumClick(digit: string) {
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(12);
+      } catch {}
+    }
     if (pin.length < 4) {
-      setPin((prev) => prev + digit);
+      const nextPin = pin + digit;
+      setPin(nextPin);
       setPinResult(null);
+      // Auto-trigger verification as soon as 4th digit is keyed in!
+      if (nextPin.length === 4) {
+        setTimeout(() => {
+          const res = verifyOtp(nextPin);
+          setPinResult(res);
+          if (res.success) {
+            setPin("");
+          }
+        }, 150);
+      }
     }
   }
 
+  function handleQuickFillOtp(targetOtp: string) {
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(20);
+      } catch {}
+    }
+    setPin(targetOtp);
+    setTimeout(() => {
+      const res = verifyOtp(targetOtp);
+      setPinResult(res);
+      if (res.success) {
+        setPin("");
+      }
+    }, 150);
+  }
+
   function handleBackspace() {
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(8);
+      } catch {}
+    }
     setPin((prev) => prev.slice(0, -1));
     setPinResult(null);
   }
@@ -480,9 +517,9 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                           <div
                             key={idx}
                             className={cn(
-                              "grid size-12 place-items-center rounded-2xl border-2 text-xl font-mono font-black transition-all",
+                              "grid size-14 place-items-center rounded-2xl border-2 text-2xl font-mono font-black transition-all select-none shadow-xs",
                               digit
-                                ? "border-emerald-600 bg-emerald-50 text-emerald-950"
+                                ? "border-emerald-600 bg-emerald-50 text-emerald-950 scale-105 shadow-emerald-600/10"
                                 : "border-line bg-canvas text-muted-400"
                             )}
                           >
@@ -495,7 +532,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                     {pinResult && (
                       <p
                         className={cn(
-                          "text-center text-xs font-bold",
+                          "text-center text-xs font-bold animate-in fade-in zoom-in-95",
                           pinResult.success ? "text-emerald-700" : "text-rose-600"
                         )}
                       >
@@ -503,14 +540,14 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                       </p>
                     )}
 
-                    {/* Numpad */}
-                    <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto pt-2">
+                    {/* Numpad with Mobile Ergonomics */}
+                    <div className="grid grid-cols-3 gap-2.5 max-w-xs mx-auto pt-2">
                       {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleNumClick(num)}
-                          className="h-12 rounded-xl bg-canvas hover:bg-slate-200 text-lg font-black text-ink-900 border border-line shadow-xs active:scale-95 transition-all"
+                          className="h-14 rounded-2xl bg-white hover:bg-slate-100 active:bg-emerald-50 text-xl font-mono font-black text-ink-900 border border-line shadow-xs active:scale-95 transition-all select-none touch-manipulation"
                         >
                           {num}
                         </button>
@@ -518,30 +555,52 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                       <button
                         type="button"
                         onClick={handleBackspace}
-                        className="h-12 rounded-xl bg-canvas hover:bg-slate-200 text-xs font-bold text-muted-600 border border-line shadow-xs active:scale-95 transition-all"
+                        className="h-14 rounded-2xl bg-canvas hover:bg-slate-200 active:bg-rose-50 text-xs font-bold text-muted-700 border border-line shadow-xs active:scale-95 transition-all flex items-center justify-center gap-1 select-none touch-manipulation"
+                        aria-label="মুছুন"
                       >
-                        মুছুন
+                        <span className="text-base font-mono">⌫</span>
+                        <span>মুছুন</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleNumClick("0")}
-                        className="h-12 rounded-xl bg-canvas hover:bg-slate-200 text-lg font-black text-ink-900 border border-line shadow-xs active:scale-95 transition-all"
+                        className="h-14 rounded-2xl bg-white hover:bg-slate-100 active:bg-emerald-50 text-xl font-mono font-black text-ink-900 border border-line shadow-xs active:scale-95 transition-all select-none touch-manipulation"
                       >
                         0
                       </button>
                       <button
                         type="button"
                         onClick={handleVerifySubmit}
-                        className="h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-black text-white shadow-md active:scale-95 transition-all"
+                        className="h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-xs font-black text-white shadow-md shadow-emerald-700/20 active:scale-95 transition-all select-none touch-manipulation"
                       >
                         যাচাই ✓
                       </button>
                     </div>
 
-                    {/* Hint */}
-                    <p className="text-center text-[10px] text-muted-500 pt-2">
-                      টেস্টিং পিন কোড: <strong>7429</strong> (পিকআপ) অথবা <strong>9814</strong> (বিতরণ)
-                    </p>
+                    {/* Quick Test Fill Shortcuts for 1-Tap Mobile Testing */}
+                    <div className="pt-2 text-center space-y-1.5">
+                      <p className="text-[11px] font-semibold text-muted-500">
+                        ল্যাব ডিফেন্স বা টেস্ট করতে এক ট্যাপে ওটিপি দিন:
+                      </p>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleQuickFillOtp("7429")}
+                          className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 border border-emerald-200 hover:bg-emerald-100 active:scale-95 transition-all"
+                        >
+                          <Zap className="size-3 text-emerald-600" />
+                          <span>⚡ 7429 (পিকআপ)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickFillOtp("9814")}
+                          className="inline-flex items-center gap-1 rounded-xl bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800 border border-teal-200 hover:bg-teal-100 active:scale-95 transition-all"
+                        >
+                          <Zap className="size-3 text-teal-600" />
+                          <span>⚡ 9814 (বিতরণ)</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* SOS Trigger */}

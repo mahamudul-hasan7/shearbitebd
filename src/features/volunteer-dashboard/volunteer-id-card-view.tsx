@@ -15,6 +15,7 @@ import {
   Phone,
   Printer,
   QrCode,
+  Share2,
   ShieldCheck,
   Sparkles,
   Trophy,
@@ -26,13 +27,29 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
 import { ROUTES } from "@/lib/routes";
+import { cn } from "@/lib/utils";
 
 export function VolunteerIdCardView() {
   const { profile } = useVolunteerStore();
   const [copiedLink, setCopiedLink] = useState(false);
+  const [activeTab, setActiveTab] = useState<"pass" | "certificate">("pass");
 
   function handlePrint() {
     window.print();
+  }
+
+  async function handleShare() {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: `${profile.fullName} - ShareBite BD ভলান্টিয়ার আইডি`,
+          text: `ShareBite BD অনুমোদিত খাদ্য উদ্ধার ভলান্টিয়ার আইডি: ${profile.id}`,
+          url: `https://sharebite.org.bd/verify/${profile.id}`,
+        });
+        return;
+      } catch {}
+    }
+    handleCopyVerifyLink();
   }
 
   function handleCopyVerifyLink() {
@@ -56,17 +73,26 @@ export function VolunteerIdCardView() {
         <div className="flex items-center gap-2">
           <Button
             type="button"
+            variant="outline"
+            leftIcon={<Share2 className="size-4" />}
+            onClick={handleShare}
+            className="font-bold border-line bg-white shadow-xs"
+          >
+            শেয়ার
+          </Button>
+          <Button
+            type="button"
             variant="primary"
             leftIcon={<Printer className="size-4" />}
             onClick={handlePrint}
             className="font-bold shadow-md shadow-emerald-700/20"
           >
-            আইডি প্রিন্ট করুন
+            আইডি প্রিন্ট
           </Button>
         </div>
       }
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Notice for Traffic/Checkpoint Security */}
         <div className="flex items-start gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-50/90 p-4 text-xs text-emerald-950 shadow-sm">
           <ShieldCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" />
@@ -80,10 +106,43 @@ export function VolunteerIdCardView() {
           </div>
         </div>
 
+        {/* Mobile Tab Switcher */}
+        <div className="flex xl:hidden rounded-2xl bg-canvas p-1 border border-line">
+          <button
+            type="button"
+            onClick={() => setActiveTab("pass")}
+            className={cn(
+              "flex-1 py-2.5 text-xs font-black rounded-xl transition-all select-none touch-manipulation",
+              activeTab === "pass"
+                ? "bg-white text-emerald-900 shadow-xs ring-1 ring-emerald-500/20"
+                : "text-muted-600 hover:text-ink-900"
+            )}
+          >
+            💳 ডিজিটাল স্মার্ট পাস (ID)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("certificate")}
+            className={cn(
+              "flex-1 py-2.5 text-xs font-black rounded-xl transition-all select-none touch-manipulation",
+              activeTab === "certificate"
+                ? "bg-white text-amber-900 shadow-xs ring-1 ring-amber-500/20"
+                : "text-muted-600 hover:text-ink-900"
+            )}
+          >
+            📜 সম্মাননা সনদ (Certificate)
+          </button>
+        </div>
+
         {/* Two-Column Layout: Physical Style ID Card (Left) + Certificate of Service (Right) */}
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-12">
           {/* Left: The Tactical Physical Style ID Card */}
-          <div className="space-y-4 xl:col-span-5">
+          <div
+            className={cn(
+              "space-y-4 xl:col-span-5",
+              activeTab === "pass" ? "block" : "hidden xl:block"
+            )}
+          >
             <h2 className="text-base font-black text-ink-900">
               ডিজিটাল ভলান্টিয়ার আইডি কার্ড (Smart Pass)
             </h2>
@@ -212,7 +271,12 @@ export function VolunteerIdCardView() {
           </div>
 
           {/* Right: Official Certificate of Civic Service */}
-          <div className="space-y-4 xl:col-span-7">
+          <div
+            className={cn(
+              "space-y-4 xl:col-span-7",
+              activeTab === "certificate" ? "block" : "hidden xl:block"
+            )}
+          >
             <h2 className="text-base font-black text-ink-900">
               নাগরিক সেবা ও খাদ্য উদ্ধার সম্মাননা সনদ
             </h2>

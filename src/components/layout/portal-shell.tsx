@@ -43,7 +43,8 @@ export function PortalShell({
     hideMobileNav ||
     activeHref.endsWith("/new") ||
     activeHref.includes("/tracking") ||
-    activeHref.includes("/confirm-delivery");
+    activeHref.includes("/confirm-delivery") ||
+    activeHref.includes("/missions/");
 
   return (
     <div className="min-h-screen bg-canvas antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900">
