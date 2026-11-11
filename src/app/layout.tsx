@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { MockAuthProvider } from "@/features/auth/mock-auth";
 import { LanguageProvider } from "@/lib/i18n/language-context";
 import { RealNotificationToast } from "@/components/layout/real-notification-toast";
+import { ActionSuccessModal } from "@/components/ui/action-success-modal";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           <LanguageProvider>
             {children}
             <RealNotificationToast />
+            <ActionSuccessModal />
           </LanguageProvider>
         </MockAuthProvider>
       </body>

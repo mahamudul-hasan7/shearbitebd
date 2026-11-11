@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import { mockAppStore } from "@/store/mock-app-store";
 import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
+import { triggerCelebration } from "@/components/ui/action-success-modal";
 import type {
   AvailableDispatch,
   CompletedMissionRecord,
@@ -519,6 +520,14 @@ class VolunteerStore {
           type: "PICKUP",
           role: "VOLUNTEER",
         });
+
+        triggerCelebration({
+          title: "পিকআপ ওটিপি সফলভাবে যাচাই হয়েছে!",
+          message: "খাবার নিরাপদে ব্যাগে সংগ্রহ করা হয়েছে। এবার ম্যাপ দেখে গন্তব্যে রওনা দিন।",
+          badge: "ওটিপি #৭৪২৯ ভেরিফায়েড",
+          type: "SUCCESS",
+          actionLabel: "ডেলিভারি শুরু করুন",
+        });
       } else {
         // Sync platform state to DELIVERED
         try {
@@ -562,6 +571,14 @@ class VolunteerStore {
           href: "/volunteer/dashboard",
           type: "DELIVERY",
           role: "VOLUNTEER",
+        });
+
+        triggerCelebration({
+          title: "রেসকিউ মিশন সম্পূর্ণ! 🌟",
+          message: "অভিনন্দন! আপনি সফলভাবে খাদ্য উদ্ধার ও সুবিধাবঞ্চিত মানুষের সেবায় ভূমিকা রাখলেন।",
+          badge: "+৫০ গ্রিন পয়েন্ট যোগ হয়েছে",
+          type: "COMPLETE",
+          actionLabel: "অসাধারণ! সম্পন্ন",
         });
       }
 

@@ -7,6 +7,7 @@ import { mockAppStore } from "@/store/mock-app-store";
 import type { Address, Claim, DonationView, ViewerContext } from "@/types/domain";
 import { createMockId, MockApiError, simulateRequest, type MockServiceOptions } from "@/services/shared";
 import { createRealNotification } from "@/lib/notifications/real-notification-client";
+import { triggerCelebration } from "@/components/ui/action-success-modal";
 
 const CLAIM_DONATION_STATUS: Partial<Record<ClaimStatus, DonationStatus>> = {
   [ClaimStatus.RESERVED]: DonationStatus.RESERVED,
@@ -200,6 +201,15 @@ export const claimService = {
       } catch {
         // Non-blocking
       }
+
+      // Trigger Celebration Animation Popup
+      triggerCelebration({
+        title: "খাদ্য ক্লেইম সফল হয়েছে!",
+        message: `${donation.title} আপনার চ্যারিটির জন্য সফলভাবে সংরক্ষিত হয়েছে। রাইডার অ্যাসাইনমেন্ট প্রস্তুত।`,
+        badge: "ম্যাচ স্কোর ৯৮%",
+        type: "CLAIM",
+        actionLabel: "ধন্যবাদ, সম্পন্ন",
+      });
 
       return cloneClaim(claim);
     }, options);

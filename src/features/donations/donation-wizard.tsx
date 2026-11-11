@@ -25,6 +25,7 @@ import { ROUTES } from "@/lib/routes";
 import { donationService, ngoService, MockApiError, type NGODirectoryItem } from "@/services";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { createRealNotification } from "@/lib/notifications/real-notification-client";
+import { triggerCelebration } from "@/components/ui/action-success-modal";
 import type { ViewerContext } from "@/types/domain";
 
 const wizardSteps = [
@@ -235,6 +236,15 @@ export function DonationWizard() {
       setCurrentStep(4);
       setErrors({});
       window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Trigger Celebration Animation Popup
+      triggerCelebration({
+        title: "উদ্বৃত্ত খাবার পোস্ট সম্পন্ন!",
+        message: `${draft.title} সফলভাবে তালিকাভুক্ত হয়েছে। আশেপাশের চ্যারিটি ও ভলান্টিয়ারদের জানানো হয়েছে।`,
+        badge: "খাদ্য সুরক্ষা যাচাইকৃত",
+        type: "SUCCESS",
+        actionLabel: "ধন্যবাদ, সম্পন্ন",
+      });
 
       // Trigger Real Database & Platform Notifications
       void createRealNotification({
