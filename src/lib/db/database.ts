@@ -234,9 +234,33 @@ export const db = {
     },
 
     findByEmail(email: string): DBUser | undefined {
+      return this.findByEmailOrPhone(email);
+    },
+
+    findByEmailOrPhone(query: string): DBUser | undefined {
       const dbData = ensureDbFile();
-      const cleanEmail = email.trim().toLowerCase();
-      return dbData.users.find((u) => u.email.toLowerCase() === cleanEmail);
+      const raw = (query || "").trim();
+      if (!raw) return undefined;
+      const clean = raw.toLowerCase();
+      const digits = raw.replace(/\D/g, "");
+
+      return dbData.users.find((u) => {
+        // 1. Exact email match
+        if (u.email.toLowerCase() === clean) return true;
+        // 2. Simple handle (e.g. typing "donor" matches donor)
+        if (clean === "donor" && u.role === UserRole.DONOR) return true;
+        if (clean === "ngo" && u.role === UserRole.NGO) return true;
+        if ((clean === "volunteer" || clean === "rider") && u.role === UserRole.VOLUNTEER) return true;
+        if (clean === "admin" && u.role === UserRole.ADMIN) return true;
+        // 3. User email prefix match (e.g. "donor" matches "donor@sharebite.demo")
+        if (u.email.toLowerCase().startsWith(clean + "@")) return true;
+        // 4. Phone number match
+        if (digits.length >= 7 && u.phone) {
+          const userDigits = u.phone.replace(/\D/g, "");
+          if (userDigits.endsWith(digits) || digits.endsWith(userDigits)) return true;
+        }
+        return false;
+      });
     },
 
     findById(id: string): DBUser | undefined {

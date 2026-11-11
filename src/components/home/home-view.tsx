@@ -738,8 +738,8 @@ export function HomeView() {
             <Link
               href={ROUTES.auth.login}
               className={cn(
-                "hidden sm:inline-flex items-center rounded-xl text-xs font-bold text-slate-700 hover:text-emerald-950 hover:bg-white/60 hover:backdrop-blur-xs transition-all duration-300",
-                isScrolled ? "h-8 px-3" : "h-9 px-3.5",
+                "inline-flex items-center rounded-xl text-xs font-bold text-slate-800 hover:text-emerald-950 bg-white/80 hover:bg-white/95 border border-slate-200/80 backdrop-blur-xs transition-all duration-300 px-3 sm:px-3.5 shadow-2xs active:scale-95 touch-manipulation cursor-pointer",
+                isScrolled ? "h-8" : "h-9",
               )}
             >
               {t.nav.login}
@@ -796,21 +796,22 @@ export function HomeView() {
             </nav>
 
             <div className="mt-4 border-t border-slate-100 pt-4 space-y-2.5">
-              <Link
-                href={ROUTES.auth.roleSelection}
+              <a
+                href={ROUTES.auth.login}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md font-heading active:scale-98 touch-manipulation"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md font-heading active:scale-98 cursor-pointer touch-manipulation"
               >
-                {t.nav.join} <ArrowRight className="size-4" />
-              </Link>
+                <span>🔑 {t.nav.login} করুন (ড্যাশবোর্ড)</span>
+                <ArrowRight className="size-4" />
+              </a>
               <div className="grid grid-cols-2 gap-2">
-                <a
-                  href={ROUTES.auth.login}
+                <Link
+                  href={ROUTES.auth.roleSelection}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-3 text-xs font-bold text-slate-700 font-heading active:scale-98 cursor-pointer shadow-xs touch-manipulation"
+                  className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-3 text-xs font-bold text-slate-700 font-heading active:scale-98 touch-manipulation"
                 >
-                  {t.nav.login}
-                </a>
+                  {t.nav.join}
+                </Link>
                 <a
                   href="tel:+880961274273"
                   className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 py-3 text-xs font-bold text-emerald-800 font-heading active:scale-98 shadow-xs touch-manipulation"
@@ -859,6 +860,23 @@ export function HomeView() {
               <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-emerald-100/90 font-normal">
                 {t.hero.subtitle}
               </p>
+
+              {/* Direct Access CTA Bar for Mobile & Desktop */}
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1">
+                <Link
+                  href={ROUTES.auth.login}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-emerald-950/40 hover:from-emerald-400 hover:to-teal-500 active:scale-95 transition-all font-heading touch-manipulation cursor-pointer"
+                >
+                  <span>🔑 ড্যাশবোর্ডে প্রবেশ করুন</span>
+                  <ArrowRight className="size-4" />
+                </Link>
+                <Link
+                  href={ROUTES.auth.roleSelection}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-4 py-3 text-xs sm:text-sm font-bold text-white hover:bg-white/20 active:scale-95 transition-all font-heading touch-manipulation cursor-pointer"
+                >
+                  <span>📋 নতুন একাউন্ট রেজিস্টার</span>
+                </Link>
+              </div>
 
               {/* Integrated Search & Action Box (Floating Glass Style) */}
               <form onSubmit={handleHeroSearchSubmit} className="rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left">

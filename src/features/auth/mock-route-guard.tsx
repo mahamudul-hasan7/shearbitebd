@@ -92,6 +92,7 @@ export function MockRouteGuard({ allowedRole, children }: { allowedRole: UserRol
                     role: targetDemo.role,
                     remember: true,
                   });
+                  window.location.reload();
                 }
               }}
               rightIcon={<ArrowRight className="size-4" />}

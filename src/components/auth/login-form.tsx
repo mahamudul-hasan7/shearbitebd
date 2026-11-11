@@ -30,8 +30,8 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { signIn } = useMockAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("donor@sharebite.demo");
+  const [password, setPassword] = useState("Demo1234");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -130,21 +130,79 @@ export function LoginForm() {
 
       {/* Credentials Form */}
       <div className="space-y-4">
+        {/* Quick 1-Tap Demo Switcher Pills */}
+        <div className="flex items-center justify-between pb-1 text-xs">
+          <span className="font-bold text-slate-500 font-heading text-[11px]">ডেমো অ্যাকাউন্ট:</span>
+          <div className="inline-flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("donor@sharebite.demo");
+                setPassword("Demo1234");
+                setErrors({});
+              }}
+              className={cn(
+                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
+                email.toLowerCase().includes("donor")
+                  ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-black"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              )}
+            >
+              👨‍🍳 ডোনার
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("ngo@sharebite.demo");
+                setPassword("Demo1234");
+                setErrors({});
+              }}
+              className={cn(
+                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
+                email.toLowerCase().includes("ngo")
+                  ? "bg-teal-600 text-white border-teal-600 shadow-2xs font-black"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              )}
+            >
+              🏢 এনজিও
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("volunteer@sharebite.demo");
+                setPassword("Demo1234");
+                setErrors({});
+              }}
+              className={cn(
+                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
+                email.toLowerCase().includes("volunteer")
+                  ? "bg-amber-600 text-white border-amber-600 shadow-2xs font-black"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              )}
+            >
+              🚴 ভলান্টিয়ার
+            </button>
+          </div>
+        </div>
+
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
-            ইমেইল ঠিকানা (Email Address)
+            ইমেইল অথবা মোবাইল নম্বর (Email or Phone)
           </label>
           <div className="relative flex items-center">
             <Mail className="pointer-events-none absolute left-3.5 size-4.5 text-slate-400" />
             <input
-              type="email"
+              type="text"
               name="email"
+              inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
                 setErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
               }}
-              placeholder="donor@sharebite.demo"
+              placeholder="donor@sharebite.demo অথবা 01711000001"
               className={cn(
                 "h-12 w-full rounded-xl border bg-slate-50/50 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden transition-all",
                 errors.email

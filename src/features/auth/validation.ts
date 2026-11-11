@@ -25,9 +25,22 @@ export function validatePassword(value: string) {
 }
 
 export function validateLogin(values: { email: string; password: string }) {
+  const identifier = (values.email || "").trim();
+  const password = (values.password || "").trim();
+
+  let emailError: string | undefined = undefined;
+  if (!identifier) {
+    emailError = "আপনার ইমেইল বা মোবাইল নম্বর লিখুন।";
+  }
+
+  let passwordError: string | undefined = undefined;
+  if (!password) {
+    passwordError = "পাসওয়ার্ড দিন।";
+  }
+
   return {
-    email: validateEmail(values.email),
-    password: validatePassword(values.password),
+    email: emailError,
+    password: passwordError,
   };
 }
 
