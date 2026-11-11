@@ -370,17 +370,18 @@ export function DonationWizard() {
                 {currentStep === 3 && <SafetyReviewStep draft={draft} errors={errors} update={update} editStep={editStep} />}
               </div>
 
-              <StickyActionBar className="px-5 sm:px-7">
-                <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <StickyActionBar className="px-4 sm:px-7">
+                <div className="flex w-full flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-between">
                   {/* Left Side: Back Navigation & Draft */}
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex w-full sm:w-auto items-center gap-2">
                     {currentStep === 1 ? (
                       <ButtonLink
                         href={ROUTES.donor.dashboard}
                         variant="outline"
                         leftIcon={<ArrowLeft className="size-4" />}
+                        className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
                       >
-                        ড্যাশবোর্ডে ফিরুন
+                        ড্যাশবোর্ড
                       </ButtonLink>
                     ) : (
                       <Button
@@ -388,8 +389,9 @@ export function DonationWizard() {
                         variant="outline"
                         leftIcon={<ArrowLeft className="size-4" />}
                         onClick={goBack}
+                        className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
                       >
-                        পূর্ববর্তী ধাপ
+                        পূর্ববর্তী
                       </Button>
                     )}
                     <Button
@@ -397,21 +399,21 @@ export function DonationWizard() {
                       variant="outline"
                       leftIcon={<Save className="size-4 text-emerald-600 animate-icon-breathe" />}
                       onClick={persistDraft}
-                      className="border-slate-300 bg-slate-50/70 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-800"
+                      className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm border-slate-300 bg-slate-50/70 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-800"
                     >
-                      খসড়া সংরক্ষণ
+                      খসড়া
                     </Button>
                   </div>
 
-                  {/* Right Side: Forward Navigation */}
-                  <div className="flex items-center gap-2">
+                  {/* Right Side: Forward Navigation (Primary Mobile Thumb Target) */}
+                  <div className="w-full sm:w-auto">
                     {currentStep < 3 ? (
                       <Button
                         type="button"
                         variant="primary"
                         rightIcon={<ArrowRight className="size-4" />}
                         onClick={goNext}
-                        className="px-6 text-sm sm:text-base shadow-lg shadow-emerald-700/25 ring-2 ring-emerald-500/30"
+                        className="w-full sm:w-auto justify-center px-6 py-2.5 sm:py-2 text-sm sm:text-base font-black shadow-lg shadow-emerald-700/25 ring-2 ring-emerald-500/30"
                       >
                         পরবর্তী ধাপ
                       </Button>
@@ -419,7 +421,7 @@ export function DonationWizard() {
                       <Button
                         type="submit"
                         variant="primary"
-                        className="bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 px-6 text-sm sm:text-base shadow-xl shadow-emerald-700/30 ring-2 ring-emerald-500/30"
+                        className="w-full sm:w-auto justify-center px-6 py-2.5 sm:py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-sm sm:text-base font-black shadow-xl shadow-emerald-700/30 ring-2 ring-emerald-500/30"
                         rightIcon={<Send className="size-4 animate-icon-float" />}
                         disabled={submitting}
                       >

@@ -21,11 +21,49 @@ export function Stepper({
   onStepClick?: (step: number) => void;
 }) {
   return (
-    <ol
-      aria-label={label}
-      className="grid min-w-0 gap-3 sm:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]"
-      style={{ "--step-count": steps.length } as CSSProperties}
-    >
+    <div>
+      {/* 1. Mobile-First App Segmented Progress Bar (< sm) */}
+      <div className="sm:hidden mb-4 rounded-2xl border border-slate-200/80 bg-white/90 p-3.5 shadow-2xs backdrop-blur-md">
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full font-heading">
+            ধাপ {current} / {steps.length}
+          </span>
+          <span className="text-xs font-bold text-slate-800 truncate font-heading">
+            {steps[current - 1]?.label}
+          </span>
+        </div>
+        {/* Multi-Segmented Progress Track */}
+        <div
+          className="grid gap-1.5"
+          style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}
+        >
+          {steps.map((step, idx) => (
+            <button
+              key={step.label}
+              type="button"
+              disabled={!onStepClick || idx + 1 > current}
+              onClick={() => onStepClick && idx + 1 <= current && onStepClick(idx + 1)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                idx + 1 < current
+                  ? "bg-emerald-600 hover:bg-emerald-700"
+                  : idx + 1 === current
+                  ? "bg-emerald-500 shadow-xs ring-2 ring-emerald-400/40"
+                  : "bg-slate-200",
+                onStepClick && idx + 1 <= current ? "cursor-pointer" : "cursor-default",
+              )}
+              aria-label={`Go to step ${idx + 1}: ${step.label}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 2. Desktop Full Stepper Grid (>= sm) */}
+      <ol
+        aria-label={label}
+        className="hidden sm:grid min-w-0 gap-3 sm:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]"
+        style={{ "--step-count": steps.length } as CSSProperties}
+      >
       {steps.map((step, index) => {
         const number = index + 1;
         const complete = number < current;
@@ -103,5 +141,6 @@ export function Stepper({
         );
       })}
     </ol>
+    </div>
   );
 }

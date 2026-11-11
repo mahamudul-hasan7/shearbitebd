@@ -63,6 +63,7 @@ export function PickupInformationStep({
       <Input
         label="দায়িত্বপ্রাপ্ত ব্যক্তির নাম"
         name="contactPerson"
+        autoComplete="name"
         value={draft.contactPerson}
         onChange={(event) => update("contactPerson", event.target.value)}
         error={errors.contactPerson}
@@ -75,6 +76,8 @@ export function PickupInformationStep({
         label="জরুরি মোবাইল নম্বর"
         name="phone"
         type="tel"
+        inputMode="tel"
+        autoComplete="tel"
         value={draft.phone}
         onChange={(event) => update("phone", event.target.value)}
         error={errors.phone}
@@ -87,6 +90,8 @@ export function PickupInformationStep({
         label="অফিসিয়াল ইমেইল (ঐচ্ছিক)"
         name="email"
         type="email"
+        inputMode="email"
+        autoComplete="email"
         value={draft.email}
         onChange={(event) => update("email", event.target.value)}
         error={errors.email}

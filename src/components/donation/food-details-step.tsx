@@ -94,6 +94,7 @@ export function FoodDetailsStep({
         type="number"
         min="0.1"
         step="0.1"
+        inputMode="decimal"
         value={draft.quantity}
         onChange={(event) => update("quantity", event.target.value)}
         error={errors.quantity}

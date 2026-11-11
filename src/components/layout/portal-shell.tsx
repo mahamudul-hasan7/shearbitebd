@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/layout/app-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { DesktopSidebar } from "@/components/navigation/desktop-sidebar";
 import { MobileBottomNavigation } from "@/components/navigation/mobile-bottom-nav";
+import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 
 export function PortalShell({
@@ -15,6 +16,7 @@ export function PortalShell({
   actions,
   backHref,
   backLabel = "ফিরে যান",
+  hideMobileNav = false,
   profileName,
   profileDescription,
   avatarInitials,
@@ -29,6 +31,7 @@ export function PortalShell({
   actions?: ReactNode;
   backHref?: string;
   backLabel?: string;
+  hideMobileNav?: boolean;
   profileName?: string;
   profileDescription?: string;
   avatarInitials?: string;
@@ -36,6 +39,12 @@ export function PortalShell({
   unreadNotifications?: number;
   children: ReactNode;
 }) {
+  const shouldHideMobileNav =
+    hideMobileNav ||
+    activeHref.endsWith("/new") ||
+    activeHref.includes("/tracking") ||
+    activeHref.includes("/confirm-delivery");
+
   return (
     <div className="min-h-screen bg-canvas antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900">
       <DesktopSidebar
@@ -55,14 +64,19 @@ export function PortalShell({
           notificationHref={notificationHref}
           unreadNotifications={unreadNotifications}
         />
-        <PageContainer className="flex-1 pb-24 sm:pb-28 lg:pb-12 pt-6 sm:pt-8">
+        <PageContainer
+          className={cn(
+            "flex-1 pt-4 sm:pt-8",
+            shouldHideMobileNav ? "pb-8 sm:pb-12" : "pb-24 sm:pb-28 lg:pb-12",
+          )}
+        >
           <main className="min-w-0">
             {/* Dedicated Left-Aligned Back Navigation */}
             {backHref && (
               <div className="mb-4">
                 <Link
                   href={backHref}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 transition-all group cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 transition-all group cursor-pointer active:scale-95"
                 >
                   <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1 text-emerald-600" />
                   <span>{backLabel}</span>
@@ -96,12 +110,14 @@ export function PortalShell({
             {children}
           </main>
         </PageContainer>
-        {/* Native Mobile Bottom Navigation App Bar */}
-        <MobileBottomNavigation
-          role={role}
-          activeHref={activeHref}
-          unreadNotifications={unreadNotifications}
-        />
+        {/* Native Mobile Bottom Navigation App Bar (auto-hidden in focused action flows) */}
+        {!shouldHideMobileNav && (
+          <MobileBottomNavigation
+            role={role}
+            activeHref={activeHref}
+            unreadNotifications={unreadNotifications}
+          />
+        )}
       </div>
     </div>
   );
