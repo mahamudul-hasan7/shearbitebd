@@ -2,6 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 import { createRealNotification } from "@/lib/notifications/real-notification-client";
+import { mockAppStore } from "@/store/mock-app-store";
+import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
 import type {
   AvailableDispatch,
   CompletedMissionRecord,
@@ -474,6 +476,25 @@ class VolunteerStore {
       this.advanceStage(nextStage);
 
       if (isPickup) {
+        // Sync platform state to PICKED_UP
+        try {
+          mockAppStore.update((s) => ({
+            ...s,
+            claims: s.claims.map((c) =>
+              c.status === ClaimStatus.RESERVED || c.status === ClaimStatus.ASSIGNED
+                ? { ...c, status: ClaimStatus.PICKED_UP, pickedUpAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+                : c
+            ),
+            donations: s.donations.map((d) =>
+              d.status === DonationStatus.RESERVED || d.status === DonationStatus.ASSIGNED
+                ? { ...d, status: DonationStatus.PICKED_UP, updatedAt: new Date().toISOString() }
+                : d
+            ),
+          }));
+        } catch {
+          // non-blocking
+        }
+
         // Real notifications for Pickup Verification
         void createRealNotification({
           title: "খাদ্য পিকআপ সম্পন্ন হয়েছে! 🛵",
@@ -499,6 +520,25 @@ class VolunteerStore {
           role: "VOLUNTEER",
         });
       } else {
+        // Sync platform state to DELIVERED
+        try {
+          mockAppStore.update((s) => ({
+            ...s,
+            claims: s.claims.map((c) =>
+              c.status === ClaimStatus.PICKED_UP
+                ? { ...c, status: ClaimStatus.DELIVERED, deliveredAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+                : c
+            ),
+            donations: s.donations.map((d) =>
+              d.status === DonationStatus.PICKED_UP
+                ? { ...d, status: DonationStatus.DELIVERED, updatedAt: new Date().toISOString() }
+                : d
+            ),
+          }));
+        } catch {
+          // non-blocking
+        }
+
         // Real notifications for Drop-off Verification
         void createRealNotification({
           title: "খাদ্য বিতরণ ও মিশন সফল! 🎉",

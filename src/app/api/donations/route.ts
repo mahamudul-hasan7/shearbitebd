@@ -82,3 +82,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, status } = body;
+
+    if (!id || !status) {
+      return NextResponse.json(
+        { error: "Donation ID and status are required." },
+        { status: 400 }
+      );
+    }
+
+    const updated = db.donations.updateStatus(id, status);
+    if (!updated) {
+      return NextResponse.json({ error: "Donation not found." }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      donation: updated,
+    });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Failed to update donation";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
