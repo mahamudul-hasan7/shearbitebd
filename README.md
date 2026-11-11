@@ -11,26 +11,26 @@
 [![BFSA Compliant](https://img.shields.io/badge/Food%20Safety-BFSA%204hr%20Rule-059669?style=flat-square)](https://bfsa.gov.bd/)
 
 > **"অতিরিক্ত খাবার নষ্ট নয়, সম্মানের সাথে মানুষের পাতে।"**  
-> An enterprise-grade, hyper-local civic-tech food rescue platform for Dhaka, connecting university cafeterias, restaurants, and catering banquets with nearby charities and volunteer student riders within a 15-minute cycling radius.
+> An enterprise-grade, hyper-local civic-tech food rescue platform connecting university cafeterias, restaurants, and catering banquets with nearby charities and volunteer student riders within a 15-minute cycling corridor in Dhaka.
 
 ---
 
 ## 📌 The Problem We Solve
 
-In Dhaka and major Bangladeshi metropolises:
 1. **Massive Food Waste:** Over 10.7 million tons of food is wasted annually in Bangladesh (UNEP Food Waste Index). Hundreds of kilograms of fresh meals from university cafeterias, convention centers, and restaurants are dumped daily.
 2. **Urban Hunger & Malnutrition:** Just 2 km away from affluent cafeterias, street children, orphanages, and shelter communities face acute food insecurity.
-3. **The 4-Hour Thermal Danger Zone:** Under ambient Dhaka temperatures, cooked food spoils rapidly. Traditional phone calls and ad-hoc coordination are too slow, leading to spoilage before food can be consumed safely.
+3. **The 4-Hour Thermal Danger Zone:** Under ambient Dhaka temperatures, cooked food spoils rapidly. Traditional phone calls and ad-hoc coordination are too slow, leading to spoilage before food can be safely consumed.
 
 ---
 
-## ⚡ Key Features
+## ⚡ Core Capabilities & Portals
 
-* **⏱️ 60-Second Surplus Food Posting:** Rapid, intuitive listing interface for cafeteria managers with meal categories, portion estimation, and pickup coordinates.
+* **🏢 Food Donor Portal (`/donor`):** 60-Second listing interface for cafeteria managers with meal categories, portion estimation, and pickup coordinates.
 * **🌡️ AI Spoilage Countdown Meter:** Dynamic biological countdown tracking ambient temperature and safe thermal windows (BFSA 4-hour auto-lock prevents expired food listings).
-* **🗺️ 3–5 km Hyper-Local Radar Map:** Built on 100% free OpenStreetMap & Leaflet with zero Google Maps API costs. Visualizes real-time surplus hotspots and optimized 15-minute rescue corridors in Dhaka.
-* **🛵 Volunteer Dispatch & Two-Way Handshake:** Uber-like task dispatch for student cyclists with double-handshake verification (4-digit pickup OTP and drop-off confirmation).
-* **🏢 UIU Campus Pilot Ready:** Pre-configured demo telemetry and geospatial coordinates centered on United International University (UIU), Madani Avenue, and surrounding shelter homes.
+* **🤝 NGO / Charity Cockpit (`/ngo`):** Discover nearby edible meals on interactive feeds, claim food batches, and verify delivery receipts.
+* **🛵 Volunteer Rider Cockpit (`/volunteer`):** Live dispatch radar for student cyclists with double-handshake verification (4-digit pickup OTP and drop-off confirmation).
+* **🗺️ Hyper-Local Radar Map (`/explore`):** 100% free OpenStreetMap & Leaflet with zero Google Maps API costs. Visualizes real-time surplus hotspots and 15-minute cycling corridors in Dhaka.
+* **🏢 UIU Campus Pilot Ready:** Pre-configured telemetry centered on United International University (UIU), Madani Avenue, and surrounding shelter homes.
 
 ---
 
@@ -54,15 +54,17 @@ In Dhaka and major Bangladeshi metropolises:
 * **Node.js:** `v18.18.0` or `v20.x+` (LTS recommended) — [Download Node.js](https://nodejs.org/)
 * **Git:** (Optional if downloaded via ZIP)
 
-### 1-Click Launch on Windows ⚡
-Simply double-click the **`run-project.bat`** file in the root directory.
-* Automatically verifies Node.js presence.
-* Auto-installs missing dependencies safely on first run.
-* **Zero-lag Smart Healthcheck:** Launches your browser directly to `http://localhost:3000` the exact millisecond the Next.js server is 100% compiled and ready.
+---
+
+### Option 1: 1-Click Launch on Windows (Recommended) ⚡
+Simply double-click the **`run-project.bat`** file in the project root directory.
+* Automatically verifies Node.js installation.
+* Automatically installs missing packages safely on the first run.
+* **Smart Auto-Launch:** Monitors the server and opens your default browser at `http://localhost:3000` the exact moment Next.js is 100% ready.
 
 ---
 
-### Manual Setup (Any OS)
+### Option 2: Standard Terminal Method (Any OS)
 
 ```bash
 # 1. Clone the repository
@@ -79,7 +81,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
