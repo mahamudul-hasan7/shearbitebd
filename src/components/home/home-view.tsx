@@ -756,8 +756,8 @@ export function HomeView() {
 
         {/* Mobile Slide-down Drawer */}
         {isMobileMenuOpen && (
-          <div className="border-t border-slate-200/60 bg-white/90 backdrop-blur-xl px-4 py-6 shadow-xl lg:hidden animate-in slide-in-from-top duration-200">
-            <nav className="grid gap-3">
+          <div className="border-t border-slate-200/60 bg-white/95 backdrop-blur-xl px-4 py-5 shadow-xl lg:hidden animate-in slide-in-from-top duration-200">
+            <nav className="grid gap-1.5">
               {navLinks.map((item) => (
                 <a
                   key={item.id}
@@ -770,7 +770,7 @@ export function HomeView() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`rounded-xl px-3 py-2 text-sm font-heading font-bold transition-colors ${
+                  className={`rounded-xl px-3 py-2.5 text-sm font-heading font-bold transition-colors select-none touch-manipulation ${
                     activeNav === item.id
                       ? "bg-emerald-50 text-emerald-800 font-black"
                       : "text-slate-700 hover:bg-slate-100"
@@ -781,21 +781,63 @@ export function HomeView() {
               ))}
             </nav>
 
-            <div className="mt-6 border-t border-slate-100 pt-5 space-y-3">
+            {/* Direct Demo Portal Switcher for 1-Tap Mobile Testing */}
+            <div className="mt-4 rounded-2xl bg-slate-100/80 p-3 border border-slate-200/60 space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 font-heading">
+                <span>সরাসরি ডেমো পোর্টাল টেস্ট করুন</span>
+                <span className="font-mono text-emerald-700">১-ক্লিক</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                <Link
+                  href={ROUTES.donor.dashboard}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                >
+                  <span className="text-sm">👨‍🍳</span>
+                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">ফুড ডোনার</span>
+                </Link>
+                <Link
+                  href={ROUTES.ngo.dashboard}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                >
+                  <span className="text-sm">🏢</span>
+                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">এনজিও হাব</span>
+                </Link>
+                <Link
+                  href={ROUTES.volunteer.dashboard}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                >
+                  <span className="text-sm">🚴</span>
+                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">ভলান্টিয়ার</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-4 border-t border-slate-100 pt-4 space-y-2.5">
               <Link
                 href={ROUTES.auth.roleSelection}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md font-heading"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md font-heading active:scale-98"
               >
                 {t.nav.join} <ArrowRight className="size-4" />
               </Link>
-              <Link
-                href={ROUTES.auth.login}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-slate-700 font-heading"
-              >
-                {t.nav.login}
-              </Link>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href={ROUTES.auth.login}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 font-heading active:scale-98"
+                >
+                  {t.nav.login}
+                </Link>
+                <a
+                  href="tel:+880961274273"
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 py-2.5 text-xs font-bold text-emerald-800 font-heading active:scale-98"
+                >
+                  📞 হটলাইন কল
+                </a>
+              </div>
             </div>
           </div>
         )}
@@ -979,7 +1021,7 @@ export function HomeView() {
             </div>
 
             {/* Area Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-1.5 text-xs font-bold font-heading">
+            <div className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-1.5 text-xs font-bold font-heading overflow-x-auto max-w-full scrollbar-none snap-x">
               {[
                 { key: "all", label: t.liveFeed.allZones },
                 { key: "badda", label: t.liveFeed.zoneBadda },
@@ -992,7 +1034,7 @@ export function HomeView() {
                   type="button"
                   onClick={() => setSelectedZone(tab.key)}
                   className={cn(
-                    "rounded-xl px-3 py-1.5 transition-all cursor-pointer",
+                    "shrink-0 snap-start rounded-xl px-3 py-1.5 transition-all cursor-pointer select-none touch-manipulation",
                     selectedZone === tab.key
                       ? "bg-emerald-600 text-white shadow-xs font-black"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
