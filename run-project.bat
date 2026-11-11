@@ -19,7 +19,7 @@ cd /d "%PROJECT_DIR%"
 where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo [ERROR] Node.js is not installed on this PC!
-    echo Please install Node.js (LTS version) from: https://nodejs.org
+    echo Please install Node.js LTS from https://nodejs.org
     echo.
     pause
     exit /b
@@ -42,7 +42,7 @@ if not exist "node_modules\" (
 )
 
 :: 4. Start Server and Auto-Open Browser when 100% Ready
-echo [*] Launching ShareBite BD engine...
+echo [*] Launching ShareBite BD engine on http://localhost:3000 ...
 node scripts/start-and-open.mjs
 if %errorlevel% neq 0 (
     echo [*] Fallback mode: Starting Next.js directly...
