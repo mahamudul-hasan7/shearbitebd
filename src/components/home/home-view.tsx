@@ -513,6 +513,7 @@ export function HomeView() {
   const [lang, setLang] = useState<"bn" | "en">("bn");
   const [activeNav, setActiveNav] = useState<string>("hero");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Search & Filter state for Live Rescue Feed
   const [searchQuery, setSearchQuery] = useState("");
@@ -537,6 +538,10 @@ export function HomeView() {
       "faq",
     ];
     const handleScroll = () => {
+      // Dynamic scroll contraction trigger
+      const scrolled = window.scrollY > 20;
+      setIsScrolled(scrolled);
+
       if (window.scrollY < 200) {
         setActiveNav("hero");
         return;
@@ -555,6 +560,7 @@ export function HomeView() {
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -619,10 +625,28 @@ export function HomeView() {
 
   return (
     <div className="min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
-      {/* 1. Header / Navbar with Language Switcher and Mobile Drawer */}
-      <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/70 backdrop-blur-xl backdrop-saturate-150 shadow-[0_4px_30px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white before:to-transparent">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6">
+      {/* 1. Header / Navbar with Smart Dynamic Scroll Contraction */}
+      <header
+        className={cn(
+          "sticky top-0 z-50 transition-all duration-300 ease-in-out",
+          "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/90 before:to-transparent before:transition-opacity before:duration-300",
+          isScrolled
+            ? "border-b border-slate-200/70 bg-white/80 backdrop-blur-xl backdrop-saturate-150 shadow-[0_4px_30px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.02)] before:opacity-100"
+            : "border-b border-slate-200/30 bg-white/50 backdrop-blur-md shadow-none before:opacity-0",
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out",
+            isScrolled ? "h-14 sm:h-14" : "h-18 sm:h-20",
+          )}
+        >
+          <div
+            className={cn(
+              "flex items-center gap-6 transition-transform duration-300 origin-left",
+              isScrolled ? "scale-95" : "scale-100",
+            )}
+          >
             <BrandLogo />
           </div>
 
@@ -641,11 +665,13 @@ export function HomeView() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`group relative rounded-xl px-2.5 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  className={cn(
+                    "group relative rounded-xl px-2.5 text-xs font-bold transition-all duration-200 cursor-pointer",
+                    isScrolled ? "py-1" : "py-1.5",
                     isActive
                       ? "text-emerald-900 font-extrabold bg-emerald-50/70 backdrop-blur-xs"
-                      : "text-slate-600 hover:text-emerald-800 hover:bg-white/60 hover:backdrop-blur-xs font-semibold"
-                  }`}
+                      : "text-slate-600 hover:text-emerald-800 hover:bg-white/60 hover:backdrop-blur-xs font-semibold",
+                  )}
                 >
                   <span className="relative z-10">{item.label}</span>
                   {isActive && (
@@ -658,26 +684,35 @@ export function HomeView() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Apple-Style Segmented Language Switcher */}
-            <div className="inline-flex h-9 items-center p-0.5 rounded-xl border border-white/70 bg-slate-200/50 backdrop-blur-md text-xs font-semibold select-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]">
+            <div
+              className={cn(
+                "inline-flex items-center p-0.5 rounded-xl border border-white/70 bg-slate-200/50 backdrop-blur-md text-xs font-semibold select-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300",
+                isScrolled ? "h-8" : "h-9",
+              )}
+            >
               <button
                 type="button"
                 onClick={() => setLang("en")}
-                className={`cursor-pointer px-2.5 py-1 rounded-lg text-xs font-bold transition-all leading-none ${
+                className={cn(
+                  "cursor-pointer rounded-lg text-xs font-bold transition-all leading-none",
+                  isScrolled ? "px-2 py-0.5" : "px-2.5 py-1",
                   lang === "en"
                     ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
+                    : "text-slate-600 hover:text-slate-900",
+                )}
               >
                 EN
               </button>
               <button
                 type="button"
                 onClick={() => setLang("bn")}
-                className={`cursor-pointer px-2.5 py-1 rounded-lg text-xs font-bold transition-all leading-none ${
+                className={cn(
+                  "cursor-pointer rounded-lg text-xs font-bold transition-all leading-none",
+                  isScrolled ? "px-2 py-0.5" : "px-2.5 py-1",
                   lang === "bn"
                     ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
+                    : "text-slate-600 hover:text-slate-900",
+                )}
               >
                 বাংলা
               </button>
@@ -685,14 +720,20 @@ export function HomeView() {
 
             <Link
               href={ROUTES.auth.login}
-              className="hidden sm:inline-flex h-9 items-center rounded-xl px-3.5 text-xs font-bold text-slate-700 hover:text-emerald-950 hover:bg-white/60 hover:backdrop-blur-xs transition-all"
+              className={cn(
+                "hidden sm:inline-flex items-center rounded-xl text-xs font-bold text-slate-700 hover:text-emerald-950 hover:bg-white/60 hover:backdrop-blur-xs transition-all duration-300",
+                isScrolled ? "h-8 px-3" : "h-9 px-3.5",
+              )}
             >
               {t.nav.login}
             </Link>
 
             <Link
               href={ROUTES.auth.roleSelection}
-              className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-600 px-4 text-xs font-bold text-white shadow-[0_2px_12px_rgba(16,185,129,0.32),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all active:scale-95"
+              className={cn(
+                "hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-600 text-xs font-bold text-white shadow-[0_2px_12px_rgba(16,185,129,0.32),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95",
+                isScrolled ? "h-8.5 px-3.5" : "h-9 px-4",
+              )}
             >
               <span>{t.nav.join}</span>
               <ArrowRight className="size-3.5" />
@@ -702,7 +743,10 @@ export function HomeView() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="grid size-9 place-items-center rounded-xl border border-white/70 bg-white/70 backdrop-blur-md text-slate-700 shadow-2xs lg:hidden hover:bg-white/90 cursor-pointer"
+              className={cn(
+                "grid place-items-center rounded-xl border border-white/70 bg-white/70 backdrop-blur-md text-slate-700 shadow-2xs lg:hidden hover:bg-white/90 cursor-pointer transition-all duration-300",
+                isScrolled ? "size-8.5" : "size-9",
+              )}
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
