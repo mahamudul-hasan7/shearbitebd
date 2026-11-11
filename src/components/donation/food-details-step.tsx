@@ -181,8 +181,15 @@ export function FoodDetailsStep({
         <AiSpoilageMeter
           category={draft.category}
           storageCondition={draft.storageCondition}
+          foodCondition={draft.foodCondition}
           preparationTime={draft.preparationTime}
           safePickupDeadline={draft.safePickupDeadline}
+          onSyncCurrentTime={(newPrepTime, newDeadline) => {
+            update("preparationTime", newPrepTime);
+            update("safePickupDeadline", newDeadline);
+            update("pickupWindowStart", newPrepTime);
+            update("pickupWindowEnd", newDeadline);
+          }}
         />
       </div>
 

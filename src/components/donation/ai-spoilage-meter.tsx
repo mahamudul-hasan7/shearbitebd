@@ -3,9 +3,12 @@
 import { useMemo } from "react";
 import {
   AlertTriangle,
+  CalendarClock,
   CheckCircle2,
   Clock,
   Flame,
+  Info,
+  RotateCcw,
   ShieldCheck,
   Snowflake,
   Sparkles,
@@ -18,8 +21,10 @@ import { cn } from "@/lib/utils";
 interface AiSpoilageMeterProps {
   category: FoodCategory;
   storageCondition: StorageCondition;
+  foodCondition?: string;
   preparationTime?: string;
   safePickupDeadline?: string;
+  onSyncCurrentTime?: (newPrepTime: string, newDeadline: string) => void;
   className?: string;
 }
 
@@ -29,126 +34,169 @@ function toBengaliDigits(val: number | string): string {
   return String(val).replace(/[0-9]/g, (digit) => bnDigits[Number(digit)] || digit);
 }
 
+// Format local ISO datetime string (YYYY-MM-DDTHH:mm)
+function formatLocalIso(date: Date): string {
+  const offset = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+}
+
 export function AiSpoilageMeter({
   category,
   storageCondition,
+  foodCondition = "FRESHLY_PREPARED",
   preparationTime,
   safePickupDeadline,
+  onSyncCurrentTime,
   className,
 }: AiSpoilageMeterProps) {
-  // Real-time dynamic freshness score and telemetry
+  // Real-time dynamic freshness score, telemetry, and parameter evaluation
   const {
-    remainingMinutes,
     freshnessScore,
     statusTone,
     statusLabel,
     tempLabel,
     conditionNote,
+    remainingMinutes,
+    isPastDeadline,
+    windowDurationHours,
+    maxSafeHours,
     advice,
   } = useMemo(() => {
     const now = Date.now();
-    const deadlineTs = safePickupDeadline ? Date.parse(safePickupDeadline) : NaN;
     const prepTs = preparationTime ? Date.parse(preparationTime) : NaN;
+    const deadlineTs = safePickupDeadline ? Date.parse(safePickupDeadline) : NaN;
 
-    // Shelf-life window depending on storage condition
-    let maxSafeHours = 4;
+    // 1. Food safety baseline depending on storage condition
+    let safeLimitHours = 4;
     let temp = "২৫°সে - ৩০°সে (রুম টেম্পারেচার)";
-    let conditionNoteText = "রুম তাপমাত্রায় ব্যাকটিরিয়া বৃদ্ধির ঝুঁকি বেশি";
-    let baseQualityScore = 80;
+    let conditionNoteText = "রুম তাপমাত্রায় ব্যাকটিরিয়া বৃদ্ধির ঝুঁকি বেশি (BFSA ডেঞ্জার জোন ৫°-৬০°সে)";
+    let baseQuality = 80;
 
     switch (storageCondition) {
       case StorageCondition.HOT_HOLDING:
-        maxSafeHours = 4.5;
+        safeLimitHours = 5.0;
         temp = ">৬৫°সে (হট-হোল্ডিং ফুড ওয়ার্মার)";
-        conditionNoteText = "BFSA থার্মাল ফুড সেফটি অনুমোদিত (গরম সংরক্ষণ)";
-        baseQualityScore = 92;
+        conditionNoteText = "BFSA থার্মাল ফুড সেফটি অনুমোদিত (ব্যাকটেরিয়া বৃদ্ধি প্রতিরোধী)";
+        baseQuality = 94;
         break;
       case StorageCondition.REFRIGERATED:
-        maxSafeHours = 24;
+        safeLimitHours = 24.0;
         temp = "৪°সে (চিল্ড কোল্ড-চেইন)";
-        conditionNoteText = "মাইক্রোবিয়াল গ্রোথ হ্রাসকৃত ও হিমায়িত";
-        baseQualityScore = 96;
+        conditionNoteText = "মাইক্রোবায়াল বিস্তার ধীরগতির ও হিমায়িত সংরক্ষিত";
+        baseQuality = 96;
         break;
       case StorageCondition.FROZEN:
-        maxSafeHours = 72;
+        safeLimitHours = 72.0;
         temp = "-১৮°সে (ডিপ ফ্রিজার)";
-        conditionNoteText = "দীর্ঘমেয়াদী নিরাপদ ডিপ-হিমায়িত খাদ্য";
-        baseQualityScore = 98;
+        conditionNoteText = "দীর্ঘমেয়াদী নিরাপদ ডিপ-হিমায়িত খাদ্য সংরক্ষণ";
+        baseQuality = 98;
         break;
       case StorageCondition.AMBIENT:
       default:
-        if (category === FoodCategory.COOKED_MEAL) maxSafeHours = 3.5;
-        else if (category === FoodCategory.DAIRY) maxSafeHours = 2.5;
-        else if (category === FoodCategory.BAKERY) maxSafeHours = 8;
-        else maxSafeHours = 4;
+        if (category === FoodCategory.COOKED_MEAL) {
+          safeLimitHours = 3.5;
+        } else if (category === FoodCategory.DAIRY) {
+          safeLimitHours = 2.5;
+        } else if (category === FoodCategory.BAKERY) {
+          safeLimitHours = 8.0;
+        } else if (category === FoodCategory.PRODUCE) {
+          safeLimitHours = 12.0;
+        } else {
+          safeLimitHours = 4.0;
+        }
         temp = "২৫°সে (সাধারণ কক্ষ তাপমাত্রা)";
-        conditionNoteText = "BFSA সুপারিশ: ৪ ঘণ্টার মধ্যে বিতরণ বাধ্যতামূলক";
-        baseQualityScore = 82;
+        conditionNoteText = "BFSA সতর্কতা: রুম তাপমাত্রায় ৪ ঘণ্টার মধ্যে বিতরণ বাধ্যতামূলক";
+        baseQuality = 76;
         break;
     }
 
-    // Determine remaining minutes
-    let minutes = Math.round(maxSafeHours * 60);
-    if (Number.isFinite(deadlineTs)) {
-      minutes = Math.round((deadlineTs - now) / 60000);
-    } else if (Number.isFinite(prepTs)) {
-      minutes = Math.round((prepTs + maxSafeHours * 3600000 - now) / 60000);
+    // 2. Packaging & Preparation Condition Bonus
+    let conditionBonus = 0;
+    if (foodCondition === "FRESHLY_PREPARED") conditionBonus = 4;
+    else if (foodCondition === "PACKAGED") conditionBonus = 3;
+    else if (foodCondition === "SAME_DAY") conditionBonus = 0;
+
+    // 3. Planned Window between Preparation and Safe Deadline
+    let plannedDurationHours = 2.0; // default assumption
+    if (Number.isFinite(prepTs) && Number.isFinite(deadlineTs)) {
+      plannedDurationHours = Math.max(0.2, (deadlineTs - prepTs) / 3600000);
     }
 
-    // Determine tone, score and advice
+    // 4. Calculate Food Quality Preservation Index (0-100)
+    const consumedRatio = plannedDurationHours / safeLimitHours;
+    let score = baseQuality + conditionBonus;
+
+    if (consumedRatio > 1.0) {
+      // Exceeds safe holding time
+      const overstay = consumedRatio - 1.0;
+      score = Math.max(14, Math.round(score * Math.max(0.18, 1 - overstay * 0.9)));
+    } else if (consumedRatio > 0.5) {
+      // Moderate consumption of shelf life
+      const drop = (consumedRatio - 0.5) * 0.45;
+      score = Math.round(score * (1 - drop));
+    }
+
+    score = Math.min(99, Math.max(12, score));
+
+    // 5. Real-Time Expiration Check
+    let minutesLeft = 0;
+    let pastDeadline = false;
+    if (Number.isFinite(deadlineTs)) {
+      minutesLeft = Math.round((deadlineTs - now) / 60000);
+      if (minutesLeft <= 0) {
+        pastDeadline = true;
+      }
+    } else {
+      minutesLeft = Math.round(safeLimitHours * 60);
+    }
+
+    // 6. Status Tone and Actionable Advice
     let tone: "safe" | "warning" | "danger" = "safe";
     let label = "সর্বোচ্চ তাজা ও নিরাপদ (Peak Fresh)";
-    let adv = "খাবারটি সর্বোচ্চ পুষ্টিমান ও ফ্রেশনেস বজায় রেখেছে। এনজিও বা ভলান্টিয়ার দ্রুত সংগ্রহ করতে পারবে।";
-    let score = baseQualityScore;
+    let adv = "খাবারটি সর্বোচ্চ পুষ্টিমান ও ফ্রেশনেস বজায় রেখেছে। ভলান্টিয়ার দ্রুত সংগ্রহ করতে পারবে।";
 
-    if (minutes <= 0) {
+    if (pastDeadline) {
       tone = "danger";
-      label = "মেয়াদোত্তীর্ণ (Spoilage Expired)";
-      adv = "খাদ্য নিরাপত্তার স্বার্থে এই সময়ের পর খাবার বিতরণ নিষিদ্ধ। পুনরায় ফ্রেশ খাবার তালিকাভুক্ত করুন।";
-      score = 8;
+      label = "সময় অতিক্রান্ত (Time Elapsed)";
+      adv = "পিকআপের নির্ধারিত মেয়াদ ইতিমধ্যে শেষ হয়েছে। খাবার বিতরণ সক্রিয় করতে ভবিষ্যৎ সময় নির্বাচন করুন।";
+    } else if (score < 50 || (minutesLeft > 0 && minutesLeft <= 45)) {
+      tone = "danger";
+      label = "জরুরি রেসকিউ প্রয়োজন (Critical Window)";
+      adv = "খাবারের নিরাপদ মেয়াদের শেষ প্রান্তে রয়েছে। অবিলম্বে নিকটস্থ ভলান্টিয়ার পাঠানো আবশ্যক।";
+    } else if (score < 75 || (minutesLeft > 0 && minutesLeft <= 90)) {
+      tone = "warning";
+      label = "সতর্ক পিকআপ উইন্ডো (Moderate Fresh)";
+      adv = "নিরাপদ মেয়াদের অর্ধেকের বেশি অতিবাহিত হয়েছে। অগ্রাধিকার ভিত্তিতে দ্রুত পিকআপ করুন।";
     } else {
-      const maxMinutes = maxSafeHours * 60;
-      const ratio = Math.max(0, Math.min(1, minutes / maxMinutes));
-      score = Math.round(score * (0.35 + 0.65 * ratio));
-
-      if (minutes <= 45 || score < 45) {
-        tone = "danger";
-        label = "জরুরি রেসকিউ প্রয়োজন (Critical Window)";
-        adv = "নিরাপদ পিকআপ সময় দ্রুত ফুরিয়ে আসছে। খাদ্য অপচয় রোধে অবিলম্বে নিকটস্থ ভলান্টিয়ার পাঠানো আবশ্যক।";
-        score = Math.max(15, Math.min(score, 45));
-      } else if (minutes <= 90 || score < 72) {
-        tone = "warning";
-        label = "সতর্ক পিকআপ উইন্ডো (Moderate Fresh)";
-        adv = "খাদ্যের নিরাপদ মেয়াদের অর্ধেকের বেশি অতিবাহিত হয়েছে। অগ্রাধিকার ভিত্তিতে দ্রুত পিকআপ করুন।";
-        score = Math.max(46, Math.min(score, 71));
-      } else {
-        tone = "safe";
-        label = "সর্বোচ্চ তাজা ও নিরাপদ (Peak Fresh)";
-        adv = "খাবারটি চমৎকার ফ্রেশনেস বজায় রেখেছে। ভলান্টিয়ার পিকআপ করার জন্য সম্পূর্ণ উপযুক্ত।";
-        score = Math.max(72, Math.min(score, 99));
-      }
+      tone = "safe";
+      label = "সর্বোচ্চ তাজা ও নিরাপদ (Peak Fresh)";
+      adv = "খাবারটি চমৎকার ফ্রেশনেস বজায় রেখেছে। স্বাস্থ্যসম্মত পিকআপের জন্য সম্পূর্ণ উপযুক্ত।";
     }
 
     return {
-      remainingMinutes: minutes,
       freshnessScore: score,
       statusTone: tone,
       statusLabel: label,
       tempLabel: temp,
       conditionNote: conditionNoteText,
+      remainingMinutes: minutesLeft,
+      isPastDeadline: pastDeadline,
+      windowDurationHours: plannedDurationHours,
+      maxSafeHours: safeLimitHours,
       advice: adv,
     };
-  }, [category, storageCondition, preparationTime, safePickupDeadline]);
+  }, [category, storageCondition, foodCondition, preparationTime, safePickupDeadline]);
 
   // Convert minutes into human-friendly Bengali string
   const timeRemainingBn = useMemo(() => {
+    if (isPastDeadline) return "সময় শেষ (০ মিনিট)";
     if (remainingMinutes <= 0) return "সময় শেষ (০ মিনিট)";
     const hours = Math.floor(remainingMinutes / 60);
     const mins = remainingMinutes % 60;
     if (hours === 0) return `${toBengaliDigits(mins)} মিনিট বাকি`;
     if (mins === 0) return `${toBengaliDigits(hours)} ঘণ্টা বাকি`;
     return `${toBengaliDigits(hours)} ঘণ্টা ${toBengaliDigits(mins)} মিনিট বাকি`;
-  }, [remainingMinutes]);
+  }, [remainingMinutes, isPastDeadline]);
 
   // Speedometer Needle Rotation (-90deg at 0% to +90deg at 100%)
   const needleRotation = -90 + (freshnessScore / 100) * 180;
@@ -156,6 +204,15 @@ export function AiSpoilageMeter({
   // Arc length for radius 85 is pi * 85 = 267.04
   const arcLength = 267.04;
   const strokeOffset = arcLength * (1 - Math.max(freshnessScore, 2) / 100);
+
+  // Quick helper to sync current time (+3 hours window)
+  const handleSyncToNow = () => {
+    if (!onSyncCurrentTime) return;
+    const now = new Date();
+    const prep = formatLocalIso(now);
+    const deadline = formatLocalIso(new Date(now.getTime() + 3 * 3600_000));
+    onSyncCurrentTime(prep, deadline);
+  };
 
   return (
     <div
@@ -171,10 +228,10 @@ export function AiSpoilageMeter({
     >
       {/* Top Banner Header */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-200/70 pb-3.5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div
             className={cn(
-              "flex size-7 items-center justify-center rounded-lg shadow-2xs transition-colors",
+              "flex size-8 items-center justify-center rounded-xl shadow-2xs transition-colors",
               statusTone === "safe"
                 ? "bg-emerald-100 text-emerald-700"
                 : statusTone === "warning"
@@ -185,7 +242,7 @@ export function AiSpoilageMeter({
             <Sparkles className="size-4 animate-icon-breathe" />
           </div>
           <div>
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
+            <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 font-heading">
               AI Spoilage & Food Safety Meter
             </h4>
             <p className="text-[11px] text-slate-500 font-medium">
@@ -217,14 +274,41 @@ export function AiSpoilageMeter({
         </div>
       </div>
 
+      {/* Past Deadline Alert Banner (with 1-click sync button) */}
+      {isPastDeadline && (
+        <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-rose-300 bg-rose-50/90 p-3.5 text-xs text-rose-950">
+          <div className="flex items-start gap-2.5">
+            <AlertTriangle className="size-4.5 text-rose-600 shrink-0 mt-0.5 animate-bounce" />
+            <div>
+              <strong className="block font-bold text-rose-900">
+                সতর্কতা: নির্বাচিত পিকআপ সময় পার হয়ে গেছে!
+              </strong>
+              <p className="text-[11px] text-rose-700 font-normal">
+                ঘড়ির বর্তমান সময় অনুযায়ী ভবিষ্যৎ সময় নির্বাচন করুন যাতে এনজিও ও ভলান্টিয়ার খাবার সংগ্রহ করতে পারে।
+              </p>
+            </div>
+          </div>
+          {onSyncCurrentTime && (
+            <button
+              type="button"
+              onClick={handleSyncToNow}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-rose-600 px-3 py-1.5 text-[11px] font-bold text-white shadow-2xs hover:bg-rose-700 active:scale-95 transition-all cursor-pointer"
+            >
+              <RotateCcw className="size-3.5" />
+              বর্তমান সময়ে আপডেট করুন
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Speedometer & Live Telemetry Layout */}
-      <div className="mt-5 grid items-center gap-6 md:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="mt-5 grid items-center gap-6 md:grid-cols-[210px_minmax(0,1fr)]">
         {/* Semi-Circular Analog Speedometer Gauge */}
         <div className="relative mx-auto flex flex-col items-center justify-center">
-          <div className="relative w-[210px] sm:w-[220px] aspect-[240/140]">
+          <div className="relative w-[200px] aspect-[240/130]">
             <svg
               className="w-full h-full select-none"
-              viewBox="0 0 240 140"
+              viewBox="0 0 240 130"
               preserveAspectRatio="xMidYMid meet"
             >
               <defs>
@@ -312,8 +396,8 @@ export function AiSpoilageMeter({
               </g>
 
               {/* Center Pivot Hub */}
-              <circle cx="120" cy="115" r="10" fill="#0f172a" />
-              <circle cx="120" cy="115" r="6.5" fill="#475569" />
+              <circle cx="120" cy="115" r="9" fill="#0f172a" />
+              <circle cx="120" cy="115" r="6" fill="#475569" />
               <circle
                 cx="120"
                 cy="115"
@@ -327,31 +411,27 @@ export function AiSpoilageMeter({
                 }
               />
             </svg>
+          </div>
 
-            {/* In-Gauge Digital Readout */}
-            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
-              <div className="flex items-baseline gap-0.5">
-                <span className="font-mono text-xl font-black text-slate-900 tracking-tight">
-                  {toBengaliDigits(freshnessScore)}
-                </span>
-                <span className="font-mono text-xs font-bold text-slate-500">%</span>
-              </div>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+          {/* Under-Gauge Digital Scorecard */}
+          <div className="mt-1 flex flex-col items-center text-center">
+            <div className="flex items-baseline gap-1">
+              <span className="font-mono text-2xl font-black text-slate-900 tracking-tight">
+                {toBengaliDigits(freshnessScore)}
+              </span>
+              <span className="font-mono text-xs font-bold text-slate-500">%</span>
+              <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 ফ্রেশনেস সূচক
               </span>
             </div>
-          </div>
-
-          {/* Under-Gauge Status Label */}
-          <div className="mt-2 text-center">
             <span
               className={cn(
-                "inline-block rounded-md px-2.5 py-0.5 font-heading text-xs font-black tracking-wide",
+                "mt-1 inline-block rounded-md px-2.5 py-0.5 font-heading text-xs font-black tracking-wide",
                 statusTone === "safe"
-                  ? "bg-emerald-100/70 text-emerald-900"
+                  ? "bg-emerald-100/80 text-emerald-900"
                   : statusTone === "warning"
-                  ? "bg-amber-100/70 text-amber-900"
-                  : "bg-rose-100/70 text-rose-900",
+                  ? "bg-amber-100/80 text-amber-900"
+                  : "bg-rose-100/80 text-rose-900",
               )}
             >
               {statusLabel}
@@ -389,7 +469,7 @@ export function AiSpoilageMeter({
                   খাদ্যের তাপমাত্রা ও অবস্থা
                 </p>
                 <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-600">
-                  সেন্সর ভেরিফাইড
+                  সর্বোচ্চ {toBengaliDigits(maxSafeHours)} ঘণ্টা
                 </span>
               </div>
               <p className="font-heading text-sm font-black text-slate-900 truncate">
@@ -434,7 +514,8 @@ export function AiSpoilageMeter({
                 )}
               </p>
               <p className="text-[11px] text-slate-500 font-medium">
-                খাদ্য নিরাপত্তা নিশ্চিতকরণে পিকআপ এই সময়ের আগেই সম্পন্ন করতে হবে।
+                পরিকল্পিত সময়কাল: {toBengaliDigits(windowDurationHours.toFixed(1))} ঘণ্টা (নিরাপদ মেয়াদের{" "}
+                {toBengaliDigits(Math.round((windowDurationHours / maxSafeHours) * 100))}%)
               </p>
             </div>
           </div>

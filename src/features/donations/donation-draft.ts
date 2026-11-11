@@ -81,5 +81,15 @@ export function restoreDonationDraft(value: unknown, fallback = createInitialDon
   if (!["FRESHLY_PREPARED", "SAME_DAY", "PACKAGED"].includes(restored.foodCondition)) restored.foodCondition = fallback.foodCondition;
   restored.photoNames = restored.photoNames.slice(0, 5);
 
+  // Auto-refresh stale pickup schedule if the restored deadline has already elapsed
+  const deadlineTimestamp = Date.parse(restored.safePickupDeadline);
+  if (Number.isFinite(deadlineTimestamp) && deadlineTimestamp <= Date.now()) {
+    const freshTimes = createInitialDonationDraft();
+    restored.preparationTime = freshTimes.preparationTime;
+    restored.safePickupDeadline = freshTimes.safePickupDeadline;
+    restored.pickupWindowStart = freshTimes.pickupWindowStart;
+    restored.pickupWindowEnd = freshTimes.pickupWindowEnd;
+  }
+
   return restored;
 }
