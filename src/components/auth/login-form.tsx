@@ -10,6 +10,7 @@ import {
   Lock,
   Mail,
   ShieldCheck,
+  Sparkles,
   Truck,
   Utensils,
 } from "lucide-react";
@@ -42,6 +43,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("Demo1234");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
 
   function completeDemoLogin(account: DemoAccount, shouldRemember = remember) {
@@ -51,7 +53,10 @@ export function LoginForm() {
       role: account.role,
       remember: shouldRemember,
     });
-    router.push(getSafeDestination(searchParams.get("next"), account));
+    setRedirecting(true);
+    const targetRoute = getSafeDestination(searchParams.get("next"), account);
+    // Force direct window navigation to ensure clean session reload on mobile browsers
+    window.location.href = targetRoute;
   }
 
   function handleRoleQuickSelect(role: UserRole) {
@@ -61,6 +66,17 @@ export function LoginForm() {
       setEmail(account.email);
       setPassword(account.password);
       setErrors({});
+    }
+  }
+
+  function handleQuickDirectLogin(role: UserRole) {
+    const account = DEMO_ACCOUNTS.find((acc) => acc.role === role);
+    if (account) {
+      setSelectedRole(role);
+      setEmail(account.email);
+      setPassword(account.password);
+      setLoading(true);
+      completeDemoLogin(account);
     }
   }
 
@@ -93,13 +109,15 @@ export function LoginForm() {
           remember,
         });
 
+        setRedirecting(true);
         const targetRoute = getSafeDestination(searchParams.get("next"), {
           email: resData.user.email,
           displayName: resData.user.displayName,
           role: resData.user.role,
           password: "",
         });
-        router.push(targetRoute);
+        // Force direct window navigation to ensure clean session reload on mobile browsers
+        window.location.href = targetRoute;
         return;
       }
 
@@ -124,7 +142,7 @@ export function LoginForm() {
         completeDemoLogin(account);
         return;
       }
-      setErrors({ form: "সার্ভারে যোগাযোগ করা যায়নি।" });
+      setErrors({ form: "সার্ভারে যোগাযোগ করা যায়নি। অনুগ্রহ করে আপনার নেটওয়ার্ক সংযোগ যাচাই করুন।" });
     } finally {
       setLoading(false);
     }
@@ -241,6 +259,25 @@ export function LoginForm() {
             )}
           </button>
         </div>
+
+        {/* Instant 1-Tap Mobile Action */}
+        <button
+          type="button"
+          onClick={() => handleQuickDirectLogin(selectedRole || UserRole.DONOR)}
+          disabled={loading || redirecting}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300/80 py-2.5 px-4 text-xs font-bold text-emerald-900 shadow-2xs hover:bg-emerald-100 active:scale-98 transition-all font-heading cursor-pointer touch-manipulation"
+        >
+          <Sparkles className="size-4 text-emerald-600 shrink-0" />
+          <span className="truncate">
+            {selectedRole === UserRole.DONOR
+              ? "ফুড ডোনার"
+              : selectedRole === UserRole.NGO
+              ? "এনজিও ডেস্ক"
+              : "ভলান্টিয়ার"}{" "}
+            হিসেবে ১-ট্যাপে সরাসরি ড্যাশবোর্ডে প্রবেশ করুন
+          </span>
+          <ArrowRight className="size-3.5 text-emerald-700 shrink-0" />
+        </button>
       </div>
 
       {/* 2. Manual Credentials Form */}
@@ -313,10 +350,15 @@ export function LoginForm() {
       {/* 4. Submit Button */}
       <button
         type="submit"
-        disabled={loading}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 text-sm font-black uppercase tracking-wider text-white shadow-md shadow-emerald-700/25 hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none font-heading cursor-pointer"
+        disabled={loading || redirecting}
+        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 text-sm font-black uppercase tracking-wider text-white shadow-md shadow-emerald-700/25 hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none font-heading cursor-pointer touch-manipulation"
       >
-        {loading ? (
+        {redirecting ? (
+          <span className="flex items-center gap-2">
+            <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+            ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...
+          </span>
+        ) : loading ? (
           <span className="flex items-center gap-2">
             <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
             যাচাই করা হচ্ছে...

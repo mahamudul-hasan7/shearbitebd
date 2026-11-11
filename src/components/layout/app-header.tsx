@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   Bike,
@@ -51,6 +52,7 @@ export function AppHeader({
 }) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +60,10 @@ export function AppHeader({
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const items = getNavigation(role) as DesktopNavItem[];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
@@ -155,10 +161,10 @@ export function AppHeader({
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(true)}
-            className="flex size-9 items-center justify-center rounded-xl border border-slate-200/90 text-slate-700 hover:bg-slate-100 lg:hidden cursor-pointer"
+            className="flex size-10 items-center justify-center rounded-xl border border-slate-200/90 text-slate-700 hover:bg-slate-100 active:scale-90 lg:hidden cursor-pointer touch-manipulation shadow-2xs"
             aria-label="Open mobile navigation menu"
           >
-            <Menu className="size-5" />
+            <Menu className="size-5.5" />
           </button>
 
           <div className="lg:hidden">
@@ -362,8 +368,8 @@ export function AppHeader({
         </div>
       )}
 
-      {/* Mobile Drawer Slide-Over for Mobile Navigation */}
-      {mobileDrawerOpen && (
+      {/* Mobile Drawer Slide-Over for Mobile Navigation (Rendered in Portal to escape header containing block) */}
+      {mounted && mobileDrawerOpen && createPortal(
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
@@ -376,10 +382,10 @@ export function AppHeader({
               <button
                 type="button"
                 onClick={() => setMobileDrawerOpen(false)}
-                className="rounded-xl p-2 text-emerald-300 hover:bg-emerald-900/50 active:scale-95 cursor-pointer"
+                className="rounded-xl p-2 text-emerald-300 hover:bg-emerald-900/50 active:scale-90 cursor-pointer touch-manipulation"
                 aria-label="Close menu"
               >
-                <X className="size-5" />
+                <X className="size-5.5" />
               </button>
             </div>
 
@@ -408,11 +414,11 @@ export function AppHeader({
                 <span className="text-amber-300 font-mono">ডেমো মোড</span>
               </div>
               <div className="grid grid-cols-3 gap-1 rounded-xl bg-black/30 p-1 border border-emerald-800/50">
-                <Link
+                <a
                   href={ROUTES.donor.dashboard}
                   onClick={() => setMobileDrawerOpen(false)}
                   className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
                     role === "donor"
                       ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
                       : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
@@ -420,12 +426,12 @@ export function AppHeader({
                 >
                   <span className="text-xs">👨‍🍳</span>
                   <span className="text-[10px] font-bold mt-0.5">খাদ্যদাতা</span>
-                </Link>
-                <Link
+                </a>
+                <a
                   href={ROUTES.ngo.dashboard}
                   onClick={() => setMobileDrawerOpen(false)}
                   className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
                     role === "ngo"
                       ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
                       : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
@@ -433,12 +439,12 @@ export function AppHeader({
                 >
                   <span className="text-xs">🏢</span>
                   <span className="text-[10px] font-bold mt-0.5">এনজিও</span>
-                </Link>
-                <Link
+                </a>
+                <a
                   href={ROUTES.volunteer.dashboard}
                   onClick={() => setMobileDrawerOpen(false)}
                   className={cn(
-                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95 touch-manipulation",
                     role === "volunteer"
                       ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
                       : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
@@ -446,12 +452,12 @@ export function AppHeader({
                 >
                   <span className="text-xs">🚴</span>
                   <span className="text-[10px] font-bold mt-0.5">ভলান্টিয়ার</span>
-                </Link>
+                </a>
               </div>
             </div>
 
             {/* Navigation Links */}
-            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            <nav className="flex-1 overflow-y-auto p-4 space-y-1 overscroll-contain">
               <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pb-1">
                 মেনু নেভিগেশন
               </p>
@@ -485,7 +491,7 @@ export function AppHeader({
             <div className="border-t border-emerald-800/40 p-4 space-y-2 bg-[#011b14]">
               <a
                 href="tel:+880961274273"
-                className="flex items-center justify-center gap-2 rounded-xl bg-emerald-900/70 border border-emerald-700/50 py-2.5 px-3 text-xs font-bold text-emerald-200 hover:bg-emerald-800 active:scale-95 transition-all"
+                className="flex items-center justify-center gap-2 rounded-xl bg-emerald-900/70 border border-emerald-700/50 py-2.5 px-3 text-xs font-bold text-emerald-200 hover:bg-emerald-800 active:scale-95 transition-all touch-manipulation"
               >
                 <Phone className="size-3.5 text-emerald-400" />
                 <span>জরুরি রেসকিউ: +৮৮০ ৯৬১২-SHARE</span>
@@ -496,7 +502,8 @@ export function AppHeader({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

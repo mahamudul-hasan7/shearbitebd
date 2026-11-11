@@ -574,6 +574,26 @@ export function HomeView() {
     { id: "faq", label: t.nav.faq, href: "#faq" },
   ];
 
+  const handleNavClick = (id: string, href: string) => {
+    setActiveNav(id);
+    setIsMobileMenuOpen(false);
+    if (id === "hero") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setTimeout(() => {
+      const el = document.querySelector(href);
+      if (el) {
+        const headerOffset = 70;
+        const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+          top: elementPosition - headerOffset,
+          behavior: "smooth",
+        });
+      }
+    }, 60);
+  };
+
   function handleZoneSelect(zone: string) {
     setSelectedZone(zone);
     const feedEl = document.getElementById("live-feed");
@@ -659,11 +679,8 @@ export function HomeView() {
                   key={item.id}
                   href={item.href}
                   onClick={(e) => {
-                    setActiveNav(item.id);
-                    if (item.id === "hero") {
-                      e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }
+                    e.preventDefault();
+                    handleNavClick(item.id, item.href);
                   }}
                   className={cn(
                     "group relative rounded-xl px-2.5 text-xs font-bold transition-all duration-200 cursor-pointer",
@@ -742,37 +759,34 @@ export function HomeView() {
             {/* Mobile Hamburger Menu Button */}
             <button
               type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               className={cn(
-                "grid place-items-center rounded-xl border border-white/70 bg-white/70 backdrop-blur-md text-slate-700 shadow-2xs lg:hidden hover:bg-white/90 cursor-pointer transition-all duration-300",
-                isScrolled ? "size-8.5" : "size-9",
+                "grid place-items-center rounded-xl border border-white/80 bg-white/80 backdrop-blur-md text-slate-800 shadow-2xs lg:hidden hover:bg-white active:scale-90 cursor-pointer transition-all duration-200 touch-manipulation",
+                isScrolled ? "size-9.5" : "size-10",
               )}
               aria-label="Toggle Navigation Menu"
+              aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              {isMobileMenuOpen ? <X className="size-5.5 text-slate-900" /> : <Menu className="size-5.5 text-slate-900" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Slide-down Drawer */}
         {isMobileMenuOpen && (
-          <div className="border-t border-slate-200/60 bg-white/95 backdrop-blur-xl px-4 py-5 shadow-xl lg:hidden animate-in slide-in-from-top duration-200">
+          <div className="border-t border-slate-200/60 bg-white/98 backdrop-blur-2xl px-4 py-5 shadow-2xl lg:hidden animate-in slide-in-from-top duration-200 max-h-[calc(100dvh-70px)] overflow-y-auto overscroll-contain touch-pan-y">
             <nav className="grid gap-1.5">
               {navLinks.map((item) => (
                 <a
                   key={item.id}
                   href={item.href}
                   onClick={(e) => {
-                    setActiveNav(item.id);
-                    setIsMobileMenuOpen(false);
-                    if (item.id === "hero") {
-                      e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }
+                    e.preventDefault();
+                    handleNavClick(item.id, item.href);
                   }}
-                  className={`rounded-xl px-3 py-2.5 text-sm font-heading font-bold transition-colors select-none touch-manipulation ${
+                  className={`rounded-xl px-3.5 py-3 text-sm font-heading font-bold transition-all select-none touch-manipulation active:scale-98 ${
                     activeNav === item.id
-                      ? "bg-emerald-50 text-emerald-800 font-black"
+                      ? "bg-emerald-50 text-emerald-800 font-black border border-emerald-200/60 shadow-xs"
                       : "text-slate-700 hover:bg-slate-100"
                   }`}
                 >
@@ -782,36 +796,36 @@ export function HomeView() {
             </nav>
 
             {/* Direct Demo Portal Switcher for 1-Tap Mobile Testing */}
-            <div className="mt-4 rounded-2xl bg-slate-100/80 p-3 border border-slate-200/60 space-y-2">
-              <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 font-heading">
+            <div className="mt-4 rounded-2xl bg-slate-100/90 p-3 border border-slate-200/80 space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 font-heading">
                 <span>সরাসরি ডেমো পোর্টাল টেস্ট করুন</span>
-                <span className="font-mono text-emerald-700">১-ক্লিক</span>
+                <span className="font-mono text-emerald-700 font-black">১-ক্লিক</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
-                <Link
+                <a
                   href={ROUTES.donor.dashboard}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
                 >
-                  <span className="text-sm">👨‍🍳</span>
-                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">ফুড ডোনার</span>
-                </Link>
-                <Link
+                  <span className="text-base">👨‍🍳</span>
+                  <span className="text-[11px] font-bold text-slate-800 mt-1">ফুড ডোনার</span>
+                </a>
+                <a
                   href={ROUTES.ngo.dashboard}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
                 >
-                  <span className="text-sm">🏢</span>
-                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">এনজিও হাব</span>
-                </Link>
-                <Link
+                  <span className="text-base">🏢</span>
+                  <span className="text-[11px] font-bold text-slate-800 mt-1">এনজিও হাব</span>
+                </a>
+                <a
                   href={ROUTES.volunteer.dashboard}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/80"
+                  className="flex flex-col items-center justify-center rounded-xl bg-white p-2.5 text-center shadow-2xs hover:bg-emerald-50 active:scale-95 transition-all border border-slate-200/90"
                 >
-                  <span className="text-sm">🚴</span>
-                  <span className="text-[10px] font-bold text-slate-800 mt-0.5">ভলান্টিয়ার</span>
-                </Link>
+                  <span className="text-base">🚴</span>
+                  <span className="text-[11px] font-bold text-slate-800 mt-1">ভলান্টিয়ার</span>
+                </a>
               </div>
             </div>
 
@@ -819,21 +833,21 @@ export function HomeView() {
               <Link
                 href={ROUTES.auth.roleSelection}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md font-heading active:scale-98"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-md font-heading active:scale-98 touch-manipulation"
               >
                 {t.nav.join} <ArrowRight className="size-4" />
               </Link>
               <div className="grid grid-cols-2 gap-2">
-                <Link
+                <a
                   href={ROUTES.auth.login}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 font-heading active:scale-98"
+                  className="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-3 text-xs font-bold text-slate-700 font-heading active:scale-98 cursor-pointer shadow-xs touch-manipulation"
                 >
                   {t.nav.login}
-                </Link>
+                </a>
                 <a
                   href="tel:+880961274273"
-                  className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 py-2.5 text-xs font-bold text-emerald-800 font-heading active:scale-98"
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 py-3 text-xs font-bold text-emerald-800 font-heading active:scale-98 shadow-xs touch-manipulation"
                 >
                   📞 হটলাইন কল
                 </a>
