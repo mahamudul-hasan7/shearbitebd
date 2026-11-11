@@ -48,12 +48,13 @@ if not exist "node_modules\" (
     echo.
 )
 
-:: 4. Auto-launch browser after 3 seconds
-echo [*] Launching browser at http://localhost:3000 ...
-start "" cmd /c "timeout /t 3 /nobreak >nul && start http://localhost:3000"
+:: 4. Auto-launch browser ONLY after server is ready and listening on port 3000
+echo [*] Starting background listener to launch browser when server is ready...
+start "" cmd /c "powershell -NoProfile -Command ""while (!(Test-NetConnection -ComputerName localhost -Port 3000 -InformationLevel Quiet)) { Start-Sleep -Milliseconds 800 }; Start-Process 'http://localhost:3000'"""
 
 :: 5. Start Next.js Development Server
 echo [*] Starting Next.js Server on http://localhost:3000 ...
+echo [!] NOTE: Do NOT close this black CMD window while using the website!
 echo.
 npm run dev
 
