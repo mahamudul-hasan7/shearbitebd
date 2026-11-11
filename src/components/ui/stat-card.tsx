@@ -24,25 +24,25 @@ export function StatCard({
   };
 
   return (
-    <Card className="min-w-0 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md border border-slate-200/80 bg-white">
-      <div className="flex items-start justify-between gap-3">
-        <span className={cn("grid size-11 place-items-center rounded-xl", tones[tone])}>
-          <Icon className="size-5" aria-hidden="true" />
+    <Card className="min-w-0 p-3.5 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md border border-slate-200/80 bg-white">
+      <div className="flex items-start justify-between gap-2">
+        <span className={cn("grid size-9 sm:size-11 place-items-center rounded-xl", tones[tone])}>
+          <Icon className="size-4 sm:size-5" aria-hidden="true" />
         </span>
         {helper && (
-          <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-            <ArrowUpRight className="size-3.5" aria-hidden="true" />
+          <span className="inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+            <ArrowUpRight className="size-3 sm:size-3.5" aria-hidden="true" />
             Active
           </span>
         )}
       </div>
-      <p className="mt-4 break-words text-2xl font-black tabular-nums tracking-tight text-ink-900 lg:text-3xl">
+      <p className="mt-2.5 sm:mt-4 break-words text-xl sm:text-2xl font-black tabular-nums tracking-tight text-ink-900 lg:text-3xl font-heading">
         {value}
       </p>
-      <p className="mt-1 break-words text-xs font-bold uppercase tracking-wider text-muted-600">
+      <p className="mt-1 break-words text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-600 font-heading">
         {label}
       </p>
-      {helper && <p className="mt-2 break-words text-xs text-muted-400 font-medium">{helper}</p>}
+      {helper && <p className="mt-1 sm:mt-2 break-words text-[10px] sm:text-xs text-muted-400 font-medium">{helper}</p>}
     </Card>
   );
 }

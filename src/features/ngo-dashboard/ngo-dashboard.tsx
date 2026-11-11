@@ -111,17 +111,17 @@ export function NGODashboard() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                 <Link
                   href={ROUTES.ngo.discover}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-xs font-extrabold text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-400 hover:to-teal-500 transition-all font-heading"
+                  className="w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-xs font-extrabold text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-400 hover:to-teal-500 transition-all font-heading active:scale-95 text-center"
                 >
                   <PackageSearch className="size-4" />
                   <span>উপলব্ধ খাবার ব্রাউজ করুন</span>
                 </Link>
                 <Link
                   href={ROUTES.ngo.discoverMap}
-                  className="inline-flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-950/50 px-4 py-3 text-xs font-bold text-emerald-200 hover:bg-emerald-900/50 transition-colors font-heading"
+                  className="w-full sm:w-auto justify-center inline-flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-950/50 px-4 py-3 text-xs font-bold text-emerald-200 hover:bg-emerald-900/50 transition-colors font-heading active:scale-95 text-center"
                 >
                   <Compass className="size-4" />
                   <span>রেসকিউ রেডার ম্যাপ</span>
@@ -137,7 +137,7 @@ export function NGODashboard() {
               description="আপনার নিকটস্থ খাবার প্রাপ্যতা ও সম্পন্নকৃত খাদ্য বিতরণ রেকর্ড।"
             />
             <span id="ngo-impact-heading" className="sr-only">NGO impact overview</span>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <StatCard label="নিকটস্থ উপলব্ধ খাবার" value={String(data.stats.availableNearby)} icon={PackageSearch} helper="১৫ কিমির ভেতরে" />
               <StatCard label="চলমান ক্লেইম" value={String(data.stats.activeClaims)} icon={ClipboardList} tone="info" helper="পিকআপ প্রয়োজন" />
               <StatCard label="বিতরণকৃত মোট মিল" value={data.stats.mealsDistributed.toLocaleString()} icon={HandHeart} tone="accent" helper="নিবন্ধিত রেকর্ড" />

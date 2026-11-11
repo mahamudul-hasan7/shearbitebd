@@ -37,13 +37,13 @@ export function DonorImpactGrid({ stats }: { stats: DonorDashboardData["stats"] 
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="flex overflow-x-auto pb-2 snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 md:grid-cols-3 sm:overflow-visible sm:pb-0 scrollbar-none">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
           <div
             key={card.title}
-            className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all"
+            className="min-w-[260px] flex-1 shrink-0 snap-start rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all"
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold text-slate-500 font-heading">

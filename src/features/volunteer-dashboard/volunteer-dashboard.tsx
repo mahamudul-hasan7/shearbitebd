@@ -281,13 +281,13 @@ export function VolunteerDashboard() {
         </section>
 
         {/* Command View Switcher */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
-          <div className="flex items-center gap-1.5 rounded-2xl bg-canvas p-1.5 border border-line">
+        <div className="flex items-center justify-between gap-3 border-b border-line pb-4">
+          <div className="flex items-center gap-1.5 rounded-2xl bg-canvas p-1.5 border border-line overflow-x-auto max-w-full scrollbar-none snap-x">
             <button
               type="button"
               onClick={() => setActiveTab("all")}
               className={cn(
-                "rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all",
+                "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "all"
                   ? "bg-emerald-600 text-white shadow-xs font-black"
                   : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
@@ -299,7 +299,7 @@ export function VolunteerDashboard() {
               type="button"
               onClick={() => setActiveTab("active")}
               className={cn(
-                "rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all",
+                "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "active"
                   ? "bg-emerald-600 text-white shadow-xs font-black"
                   : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
@@ -311,7 +311,7 @@ export function VolunteerDashboard() {
               type="button"
               onClick={() => setActiveTab("available")}
               className={cn(
-                "flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all",
+                "shrink-0 snap-start flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "available"
                   ? "bg-emerald-600 text-white shadow-xs font-black"
                   : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
@@ -326,7 +326,7 @@ export function VolunteerDashboard() {
               type="button"
               onClick={() => setActiveTab("comms")}
               className={cn(
-                "rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all",
+                "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "comms"
                   ? "bg-emerald-600 text-white shadow-xs font-black"
                   : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
@@ -338,7 +338,7 @@ export function VolunteerDashboard() {
               type="button"
               onClick={() => setActiveTab("badges")}
               className={cn(
-                "rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all",
+                "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "badges"
                   ? "bg-emerald-600 text-white shadow-xs font-black"
                   : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
