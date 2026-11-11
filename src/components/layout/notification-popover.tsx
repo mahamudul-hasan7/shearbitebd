@@ -246,7 +246,7 @@ export function NotificationPopover({
 
       {/* Modern Popover Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2.5 w-[330px] sm:w-[390px] rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-400/30 z-50 overflow-hidden text-left animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute -right-2 sm:right-0 top-full mt-2.5 w-[calc(100vw-32px)] max-w-[390px] rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-400/30 z-50 overflow-hidden text-left animate-in fade-in zoom-in-95 duration-150">
           {/* Header Bar */}
           <div className="flex items-center justify-between border-b border-slate-100 p-4 bg-slate-50/70">
             <div className="flex items-center gap-2">

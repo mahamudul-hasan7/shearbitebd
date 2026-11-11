@@ -192,7 +192,7 @@ export function ProfilePopover({
         <div
           role="dialog"
           aria-label="User Account Settings"
-          className="absolute right-0 top-full mt-2.5 z-50 w-84 sm:w-92 rounded-3xl border border-line bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+          className="absolute -right-2 sm:right-0 top-full mt-2.5 z-50 w-[calc(100vw-32px)] sm:w-92 max-w-sm rounded-3xl border border-line bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Temporary feedback notice */}
           {toastNotice && (

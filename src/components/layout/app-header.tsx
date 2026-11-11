@@ -3,13 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
+  Bike,
   Building2,
   Calendar,
+  CheckCircle2,
   Command,
   HeartHandshake,
   MapPin,
   Menu,
   PackageCheck,
+  Phone,
   Search,
   Sparkles,
   Truck,
@@ -47,12 +50,33 @@ export function AppHeader({
   unreadNotifications?: number;
 }) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const items = getNavigation(role) as DesktopNavItem[];
+
+  // Prevent background scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileDrawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileDrawerOpen]);
+
+  // Focus mobile search input when opened
+  useEffect(() => {
+    if (mobileSearchOpen) {
+      setTimeout(() => mobileSearchInputRef.current?.focus(), 100);
+    }
+  }, [mobileSearchOpen]);
 
   // Global keyboard shortcut (⌘K or Ctrl+K) to focus search
   useEffect(() => {
@@ -219,7 +243,17 @@ export function AppHeader({
         </div>
 
         {/* Right: Live Impact Stat, Language, Notifications, Profile */}
-        <div className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
+          {/* Mobile Search Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setMobileSearchOpen(true)}
+            className="flex size-9 items-center justify-center rounded-xl border border-slate-200/90 bg-white/90 text-slate-600 hover:bg-slate-100 lg:hidden cursor-pointer active:scale-95 transition-all shadow-2xs"
+            aria-label="Search"
+          >
+            <Search className="size-4" />
+          </button>
+
           {/* Live Impact Rescues Pill (Clean, Subtle, Single Line) */}
           <div className="hidden xl:inline-flex h-9 items-center gap-2 rounded-xl border border-emerald-600/15 bg-emerald-50/50 px-3 text-xs font-semibold text-emerald-950 shadow-2xs">
             <Sparkles className="size-3.5 text-emerald-600 shrink-0" />
@@ -260,26 +294,167 @@ export function AppHeader({
         </div>
       </div>
 
+      {/* Mobile Search Overlay */}
+      {mobileSearchOpen && (
+        <div className="fixed inset-x-0 top-0 z-50 bg-white p-3 border-b border-line shadow-xl animate-in slide-in-from-top duration-200 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+              <input
+                ref={mobileSearchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="খাদ্য অনুদান, এনজিও বা স্থান খুঁজুন..."
+                className="h-10 w-full rounded-xl border border-emerald-500 bg-slate-50 pl-9 pr-3 text-xs font-medium text-slate-900 focus:bg-white focus:outline-hidden"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileSearchOpen(false);
+                setSearchQuery("");
+              }}
+              className="grid size-10 place-items-center rounded-xl bg-slate-100 text-slate-600 active:scale-95"
+              aria-label="Close search"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
+
+          {/* Mobile search suggestions */}
+          <div className="mt-3 max-h-72 overflow-y-auto space-y-1 divide-y divide-slate-100">
+            {filteredItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  onClick={() => {
+                    setMobileSearchOpen(false);
+                    setSearchQuery("");
+                  }}
+                  className="flex items-center gap-3 pt-2.5 pb-1.5 active:bg-emerald-50 rounded-xl px-2 transition-colors group"
+                >
+                  <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
+                    <Icon className="size-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold text-slate-800">
+                      {item.title}
+                    </p>
+                    <p className="truncate text-[11px] text-slate-500">
+                      {item.subtitle}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      "shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-bold",
+                      item.badgeColor
+                    )}
+                  >
+                    {item.badge}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Mobile Drawer Slide-Over for Mobile Navigation */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             onClick={() => setMobileDrawerOpen(false)}
           />
-          <div className="relative flex w-full max-w-xs flex-1 flex-col bg-[#02241b] p-5 text-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-emerald-800/40 pb-4">
+          <div className="relative flex w-full max-w-xs flex-1 flex-col bg-[#02241b] text-white shadow-2xl animate-in slide-in-from-left duration-250 overflow-hidden">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between border-b border-emerald-800/40 p-4">
               <BrandLogo href={ROUTES.home} inverse />
               <button
                 type="button"
                 onClick={() => setMobileDrawerOpen(false)}
-                className="rounded-lg p-1.5 text-emerald-300 hover:bg-emerald-900/50 cursor-pointer"
+                className="rounded-xl p-2 text-emerald-300 hover:bg-emerald-900/50 active:scale-95 cursor-pointer"
+                aria-label="Close menu"
               >
                 <X className="size-5" />
               </button>
             </div>
 
-            <nav className="mt-6 flex-1 space-y-1.5 overflow-y-auto">
+            {/* User Identity Card */}
+            <div className="p-4 bg-emerald-950/50 border-b border-emerald-800/40 flex items-center gap-3">
+              <div className="relative size-11 shrink-0 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-black text-base grid place-items-center shadow-md ring-2 ring-emerald-400/30">
+                {avatarInitials || (role === "donor" ? "UIU" : role === "volunteer" ? "SB" : "MF")}
+                <span className="absolute -bottom-1 -right-1 grid size-4 place-items-center rounded-full bg-emerald-500 text-white ring-1 ring-[#02241b]">
+                  <CheckCircle2 className="size-2.5" />
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black text-white truncate">
+                  {profileName || (role === "donor" ? "ইউআইইউ ক্যাফেটেরিয়া" : role === "volunteer" ? "রাকিব হাসান" : "মাস্তুল ফাউন্ডেশন")}
+                </p>
+                <p className="text-[11px] text-emerald-300/80 truncate">
+                  {profileDescription || (role === "donor" ? "ভেরিফায়েড খাদ্যদাতা" : role === "volunteer" ? "রেসকিউ রাইডার" : "পার্টনার এনজিও")}
+                </p>
+              </div>
+            </div>
+
+            {/* Quick 1-Tap Demo Role Switcher Section */}
+            <div className="p-3 bg-emerald-950/80 border-b border-emerald-800/40 space-y-1.5">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-emerald-400/80">
+                <span>১-ক্লিক রোল পরিবর্তন</span>
+                <span className="text-amber-300 font-mono">ডেমো মোড</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 rounded-xl bg-black/30 p-1 border border-emerald-800/50">
+                <Link
+                  href={ROUTES.donor.dashboard}
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className={cn(
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    role === "donor"
+                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
+                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
+                  )}
+                >
+                  <span className="text-xs">👨‍🍳</span>
+                  <span className="text-[10px] font-bold mt-0.5">খাদ্যদাতা</span>
+                </Link>
+                <Link
+                  href={ROUTES.ngo.dashboard}
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className={cn(
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    role === "ngo"
+                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
+                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
+                  )}
+                >
+                  <span className="text-xs">🏢</span>
+                  <span className="text-[10px] font-bold mt-0.5">এনজিও</span>
+                </Link>
+                <Link
+                  href={ROUTES.volunteer.dashboard}
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className={cn(
+                    "flex flex-col items-center justify-center py-2 rounded-lg text-center transition-all active:scale-95",
+                    role === "volunteer"
+                      ? "bg-emerald-600 text-white font-black shadow-xs ring-1 ring-emerald-400/40"
+                      : "text-emerald-200/70 hover:text-white hover:bg-emerald-800/30"
+                  )}
+                >
+                  <span className="text-xs">🚴</span>
+                  <span className="text-[10px] font-bold mt-0.5">ভলান্টিয়ার</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/60 px-3 pb-1">
+                মেনু নেভিগেশন
+              </p>
               {items.map((item) => {
                 const Icon = item.icon;
                 const isItemActive =
@@ -293,22 +468,32 @@ export function AppHeader({
                     href={item.href}
                     onClick={() => setMobileDrawerOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
+                      "flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all active:scale-98 select-none touch-manipulation",
                       isItemActive
-                        ? "bg-emerald-800/80 text-white font-bold ring-1 ring-emerald-500/40"
-                        : "text-emerald-100 hover:bg-emerald-800/40"
+                        ? "bg-emerald-600 text-white font-black shadow-md shadow-emerald-950/40 ring-1 ring-emerald-400/40"
+                        : "text-emerald-100 hover:bg-emerald-800/40 active:bg-emerald-800/60"
                     )}
                   >
-                    <Icon className="size-5 text-emerald-400" />
-                    <span>{item.label}</span>
+                    <Icon className={cn("size-5 shrink-0", isItemActive ? "text-white" : "text-emerald-400")} />
+                    <span className="truncate">{item.label}</span>
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="border-t border-emerald-800/40 pt-4">
-              <p className="text-xs text-emerald-300 font-medium">ShareBite BD Enterprise Platform</p>
-              <p className="text-[11px] text-emerald-400/60 mt-0.5">Emergency Dispatch: +880 9612-SHARE</p>
+            {/* Drawer Footer */}
+            <div className="border-t border-emerald-800/40 p-4 space-y-2 bg-[#011b14]">
+              <a
+                href="tel:+880961274273"
+                className="flex items-center justify-center gap-2 rounded-xl bg-emerald-900/70 border border-emerald-700/50 py-2.5 px-3 text-xs font-bold text-emerald-200 hover:bg-emerald-800 active:scale-95 transition-all"
+              >
+                <Phone className="size-3.5 text-emerald-400" />
+                <span>জরুরি রেসকিউ: +৮৮০ ৯৬১২-SHARE</span>
+              </a>
+              <div className="flex items-center justify-between text-[10px] text-emerald-400/60 pt-1">
+                <span>ShareBite BD Enterprise</span>
+                <span className="font-mono">v2.4 PWA</span>
+              </div>
             </div>
           </div>
         </div>
