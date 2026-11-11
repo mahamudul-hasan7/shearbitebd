@@ -43,6 +43,7 @@ import { DispatchRadioTicker } from "@/features/volunteer-dashboard/dispatch-rad
 import { SosModal } from "@/features/volunteer-dashboard/sos-modal";
 import { VolunteerBadges } from "@/features/volunteer-dashboard/volunteer-badges";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import type { AvailableDispatch } from "@/features/volunteer-dashboard/volunteer-types";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,7 @@ import { cn } from "@/lib/utils";
 type CommandTab = "all" | "active" | "available" | "comms" | "badges";
 
 export function VolunteerDashboard() {
+  const { session } = useMockAuth();
   const {
     dutyStatus,
     activeMission,
@@ -63,6 +65,9 @@ export function VolunteerDashboard() {
     broadcastSos,
     dismissSos,
   } = useVolunteerStore();
+
+  const volunteerName = session?.displayName || profile.fullName;
+  const volunteerInitials = volunteerName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || profile.avatarInitials;
 
   const [activeTab, setActiveTab] = useState<CommandTab>("all");
   const [activePin, setActivePin] = useState("");
@@ -95,9 +100,9 @@ export function VolunteerDashboard() {
       activeHref={ROUTES.volunteer.dashboard}
       title="স্বেচ্ছাসেবক লাইভ কমান্ড হাব"
       description="ঢাকা মেট্রোর রিয়েল-টাইম খাদ্য উদ্ধার, পরিবহন টেলিমেট্রি, ওয়াকি-টকি ও ওটিপি ভেরিফিকেশন।"
-      profileName={profile.fullName}
+      profileName={volunteerName}
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
-      avatarInitials={profile.avatarInitials}
+      avatarInitials={volunteerInitials}
       actions={
         <div className="flex items-center gap-2">
           <ButtonLink
@@ -194,7 +199,7 @@ export function VolunteerDashboard() {
               </div>
 
               <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
-                স্বাগতম, {profile.fullName}!
+                স্বাগতম, {volunteerName}!
               </h1>
 
               <p className="text-sm font-medium leading-relaxed text-emerald-100/80 sm:text-base">

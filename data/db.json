@@ -67,6 +67,26 @@
         "registrationNumber": "NGO-DHK-2026-88",
         "address": "Madani Avenue, Near UIU Gate 2"
       }
+    },
+    {
+      "id": "usr_donor_mwc18p4a",
+      "email": "rakib@gmail.com",
+      "password": "rakib123",
+      "displayName": "rakib mahamud",
+      "role": "DONOR",
+      "phone": "01863300256",
+      "createdAt": "2026-11-11T11:25:24.394Z",
+      "profile": {
+        "organizationName": "rakib uiu",
+        "address": "sayed nogor a block, gulsan 2, dhaka 1212",
+        "city": "Dhaka",
+        "donorType": "cafeteria",
+        "registrationNumber": "",
+        "beneficiaryType": "shelter",
+        "transportMethod": "bicycle",
+        "availability": "weekends",
+        "notes": ""
+      }
     }
   ],
   "donations": [],

@@ -39,13 +39,21 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useDonorDashboard } from "@/features/donor-dashboard/use-donor-dashboard";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import { DonationStatus } from "@/lib/constants/statuses";
 import { ROUTES } from "@/lib/routes";
 
 export function DonorDashboard() {
+  const { session } = useMockAuth();
   const { state, retry } = useDonorDashboard();
   const data = state.data;
   const [activeTab, setActiveTab] = useState<"today" | "history">("today");
+
+  const donorName = session?.displayName || data?.profile.name || "ফুড ডোনার";
+  const donorInitials = donorName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "FD";
+  const isDefaultDemo = !session?.email || session.email === "donor@sharebite.demo";
+  const locationLabel = isDefaultDemo ? "মাদানী এভিনিউ, ১০০ ফিট রোড, বাড্ডা" : "ঢাকা, বাংলাদেশ (নিবন্ধিত কিচেন)";
+  const donorIdLabel = isDefaultDemo ? "DONOR-DH-UIU" : `DONOR-${(session?.email || "REG").slice(0, 8).toUpperCase()}`;
 
   const completedDonations = data?.donations.filter(
     (d) => d.status === DonationStatus.DISTRIBUTED || d.status === DonationStatus.DELIVERED
@@ -55,7 +63,7 @@ export function DonorDashboard() {
     <PortalShell
       role="donor"
       activeHref={ROUTES.donor.dashboard}
-      title={data ? `স্বাগতম, ${data.profile.name}` : "ডোনার ওভারভিউ হাব"}
+      title={`স্বাগতম, ${donorName}`}
       description="উদ্বৃত্ত খাবার উদ্ধার কার্যক্রম পর্যবেক্ষণ, পিকআপ সমন্বয় এবং কমিউনিটি ইমপ্যাক্ট পরিচালনা করুন।"
       actions={
         data ? (
@@ -69,9 +77,9 @@ export function DonorDashboard() {
           </ButtonLink>
         ) : undefined
       }
-      profileName={data?.profile.name}
-      profileDescription={data?.profile.description}
-      avatarInitials={data?.profile.initials}
+      profileName={donorName}
+      profileDescription={isDefaultDemo ? "ভেরিফাইড খাদ্য দাতা · UIU" : "ভেরিফাইড খাদ্য দাতা"}
+      avatarInitials={donorInitials}
       notificationHref={data ? ROUTES.donor.notifications : undefined}
       unreadNotifications={data?.unreadNotifications}
     >
@@ -93,7 +101,7 @@ export function DonorDashboard() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-heading">
-                        {data.profile.name}
+                        {donorName}
                       </h2>
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800 border border-emerald-200 font-heading">
                         <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -102,10 +110,10 @@ export function DonorDashboard() {
                     </div>
                     <p className="mt-1 text-xs sm:text-sm text-slate-500 flex flex-wrap items-center gap-2">
                       <span className="flex items-center gap-1">
-                        <MapPin className="size-3.5 text-emerald-600" /> মাদানী এভিনিউ, ১০০ ফিট রোড, বাড্ডা
+                        <MapPin className="size-3.5 text-emerald-600" /> {locationLabel}
                       </span>
                       <span>·</span>
-                      <span className="font-mono text-slate-400">আইডি: DONOR-DH-UIU</span>
+                      <span className="font-mono text-slate-400">আইডি: {donorIdLabel}</span>
                     </p>
                   </div>
                 </div>

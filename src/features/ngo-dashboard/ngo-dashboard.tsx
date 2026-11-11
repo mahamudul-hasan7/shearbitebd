@@ -27,6 +27,7 @@ import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { VerificationStatus } from "@/lib/constants/domain";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import { ROUTES } from "@/lib/routes";
 import { claimService, toServiceError } from "@/services";
 
@@ -35,13 +36,14 @@ function getInitials(name: string) {
 }
 
 export function NGODashboard() {
+  const { session } = useMockAuth();
   const { state, retry } = useNgoDashboard();
   const [claiming, setClaiming] = useState(false);
   const [claimed, setClaimed] = useState(false);
   const [claimError, setClaimError] = useState<string>();
   const data = state.data;
   const ngo = data?.profile.ngoProfile;
-  const name = ngo?.organizationName ?? "Hope Foundation";
+  const name = session?.displayName || (ngo?.organizationName ?? "Hope Foundation");
 
   async function claimRecommended() {
     if (!data?.recommendedDonation) return;
