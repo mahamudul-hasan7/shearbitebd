@@ -35,21 +35,34 @@ export interface DBNotification {
   createdAt: string;
 }
 
+export interface DBDonation {
+  id: string;
+  donorId?: string;
+  donorName: string;
+  donorEmail?: string;
+  title: string;
+  description: string;
+  category: string;
+  quantity: number;
+  quantityUnit: string;
+  estimatedMeals: number;
+  status: string;
+  preparationTime: string;
+  safePickupDeadline: string;
+  pickupWindowStart: string;
+  pickupWindowEnd: string;
+  approximateArea?: string;
+  addressLine?: string;
+  contactPerson?: string;
+  contactPhone?: string;
+  specialInstructions?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DBDocuments {
   users: DBUser[];
-  donations: Array<{
-    id: string;
-    title: string;
-    donorId: string;
-    donorName: string;
-    category: string;
-    quantity: number;
-    unit: string;
-    status: string;
-    expiryDate: string;
-    location: string;
-    createdAt: string;
-  }>;
+  donations: DBDonation[];
   claims: Array<{
     id: string;
     donationId: string;
@@ -254,16 +267,50 @@ export const db = {
   },
 
   donations: {
-    findMany() {
+    findMany(filters?: { donorEmail?: string; status?: string }): DBDonation[] {
       const dbData = ensureDbFile();
-      return dbData.donations || [];
+      let list = dbData.donations || [];
+      if (filters?.donorEmail) {
+        list = list.filter((d) => d.donorEmail?.toLowerCase() === filters.donorEmail?.toLowerCase());
+      }
+      if (filters?.status) {
+        list = list.filter((d) => d.status === filters.status);
+      }
+      return list.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
     },
-    create(donation: DBDocuments["donations"][number]) {
+
+    findById(id: string): DBDonation | undefined {
+      const dbData = ensureDbFile();
+      return (dbData.donations || []).find((d) => d.id === id);
+    },
+
+    create(donation: Omit<DBDonation, "id" | "createdAt" | "updatedAt">): DBDonation {
       const dbData = ensureDbFile();
       if (!dbData.donations) dbData.donations = [];
-      dbData.donations.unshift(donation);
+      const now = new Date().toISOString();
+      const newDonation: DBDonation = {
+        ...donation,
+        id: `don_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        status: donation.status || "AVAILABLE",
+        createdAt: now,
+        updatedAt: now,
+      };
+      dbData.donations.unshift(newDonation);
       saveDb(dbData);
-      return donation;
+      return newDonation;
+    },
+
+    updateStatus(id: string, status: string): DBDonation | undefined {
+      const dbData = ensureDbFile();
+      if (!dbData.donations) return undefined;
+      const target = dbData.donations.find((d) => d.id === id);
+      if (target) {
+        target.status = status;
+        target.updatedAt = new Date().toISOString();
+        saveDb(dbData);
+        return target;
+      }
+      return undefined;
     },
   },
 

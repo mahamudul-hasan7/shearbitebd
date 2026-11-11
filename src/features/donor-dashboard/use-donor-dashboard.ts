@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { DonationStatus, STATUS_META } from "@/lib/constants/statuses";
 import { UserRole } from "@/lib/constants/roles";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import {
   asyncState,
   donationService,
@@ -38,12 +39,70 @@ function getInitials(name: string) {
 }
 
 export function useDonorDashboard() {
+  const { session } = useMockAuth();
   const [retryKey, setRetryKey] = useState(0);
   const [state, setState] = useState<AsyncState<DonorDashboardData>>(() => asyncState.loading());
+
+  const isDefaultDemo = !session?.email || session.email === "donor@sharebite.demo";
+  const donorProfileId = isDefaultDemo ? DASHBOARD_DONOR_ID : session.email;
+  const userId = isDefaultDemo ? DASHBOARD_USER_ID : session.email;
+  const viewer: ViewerContext = {
+    userId,
+    role: UserRole.DONOR,
+    donorProfileId,
+  };
 
   useEffect(() => {
     const controller = new AbortController();
     const serviceOptions = { signal: controller.signal };
+
+    if (!isDefaultDemo) {
+      // Dynamic registered user dashboard
+      Promise.all([
+        donationService.list({ donorProfileId, viewer }, serviceOptions),
+        ngoService.listVerified(serviceOptions),
+      ]).then(([donations, ngos]) => {
+        const totalMeals = donations.reduce((sum, d) => sum + (d.quantity.estimatedMeals || 0), 0);
+        const activeDonation = donations.find((donation) => ACTIVE_STATUSES.has(donation.status));
+
+        const donationActivities: DashboardActivity[] = donations.slice(0, 3).map((donation) => ({
+          id: `activity-${donation.id}`,
+          kind: "donation",
+          title: donation.title,
+          description: `অনুদানের বর্তমান অবস্থা: ${STATUS_META[donation.status].label}`,
+          timestamp: donation.updatedAt,
+          href: `/donor/donations/${donation.id}`,
+        }));
+
+        setState(asyncState.success({
+          profile: {
+            name: session?.displayName || "নিবন্ধিত খাদ্য দাতা",
+            email: session?.email || "",
+            initials: getInitials(session?.displayName || "FD"),
+            description: "ভেরিফায়েড খাদ্য দাতা",
+          },
+          stats: {
+            totalDonations: donations.length,
+            activeDonations: donations.filter((d) => ACTIVE_STATUSES.has(d.status)).length,
+            mealsRescued: totalMeals,
+            ngosHelped: donations.filter((d) => d.status === DonationStatus.DELIVERED || d.status === DonationStatus.DISTRIBUTED).length,
+            donorScore: 100,
+            donorScoreDescription: "সক্রিয় কিচেন ট্রাস্ট স্কোর",
+          },
+          donations,
+          activeDonation,
+          activities: donationActivities,
+          supportedNgos: [],
+          impactRecords: [],
+          unreadNotifications: 0,
+        }));
+      }).catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        setState(asyncState.error(toServiceError(error)));
+      });
+
+      return () => controller.abort();
+    }
 
     Promise.all([
       profileService.getOwnProfile(DASHBOARD_USER_ID, DASHBOARD_VIEWER, serviceOptions),

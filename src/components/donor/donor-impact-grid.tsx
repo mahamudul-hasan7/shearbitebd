@@ -1,12 +1,16 @@
-import { Award, Leaf, ShieldCheck, TrendingUp, Utensils } from "lucide-react";
+import { Leaf, ShieldCheck, Utensils } from "lucide-react";
 import type { DonorDashboardData } from "@/features/donor-dashboard/types";
 
 export function DonorImpactGrid({ stats }: { stats: DonorDashboardData["stats"] }) {
+  const meals = stats.mealsRescued || 0;
+  const kgEstimated = Math.round(meals * 0.45);
+  const takaEstimated = Math.round(meals * 120);
+
   const cards = [
     {
       title: "এই মাসের খাদ্য উদ্ধার",
-      value: `${stats.mealsRescued.toLocaleString()} প্যাকেট`,
-      badge: "+১৮% প্রবৃদ্ধি",
+      value: `${meals.toLocaleString()} প্যাকেট`,
+      badge: meals > 0 ? "+১৮% প্রবৃদ্ধি" : "সক্রিয় কিচেন",
       badgeTone: "bg-emerald-50 text-emerald-800 border-emerald-200/60",
       description: "ক্ষুধার্ত ও সুবিধাবঞ্চিত মানুষের মাঝে সফল বিতরণ",
       icon: Utensils,
@@ -14,16 +18,16 @@ export function DonorImpactGrid({ stats }: { stats: DonorDashboardData["stats"] 
     },
     {
       title: "খাদ্য অপচয় রোধ ও সাশ্রয়",
-      value: "৫৮০ কেজি খাদ্য",
-      badge: "~৳৪২,০০০ সাশ্রয়",
+      value: meals > 0 ? `${kgEstimated} কেজি খাদ্য` : "০ কেজি খাদ্য",
+      badge: meals > 0 ? `~৳${takaEstimated.toLocaleString()} সাশ্রয়` : "৳০ সাশ্রয়",
       badgeTone: "bg-teal-50 text-teal-800 border-teal-200/60",
-      description: "ক্যাফেটেরিয়ার উদ্বৃত্ত খাবার নষ্ট হওয়া থেকে রক্ষা",
+      description: "উদ্বৃত্ত খাবার নষ্ট হওয়া থেকে সরাসরি রক্ষা",
       icon: Leaf,
       iconTone: "bg-teal-50 text-teal-700 border-teal-200/80",
     },
     {
       title: "ডোনার ট্রাস্ট ও সেফটি স্কোর",
-      value: `${stats.donorScore}% (A+ রেটিং)`,
+      value: `${stats.donorScore || 100}% (A+ রেটিং)`,
       badge: "BFSA ভেরিফায়েড",
       badgeTone: "bg-amber-50 text-amber-800 border-amber-200/60",
       description: "অন-টাইম পিকআপ ও থার্মাল ফুড সেফটি কমপ্লায়েন্স",
@@ -63,7 +67,7 @@ export function DonorImpactGrid({ stats }: { stats: DonorDashboardData["stats"] 
               </span>
             </div>
 
-            <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+            <p className="mt-1 text-xs text-slate-500 leading-relaxed font-normal">
               {card.description}
             </p>
           </div>

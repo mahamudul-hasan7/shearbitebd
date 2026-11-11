@@ -155,8 +155,15 @@ export function DonationWizard() {
 
     try {
       const urgency = calculateUrgencyScore({ safePickupDeadline: draft.safePickupDeadline, priority: draft.priority });
+      const donorId = session?.email || "donor-uiu";
+      const donorViewer: ViewerContext = {
+        userId: session?.email || "user-donor-uiu",
+        donorProfileId: donorId,
+        role: UserRole.DONOR,
+      };
+
       const donation = await donationService.create({
-        donorProfileId: "donor-uiu",
+        donorProfileId: donorId,
         preferredNgoProfileId: draft.preferredNgoProfileId || undefined,
         title: draft.title.trim(),
         description: draft.description.trim(),
@@ -186,13 +193,42 @@ export function DonationWizard() {
           allergensDisclosed: draft.allergensCompleted,
           pickupDeadlineConfirmed: draft.realisticDeadline,
           donorAccuracyConfirmed: draft.accuracyConfirmed,
-          declaredByUserId: "user-donor-uiu",
+          declaredByUserId: session?.email || "user-donor-uiu",
           declaredAt: submittedAt,
         },
         priority: priorityFromScore(urgency),
         status: DonationStatus.PUBLISHED,
         publishedAt: submittedAt,
-      }, DONOR_VIEWER);
+      }, donorViewer);
+
+      // Also persist directly into disk database
+      try {
+        await fetch("/api/donations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: draft.title.trim(),
+            description: draft.description.trim(),
+            category: draft.category,
+            quantity: Number(draft.quantity),
+            quantityUnit: draft.quantityUnit,
+            estimatedMeals: estimatedMeals(draft),
+            donorName: session?.displayName || "নিবন্ধিত খাদ্য দাতা",
+            donorEmail: session?.email || "donor@sharebite.demo",
+            donorId,
+            preparationTime: new Date(draft.preparationTime).toISOString(),
+            safePickupDeadline: new Date(draft.safePickupDeadline).toISOString(),
+            pickupWindowStart: new Date(draft.pickupWindowStart).toISOString(),
+            pickupWindowEnd: new Date(draft.pickupWindowEnd).toISOString(),
+            approximateArea: draft.approximateArea.trim(),
+            contactPerson: draft.contactPerson.trim(),
+            contactPhone: draft.phone.trim(),
+            specialInstructions: draft.specialInstructions.trim() || undefined,
+          }),
+        });
+      } catch {
+        // Non-blocking fallback
+      }
 
       window.sessionStorage.removeItem(DONATION_DRAFT_STORAGE_KEY);
       setResult({ donation, submittedAt });

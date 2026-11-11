@@ -32,6 +32,7 @@ import { DonationStatus } from "@/lib/constants/statuses";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { asyncState, donationService, toServiceError, type AsyncState } from "@/services";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import type { DonationView, ViewerContext } from "@/types/domain";
 
 const DONOR_PROFILE_ID = "donor-uiu";
@@ -50,6 +51,7 @@ const BENGALI_TAB_LABELS: Record<DonationTabKey, string> = {
 };
 
 export function DonorDonationList() {
+  const { session } = useMockAuth();
   const [retryKey, setRetryKey] = useState(0);
   const [state, setState] = useState<AsyncState<DonationView[]>>(() => asyncState.loading());
   const [tab, setTab] = useState<DonationTabKey>("all");
@@ -58,16 +60,24 @@ export function DonorDonationList() {
   const [priority, setPriority] = useState<PriorityLevel | "all">("all");
   const [sort, setSort] = useState<DonationSort>("deadline");
 
+  const isDefaultDemo = !session?.email || session.email === "donor@sharebite.demo";
+  const donorProfileId = isDefaultDemo ? DONOR_PROFILE_ID : session.email;
+  const donorViewer: ViewerContext = {
+    userId: isDefaultDemo ? "user-donor-uiu" : session.email,
+    donorProfileId,
+    role: UserRole.DONOR,
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     donationService
-      .list({ donorProfileId: DONOR_PROFILE_ID, viewer: DONOR_VIEWER }, { signal: controller.signal })
+      .list({ donorProfileId, viewer: donorViewer }, { signal: controller.signal })
       .then((donations) => setState(asyncState.success(donations)))
       .catch((error: unknown) => {
         if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error)));
       });
     return () => controller.abort();
-  }, [retryKey]);
+  }, [retryKey, donorProfileId]);
 
   const donations = useMemo(() => state.data ?? [], [state.data]);
 
