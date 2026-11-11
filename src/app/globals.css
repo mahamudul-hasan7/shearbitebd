@@ -113,6 +113,9 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Mobile App Feel: prevent grey tap flashes and enable instant touch response */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 body {
@@ -125,6 +128,17 @@ body {
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  /* Mobile safe area padding for modern notched phones */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Native Mobile App Touch Ergonomics: prevent accidental text selection on interactive tabs & buttons */
+button,
+[role="button"],
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {

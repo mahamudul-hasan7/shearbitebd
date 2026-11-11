@@ -12,11 +12,23 @@ export const metadata: Metadata = {
     template: "%s | ShareBite BD",
   },
   description: "Smart surplus food rescue and redistribution platform for Bangladesh.",
+  applicationName: "ShareBite BD",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ShareBite BD",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
   themeColor: "#02271d",
 };
 

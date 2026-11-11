@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { AppHeader } from "@/components/layout/app-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { DesktopSidebar } from "@/components/navigation/desktop-sidebar";
+import { MobileBottomNavigation } from "@/components/navigation/mobile-bottom-nav";
 import type { PortalRole } from "@/types/navigation";
 
 export function PortalShell({
@@ -54,7 +55,7 @@ export function PortalShell({
           notificationHref={notificationHref}
           unreadNotifications={unreadNotifications}
         />
-        <PageContainer className="flex-1 pb-12 pt-6 sm:pt-8">
+        <PageContainer className="flex-1 pb-24 sm:pb-28 lg:pb-12 pt-6 sm:pt-8">
           <main className="min-w-0">
             {/* Dedicated Left-Aligned Back Navigation */}
             {backHref && (
@@ -95,6 +96,12 @@ export function PortalShell({
             {children}
           </main>
         </PageContainer>
+        {/* Native Mobile Bottom Navigation App Bar */}
+        <MobileBottomNavigation
+          role={role}
+          activeHref={activeHref}
+          unreadNotifications={unreadNotifications}
+        />
       </div>
     </div>
   );
