@@ -124,7 +124,7 @@ export function AppHeader({
     : QUICK_SEARCH_ITEMS;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/75 backdrop-blur-xl backdrop-saturate-150 transition-colors shadow-[0_4px_30px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white before:to-transparent">
       <div className="mx-auto flex h-16 min-w-0 max-w-[var(--page-max-width)] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Left: Mobile Drawer Trigger, Mobile Logo & Desktop Search */}
         <div className="flex items-center gap-3">

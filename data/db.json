@@ -89,7 +89,62 @@
       }
     }
   ],
-  "donations": [],
+  "donations": [
+    {
+      "title": "Kichuri",
+      "description": "10 ta packet",
+      "category": "COOKED_MEAL",
+      "quantity": 25,
+      "quantityUnit": "MEALS",
+      "estimatedMeals": 25,
+      "status": "AVAILABLE",
+      "donorName": "rakib mahamud",
+      "donorEmail": "rakib@gmail.com",
+      "donorId": "rakib@gmail.com",
+      "preparationTime": "2026-11-11T15:24:00.000Z",
+      "safePickupDeadline": "2026-11-11T18:24:00.000Z",
+      "pickupWindowStart": "2026-11-11T15:24:00.000Z",
+      "pickupWindowEnd": "2026-11-11T18:24:00.000Z",
+      "approximateArea": "Badda, Dhaka",
+      "contactPerson": "UIU Cafeteria Desk",
+      "contactPhone": "+8801700000001",
+      "id": "don_mwc9tr5a_fr4g",
+      "createdAt": "2026-11-11T15:25:43.726Z",
+      "updatedAt": "2026-11-11T15:25:43.726Z"
+    }
+  ],
   "claims": [],
-  "notifications": []
+  "notifications": [
+    {
+      "title": "নতুন ফুড রেসকিউ মিশন!",
+      "message": "Badda, Dhaka থেকে খাদ্য সংগ্রহের জন্য নতুন ব্যাচ উন্মুক্ত হয়েছে। প্রস্তুত থাকুন!",
+      "href": "/volunteer/dispatches",
+      "type": "VOLUNTEER",
+      "role": "VOLUNTEER",
+      "id": "notif_mwc9tr9u_zgbd",
+      "read": false,
+      "createdAt": "2026-11-11T15:25:43.890Z"
+    },
+    {
+      "title": "নতুন উদ্বৃত্ত খাবার উপলব্ধ!",
+      "message": "Kichuri - Badda, Dhaka থেকে চ্যারিটির জন্য পোস্ট করা হয়েছে। এখনই ক্লেইম করুন।",
+      "href": "/ngo/discover/map",
+      "type": "NEARBY_DONATION",
+      "role": "NGO",
+      "id": "notif_mwc9tr95_3p98",
+      "read": false,
+      "createdAt": "2026-11-11T15:25:43.865Z"
+    },
+    {
+      "title": "উদ্বৃত্ত খাবার পোস্ট সফল হয়েছে!",
+      "message": "Kichuri (25 MEALS) সফলভাবে পোস্ট করা হয়েছে। ভলান্টিয়ার ও এনজিওরা এখন এটি গ্রহণ করতে পারবে।",
+      "href": "/donor/donations",
+      "type": "PICKUP",
+      "role": "DONOR",
+      "userId": "rakib@gmail.com",
+      "id": "notif_mwc9tr8m_tkfz",
+      "read": true,
+      "createdAt": "2026-11-11T15:25:43.846Z"
+    }
+  ]
 }

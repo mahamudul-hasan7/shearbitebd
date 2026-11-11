@@ -620,14 +620,14 @@ export function HomeView() {
   return (
     <div className="min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
       {/* 1. Header / Navbar with Language Switcher and Mobile Drawer */}
-      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/70 backdrop-blur-xl backdrop-saturate-150 shadow-[0_4px_30px_rgba(0,0,0,0.03),0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white before:to-transparent">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-6">
             <BrandLogo />
           </div>
 
           {/* Desktop Navigation Links (Clean, Sequential & Balanced) */}
-          <nav className="hidden items-center gap-5 xl:gap-7 lg:flex">
+          <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
             {navLinks.map((item) => {
               const isActive = activeNav === item.id;
               return (
@@ -641,15 +641,15 @@ export function HomeView() {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }
                   }}
-                  className={`group relative py-2 text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  className={`group relative rounded-xl px-2.5 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? "text-emerald-800 font-extrabold"
-                      : "text-slate-600 hover:text-emerald-700 font-semibold"
+                      ? "text-emerald-900 font-extrabold bg-emerald-50/70 backdrop-blur-xs"
+                      : "text-slate-600 hover:text-emerald-800 hover:bg-white/60 hover:backdrop-blur-xs font-semibold"
                   }`}
                 >
                   <span className="relative z-10">{item.label}</span>
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-emerald-600 transition-all duration-200" />
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-emerald-600 shadow-[0_2px_8px_rgba(16,185,129,0.5)] transition-all duration-200" />
                   )}
                 </a>
               );
@@ -658,14 +658,14 @@ export function HomeView() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Apple-Style Segmented Language Switcher */}
-            <div className="inline-flex h-9 items-center p-0.5 rounded-xl border border-slate-200/80 bg-slate-100/80 text-xs font-semibold select-none shadow-2xs">
+            <div className="inline-flex h-9 items-center p-0.5 rounded-xl border border-white/70 bg-slate-200/50 backdrop-blur-md text-xs font-semibold select-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]">
               <button
                 type="button"
                 onClick={() => setLang("en")}
                 className={`cursor-pointer px-2.5 py-1 rounded-lg text-xs font-bold transition-all leading-none ${
                   lang === "en"
-                    ? "bg-white text-emerald-900 shadow-2xs font-extrabold"
-                    : "text-slate-500 hover:text-slate-900"
+                    ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 EN
@@ -675,8 +675,8 @@ export function HomeView() {
                 onClick={() => setLang("bn")}
                 className={`cursor-pointer px-2.5 py-1 rounded-lg text-xs font-bold transition-all leading-none ${
                   lang === "bn"
-                    ? "bg-white text-emerald-900 shadow-2xs font-extrabold"
-                    : "text-slate-500 hover:text-slate-900"
+                    ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 বাংলা
@@ -685,14 +685,14 @@ export function HomeView() {
 
             <Link
               href={ROUTES.auth.login}
-              className="hidden sm:inline-flex h-9 items-center rounded-xl px-3.5 text-xs font-bold text-slate-700 hover:text-emerald-900 hover:bg-slate-100 transition-colors"
+              className="hidden sm:inline-flex h-9 items-center rounded-xl px-3.5 text-xs font-bold text-slate-700 hover:text-emerald-950 hover:bg-white/60 hover:backdrop-blur-xs transition-all"
             >
               {t.nav.login}
             </Link>
 
             <Link
               href={ROUTES.auth.roleSelection}
-              className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 text-xs font-bold text-white shadow-2xs transition-all active:scale-95"
+              className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-600 px-4 text-xs font-bold text-white shadow-[0_2px_12px_rgba(16,185,129,0.32),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all active:scale-95"
             >
               <span>{t.nav.join}</span>
               <ArrowRight className="size-3.5" />
@@ -702,7 +702,7 @@ export function HomeView() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="grid size-9 place-items-center rounded-xl border border-slate-200/90 bg-white text-slate-700 shadow-2xs lg:hidden hover:bg-slate-50 cursor-pointer"
+              className="grid size-9 place-items-center rounded-xl border border-white/70 bg-white/70 backdrop-blur-md text-slate-700 shadow-2xs lg:hidden hover:bg-white/90 cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -712,7 +712,7 @@ export function HomeView() {
 
         {/* Mobile Slide-down Drawer */}
         {isMobileMenuOpen && (
-          <div className="border-t border-slate-200/90 bg-white px-4 py-6 shadow-xl lg:hidden animate-in slide-in-from-top duration-200">
+          <div className="border-t border-slate-200/60 bg-white/90 backdrop-blur-xl px-4 py-6 shadow-xl lg:hidden animate-in slide-in-from-top duration-200">
             <nav className="grid gap-3">
               {navLinks.map((item) => (
                 <a
