@@ -41,7 +41,7 @@ function buildDiscoveryItem(donation: Donation, ngoProfileId: string, viewer: Vi
   const distanceKm = donation.pickup.distanceKm ?? 25;
   const distanceSuitable = distanceKm <= 15;
   const deadlineOpen = Date.parse(donation.safePickupDeadline) > Date.now();
-  const isAvailable = donation.status === DonationStatus.AVAILABLE;
+  const isAvailable = donation.status === DonationStatus.AVAILABLE || donation.status === DonationStatus.PUBLISHED;
   const urgency = calculateUrgencyScore({ safePickupDeadline: donation.safePickupDeadline, priority: donation.priority });
   const matchScore = Math.min(99, Math.max(20,
     (categoryAccepted ? 35 : 5) +
@@ -70,7 +70,7 @@ export const discoveryService = {
     return simulateRequest(() => {
       requireVerifiedNgo(ngoProfileId, viewer);
       return mockAppStore.getSnapshot().donations
-        .filter((donation) => donation.status === DonationStatus.AVAILABLE && Date.parse(donation.safePickupDeadline) > Date.now())
+        .filter((donation) => (donation.status === DonationStatus.AVAILABLE || donation.status === DonationStatus.PUBLISHED) && Date.parse(donation.safePickupDeadline) > Date.now())
         .map((donation) => buildDiscoveryItem(donation, ngoProfileId, viewer))
         .sort((left, right) => right.matchScore - left.matchScore);
     }, options);

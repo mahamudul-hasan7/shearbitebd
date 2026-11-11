@@ -60,18 +60,30 @@ export interface DBDonation {
   updatedAt: string;
 }
 
+export interface DBClaim {
+  id: string;
+  donationId: string;
+  donationTitle?: string;
+  ngoId: string;
+  ngoName: string;
+  ngoEmail?: string;
+  volunteerId?: string;
+  volunteerName?: string;
+  status: string;
+  matchScore: number;
+  pickupOtp?: string;
+  dropoffOtp?: string;
+  claimedAt: string;
+  assignedAt?: string;
+  pickedUpAt?: string;
+  deliveredAt?: string;
+  updatedAt: string;
+}
+
 export interface DBDocuments {
   users: DBUser[];
   donations: DBDonation[];
-  claims: Array<{
-    id: string;
-    donationId: string;
-    ngoId: string;
-    ngoName: string;
-    volunteerId?: string;
-    status: string;
-    claimedAt: string;
-  }>;
+  claims: DBClaim[];
   notifications: DBNotification[];
 }
 
@@ -315,16 +327,74 @@ export const db = {
   },
 
   claims: {
-    findMany() {
+    findMany(filters?: { ngoEmail?: string; donationId?: string; status?: string }): DBClaim[] {
       const dbData = ensureDbFile();
-      return dbData.claims || [];
+      let list = dbData.claims || [];
+      if (filters?.ngoEmail) {
+        list = list.filter((c) => c.ngoEmail?.toLowerCase() === filters.ngoEmail?.toLowerCase());
+      }
+      if (filters?.donationId) {
+        list = list.filter((c) => c.donationId === filters.donationId);
+      }
+      if (filters?.status) {
+        list = list.filter((c) => c.status === filters.status);
+      }
+      return list.sort((a, b) => Date.parse(b.updatedAt || b.claimedAt) - Date.parse(a.updatedAt || a.claimedAt));
     },
-    create(claim: DBDocuments["claims"][number]) {
+
+    findById(id: string): DBClaim | undefined {
+      const dbData = ensureDbFile();
+      return (dbData.claims || []).find((c) => c.id === id);
+    },
+
+    create(claim: Omit<DBClaim, "id" | "claimedAt" | "updatedAt">): DBClaim {
       const dbData = ensureDbFile();
       if (!dbData.claims) dbData.claims = [];
-      dbData.claims.unshift(claim);
+      const now = new Date().toISOString();
+      const newClaim: DBClaim = {
+        ...claim,
+        id: `clm_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+        status: claim.status || "RESERVED",
+        pickupOtp: claim.pickupOtp || "7429",
+        dropoffOtp: claim.dropoffOtp || "9814",
+        claimedAt: now,
+        updatedAt: now,
+      };
+      dbData.claims.unshift(newClaim);
+
+      if (dbData.donations) {
+        const targetDonation = dbData.donations.find((d) => d.id === claim.donationId);
+        if (targetDonation) {
+          targetDonation.status = "RESERVED";
+          targetDonation.updatedAt = now;
+        }
+      }
+
       saveDb(dbData);
-      return claim;
+      return newClaim;
+    },
+
+    updateStatus(id: string, status: string, extra?: Partial<DBClaim>): DBClaim | undefined {
+      const dbData = ensureDbFile();
+      if (!dbData.claims) return undefined;
+      const target = dbData.claims.find((c) => c.id === id);
+      if (target) {
+        target.status = status;
+        target.updatedAt = new Date().toISOString();
+        if (extra) Object.assign(target, extra);
+
+        if (dbData.donations) {
+          const targetDonation = dbData.donations.find((d) => d.id === target.donationId);
+          if (targetDonation) {
+            targetDonation.status = status;
+            targetDonation.updatedAt = new Date().toISOString();
+          }
+        }
+
+        saveDb(dbData);
+        return target;
+      }
+      return undefined;
     },
   },
 

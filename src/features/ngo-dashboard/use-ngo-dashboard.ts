@@ -33,7 +33,7 @@ export function useNgoDashboard() {
     const options = { signal: controller.signal };
     Promise.all([
       profileService.getOwnProfile(NGO_USER_ID, NGO_VIEWER, options),
-      donationService.list({ viewer: NGO_VIEWER, statuses: [DonationStatus.AVAILABLE] }, options),
+      donationService.list({ viewer: NGO_VIEWER, statuses: [DonationStatus.AVAILABLE, DonationStatus.PUBLISHED] }, options),
       claimService.list({ ngoProfileId: NGO_PROFILE_ID }, options),
       impactService.getNgoOverview(NGO_PROFILE_ID, NGO_VIEWER, options),
       notificationService.listForUser(NGO_USER_ID, NGO_VIEWER, options),

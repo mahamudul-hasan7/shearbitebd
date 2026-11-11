@@ -197,7 +197,7 @@ export function DonationWizard() {
           declaredAt: submittedAt,
         },
         priority: priorityFromScore(urgency),
-        status: DonationStatus.PUBLISHED,
+        status: DonationStatus.AVAILABLE,
         publishedAt: submittedAt,
       }, donorViewer);
 

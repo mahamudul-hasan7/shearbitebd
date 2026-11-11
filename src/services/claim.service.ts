@@ -182,6 +182,25 @@ export const claimService = {
         role: "VOLUNTEER",
       });
 
+      // Persist to disk database API
+      try {
+        void fetch("/api/claims", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            donationId: donation.id,
+            donationTitle: donation.title,
+            ngoId: ngo.id,
+            ngoName: ngo.organizationName,
+            matchScore: claim.matchScore,
+            pickupOtp: "7429",
+            dropoffOtp: "9814",
+          }),
+        });
+      } catch {
+        // Non-blocking
+      }
+
       return cloneClaim(claim);
     }, options);
   },
@@ -241,6 +260,21 @@ export const claimService = {
         type: "VOLUNTEER",
         role: "VOLUNTEER",
       });
+
+      // Update disk database
+      try {
+        void fetch("/api/claims", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            status: "ASSIGNED",
+            volunteerId: volunteerProfileId,
+          }),
+        });
+      } catch {
+        // Non-blocking
+      }
 
       return cloneClaim(result);
     }, options);
