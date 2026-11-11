@@ -29,6 +29,7 @@
 * **🌡️ AI Spoilage Countdown Meter:** Dynamic biological countdown tracking ambient temperature and safe thermal windows (BFSA 4-hour auto-lock prevents expired food listings).
 * **🤝 NGO / Charity Cockpit (`/ngo`):** Discover nearby edible meals on interactive feeds, claim food batches, and verify delivery receipts.
 * **🛵 Volunteer Rider Cockpit (`/volunteer`):** Live dispatch radar for student cyclists with double-handshake verification (4-digit pickup OTP and drop-off confirmation).
+* **🗄️ Real Database & REST APIs (`/api/auth/*`):** Full database persistence for new Donors, NGOs, and Volunteers with strict Role-Based Access Control (RBAC) preventing unauthorized cross-portal access.
 * **🗺️ Hyper-Local Radar Map (`/explore`):** 100% free OpenStreetMap & Leaflet with zero Google Maps API costs. Visualizes real-time surplus hotspots and 15-minute cycling corridors in Dhaka.
 * **🏢 UIU Campus Pilot Ready:** Pre-configured telemetry centered on United International University (UIU), Madani Avenue, and surrounding shelter homes.
 

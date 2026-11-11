@@ -1,0 +1,74 @@
+{
+  "users": [
+    {
+      "id": "usr_donor_001",
+      "email": "donor@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "UIU Central Cafeteria",
+      "role": "DONOR",
+      "phone": "01711000001",
+      "createdAt": "2026-11-11T10:54:27.685Z",
+      "profile": {
+        "organizationName": "United International University Cafeteria",
+        "donorType": "CAFETERIA",
+        "address": "United City, Madani Avenue, Badda, Dhaka 1212",
+        "bfsaCertNumber": "BFSA-2026-UIU-09"
+      }
+    },
+    {
+      "id": "usr_ngo_001",
+      "email": "ngo@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "Hope & Mastul Foundation",
+      "role": "NGO",
+      "phone": "01711000002",
+      "createdAt": "2026-11-11T10:54:27.686Z",
+      "profile": {
+        "organizationName": "Mastul Foundation (Madani Branch)",
+        "registrationNumber": "NGO-AB-2024-912",
+        "capacityMealsPerDay": 250,
+        "serviceAreas": [
+          "Madani Avenue",
+          "Badda",
+          "Natun Bazar",
+          "Vatara"
+        ],
+        "address": "Road 14, Block C, Badda, Dhaka"
+      }
+    },
+    {
+      "id": "usr_volunteer_001",
+      "email": "volunteer@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "Mahamud Hasan (Rider)",
+      "role": "VOLUNTEER",
+      "phone": "01711000003",
+      "createdAt": "2026-11-11T10:54:27.686Z",
+      "profile": {
+        "transportMethod": "BICYCLE",
+        "serviceAreas": [
+          "UIU Campus",
+          "Madani Avenue",
+          "100 Feet Road"
+        ],
+        "studentId": "0112330182"
+      }
+    },
+    {
+      "id": "usr_ngo_mwc0532e",
+      "email": "mastul.madani@sharebite.org",
+      "password": "Password123",
+      "displayName": "Tariqul Islam",
+      "role": "NGO",
+      "phone": "01812345678",
+      "createdAt": "2026-11-11T10:54:36.230Z",
+      "profile": {
+        "organizationName": "Mastul Madani Shelter",
+        "registrationNumber": "NGO-DHK-2026-88",
+        "address": "Madani Avenue, Near UIU Gate 2"
+      }
+    }
+  ],
+  "donations": [],
+  "claims": []
+}

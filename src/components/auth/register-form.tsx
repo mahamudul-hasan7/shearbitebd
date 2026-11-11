@@ -97,6 +97,8 @@ export function RegisterForm() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [documentName, setDocumentName] = useState("");
   const [errors, setErrors] = useState<RegistrationErrors>({});
+  const [registeredUserId, setRegisteredUserId] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const { signIn } = useMockAuth();
 
@@ -155,15 +157,52 @@ export function RegisterForm() {
     setCurrentStep((step) => Math.max(1, step - 1));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validateCurrentStep()) return;
 
-    // Initialize mock session for smooth direct dashboard demo
+    setIsSubmitting(true);
     const userRole = role === "ngo" ? UserRole.NGO : role === "volunteer" ? UserRole.VOLUNTEER : UserRole.DONOR;
+    const finalDisplayName = (role === "ngo" ? data.organizationName : (data.fullName || data.organizationName)) || "ShareBite Member";
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          fullName: data.fullName,
+          organizationName: data.organizationName,
+          phone: data.phone,
+          role: userRole,
+          details: {
+            address: data.address,
+            city: data.city,
+            donorType: data.donorType,
+            organizationName: data.organizationName,
+            registrationNumber: data.registrationNumber,
+            beneficiaryType: data.beneficiaryType,
+            transportMethod: data.transport,
+            availability: data.availability,
+            notes: data.notes,
+          },
+        }),
+      });
+
+      const resData = await response.json();
+      if (resData.user?.id) {
+        setRegisteredUserId(resData.user.id);
+      }
+    } catch (err) {
+      console.warn("Database sync note:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+
     signIn({
       email: data.email,
-      displayName: data.fullName || (role === "ngo" ? data.organizationName : "ShareBite User"),
+      displayName: finalDisplayName,
       role: userRole,
       remember: true,
     });
@@ -175,7 +214,7 @@ export function RegisterForm() {
   if (currentStep === 4) {
     const userRole = role === "ngo" ? UserRole.NGO : role === "volunteer" ? UserRole.VOLUNTEER : UserRole.DONOR;
     const dashboardUrl = getRoleLandingRoute(userRole);
-    const trackingId = `#SBD-2026-${role.toUpperCase()}-7492`;
+    const trackingId = registeredUserId || `#SBD-2026-${role.toUpperCase()}-7492`;
 
     return (
       <div className="py-2 text-center">

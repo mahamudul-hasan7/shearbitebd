@@ -64,7 +64,7 @@ export function LoginForm() {
     }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const validationErrors = validateLogin({ email, password });
     if (validationErrors.email || validationErrors.password) {
@@ -72,20 +72,62 @@ export function LoginForm() {
       return;
     }
 
-    const account = findDemoAccount(email);
-    if (!account) {
-      setErrors({
-        form: "ডেমো টেস্টের জন্য অনুগ্রহ করে উপরের যেকোনো ১টি রোল সিলেক্ট করুন অথবা সঠিক ডেমো ইমেইল ব্যবহার করুন।",
-      });
-      return;
-    }
-    if (password !== account.password) {
-      setErrors({ password: "ডেমো পাসওয়ার্ড হলো: Demo1234" });
-      return;
-    }
-
     setLoading(true);
-    completeDemoLogin(account);
+    setErrors({});
+
+    try {
+      // 1. Authenticate with real database API
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const resData = await res.json();
+
+      if (res.ok && resData.user) {
+        signIn({
+          email: resData.user.email,
+          displayName: resData.user.displayName,
+          role: resData.user.role,
+          remember,
+        });
+
+        const targetRoute = getSafeDestination(searchParams.get("next"), {
+          email: resData.user.email,
+          displayName: resData.user.displayName,
+          role: resData.user.role,
+          password: "",
+        });
+        router.push(targetRoute);
+        return;
+      }
+
+      // 2. Fallback check for static demo accounts
+      const account = findDemoAccount(email);
+      if (account) {
+        if (password !== account.password) {
+          setErrors({ password: "ডেমো পাসওয়ার্ড হলো: Demo1234" });
+          setLoading(false);
+          return;
+        }
+        completeDemoLogin(account);
+        return;
+      }
+
+      setErrors({
+        form: resData.error || "লগইন ব্যর্থ হয়েছে। প্রদত্ত ইমেইল ও পাসওয়ার্ড সঠিক কিনা যাচাই করুন।",
+      });
+    } catch {
+      const account = findDemoAccount(email);
+      if (account) {
+        completeDemoLogin(account);
+        return;
+      }
+      setErrors({ form: "সার্ভারে যোগাযোগ করা যায়নি।" });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
