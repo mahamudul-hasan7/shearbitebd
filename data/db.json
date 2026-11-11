@@ -132,7 +132,7 @@
       "type": "NEARBY_DONATION",
       "role": "NGO",
       "id": "notif_mwc9tr95_3p98",
-      "read": false,
+      "read": true,
       "createdAt": "2026-11-11T15:25:43.865Z"
     },
     {

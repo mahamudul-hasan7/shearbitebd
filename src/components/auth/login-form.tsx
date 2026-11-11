@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
-import { findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
+import { DEMO_ACCOUNTS, findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { validateLogin } from "@/features/auth/validation";
 import { ROUTES } from "@/lib/routes";
