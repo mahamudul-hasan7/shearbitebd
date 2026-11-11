@@ -5,6 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, "..");
+const gitDir = resolve(rootDir, ".git");
+
+// If downloaded as ZIP or running without git repo, skip safely without failing npm install
+if (!existsSync(gitDir)) {
+  process.exit(0);
+}
+
 const hooksDir = resolve(rootDir, ".githooks");
 const prePushHook = resolve(hooksDir, "pre-push");
 
@@ -22,12 +29,8 @@ writeFileSync(prePushHook, hookContent, { encoding: "utf8" });
 try {
   execFileSync("git", ["config", "core.hooksPath", ".githooks"], {
     cwd: rootDir,
-    stdio: "inherit",
+    stdio: "ignore",
   });
-  console.log("Git hooks configured: core.hooksPath=.githooks");
 } catch {
-  console.log("Git hooks were created, but core.hooksPath could not be set automatically.");
-  console.log("Run this once manually:");
-  console.log("git config core.hooksPath .githooks");
-  process.exitCode = 1;
+  // Gracefully ignore failure so npm install always succeeds
 }
