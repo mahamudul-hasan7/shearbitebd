@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { HeroTicker } from "@/components/home/hero-ticker";
+import { ReviewTrainMarquee } from "@/components/home/review-train-marquee";
 import { triggerCelebration } from "@/components/ui/action-success-modal";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { UserRole } from "@/lib/constants/roles";
@@ -1458,75 +1459,9 @@ export function HomeView() {
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* Story 1 */}
-            <div className="overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-800/40 bg-emerald-950/50 p-6 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-300">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-amber-300" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm leading-relaxed text-emerald-100 italic">
-                  {t.stories.story1Quote}
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-emerald-800/40 flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-emerald-500/20 text-emerald-300 font-black">
-                  UI
-                </span>
-                <div>
-                  <p className="font-heading text-xs font-bold text-white">{t.stories.story1Author}</p>
-                  <p className="text-[10px] text-emerald-300/70">{t.stories.story1Role}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Story 2 */}
-            <div className="overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-800/40 bg-emerald-950/50 p-6 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-300">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-amber-300" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm leading-relaxed text-emerald-100 italic">
-                  {t.stories.story2Quote}
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-emerald-800/40 flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-amber-500/20 text-amber-300 font-black">
-                  MF
-                </span>
-                <div>
-                  <p className="font-heading text-xs font-bold text-white">{t.stories.story2Author}</p>
-                  <p className="text-[10px] text-emerald-300/70">{t.stories.story2Role}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Story 3 */}
-            <div className="overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-800/40 bg-emerald-950/50 p-6 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-300">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="size-3.5 fill-amber-300" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm leading-relaxed text-emerald-100 italic">
-                  {t.stories.story3Quote}
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-emerald-800/40 flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-teal-500/20 text-teal-300 font-black">
-                  TA
-                </span>
-                <div>
-                  <p className="font-heading text-xs font-bold text-white">{t.stories.story3Author}</p>
-                  <p className="text-[10px] text-emerald-300/70">{t.stories.story3Role}</p>
-                </div>
-              </div>
-            </div>
+          {/* Continuous Infinite Review Train Animation */}
+          <div className="mt-10 sm:mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
+            <ReviewTrainMarquee lang={lang} />
           </div>
         </div>
       </section>

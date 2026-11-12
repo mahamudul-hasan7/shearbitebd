@@ -113,8 +113,45 @@
       "updatedAt": "2026-11-11T15:25:43.726Z"
     }
   ],
-  "claims": [],
+  "claims": [
+    {
+      "donationId": "don_rec-2",
+      "donationTitle": "শাহী বিফ তেহারি ও ফিরনি",
+      "ngoId": "usr_ngo_001",
+      "ngoName": "Hope & Mastul Foundation",
+      "ngoEmail": "ngo@sharebite.demo",
+      "matchScore": 98,
+      "status": "RESERVED",
+      "pickupOtp": "7429",
+      "dropoffOtp": "9814",
+      "id": "clm_mwd36f4j_kr5h",
+      "claimedAt": "2026-11-12T05:07:23.539Z",
+      "updatedAt": "2026-11-12T05:07:23.539Z"
+    }
+  ],
   "notifications": [
+    {
+      "title": "নতুন জরুরি ডেলিভারি মিশন 🚴",
+      "message": "Radisson Blu Dhaka Water Garden থেকে 75 প্যাকেট খাবার সংগ্রহের মিশন উপলব্ধ।",
+      "href": "/volunteer/dashboard",
+      "type": "NEARBY_DONATION",
+      "role": "VOLUNTEER",
+      "userId": "volunteer@sharebite.demo",
+      "id": "notif_mwd36f64_l21t",
+      "read": false,
+      "createdAt": "2026-11-12T05:07:23.596Z"
+    },
+    {
+      "title": "খাদ্য রেসকিউ ক্লেইম সফল! 🍱",
+      "message": "মাস্তুল ফাউন্ডেশন \"শাহী বিফ তেহারি ও ফিরনি\" খাবারটি ক্লেইম করেছে। ভলান্টিয়ার রওয়ানা হচ্ছে।",
+      "href": "/donor/donations",
+      "type": "CLAIM_RESERVED",
+      "role": "DONOR",
+      "userId": "donor@sharebite.demo",
+      "id": "notif_mwd36f5k_qgym",
+      "read": false,
+      "createdAt": "2026-11-12T05:07:23.576Z"
+    },
     {
       "title": "নতুন ফুড রেসকিউ মিশন!",
       "message": "Badda, Dhaka থেকে খাদ্য সংগ্রহের জন্য নতুন ব্যাচ উন্মুক্ত হয়েছে। প্রস্তুত থাকুন!",

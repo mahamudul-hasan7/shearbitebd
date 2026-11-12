@@ -380,6 +380,53 @@ button:disabled,
   animation: popup-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Infinite Train-Style Review Marquee Keyframes */
+@keyframes marquee-train-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-train-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-train-left {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-train-left 42s linear infinite;
+}
+
+.animate-train-right {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-train-right 46s linear infinite;
+}
+
+.animate-train-left:hover,
+.animate-train-right:hover {
+  animation-play-state: paused;
+}
+
+@media (max-width: 640px) {
+  .animate-train-left {
+    animation-duration: 32s;
+  }
+  .animate-train-right {
+    animation-duration: 35s;
+  }
+}
+
 
 
 @media (prefers-reduced-motion: reduce) {
