@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronRight,
   Eye,
+  Globe,
   Heart,
   KeyRound,
   Laptop,
@@ -35,6 +36,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
+import { LanguageSwitch } from "@/components/ui/language-switch";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
 import { ROUTES } from "@/lib/routes";
@@ -302,100 +304,121 @@ export function ProfilePopover({
           {/* Section 2: Personal Preferences & Dispatch Controls (NOT in sidebar) */}
           <div className="p-4 space-y-3.5 max-h-80 overflow-y-auto">
             <p className="text-[10px] font-black uppercase tracking-wider text-muted-500">
-              ব্যক্তিগত রেসকিউ সেটিংস ও প্রিফারেন্স
+              {isVolunteer ? "ব্যক্তিগত রেসকিউ সেটিংস ও প্রিফারেন্স" : "ব্যক্তিগত সেটিংস ও প্রিফারেন্স"}
             </p>
 
-            {/* Preferred Rescue Zone */}
-            <div className="space-y-1 rounded-2xl bg-canvas p-3 border border-line">
-              <label className="flex items-center gap-2 text-xs font-bold text-ink-900">
-                <MapPin className="size-3.5 text-emerald-600" />
-                <span>পছন্দের উদ্ধার এলাকা (Primary Zone)</span>
-              </label>
-              <p className="text-[11px] text-muted-500">
-                কেবল এই এলাকার ডিসপ্যাচ রিকুয়েস্ট প্রথমে আপনার কাছে আসবে
-              </p>
-              <select
-                value={preferredZone}
-                onChange={(e) => {
-                  setPreferredZone(e.target.value);
-                  showToast("পছন্দের এলাকা আপডেট হয়েছে!");
-                }}
-                className="mt-1 w-full rounded-xl border border-line bg-white px-2.5 py-1.5 text-xs font-bold text-ink-900 focus:border-emerald-600 focus:outline-hidden"
-              >
-                <option value="badda_gulshan">বাড্ডা, গুলশান ও হাতিরঝিল করিডোর</option>
-                <option value="dhanmondi">ধানমন্ডি, পান্থপথ ও শুক্রাবাদ</option>
-                <option value="mirpur">মিরপুর ১০ ও ১২ রেসকিউ হাব</option>
-                <option value="all_metro">সমগ্র ঢাকা মেট্রো (আনলিমিটেড)</option>
-              </select>
-            </div>
-
-            {/* Toggle 1: Loud Dispatch Alert Audio Sound */}
+            {/* Platform Language Setting (Mobile & Quick Access) */}
             <div className="flex items-center justify-between gap-3 rounded-2xl bg-canvas p-3 border border-line">
               <div className="flex items-start gap-2.5">
                 <div className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
-                  {loudAlertSound ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                  <Globe className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-ink-900">জরুরি ডিসপ্যাচ সাইরেন অডিও</p>
+                  <p className="text-xs font-bold text-ink-900">অ্যাপের ভাষা (Language)</p>
                   <p className="text-[11px] text-muted-500">
-                    নতুন খাবার এলে বাইকে থাকা অবস্থায় লাউড বিজার বাজবে
+                    বাংলা বা English ইন্টারফেস বেছে নিন
                   </p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setLoudAlertSound(!loudAlertSound);
-                  showToast(!loudAlertSound ? "সাইরেন সাউন্ড চালু হয়েছে 🔊" : "সাউন্ড মিউট করা হয়েছে 🔇");
-                }}
-                className={cn(
-                  "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  loudAlertSound ? "bg-emerald-600" : "bg-slate-300"
-                )}
-              >
-                <span
-                  className={cn(
-                    "pointer-events-none inline-block size-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200",
-                    loudAlertSound ? "translate-x-5" : "translate-x-0"
-                  )}
-                />
-              </button>
+              <LanguageSwitch />
             </div>
 
-            {/* Toggle 2: SMS Backup for Low Network */}
-            <div className="flex items-center justify-between gap-3 rounded-2xl bg-canvas p-3 border border-line">
-              <div className="flex items-start gap-2.5">
-                <div className="grid size-7 place-items-center rounded-lg bg-amber-100 text-amber-700 shrink-0 mt-0.5">
-                  <Smartphone className="size-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-ink-900">এসএমএস ব্যাকআপ নোটিফিকেশন</p>
+            {isVolunteer && (
+              <>
+                {/* Preferred Rescue Zone */}
+                <div className="space-y-1 rounded-2xl bg-canvas p-3 border border-line">
+                  <label className="flex items-center gap-2 text-xs font-bold text-ink-900">
+                    <MapPin className="size-3.5 text-emerald-600" />
+                    <span>পছন্দের উদ্ধার এলাকা (Primary Zone)</span>
+                  </label>
                   <p className="text-[11px] text-muted-500">
-                    মোবাইল ডাটা না থাকলে সরাসরি ফোনে জরুরি টেক্সট মেসেজ যাবে
+                    কেবল এই এলাকার ডিসপ্যাচ রিকুয়েস্ট প্রথমে আপনার কাছে আসবে
                   </p>
+                  <select
+                    value={preferredZone}
+                    onChange={(e) => {
+                      setPreferredZone(e.target.value);
+                      showToast("পছন্দের এলাকা আপডেট হয়েছে!");
+                    }}
+                    className="mt-1 w-full rounded-xl border border-line bg-white px-2.5 py-1.5 text-xs font-bold text-ink-900 focus:border-emerald-600 focus:outline-hidden"
+                  >
+                    <option value="badda_gulshan">বাড্ডা, গুলশান ও হাতিরঝিল করিডোর</option>
+                    <option value="dhanmondi">ধানমন্ডি, পান্থপথ ও শুক্রাবাদ</option>
+                    <option value="mirpur">মিরপুর ১০ ও ১২ রেসকিউ হাব</option>
+                    <option value="all_metro">সমগ্র ঢাকা মেট্রো (আনলিমিটেড)</option>
+                  </select>
                 </div>
-              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setSmsBackupAlert(!smsBackupAlert);
-                  showToast(!smsBackupAlert ? "এসএমএস ব্যাকআপ সক্রিয়" : "এসএমএস ব্যাকআপ বন্ধ");
-                }}
-                className={cn(
-                  "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  smsBackupAlert ? "bg-emerald-600" : "bg-slate-300"
-                )}
-              >
-                <span
-                  className={cn(
-                    "pointer-events-none inline-block size-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200",
-                    smsBackupAlert ? "translate-x-5" : "translate-x-0"
-                  )}
-                />
-              </button>
-            </div>
+                {/* Toggle 1: Loud Dispatch Alert Audio Sound */}
+                <div className="flex items-center justify-between gap-3 rounded-2xl bg-canvas p-3 border border-line">
+                  <div className="flex items-start gap-2.5">
+                    <div className="grid size-7 place-items-center rounded-lg bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                      {loudAlertSound ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-ink-900">জরুরি ডিসপ্যাচ সাইরেন অডিও</p>
+                      <p className="text-[11px] text-muted-500">
+                        নতুন খাবার এলে বাইকে থাকা অবস্থায় লাউড বিজার বাজবে
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoudAlertSound(!loudAlertSound);
+                      showToast(!loudAlertSound ? "সাইরেন সাউন্ড চালু হয়েছে 🔊" : "সাউন্ড মিউট করা হয়েছে 🔇");
+                    }}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                      loudAlertSound ? "bg-emerald-600" : "bg-slate-300"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block size-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200",
+                        loudAlertSound ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                {/* Toggle 2: SMS Backup for Low Network */}
+                <div className="flex items-center justify-between gap-3 rounded-2xl bg-canvas p-3 border border-line">
+                  <div className="flex items-start gap-2.5">
+                    <div className="grid size-7 place-items-center rounded-lg bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                      <Smartphone className="size-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-ink-900">এসএমএস ব্যাকআপ নোটিফিকেশন</p>
+                      <p className="text-[11px] text-muted-500">
+                        মোবাইল ডাটা না থাকলে সরাসরি ফোনে জরুরি টেক্সট মেসেজ যাবে
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSmsBackupAlert(!smsBackupAlert);
+                      showToast(!smsBackupAlert ? "এসএমএস ব্যাকআপ সক্রিয়" : "এসএমএস ব্যাকআপ বন্ধ");
+                    }}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                      smsBackupAlert ? "bg-emerald-600" : "bg-slate-300"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block size-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200",
+                        smsBackupAlert ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* Emergency & Family Contact Card */}
             {isVolunteer && (

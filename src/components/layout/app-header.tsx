@@ -9,6 +9,7 @@ import {
   Calendar,
   CheckCircle2,
   Command,
+  Globe,
   HeartHandshake,
   MapPin,
   Menu,
@@ -271,8 +272,10 @@ export function AppHeader({
           {/* Subtle Vertical Divider */}
           <div className="hidden xl:block h-5 w-px bg-slate-200/80" />
 
-          {/* Segmented iOS-Style Language Selector */}
-          <LanguageSwitch />
+          {/* Segmented iOS-Style Language Selector (Desktop/Tablet; on mobile it is in Profile Popover & Drawer) */}
+          <div className="hidden sm:inline-flex">
+            <LanguageSwitch />
+          </div>
 
           {/* Facebook-Style Notification Bell */}
           <NotificationPopover
@@ -438,8 +441,17 @@ export function AppHeader({
               })}
             </nav>
 
-            {/* Drawer Footer */}
-            <div className="border-t border-emerald-800/40 p-4 space-y-2 bg-[#011b14]">
+            {/* Drawer Footer with Mobile Language Switch */}
+            <div className="border-t border-emerald-800/40 p-4 space-y-3 bg-[#011b14]">
+              {/* Mobile Language Switcher Row */}
+              <div className="flex items-center justify-between rounded-xl bg-emerald-950/80 border border-emerald-800/50 p-2.5">
+                <span className="flex items-center gap-2 text-xs font-bold text-emerald-200">
+                  <Globe className="size-4 text-emerald-400" />
+                  <span>ভাষা (Language)</span>
+                </span>
+                <LanguageSwitch variant="dark" />
+              </div>
+
               <a
                 href="tel:+880961274273"
                 className="flex items-center justify-center gap-2 rounded-xl bg-emerald-900/70 border border-emerald-700/50 py-2.5 px-3 text-xs font-bold text-emerald-200 hover:bg-emerald-800 active:scale-95 transition-all touch-manipulation"
