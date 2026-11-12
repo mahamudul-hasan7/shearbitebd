@@ -30,9 +30,25 @@ function isMockSession(value: unknown): value is MockAuthSession {
   );
 }
 
-function readSession(storage: Storage, key: string) {
+const memoryStorage = new Map<string, string>();
+
+function getSafeStorage(type: "localStorage" | "sessionStorage"): Storage | null {
   try {
-    const raw = storage.getItem(key);
+    if (typeof window === "undefined") return null;
+    const storage = window[type];
+    const testKey = "__sb_test__";
+    storage.setItem(testKey, testKey);
+    storage.removeItem(testKey);
+    return storage;
+  } catch {
+    return null;
+  }
+}
+
+function readSession(type: "localStorage" | "sessionStorage", key: string): MockAuthSession | undefined {
+  try {
+    const storage = getSafeStorage(type);
+    const raw = storage ? storage.getItem(key) : memoryStorage.get(key);
     if (!raw) return undefined;
     const parsed: unknown = JSON.parse(raw);
     return isMockSession(parsed) ? parsed : undefined;
@@ -47,7 +63,7 @@ export function MockAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const hydrationTimer = window.setTimeout(() => {
-      const stored = readSession(window.localStorage, LOCAL_SESSION_KEY) ?? readSession(window.sessionStorage, BROWSER_SESSION_KEY);
+      const stored = readSession("localStorage", LOCAL_SESSION_KEY) ?? readSession("sessionStorage", BROWSER_SESSION_KEY);
       setSession(stored);
       setStatus(stored ? "authenticated" : "anonymous");
     }, 0);
@@ -64,16 +80,36 @@ export function MockAuthProvider({ children }: { children: ReactNode }) {
         role: input.role,
         signedInAt: new Date().toISOString(),
       };
-      window.localStorage.removeItem(LOCAL_SESSION_KEY);
-      window.sessionStorage.removeItem(BROWSER_SESSION_KEY);
-      const storage = input.remember ? window.localStorage : window.sessionStorage;
-      storage.setItem(input.remember ? LOCAL_SESSION_KEY : BROWSER_SESSION_KEY, JSON.stringify(nextSession));
+      const serialized = JSON.stringify(nextSession);
+      const targetKey = input.remember ? LOCAL_SESSION_KEY : BROWSER_SESSION_KEY;
+      const otherKey = input.remember ? BROWSER_SESSION_KEY : LOCAL_SESSION_KEY;
+
+      memoryStorage.delete(otherKey);
+      memoryStorage.set(targetKey, serialized);
+
+      try {
+        getSafeStorage("localStorage")?.removeItem(LOCAL_SESSION_KEY);
+      } catch {}
+      try {
+        getSafeStorage("sessionStorage")?.removeItem(BROWSER_SESSION_KEY);
+      } catch {}
+      try {
+        const storage = getSafeStorage(input.remember ? "localStorage" : "sessionStorage");
+        storage?.setItem(targetKey, serialized);
+      } catch {}
+
       setSession(nextSession);
       setStatus("authenticated");
     },
     signOut() {
-      window.localStorage.removeItem(LOCAL_SESSION_KEY);
-      window.sessionStorage.removeItem(BROWSER_SESSION_KEY);
+      memoryStorage.delete(LOCAL_SESSION_KEY);
+      memoryStorage.delete(BROWSER_SESSION_KEY);
+      try {
+        getSafeStorage("localStorage")?.removeItem(LOCAL_SESSION_KEY);
+      } catch {}
+      try {
+        getSafeStorage("sessionStorage")?.removeItem(BROWSER_SESSION_KEY);
+      } catch {}
       setSession(undefined);
       setStatus("anonymous");
     },
