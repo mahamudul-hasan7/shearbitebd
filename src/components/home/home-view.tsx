@@ -699,7 +699,7 @@ export function HomeView() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Apple-Style Segmented Language Switcher */}
             <div
               className={cn(
@@ -711,8 +711,8 @@ export function HomeView() {
                 type="button"
                 onClick={() => setLang("en")}
                 className={cn(
-                  "cursor-pointer rounded-lg text-xs font-bold transition-all leading-none",
-                  isScrolled ? "px-2 py-0.5" : "px-2.5 py-1",
+                  "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
+                  isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
                   lang === "en"
                     ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
                     : "text-slate-600 hover:text-slate-900",
@@ -724,8 +724,8 @@ export function HomeView() {
                 type="button"
                 onClick={() => setLang("bn")}
                 className={cn(
-                  "cursor-pointer rounded-lg text-xs font-bold transition-all leading-none",
-                  isScrolled ? "px-2 py-0.5" : "px-2.5 py-1",
+                  "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
+                  isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
                   lang === "bn"
                     ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
                     : "text-slate-600 hover:text-slate-900",
@@ -738,7 +738,7 @@ export function HomeView() {
             <Link
               href={ROUTES.auth.login}
               className={cn(
-                "inline-flex items-center rounded-xl text-xs font-bold text-slate-800 hover:text-emerald-950 bg-white/80 hover:bg-white/95 border border-slate-200/80 backdrop-blur-xs transition-all duration-300 px-3 sm:px-3.5 shadow-2xs active:scale-95 touch-manipulation cursor-pointer",
+                "hidden sm:inline-flex items-center rounded-xl text-xs font-bold text-slate-800 hover:text-emerald-950 bg-white/80 hover:bg-white/95 border border-slate-200/80 backdrop-blur-xs transition-all duration-300 px-3 sm:px-3.5 shadow-2xs active:scale-95 touch-manipulation cursor-pointer",
                 isScrolled ? "h-8" : "h-9",
               )}
             >
@@ -756,18 +756,18 @@ export function HomeView() {
               <ArrowRight className="size-3.5" />
             </Link>
 
-            {/* Mobile Hamburger Menu Button */}
+            {/* Mobile Hamburger Menu Button - Prominent, never pushed off-screen */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               className={cn(
-                "grid place-items-center rounded-xl border border-white/80 bg-white/80 backdrop-blur-md text-slate-800 shadow-2xs lg:hidden hover:bg-white active:scale-90 cursor-pointer transition-all duration-200 touch-manipulation",
-                isScrolled ? "size-9.5" : "size-10",
+                "grid place-items-center rounded-xl border border-slate-300/80 bg-white text-slate-800 shadow-xs lg:hidden hover:bg-slate-50 active:scale-90 cursor-pointer transition-all duration-200 touch-manipulation shrink-0",
+                isScrolled ? "size-9" : "size-9.5",
               )}
               aria-label="Toggle Navigation Menu"
               aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? <X className="size-5.5 text-slate-900" /> : <Menu className="size-5.5 text-slate-900" />}
+              {isMobileMenuOpen ? <X className="size-5.5 text-emerald-800" /> : <Menu className="size-5.5 text-slate-900" />}
             </button>
           </div>
         </div>
@@ -804,6 +804,35 @@ export function HomeView() {
                 <span>🔑 {t.nav.login} করুন (ড্যাশবোর্ড)</span>
                 <ArrowRight className="size-4" />
               </a>
+
+              {/* 1-Tap Direct Role Portal Access */}
+              <div className="grid grid-cols-3 gap-1.5">
+                <Link
+                  href="/login?next=/donor/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50/80 p-2 text-center text-[11px] font-bold text-emerald-900 active:scale-95"
+                >
+                  <span className="text-base">👨‍🍳</span>
+                  <span>ডোনার</span>
+                </Link>
+                <Link
+                  href="/login?next=/ngo/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl border border-teal-100 bg-teal-50/80 p-2 text-center text-[11px] font-bold text-teal-900 active:scale-95"
+                >
+                  <span className="text-base">🏢</span>
+                  <span>এনজিও</span>
+                </Link>
+                <Link
+                  href="/login?next=/volunteer/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center rounded-xl border border-amber-100 bg-amber-50/80 p-2 text-center text-[11px] font-bold text-amber-900 active:scale-95"
+                >
+                  <span className="text-base">🚴</span>
+                  <span>ভলান্টিয়ার</span>
+                </Link>
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href={ROUTES.auth.roleSelection}
@@ -850,31 +879,31 @@ export function HomeView() {
                 {t.hero.badge}
               </div>
 
-              <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-[3.6rem] lg:leading-[1.14] font-heading">
+              <h1 className="text-2.5xl sm:text-4xl lg:text-[3.6rem] font-black tracking-tight text-white lg:leading-[1.14] font-heading">
                 {t.hero.titlePart1}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">
                   {t.hero.titleHighlight}
                 </span>
               </h1>
 
-              <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-emerald-100/90 font-normal">
+              <p className="max-w-2xl text-xs sm:text-base lg:text-lg leading-relaxed text-emerald-100/90 font-normal">
                 {t.hero.subtitle}
               </p>
 
-              {/* Direct Access CTA Bar for Mobile & Desktop */}
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1">
+              {/* Direct Access CTA Bar for Mobile & Desktop - Compact & Balanced */}
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 <Link
                   href={ROUTES.auth.login}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-emerald-950/40 hover:from-emerald-400 hover:to-teal-500 active:scale-95 transition-all font-heading touch-manipulation cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/25 border border-emerald-400/40 px-3.5 py-1.5 text-xs font-bold text-emerald-200 hover:bg-emerald-500/35 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
                 >
-                  <span>🔑 ড্যাশবোর্ডে প্রবেশ করুন</span>
-                  <ArrowRight className="size-4" />
+                  <span>🔑 ড্যাশবোর্ড লগইন</span>
+                  <ArrowRight className="size-3.5" />
                 </Link>
                 <Link
                   href={ROUTES.auth.roleSelection}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-4 py-3 text-xs sm:text-sm font-bold text-white hover:bg-white/20 active:scale-95 transition-all font-heading touch-manipulation cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/20 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
                 >
-                  <span>📋 নতুন একাউন্ট রেজিস্টার</span>
+                  <span>📋 নতুন একাউন্ট</span>
                 </Link>
               </div>
 
