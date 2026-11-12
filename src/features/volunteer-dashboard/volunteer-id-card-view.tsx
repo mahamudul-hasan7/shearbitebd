@@ -25,14 +25,37 @@ import { PortalShell } from "@/components/layout/portal-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function VolunteerIdCardView() {
+  const { session } = useMockAuth();
   const { profile } = useVolunteerStore();
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTab, setActiveTab] = useState<"pass" | "certificate">("pass");
+
+  const isRakib =
+    session?.email === "rider@gmail.com" ||
+    Boolean(session?.displayName && session.displayName.toLowerCase().includes("rakib"));
+
+  const displayName = session?.displayName || profile.fullName;
+  const displayPhone = isRakib ? "01810394869" : profile.phone;
+  const displayId = isRakib ? "VOL-BD-0181" : profile.id;
+  const displayInitials =
+    displayName
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase())
+      .join("") || "RR";
+  const displayVehicle = isRakib
+    ? "মোটরসাইকেল (ব্যক্তিগত রেসকিউ বাহন)"
+    : profile.vehicleType;
+  const displayAffiliation = isRakib
+    ? "বাড্ডা মেট্রো ভলান্টিয়ার উইং (Club Service)"
+    : profile.universityAffiliation;
 
   function handlePrint() {
     window.print();
@@ -42,9 +65,9 @@ export function VolunteerIdCardView() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `${profile.fullName} - ShareBite BD ভলান্টিয়ার আইডি`,
-          text: `ShareBite BD অনুমোদিত খাদ্য উদ্ধার ভলান্টিয়ার আইডি: ${profile.id}`,
-          url: `https://sharebite.org.bd/verify/${profile.id}`,
+          title: `${displayName} - ShareBite BD ভলান্টিয়ার আইডি`,
+          text: `ShareBite BD অনুমোদিত খাদ্য উদ্ধার ভলান্টিয়ার আইডি: ${displayId}`,
+          url: `https://sharebite.org.bd/verify/${displayId}`,
         });
         return;
       } catch {}
@@ -53,7 +76,7 @@ export function VolunteerIdCardView() {
   }
 
   function handleCopyVerifyLink() {
-    navigator.clipboard.writeText(`https://sharebite.org.bd/verify/${profile.id}`);
+    navigator.clipboard.writeText(`https://sharebite.org.bd/verify/${displayId}`);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   }
@@ -64,9 +87,9 @@ export function VolunteerIdCardView() {
       activeHref={ROUTES.volunteer.idCard}
       title="ভলান্টিয়ার ডিজিটাল আইডি ও সম্মাননা সনদ"
       description="পুলিশ চেকপোস্ট, রেস্তোরাঁ সিকিউরিটি ভেরিফিকেশন এবং বিশ্ববিদ্যালয় সোশাল ক্রেডিট সনদ।"
-      profileName={profile.fullName}
-      profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
-      avatarInitials={profile.avatarInitials}
+      profileName={displayName}
+      profileDescription={`${profile.squadRank} · ${displayAffiliation}`}
+      avatarInitials={displayInitials}
       backHref={ROUTES.volunteer.dashboard}
       backLabel="কমান্ড হাবে ফিরুন"
       actions={
@@ -171,7 +194,7 @@ export function VolunteerIdCardView() {
                   {/* Avatar / Photo with verified ring */}
                   <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border-2 border-emerald-500 shadow-md">
                     <div className="grid size-full place-items-center bg-gradient-to-br from-emerald-600 to-teal-800 text-3xl font-black text-white">
-                      {profile.avatarInitials}
+                      {displayInitials}
                     </div>
                     <span className="absolute bottom-1 right-1 grid size-5 place-items-center rounded-full bg-emerald-500 text-white shadow-xs">
                       <CheckCircle2 className="size-3.5" />
@@ -181,16 +204,16 @@ export function VolunteerIdCardView() {
                   {/* Rider Details */}
                   <div className="min-w-0 space-y-0.5">
                     <h4 className="text-lg font-black text-ink-900 truncate">
-                      {profile.fullName}
+                      {displayName}
                     </h4>
                     <p className="text-xs font-bold text-emerald-700">
                       {profile.squadRank}
                     </p>
                     <p className="text-[11px] text-muted-500 font-mono">
-                      আইডি: <strong>{profile.id}</strong>
+                      আইডি: <strong>{displayId}</strong>
                     </p>
-                    <p className="text-[11px] text-rose-600 font-bold">
-                      রক্তের গ্রুপ: {profile.bloodGroup}
+                    <p className="text-[11px] text-emerald-700 font-bold">
+                      মোবাইল: {displayPhone}
                     </p>
                   </div>
                 </div>
@@ -199,10 +222,10 @@ export function VolunteerIdCardView() {
                 <div className="grid grid-cols-2 gap-2 rounded-2xl bg-canvas p-3 text-xs leading-relaxed border border-line">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted-500">
-                      বিশ্ববিদ্যালয় উইং
+                      সংযুক্ত উইং / এলাকা
                     </span>
                     <p className="font-bold text-ink-900 truncate">
-                      {profile.universityAffiliation.split("(")[0]}
+                      {displayAffiliation.split("(")[0]}
                     </p>
                   </div>
 
@@ -211,7 +234,7 @@ export function VolunteerIdCardView() {
                       যানবাহনের বিবরণ
                     </span>
                     <p className="font-bold text-ink-900 truncate">
-                      {profile.vehicleRegNo}
+                      {displayVehicle}
                     </p>
                   </div>
 
@@ -306,10 +329,10 @@ export function VolunteerIdCardView() {
                 <div className="my-6 border-t border-b border-amber-200/70 py-4 max-w-lg mx-auto">
                   <p className="text-xs text-muted-600">গর্বের সাথে প্রত্যয়ন করা যাচ্ছে যে,</p>
                   <p className="mt-2 text-2xl font-black text-emerald-950 font-serif">
-                    {profile.fullName}
+                    {displayName}
                   </p>
                   <p className="text-xs font-bold text-emerald-800 mt-1">
-                    {profile.universityAffiliation} · আইডি: {profile.id}
+                    {displayAffiliation} · আইডি: {displayId}
                   </p>
                 </div>
 
