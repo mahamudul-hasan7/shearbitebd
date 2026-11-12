@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   BadgeCheck,
@@ -30,6 +31,10 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { HeroTicker } from "@/components/home/hero-ticker";
+import { triggerCelebration } from "@/components/ui/action-success-modal";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import { UserRole } from "@/lib/constants/roles";
+import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -510,6 +515,8 @@ const LIVE_RESCUE_LISTINGS: RescueListing[] = [
 ];
 
 export function HomeView() {
+  const router = useRouter();
+  const { session, signIn } = useMockAuth();
   const [lang, setLang] = useState<"bn" | "en">("bn");
   const [activeNav, setActiveNav] = useState<string>("hero");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -519,6 +526,7 @@ export function HomeView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedZone, setSelectedZone] = useState<string>("all");
   const [activeListingModal, setActiveListingModal] = useState<RescueListing | null>(null);
+  const [isClaiming, setIsClaiming] = useState(false);
 
   // Impact Calculator state
   const [impactMeals, setImpactMeals] = useState<number>(120);
@@ -642,6 +650,74 @@ export function HomeView() {
   const calcPeopleFed = Math.round(calcMonthlyMeals * 1.25);
   const calcCo2Saved = Math.round(calcMonthlyMeals * 2.4);
   const calcWaterSaved = Math.round(calcMonthlyMeals * 160);
+
+  async function handleExecuteRealClaim(listing: RescueListing) {
+    setIsClaiming(true);
+    try {
+      // 1. Ensure user has an active NGO session (instant demo auth if visitor)
+      if (session?.role !== UserRole.NGO) {
+        signIn({
+          email: "ngo@sharebite.demo",
+          displayName: "Hope & Mastul Foundation",
+          role: UserRole.NGO,
+          remember: true,
+        });
+      }
+
+      // 2. Call real backend API to create claim
+      const donationId = listing.id.startsWith("rec-") ? `don_${listing.id}` : listing.id;
+      await fetch("/api/claims", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          donationId,
+          donationTitle: listing.titleBn,
+          ngoId: "usr_ngo_001",
+          ngoName: "Hope & Mastul Foundation",
+          ngoEmail: "ngo@sharebite.demo",
+          matchScore: 98,
+          pickupOtp: "7429",
+          dropoffOtp: "9814",
+        }),
+      });
+
+      // 3. Dispatch multi-role real notifications across devices
+      void createRealNotification({
+        title: "খাদ্য রেসকিউ ক্লেইম সফল! 🍱",
+        message: `মাস্তুল ফাউন্ডেশন "${listing.titleBn}" খাবারটি ক্লেইম করেছে। ভলান্টিয়ার রওয়ানা হচ্ছে।`,
+        role: "DONOR",
+        userId: "donor@sharebite.demo",
+        href: ROUTES.donor.donations,
+        type: "CLAIM_RESERVED",
+      });
+
+      void createRealNotification({
+        title: "নতুন জরুরি ডেলিভারি মিশন 🚴",
+        message: `${listing.donor} থেকে ${listing.portions} প্যাকেট খাবার সংগ্রহের মিশন উপলব্ধ।`,
+        role: "VOLUNTEER",
+        userId: "volunteer@sharebite.demo",
+        href: ROUTES.volunteer.dashboard,
+        type: "NEARBY_DONATION",
+      });
+
+      // 4. Trigger celebration banner
+      triggerCelebration({
+        title: "খাদ্য উদ্ধার ক্লেইম সংরক্ষিত! 🎉",
+        message: `${listing.donor}-এর ${listing.portions} প্যাকেট "${listing.titleBn}" সফলভাবে ক্লেইম করা হয়েছে।`,
+        badge: "মাস্তুল ফাউন্ডেশন (এনজিও)",
+        type: "CLAIM",
+      });
+
+      // 5. Navigate to NGO Claims tracking
+      setActiveListingModal(null);
+      router.push(ROUTES.ngo.claims);
+    } catch (err) {
+      console.error("Failed to execute real claim:", err);
+      router.push(ROUTES.ngo.claims);
+    } finally {
+      setIsClaiming(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
@@ -1573,28 +1649,43 @@ export function HomeView() {
         </div>
       </footer>
 
-      {/* Quick Claim Detail Modal */}
+      {/* Smart Real Claim Detail Modal */}
       {activeListingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
             <button
               type="button"
               onClick={() => setActiveListingModal(null)}
               className="absolute top-5 right-5 grid size-8 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
+              aria-label="বন্ধ করুন"
             >
               <X className="size-4" />
             </button>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 font-heading ring-1 ring-emerald-600/20">
-              <ShieldCheck className="size-3.5 text-emerald-600" />
-              {t.liveFeed.safetyBadge}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 font-heading ring-1 ring-emerald-600/20">
+                <ShieldCheck className="size-3.5 text-emerald-600" />
+                {t.liveFeed.safetyBadge}
+              </span>
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-extrabold font-heading",
+                  activeListingModal.status === "pending"
+                    ? "bg-emerald-100 text-emerald-900 border border-emerald-300"
+                    : activeListingModal.status === "enroute"
+                    ? "bg-amber-100 text-amber-900 border border-amber-300"
+                    : "bg-slate-100 text-slate-700 border border-slate-300"
+                )}
+              >
+                {lang === "bn" ? activeListingModal.statusTextBn : activeListingModal.statusTextEn}
+              </span>
+            </div>
 
             <h3 className="mt-3 text-xl font-black text-slate-900 font-heading">
               {lang === "bn" ? activeListingModal.titleBn : activeListingModal.titleEn}
             </h3>
 
-            <div className="mt-5 space-y-3 rounded-2xl bg-slate-50 p-4 text-xs">
+            <div className="mt-4 space-y-2.5 rounded-2xl bg-slate-50 p-4 text-xs">
               <div className="flex justify-between border-b border-slate-200/60 pb-2">
                 <span className="text-slate-500 font-medium">{t.liveFeed.modalDonor}</span>
                 <span className="font-bold text-slate-900">{activeListingModal.donor}</span>
@@ -1603,6 +1694,12 @@ export function HomeView() {
                 <span className="text-slate-500 font-medium">{t.liveFeed.modalLocation}</span>
                 <span className="font-bold text-slate-900 text-right">
                   {lang === "bn" ? activeListingModal.locationBn : activeListingModal.locationEn}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                <span className="text-slate-500 font-medium">পরিমাণ (মিল সংখ্যা):</span>
+                <span className="font-bold text-emerald-700">
+                  {activeListingModal.portions} প্যাকেট
                 </span>
               </div>
               <div className="flex justify-between border-b border-slate-200/60 pb-2">
@@ -1625,18 +1722,95 @@ export function HomeView() {
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Link
-                href={ROUTES.ngo.claims}
-                onClick={() => setActiveListingModal(null)}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-emerald-700 transition-all font-heading"
-              >
-                {t.liveFeed.modalActionNgo} <ArrowRight className="size-4" />
-              </Link>
+            {/* Smart Access Control & Claim Action */}
+            <div className="mt-5 space-y-3">
+              {activeListingModal.status === "pending" ? (
+                session?.role === UserRole.NGO ? (
+                  /* Case 1: Verified NGO Logged In */
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-900">
+                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                      <span>
+                        আপনি <strong>{session.displayName || "মাস্তুল ফাউন্ডেশন"}</strong> (যাচাইকৃত এনজিও) হিসেবে সাইন-ইন আছেন।
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={isClaiming}
+                      onClick={() => handleExecuteRealClaim(activeListingModal)}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-900/20 hover:from-emerald-500 hover:to-teal-500 transition-all font-heading active:scale-98 cursor-pointer disabled:opacity-60"
+                    >
+                      {isClaiming ? "ক্লেইম প্রসেসিং হচ্ছে..." : "⚡ সরাসরি খাবারটি ক্লেইম করুন"}
+                      <ArrowRight className="size-4" />
+                    </button>
+                  </div>
+                ) : (
+                  /* Case 2: Guest / Non-NGO - Smart 1-Click Demo Bridge */
+                  <div className="space-y-3">
+                    <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-3 text-xs text-emerald-950">
+                      <p className="font-extrabold flex items-center gap-1.5 text-emerald-900">
+                        <ShieldCheck className="size-4 text-emerald-700" />
+                        খাদ্য সুরক্ষা ও বিতরণ প্রোটোকল
+                      </p>
+                      <p className="mt-1 text-[11px] leading-relaxed text-emerald-800">
+                        অপচয় রোধ ও স্বাস্থ্যবিধি নিশ্চিত করতে খাবার ক্লেইম শুধুমাত্র বিএফএসএ অনুমোদিত নিবন্ধিত চ্যারিটি বা এনজিওদের জন্য সংরক্ষিত।
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={isClaiming}
+                      onClick={() => handleExecuteRealClaim(activeListingModal)}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-900/25 hover:from-emerald-500 hover:to-teal-500 transition-all font-heading active:scale-98 cursor-pointer disabled:opacity-60"
+                    >
+                      {isClaiming ? "ক্লেইম নিশ্চিত হচ্ছে..." : "🏢 ১-ক্লিকে এনজিও হিসেবে ক্লেইম করুন (ডেমো মোড)"}
+                      <ArrowRight className="size-4" />
+                    </button>
+
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      <Link
+                        href={`/login?role=ngo&next=${ROUTES.ngo.discover}`}
+                        onClick={() => setActiveListingModal(null)}
+                        className="text-[11px] font-bold text-emerald-800 hover:underline inline-flex items-center gap-1 font-heading"
+                      >
+                        <span>🔑 নিজের এনজিও একাউন্টে লগইন করুন</span>
+                      </Link>
+                      <Link
+                        href={`${ROUTES.auth.register}?role=ngo`}
+                        onClick={() => setActiveListingModal(null)}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 font-heading"
+                      >
+                        নতুন এনজিও নিবন্ধন
+                      </Link>
+                    </div>
+                  </div>
+                )
+              ) : (
+                /* Case 3: Already Claimed / In Transit */
+                <div className="space-y-2.5">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+                    <p className="font-bold text-slate-900">
+                      এই খাদ্য লটটি ইতিমধ্যে {activeListingModal.receiverBn} দ্বারা গৃহীত হয়েছে।
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-slate-500">
+                      লাইভ ডেলিভারি ও কোল্ড চেইন হস্তান্তর প্রক্রিয়া দেখতে ট্র্যাকিং বোর্ডে প্রবেশ করুন।
+                    </p>
+                  </div>
+                  <Link
+                    href={ROUTES.ngo.claims}
+                    onClick={() => setActiveListingModal(null)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-slate-800 transition-all font-heading"
+                  >
+                    <span>📍 লাইভ ক্লেইম ও ট্র্যাকিং বোর্ড দেখুন</span>
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={() => setActiveListingModal(null)}
-                className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer font-heading"
+                className="w-full rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer font-heading"
               >
                 {t.liveFeed.modalActionClose}
               </button>
