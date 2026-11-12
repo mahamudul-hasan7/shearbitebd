@@ -219,12 +219,15 @@
       "ngoName": "Hope & Mastul Foundation",
       "ngoEmail": "ngo@sharebite.demo",
       "matchScore": 98,
-      "status": "RESERVED",
+      "status": "ASSIGNED",
       "pickupOtp": "7429",
       "dropoffOtp": "9814",
       "id": "clm_mwd36f4j_kr5h",
       "claimedAt": "2026-11-12T05:07:23.539Z",
-      "updatedAt": "2026-11-12T05:07:23.539Z"
+      "updatedAt": "2026-11-12T09:11:12.537Z",
+      "volunteerId": "VOL-BD-7429",
+      "volunteerName": "তানভীর আহমেদ",
+      "assignedAt": "2026-11-12T09:11:12.534Z"
     }
   ],
   "notifications": [

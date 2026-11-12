@@ -16,6 +16,7 @@ import type {
 
 export const INITIAL_ACTIVE_MISSION: VolunteerMission = {
   id: "mission-uiu-mastul",
+  claimId: "clm_mwd36f4j_kr5h",
   donorName: "UIU Cafeteria & Food Court",
   donorAddress: "United City, Madani Avenue, 100 Feet Road, Badda, Dhaka-1212",
   donorArea: "বাড্ডা · নতুন বাজার",
@@ -287,11 +288,19 @@ export const INITIAL_PROFILE: VolunteerSquadProfile = {
 
 export interface VolunteerStoreData {
   dutyStatus: DutyStatus;
+  sessionStartTime: number | null;
   activeMission: VolunteerMission | null;
   dispatches: AvailableDispatch[];
   completedHistory: CompletedMissionRecord[];
   profile: VolunteerSquadProfile;
   sosDelayAlert: string | null;
+  telemetry: {
+    speed: number;
+    cargoTemp: number;
+    batteryLevel: number;
+    gpsStatus: string;
+    currentZone: string;
+  };
 }
 
 type Listener = () => void;
@@ -299,11 +308,19 @@ type Listener = () => void;
 class VolunteerStore {
   private state: VolunteerStoreData = {
     dutyStatus: "online",
+    sessionStartTime: Date.now() - 3600_000 * 1.5, // 1h 30m active by default
     activeMission: INITIAL_ACTIVE_MISSION,
     dispatches: INITIAL_DISPATCHES,
     completedHistory: INITIAL_COMPLETED_MISSIONS,
     profile: INITIAL_PROFILE,
     sosDelayAlert: null,
+    telemetry: {
+      speed: 28,
+      cargoTemp: 64,
+      batteryLevel: 88,
+      gpsStatus: "ঢাকা মেট্রো লাইভ জিপিএস (±৩ মি)",
+      currentZone: "মাদানী এভিনিউ ও হাতিরঝিল রুট",
+    },
   };
 
   private listeners = new Set<Listener>();
@@ -343,6 +360,7 @@ class VolunteerStore {
           "sharebite_volunteer_v2_store",
           JSON.stringify({
             dutyStatus: this.state.dutyStatus,
+            sessionStartTime: this.state.sessionStartTime,
             activeMission: this.state.activeMission,
             profile: this.state.profile,
           })
@@ -355,9 +373,39 @@ class VolunteerStore {
   }
 
   toggleDutyStatus = () => {
+    const nextDuty: DutyStatus = this.state.dutyStatus === "online" ? "offline" : "online";
     this.state = {
       ...this.state,
-      dutyStatus: this.state.dutyStatus === "online" ? "offline" : "online",
+      dutyStatus: nextDuty,
+      sessionStartTime: nextDuty === "online" ? Date.now() : null,
+    };
+    this.notify();
+
+    if (nextDuty === "online") {
+      void createRealNotification({
+        title: "রাইডার সেশন সক্রিয় হয়েছে 🛵",
+        message: "আপনি অন-ডিউটিতে সক্রিয় আছেন। লাইভ জিপিএস ও টেলিমেট্রি চালু হয়েছে।",
+        href: "/volunteer/dashboard",
+        type: "VOLUNTEER",
+        role: "VOLUNTEER",
+      });
+    } else {
+      void createRealNotification({
+        title: "রাইডার অফলাইন (ডিউটি বিরতি) ⏸️",
+        message: "আপনার রাইডার শিফট সাময়িকভাবে বন্ধ করা হয়েছে। সুস্থ থাকুন ও বিশ্রাম নিন।",
+        href: "/volunteer/dashboard",
+        type: "SYSTEM",
+        role: "VOLUNTEER",
+      });
+    }
+  };
+
+  setDutyStatus = (status: DutyStatus) => {
+    if (this.state.dutyStatus === status) return;
+    this.state = {
+      ...this.state,
+      dutyStatus: status,
+      sessionStartTime: status === "online" ? Date.now() : null,
     };
     this.notify();
   };
@@ -405,6 +453,23 @@ class VolunteerStore {
       dispatches: this.state.dispatches.filter((d: AvailableDispatch) => d.id !== dispatchId),
     };
     this.notify();
+
+    // Persist assignment to real claims table in database
+    try {
+      fetch("/api/claims", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: newMission.claimId || "clm_mwd36f4j_kr5h",
+          status: "ASSIGNED",
+          volunteerId: this.state.profile.id,
+          volunteerName: this.state.profile.fullName,
+        }),
+      }).catch(() => null);
+    } catch {
+      // non-blocking
+    }
+
     return newMission;
   };
 
@@ -479,6 +544,26 @@ class VolunteerStore {
       if (isPickup) {
         // Sync platform state to PICKED_UP
         try {
+          fetch("/api/claims", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: mission.claimId || "clm_mwd36f4j_kr5h",
+              status: "PICKED_UP",
+              volunteerId: this.state.profile.id,
+              volunteerName: this.state.profile.fullName,
+            }),
+          }).catch(() => null);
+
+          fetch("/api/donations", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: "don_rec-2",
+              status: "PICKED_UP",
+            }),
+          }).catch(() => null);
+
           mockAppStore.update((s) => ({
             ...s,
             claims: s.claims.map((c) =>
@@ -531,6 +616,26 @@ class VolunteerStore {
       } else {
         // Sync platform state to DELIVERED
         try {
+          fetch("/api/claims", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: mission.claimId || "clm_mwd36f4j_kr5h",
+              status: "DELIVERED",
+              volunteerId: this.state.profile.id,
+              volunteerName: this.state.profile.fullName,
+            }),
+          }).catch(() => null);
+
+          fetch("/api/donations", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: "don_rec-2",
+              status: "DELIVERED",
+            }),
+          }).catch(() => null);
+
           mockAppStore.update((s) => ({
             ...s,
             claims: s.claims.map((c) =>
@@ -623,17 +728,26 @@ export function useVolunteerStore() {
     volunteerStoreInstance.getSnapshot,
     () => ({
       dutyStatus: "online" as DutyStatus,
+      sessionStartTime: Date.now() - 3600_000 * 1.5,
       activeMission: INITIAL_ACTIVE_MISSION,
       dispatches: INITIAL_DISPATCHES,
       completedHistory: INITIAL_COMPLETED_MISSIONS,
       profile: INITIAL_PROFILE,
       sosDelayAlert: null,
+      telemetry: {
+        speed: 28,
+        cargoTemp: 64,
+        batteryLevel: 88,
+        gpsStatus: "ঢাকা মেট্রো লাইভ জিপিএস (±৩ মি)",
+        currentZone: "মাদানী এভিনিউ ও হাতিরঝিল রুট",
+      },
     })
   );
 
   return {
     ...storeData,
     toggleDutyStatus: volunteerStoreInstance.toggleDutyStatus,
+    setDutyStatus: volunteerStoreInstance.setDutyStatus,
     acceptDispatch: volunteerStoreInstance.acceptDispatch,
     advanceStage: volunteerStoreInstance.advanceStage,
     verifyOtp: volunteerStoreInstance.verifyOtp,

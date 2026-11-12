@@ -31,6 +31,7 @@ export interface AvailableDispatch {
 
 export interface VolunteerMission {
   id: string;
+  claimId?: string;
   donorName: string;
   donorAddress: string;
   donorArea: string;
