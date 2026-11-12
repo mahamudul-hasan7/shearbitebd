@@ -303,15 +303,26 @@ export interface VolunteerStoreData {
   };
 }
 
+function getAuthSessionUser(): { email?: string; displayName?: string } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw =
+      localStorage.getItem("sharebite.mock-auth.remembered") ||
+      sessionStorage.getItem("sharebite.mock-auth.session");
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+}
+
 type Listener = () => void;
 
 class VolunteerStore {
   private state: VolunteerStoreData = {
     dutyStatus: "online",
     sessionStartTime: Date.now() - 3600_000 * 1.5, // 1h 30m active by default
-    activeMission: INITIAL_ACTIVE_MISSION,
+    activeMission: null,
     dispatches: INITIAL_DISPATCHES,
-    completedHistory: INITIAL_COMPLETED_MISSIONS,
+    completedHistory: [],
     profile: INITIAL_PROFILE,
     sosDelayAlert: null,
     telemetry: {
@@ -328,13 +339,62 @@ class VolunteerStore {
   constructor() {
     if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem("sharebite_volunteer_v2_store");
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          this.state = {
-            ...this.state,
-            ...parsed,
-          };
+        const sessionUser = getAuthSessionUser();
+        const isDemo = !sessionUser?.email || sessionUser.email.toLowerCase().includes("sharebite.demo");
+        const isRakib = sessionUser?.email === "rider@gmail.com" || Boolean(sessionUser?.displayName?.toLowerCase().includes("rakib"));
+
+        if (!isDemo && sessionUser?.email) {
+          // Real registered user session (e.g. Rider Rakib)
+          const userKey = `sharebite_volunteer_v2_${sessionUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+          const saved = localStorage.getItem(userKey);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            this.state = {
+              ...this.state,
+              ...parsed,
+            };
+          } else {
+            // Fresh account state: 0 fake missions
+            this.state = {
+              ...this.state,
+              activeMission: null,
+              completedHistory: [],
+              profile: {
+                ...INITIAL_PROFILE,
+                id: isRakib ? "VOL-BD-0181" : `VOL-BD-${Math.floor(1000 + Math.random() * 9000)}`,
+                fullName: sessionUser.displayName || (isRakib ? "Rider Rakib" : "স্বেচ্ছাসেবক রাইডার"),
+                phone: isRakib ? "01810394869" : "+880 1810-000000",
+                universityAffiliation: isRakib ? "বাড্ডা মেট্রো ভলান্টিয়ার উইং (Club Service)" : "ঢাকা সিভিক ভলান্টিয়ার স্কোয়াড",
+                vehicleType: isRakib ? "মোটরসাইকেল" : "বাইসাইকেল",
+                squadRank: "নবাগত রাইডার স্কোয়াড",
+                squadBadge: "Dhaka Metro Volunteer",
+                avatarInitials: (sessionUser.displayName || "RR").split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "RR",
+                totalRescuedMeals: 0,
+                completedMissions: 0,
+                rating: 5.0,
+                reviewsCount: 0,
+                onTimeRate: 100,
+                joinedDate: "১২ নভেম্বর, ২০২৬",
+              },
+            };
+          }
+        } else {
+          // Demo account fallback with showcase records
+          const saved = localStorage.getItem("sharebite_volunteer_v2_store");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            this.state = {
+              ...this.state,
+              ...parsed,
+            };
+          } else {
+            this.state = {
+              ...this.state,
+              activeMission: INITIAL_ACTIVE_MISSION,
+              completedHistory: INITIAL_COMPLETED_MISSIONS,
+              profile: INITIAL_PROFILE,
+            };
+          }
         }
       } catch {
         // ignore
@@ -356,12 +416,19 @@ class VolunteerStore {
   private notify() {
     if (typeof window !== "undefined") {
       try {
+        const sessionUser = getAuthSessionUser();
+        const isDemo = !sessionUser?.email || sessionUser.email.toLowerCase().includes("sharebite.demo");
+        const key = !isDemo && sessionUser?.email
+          ? `sharebite_volunteer_v2_${sessionUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`
+          : "sharebite_volunteer_v2_store";
+
         localStorage.setItem(
-          "sharebite_volunteer_v2_store",
+          key,
           JSON.stringify({
             dutyStatus: this.state.dutyStatus,
             sessionStartTime: this.state.sessionStartTime,
             activeMission: this.state.activeMission,
+            completedHistory: this.state.completedHistory,
             profile: this.state.profile,
           })
         );
@@ -371,6 +438,55 @@ class VolunteerStore {
     }
     this.listeners.forEach((listener) => listener());
   }
+
+  syncWithUserSession = (email?: string, displayName?: string) => {
+    if (!email) return;
+    const isDemo = email.toLowerCase().includes("sharebite.demo");
+    const isRakib = email.toLowerCase() === "rider@gmail.com" || Boolean(displayName && displayName.toLowerCase().includes("rakib"));
+
+    if (!isDemo) {
+      const userKey = `sharebite_volunteer_v2_${email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
+      let userSaved: Partial<VolunteerStoreData> | null = null;
+      if (typeof window !== "undefined") {
+        try {
+          const raw = localStorage.getItem(userKey);
+          if (raw) userSaved = JSON.parse(raw);
+        } catch {}
+      }
+
+      const realProfile: VolunteerSquadProfile = {
+        id: isRakib ? "VOL-BD-0181" : `VOL-BD-${Math.floor(1000 + Math.random() * 9000)}`,
+        fullName: displayName || (isRakib ? "Rider Rakib" : "স্বেচ্ছাসেবক রাইডার"),
+        role: "র‍্যাপিড রেসকিউ রাইডার (অ্যাক্টিভ)",
+        squadRank: "নবাগত রাইডার স্কোয়াড",
+        squadBadge: "Dhaka North Volunteer",
+        avatarInitials: (displayName || "RR").split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "RR",
+        bloodGroup: isRakib ? "B+ (Positive)" : "O+",
+        phone: isRakib ? "01810394869" : "+880 1810-000000",
+        emergencyContact: "+880 1812-987654",
+        universityAffiliation: isRakib ? "বাড্ডা মেট্রো ভলান্টিয়ার উইং (Club Service)" : "ঢাকা সিভিক ভলান্টিয়ার স্কোয়াড",
+        vehicleType: isRakib ? "মোটরসাইকেল" : "বাইসাইকেল",
+        vehicleRegNo: isRakib ? "ঢাকা মেট্রো ল-৪৫-৬৭৮৯" : "রেজিস্টার্ড বাইক",
+        bfsaCertificationId: "BFSA-CERT-2026-REG",
+        rating: 5.0,
+        reviewsCount: 0,
+        totalRescuedMeals: 0,
+        completedMissions: 0,
+        onTimeRate: 100,
+        joinedDate: "১২ নভেম্বর, ২০২৬",
+        ...(userSaved?.profile || {}),
+      };
+
+      this.state = {
+        ...this.state,
+        activeMission: userSaved?.activeMission ?? null,
+        completedHistory: userSaved?.completedHistory ?? [],
+        profile: realProfile,
+        dutyStatus: userSaved?.dutyStatus ?? "online",
+      };
+      this.notify();
+    }
+  };
 
   toggleDutyStatus = () => {
     const nextDuty: DutyStatus = this.state.dutyStatus === "online" ? "offline" : "online";
@@ -771,5 +887,6 @@ export function useVolunteerStore() {
     dismissSos: volunteerStoreInstance.dismissSos,
     clearActiveMission: volunteerStoreInstance.clearActiveMission,
     loadDemoMission: volunteerStoreInstance.loadDemoMission,
+    syncWithUserSession: volunteerStoreInstance.syncWithUserSession,
   };
 }

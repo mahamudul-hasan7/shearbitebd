@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -65,7 +65,14 @@ export function VolunteerDashboard() {
     broadcastSos,
     dismissSos,
     clearActiveMission,
+    syncWithUserSession,
   } = useVolunteerStore();
+
+  useEffect(() => {
+    if (session?.email) {
+      syncWithUserSession(session.email, session.displayName);
+    }
+  }, [session?.email, session?.displayName, syncWithUserSession]);
 
   const volunteerName = session?.displayName || profile.fullName;
   const volunteerInitials = volunteerName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || profile.avatarInitials;
@@ -265,7 +272,9 @@ export function VolunteerDashboard() {
               <p className="mt-1 text-2xl font-black text-white">
                 {profile.totalRescuedMeals.toLocaleString()}টি
               </p>
-              <span className="text-[10px] text-emerald-400 font-semibold">+১৪৫টি এই সপ্তাহে</span>
+              <span className="text-[10px] text-emerald-400 font-semibold">
+                {profile.completedMissions > 0 ? `+${profile.totalRescuedMeals}টি এই সপ্তাহে` : "নতুন রাইডার অ্যাকাউন্ট"}
+              </span>
             </div>
 
             <Link
@@ -280,23 +289,33 @@ export function VolunteerDashboard() {
                 <ArrowRight className="size-3 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="mt-1 text-2xl font-black text-white">{profile.completedMissions}টি</p>
-              <span className="text-[10px] text-emerald-400 font-semibold">বিস্তারিত হিস্ট্রি দেখুন →</span>
+              <span className="text-[10px] text-emerald-400 font-semibold">
+                {profile.completedMissions > 0 ? "বিস্তারিত হিস্ট্রি দেখুন →" : "প্রথম মিশনের অপেক্ষায়"}
+              </span>
             </Link>
 
             <div className="rounded-xl bg-emerald-950/40 p-3.5 border border-emerald-800/30">
               <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-300/80">
                 সময়নিষ্ঠ ডেলিভারি
               </p>
-              <p className="mt-1 text-2xl font-black text-amber-300">{profile.onTimeRate}%</p>
-              <span className="text-[10px] text-emerald-400 font-semibold">গড় সময় &lt; ৩২ মিনিট</span>
+              <p className="mt-1 text-2xl font-black text-amber-300">
+                {profile.completedMissions > 0 ? `${profile.onTimeRate}%` : "১০০%"}
+              </p>
+              <span className="text-[10px] text-emerald-400 font-semibold">
+                {profile.completedMissions > 0 ? "গড় সময় < ৩২ মিনিট" : "কোনো বিলম্ব রেকর্ড নেই"}
+              </span>
             </div>
 
             <div className="rounded-xl bg-emerald-950/40 p-3.5 border border-emerald-800/30">
               <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-300/80">
                 কমিউনিটি রেটিং
               </p>
-              <p className="mt-1 text-2xl font-black text-white">{profile.rating} ★</p>
-              <span className="text-[10px] text-amber-300 font-semibold">{profile.reviewsCount}টি পজিটিভ রিভিউ</span>
+              <p className="mt-1 text-2xl font-black text-white">
+                {profile.completedMissions > 0 ? `${profile.rating} ★` : "নতুন"}
+              </p>
+              <span className="text-[10px] text-amber-300 font-semibold">
+                {profile.completedMissions > 0 ? `${profile.reviewsCount}টি পজিটিভ রিভিউ` : "সক্রিয় সেবাদানকারী"}
+              </span>
             </div>
           </div>
         </section>

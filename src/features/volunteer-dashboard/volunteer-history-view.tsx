@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Activity,
@@ -33,15 +33,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import type { CompletedMissionRecord } from "@/features/volunteer-dashboard/volunteer-types";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function VolunteerHistoryView() {
-  const { completedHistory, profile } = useVolunteerStore();
+  const { session } = useMockAuth();
+  const { completedHistory, profile, syncWithUserSession } = useVolunteerStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArea, setSelectedArea] = useState<string>("all");
   const [selectedReceipt, setSelectedReceipt] = useState<CompletedMissionRecord | null>(null);
+
+  useEffect(() => {
+    if (session?.email) {
+      syncWithUserSession(session.email, session.displayName);
+    }
+  }, [session?.email, session?.displayName, syncWithUserSession]);
 
   const filteredMissions = completedHistory.filter((item: CompletedMissionRecord) => {
     const matchesSearch =
@@ -62,6 +70,10 @@ export function VolunteerHistoryView() {
   const totalServings = completedHistory.reduce((sum, item) => sum + item.servings, 0);
   const totalValueSaved = completedHistory.reduce((sum, item) => sum + item.foodValueSavedEstimated, 0);
   const totalKm = completedHistory.reduce((sum, item) => sum + item.distanceKm, 0);
+  const avgMins =
+    completedHistory.length > 0
+      ? (completedHistory.reduce((sum, item) => sum + item.durationMins, 0) / completedHistory.length).toFixed(1)
+      : "0";
 
   function handlePrintSummary() {
     window.print();
@@ -101,10 +113,12 @@ export function VolunteerHistoryView() {
               <p className="text-[11px] font-black uppercase tracking-wider">মোট উদ্ধারকৃত মিল</p>
             </div>
             <p className="mt-2 text-2xl font-black text-white sm:text-3xl">
-              {profile.totalRescuedMeals.toLocaleString()}টি
+              {totalServings.toLocaleString()}টি
             </p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              ৪৮টি সফল মিশনে প্রত্যক্ষ সুবিধাপ্রাপ্ত
+              {completedHistory.length > 0
+                ? `${completedHistory.length}টি সফল মিশনে প্রত্যক্ষ সুবিধাপ্রাপ্ত`
+                : "এখনো কোনো সম্পন্ন মিশন নেই"}
             </p>
           </div>
 
@@ -114,7 +128,7 @@ export function VolunteerHistoryView() {
               <p className="text-[11px] font-black uppercase tracking-wider">বাঁচানো খাবারের মূল্য</p>
             </div>
             <p className="mt-2 text-2xl font-black text-amber-300 sm:text-3xl">
-              ৳{(totalValueSaved || 875000).toLocaleString()}+
+              ৳{totalValueSaved.toLocaleString()}
             </p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
               খাদ্য অপচয় রোধকৃত বাজারমূল্য
@@ -140,10 +154,12 @@ export function VolunteerHistoryView() {
               <p className="text-[11px] font-black uppercase tracking-wider">গড় রেসকিউ সময়</p>
             </div>
             <p className="mt-2 text-2xl font-black text-emerald-300 sm:text-3xl">
-              ২৩.৫ মিনিট
+              {completedHistory.length > 0 ? `${avgMins} মিনিট` : "নতুন রাইডার"}
             </p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              সময়নিষ্ঠতা রেটিং: {profile.onTimeRate}%
+              {completedHistory.length > 0
+                ? `সময়নিষ্ঠতা রেটিং: ${profile.onTimeRate}%`
+                : "স্ট্যান্ডার্ড অন-টাইম রেটিং: ১০০%"}
             </p>
           </div>
         </div>
@@ -277,10 +293,15 @@ export function VolunteerHistoryView() {
         ) : (
           <Card className="p-12 text-center border-line">
             <CheckCircle2 className="size-12 text-emerald-600 mx-auto" />
-            <h3 className="mt-4 text-xl font-black text-ink-900">কোনো হিস্ট্রি রেকর্ড পাওয়া যায়নি</h3>
-            <p className="mt-1 text-xs text-muted-600">
-              অনুসন্ধান ফিল্টার পরিবর্তন করে পুনরায় চেষ্টা করুন।
+            <h3 className="mt-4 text-xl font-black text-ink-900">কোনো হিস্ট্রি রেকর্ড নেই</h3>
+            <p className="mt-1 text-xs text-muted-600 max-w-sm mx-auto">
+              আপনি এখনো কোনো খাদ্য উদ্ধার মিশন সম্পন্ন করেননি। উন্মুক্ত ডিসপ্যাচ তালিকা হতে আপনার প্রথম মিশন সম্পন্ন করুন।
             </p>
+            <div className="mt-5 flex justify-center">
+              <ButtonLink href={ROUTES.volunteer.dispatches} variant="primary" className="font-bold shadow-md shadow-emerald-700/20">
+                উন্মুক্ত ডিসপ্যাচ ফিড দেখুন ➔
+              </ButtonLink>
+            </div>
           </Card>
         )}
 

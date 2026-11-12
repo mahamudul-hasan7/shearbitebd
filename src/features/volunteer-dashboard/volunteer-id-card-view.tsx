@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   ArrowLeft,
@@ -32,9 +32,15 @@ import { cn } from "@/lib/utils";
 
 export function VolunteerIdCardView() {
   const { session } = useMockAuth();
-  const { profile } = useVolunteerStore();
+  const { profile, syncWithUserSession } = useVolunteerStore();
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTab, setActiveTab] = useState<"pass" | "certificate">("pass");
+
+  useEffect(() => {
+    if (session?.email) {
+      syncWithUserSession(session.email, session.displayName);
+    }
+  }, [session?.email, session?.displayName, syncWithUserSession]);
 
   const isRakib =
     session?.email === "rider@gmail.com" ||
@@ -337,11 +343,19 @@ export function VolunteerIdCardView() {
                 </div>
 
                 <p className="text-sm leading-relaxed text-ink-800 max-w-md mx-auto">
-                  ঢাকা শহরের খাদ্য অপচয় রোধে নিষ্ঠার সাথে দায়িত্ব পালন করে{" "}
-                  <strong className="text-emerald-900 font-black">
-                    {profile.totalRescuedMeals.toLocaleString()}টি উদ্বৃত্ত মিল
-                  </strong>{" "}
-                  সফলভাবে উদ্ধারপূর্বক এতিমখানা ও সুবিধাবঞ্চিত মানুষের মাঝে পৌঁছে দেওয়ার জন্য এই সম্মাননা প্রদান করা হলো।
+                  {profile.totalRescuedMeals > 0 ? (
+                    <>
+                      ঢাকা শহরের খাদ্য অপচয় রোধে নিষ্ঠার সাথে দায়িত্ব পালন করে{" "}
+                      <strong className="text-emerald-900 font-black">
+                        {profile.totalRescuedMeals.toLocaleString()}টি উদ্বৃত্ত মিল
+                      </strong>{" "}
+                      সফলভাবে উদ্ধারপূর্বক এতিমখানা ও সুবিধাবঞ্চিত মানুষের মাঝে পৌঁছে দেওয়ার জন্য এই সম্মাননা প্রদান করা হলো।
+                    </>
+                  ) : (
+                    <>
+                      ঢাকা শহরের খাদ্য অপচয় রোধ ও নাগরিক সেবায় যুক্ত হয়ে ভলান্টিয়ার স্কোয়াডের সাথে একাত্মতা প্রকাশের স্বীকৃতিস্বরূপ এই অফিসিয়াল সনদ প্রদান করা হলো।
+                    </>
+                  )}
                 </p>
 
                 {/* Score Summary Box */}
