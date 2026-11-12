@@ -83,6 +83,11 @@ export function VolunteerDashboard() {
   const [acceptedNotice, setAcceptedNotice] = useState<string | null>(null);
   const [isSosOpen, setIsSosOpen] = useState(false);
 
+  const isPickupPhase =
+    activeMission?.currentStage === "assigned" ||
+    activeMission?.currentStage === "en_route_pickup" ||
+    activeMission?.currentStage === "at_pickup";
+
   function handleVerifyPin() {
     if (!activePin.trim()) return;
     const result = verifyOtp(activePin);
@@ -525,19 +530,19 @@ export function VolunteerDashboard() {
                           </h3>
                         </div>
                         <p className="mt-1.5 text-xs text-muted-600">
-                          {activeMission.currentStage === "at_pickup" || activeMission.currentStage === "en_route_pickup"
-                            ? "ডোনারের কাছ থেকে ৪-সংখ্যার ওটিপি কোডটি গ্রহণ করে এখানে প্রবেশ করান:"
-                            : "এনজিও প্রতিনিধির টার্মিনালের সাথে ৪-সংখ্যার পিন মিলিয়ে বিতরণ নিশ্চিত করুন:"}
+                          {isPickupPhase
+                            ? "ডোনারের কাছ থেকে ৪-সংখ্যার পিকআপ ওটিপি (৭৪২৯) গ্রহণ করে প্রবেশ করান:"
+                            : "এনজিও প্রতিনিধির টার্মিনালের ৪-সংখ্যার ডেলিভারি পিন (৯৮১৪) প্রবেশ করান:"}
                         </p>
 
                         <div className="mt-4 space-y-2">
                           <div className="flex gap-2">
                             <input
                               type="text"
-                              maxLength={6}
-                              placeholder="ওটিপি পিন (যেমন: 7429)"
+                              maxLength={4}
+                              placeholder={isPickupPhase ? "পিকআপ পিন: 7429" : "ডেলিভারি পিন: 9814"}
                               value={activePin}
-                              onChange={(e) => setActivePin(e.target.value)}
+                              onChange={(e) => setActivePin(e.target.value.replace(/\D/g, ""))}
                               className="h-11 flex-1 rounded-xl border border-line bg-white px-3 font-mono text-center text-lg font-black tracking-widest text-ink-900 focus:border-emerald-600 focus:outline-hidden"
                             />
                             <Button

@@ -236,18 +236,58 @@
       "ngoName": "Hope & Mastul Foundation",
       "ngoEmail": "ngo@sharebite.demo",
       "matchScore": 98,
-      "status": "ASSIGNED",
+      "status": "DELIVERED",
       "pickupOtp": "7429",
       "dropoffOtp": "9814",
       "id": "clm_mwd36f4j_kr5h",
       "claimedAt": "2026-11-12T05:07:23.539Z",
-      "updatedAt": "2026-11-12T09:11:12.537Z",
-      "volunteerId": "VOL-BD-7429",
-      "volunteerName": "তানভীর আহমেদ",
-      "assignedAt": "2026-11-12T09:11:12.534Z"
+      "updatedAt": "2026-11-12T15:40:49.147Z",
+      "volunteerId": "VOL-BD-0181",
+      "volunteerName": "Rider Rakib",
+      "deliveredAt": "2026-11-12T15:40:49.146Z"
     }
   ],
   "notifications": [
+    {
+      "title": "রাইডার অফলাইন (ডিউটি বিরতি) ⏸️",
+      "message": "আপনার রাইডার শিফট সাময়িকভাবে বন্ধ করা হয়েছে। সুস্থ থাকুন ও বিশ্রাম নিন।",
+      "href": "/volunteer/dashboard",
+      "type": "SYSTEM",
+      "role": "VOLUNTEER",
+      "id": "notif_mwdqfqcg_ghu0",
+      "read": false,
+      "createdAt": "2026-11-12T15:58:29.152Z"
+    },
+    {
+      "title": "রেসকিউ মিশন সম্পূর্ণ! 🌟",
+      "message": "অভিনন্দন! আপনি সফলভাবে খাদ্য উদ্ধার ও সুবিধাবঞ্চিত মানুষের সেবায় ভূমিকা রাখলেন। +৫০ পয়েন্ট যোগ হয়েছে!",
+      "href": "/volunteer/dashboard",
+      "type": "DELIVERY",
+      "role": "VOLUNTEER",
+      "id": "notif_mwdpt05y_0u72",
+      "read": true,
+      "createdAt": "2026-11-12T15:40:48.790Z"
+    },
+    {
+      "title": "খাদ্য ড্রপ-অফ সফলভাবে সম্পন্ন! 📦",
+      "message": "রাইডার খাদ্য সেন্টারে পৌঁছে দিয়েছেন। এবার সুবিধাবঞ্চিতদের মাঝে বিতরণ সম্পন্ন করুন।",
+      "href": "/ngo/claims",
+      "type": "DELIVERY",
+      "role": "NGO",
+      "id": "notif_mwdpt054_o3is",
+      "read": false,
+      "createdAt": "2026-11-12T15:40:48.760Z"
+    },
+    {
+      "title": "খাদ্য বিতরণ ও মিশন সফল! 🎉",
+      "message": "আপনার দান করা খাবার নিরাপদে গন্তব্যে পৌঁছে গেছে। অসংখ্য মানুষের মুখে হাসি ফোটানোর জন্য ধন্যবাদ!",
+      "href": "/donor/donations",
+      "type": "DELIVERY",
+      "role": "DONOR",
+      "id": "notif_mwdpt049_du57",
+      "read": false,
+      "createdAt": "2026-11-12T15:40:48.730Z"
+    },
     {
       "role": "VOLUNTEER",
       "type": "DISPATCH",

@@ -669,19 +669,23 @@ class VolunteerStore {
     const mission = this.state.activeMission;
     if (!mission) return { success: false, message: "কোনো সক্রিয় মিশন পাওয়া যায়নি।" };
 
-    const targetPin =
-      mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup"
-        ? mission.pickupOtp
-        : mission.dropoffOtp;
+    const isPickupPhase =
+      mission.currentStage === "assigned" ||
+      mission.currentStage === "en_route_pickup" ||
+      mission.currentStage === "at_pickup";
 
-    if (inputPin.trim() === targetPin || inputPin.trim() === "7429" || inputPin.trim() === "9814") {
-      const isPickup =
-        mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup";
-      const nextStage: MissionStage = isPickup ? "cargo_loaded" : "completed";
+    const isDropoffPhase =
+      mission.currentStage === "cargo_loaded" ||
+      mission.currentStage === "en_route_dropoff";
 
-      this.advanceStage(nextStage);
+    const cleanPin = inputPin.trim();
 
-      if (isPickup) {
+    // PHASE 1: PICKUP VERIFICATION (Donor -> Rider)
+    if (isPickupPhase) {
+      const expectedPickupPin = mission.pickupOtp || "7429";
+      if (cleanPin === expectedPickupPin || cleanPin === "7429") {
+        this.advanceStage("cargo_loaded");
+
         // Sync platform state to PICKED_UP
         try {
           fetch("/api/claims", {
@@ -740,7 +744,7 @@ class VolunteerStore {
 
         void createRealNotification({
           title: "পিকআপ সফল হয়েছে!",
-          message: "ইনসুলেটেড ব্যাগে খাবার সুরক্ষিত রাখুন। ড্রপঅফে পৌঁছে ডেলিভারি ওটিপি: 9814 যাচাই করুন।",
+          message: "ইনসুলেটেড ব্যাগে খাবার সুরক্ষিত রাখুন। ড্রপঅফে পৌঁছে ডেলিভারি ওটিপি: ৯৮১৪ যাচাই করুন।",
           href: "/volunteer/dashboard",
           type: "PICKUP",
           role: "VOLUNTEER",
@@ -748,12 +752,35 @@ class VolunteerStore {
 
         triggerCelebration({
           title: "পিকআপ ওটিপি সফলভাবে যাচাই হয়েছে!",
-          message: "খাবার নিরাপদে ব্যাগে সংগ্রহ করা হয়েছে। এবার ম্যাপ দেখে গন্তব্যে রওনা দিন।",
-          badge: "ওটিপি #৭৪২৯ ভেরিফায়েড",
+          message: "খাবার নিরাপদে ব্যাগে সংগ্রহ ও সিল করা হয়েছে। এবার ম্যাপ দেখে ড্রপ-অফ শেল্টারের উদ্দেশ্যে রওনা দিন।",
+          badge: "পিকআপ ওটিপি #৭৪২৯ ভেরিফায়েড",
           type: "SUCCESS",
           actionLabel: "ডেলিভারি শুরু করুন",
         });
+
+        return {
+          success: true,
+          message: "পিকআপ সফল! খাবার কার্গো ব্যাগে সিল করা হয়েছে। এবার শেল্টারের উদ্দেশ্যে রওনা দিন।",
+        };
+      } else if (cleanPin === mission.dropoffOtp || cleanPin === "9814") {
+        return {
+          success: false,
+          message: "এটি ডেলিভারি ড্রপ-অফ কোড! আগে ডোনারের কাছ থেকে ৪-সংখ্যার পিকআপ ওটিপি (৭৪২৯) দিয়ে খাবার সংগ্রহ করুন।",
+        };
       } else {
+        return {
+          success: false,
+          message: "ভুল পিকআপ ওটিপি! ডোনারের স্ক্রিনে প্রদর্শিত ৪-ডিজিটের কোডটি (৭৪২৯) প্রবেশ করান।",
+        };
+      }
+    }
+
+    // PHASE 2: DROPOFF VERIFICATION (Rider -> NGO)
+    if (isDropoffPhase) {
+      const expectedDropoffPin = mission.dropoffOtp || "9814";
+      if (cleanPin === expectedDropoffPin || cleanPin === "9814") {
+        this.advanceStage("completed");
+
         // Sync platform state to DELIVERED
         try {
           fetch("/api/claims", {
@@ -825,9 +852,23 @@ class VolunteerStore {
           type: "COMPLETE",
           actionLabel: "অসাধারণ! সম্পন্ন",
         });
-      }
 
-      return { success: true, message: "ওটিপি সফলভাবে যাচাই হয়েছে!" };
+        return { success: true, message: "ডেলিভারি ওটিপি সফলভাবে যাচাই হয়েছে! মিশন সফলভাবে সম্পন্ন।" };
+      } else if (cleanPin === mission.pickupOtp || cleanPin === "7429") {
+        return {
+          success: false,
+          message: "পিকআপ ওটিপি ইতিমধ্যে যাচাই হয়েছে। এখন এনজিও সেন্টারের ৪-সংখ্যার ডেলিভারি ওটিপি (৯৮১৪) দিন।",
+        };
+      } else {
+        return {
+          success: false,
+          message: "ভুল ডেলিভারি ওটিপি! এনজিও প্রতিনিধির টার্মিনালের ৪-ডিজিটের কোডটি (৯৮১৪) প্রবেশ করান।",
+        };
+      }
+    }
+
+    if (mission.currentStage === "completed") {
+      return { success: false, message: "এই মিশনটি ইতিমধ্যে সফলভাবে সম্পন্ন হয়েছে।" };
     }
 
     return { success: false, message: "ভুল ওটিপি কোড! অনুগ্রহ করে সঠিক ৪-ডিজিট পিন দিন।" };

@@ -133,10 +133,13 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
     setIsScanning(true);
     setTimeout(() => {
       setIsScanning(false);
-      const targetPin =
-        mission?.currentStage === "at_pickup" || mission?.currentStage === "en_route_pickup"
-          ? mission?.pickupOtp ?? "7429"
-          : mission?.dropoffOtp ?? "9814";
+      const isPickupPhase =
+        mission?.currentStage === "assigned" ||
+        mission?.currentStage === "en_route_pickup" ||
+        mission?.currentStage === "at_pickup";
+      const targetPin = isPickupPhase
+        ? mission?.pickupOtp ?? "7429"
+        : mission?.dropoffOtp ?? "9814";
       const res = verifyOtp(targetPin);
       setPinResult(res);
     }, 1200);
@@ -167,6 +170,10 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   }
 
   const isCompleted = mission.currentStage === "completed";
+  const isPickupPhase =
+    mission.currentStage === "assigned" ||
+    mission.currentStage === "en_route_pickup" ||
+    mission.currentStage === "at_pickup";
 
   return (
     <PortalShell
@@ -459,14 +466,14 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                       </span>
                       <div>
                         <h3 className="text-sm font-black text-ink-900">
-                          {mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup"
-                            ? "ডোনার হ্যান্ডওভার স্টেশন"
-                            : "এনজিও বিতরণ হ্যান্ডওভার"}
+                          {isPickupPhase
+                            ? "১. ডোনার হ্যান্ডওভার স্টেশন (পিকআপ)"
+                            : "২. এনজিও বিতরণ হ্যান্ডওভার (ড্রপ-অফ)"}
                         </h3>
                         <p className="text-[11px] text-muted-600">
-                          {mission.currentStage === "at_pickup" || mission.currentStage === "en_route_pickup"
-                            ? "ডোনারের কাছ থেকে ওটিপি বা কিউআর কোড নিন"
-                            : "এনজিও প্রতিনিধির টার্মিনালের ওটিপি যাচাই করুন"}
+                          {isPickupPhase
+                            ? "ডোনারের কাছ থেকে ৪-সংখ্যার ওটিপি (৭৪২৯) বা কিউআর কোড নিন"
+                            : "এনজিও প্রতিনিধির টার্মিনালের ৪-সংখ্যার ওটিপি (৯৮১৪) যাচাই করুন"}
                         </p>
                       </div>
                     </div>
@@ -489,7 +496,11 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                     </div>
 
                     <p className="mt-3 text-xs font-bold text-emerald-300">
-                      {isScanning ? "স্ক্যান হচ্ছে..." : "ডোনারের কিউআর কোড স্ক্যান করুন"}
+                      {isScanning
+                        ? "স্ক্যান হচ্ছে..."
+                        : isPickupPhase
+                        ? "ডোনারের স্ক্রিনের কিউআর কোড স্ক্যান করুন"
+                        : "এনজিও সেন্টারের কিউআর কোড স্ক্যান করুন"}
                     </p>
 
                     <Button
@@ -506,7 +517,9 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                   {/* 4-Digit OTP Pad */}
                   <div className="space-y-3">
                     <p className="text-center text-xs font-bold text-ink-800">
-                      অথবা সরাসরি ৪-সংখ্যার ওটিপি পিন দিন:
+                      {isPickupPhase
+                        ? "অথবা সরাসরি ডোনারের ৪-সংখ্যার পিকআপ ওটিপি (৭৪২৯) দিন:"
+                        : "অথবা সরাসরি এনজিওর ৪-সংখ্যার ডেলিভারি ওটিপি (৯৮১৪) দিন:"}
                     </p>
 
                     {/* Display box */}
