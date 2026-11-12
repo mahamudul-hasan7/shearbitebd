@@ -718,6 +718,22 @@ class VolunteerStore {
     };
     this.notify();
   };
+
+  clearActiveMission = () => {
+    this.state = {
+      ...this.state,
+      activeMission: null,
+    };
+    this.notify();
+  };
+
+  loadDemoMission = () => {
+    this.state = {
+      ...this.state,
+      activeMission: INITIAL_ACTIVE_MISSION,
+    };
+    this.notify();
+  };
 }
 
 const volunteerStoreInstance = new VolunteerStore();
@@ -753,5 +769,7 @@ export function useVolunteerStore() {
     verifyOtp: volunteerStoreInstance.verifyOtp,
     broadcastSos: volunteerStoreInstance.broadcastSos,
     dismissSos: volunteerStoreInstance.dismissSos,
+    clearActiveMission: volunteerStoreInstance.clearActiveMission,
+    loadDemoMission: volunteerStoreInstance.loadDemoMission,
   };
 }

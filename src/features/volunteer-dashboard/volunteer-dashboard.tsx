@@ -64,6 +64,7 @@ export function VolunteerDashboard() {
     verifyOtp,
     broadcastSos,
     dismissSos,
+    clearActiveMission,
   } = useVolunteerStore();
 
   const volunteerName = session?.displayName || profile.fullName;
@@ -218,18 +219,38 @@ export function VolunteerDashboard() {
                 </span>
               </div>
               <p className="font-mono text-3xl font-black tracking-widest text-amber-300">
-                {activeMission?.pickupOtp ?? "7429"}
+                {activeMission?.pickupOtp ?? "--"}
               </p>
               <p className="text-[11px] text-emerald-200/70">
-                খাবার গ্রহণের পর ডোনার বা এনজিও প্রতিনিধির সাথে শেয়ার করুন
+                {activeMission
+                  ? "খাবার গ্রহণের পর ডোনার বা এনজিও প্রতিনিধির সাথে শেয়ার করুন"
+                  : "ডিসপ্যাচ তালিকা হতে মিশন গ্রহণ করলে ওটিপি দৃশ্যমান হবে"}
               </p>
-              {activeMission && (
+              {activeMission ? (
+                <div className="mt-1 flex items-center gap-2">
+                  <Link
+                    href={ROUTES.volunteer.mission(activeMission.id)}
+                    className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700 shadow-md transition-all"
+                  >
+                    <Navigation className="size-3.5" />
+                    মিশন ককপিট খুলুন
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={clearActiveMission}
+                    className="rounded-xl border border-rose-500/50 bg-rose-950/40 px-2.5 py-2 text-xs font-bold text-rose-300 hover:bg-rose-900/60 transition-colors cursor-pointer"
+                    title="চলমান মিশন রিসেট / বন্ধ করুন"
+                  >
+                    রিসেট
+                  </button>
+                </div>
+              ) : (
                 <Link
-                  href={ROUTES.volunteer.mission(activeMission.id)}
+                  href={ROUTES.volunteer.dispatches}
                   className="mt-1 flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700 shadow-md transition-all"
                 >
                   <Navigation className="size-3.5" />
-                  ফুলস্ক্রিন মিশন ককপিট খুলুন
+                  নতুন মিশন বেছে নিন
                 </Link>
               )}
             </div>
@@ -366,14 +387,32 @@ export function VolunteerDashboard() {
                   লাইভ রেসকিউ মিশন ও জিপিএস ট্র্যাকিং
                 </h2>
               </div>
-              {activeMission && (
+              {activeMission ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={clearActiveMission}
+                    className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+                  >
+                    মিশন ক্লিয়ার / পরিবর্তন
+                  </button>
+                  <ButtonLink
+                    href={ROUTES.volunteer.mission(activeMission.id)}
+                    variant="primary"
+                    leftIcon={<Navigation className="size-4" />}
+                    className="font-bold shadow-md shadow-emerald-700/20"
+                  >
+                    ফুলস্ক্রিন মিশন ককপিট 🛵
+                  </ButtonLink>
+                </div>
+              ) : (
                 <ButtonLink
-                  href={ROUTES.volunteer.mission(activeMission.id)}
+                  href={ROUTES.volunteer.dispatches}
                   variant="primary"
                   leftIcon={<Navigation className="size-4" />}
                   className="font-bold shadow-md shadow-emerald-700/20"
                 >
-                  ফুলস্ক্রিন মিশন ককপিট 🛵
+                  উন্মুক্ত ডিসপ্যাচ ফিড দেখুন ➔
                 </ButtonLink>
               )}
             </div>
