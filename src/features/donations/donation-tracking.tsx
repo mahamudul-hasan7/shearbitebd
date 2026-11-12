@@ -66,11 +66,12 @@ function TrackingLoading() {
   );
 }
 
-function MockQrHandover({ token }: { token?: string }) {
+function MockQrHandover({ token, code }: { token?: string; code?: string }) {
   const [copied, setCopied] = useState(false);
-  const patternSeed = token?.length ?? 7;
+  const patternSeed = (token?.length ?? 7) + (code?.length ?? 4);
   const cells = Array.from({ length: 121 }, (_, index) => ((index * 7 + patternSeed * 3 + Math.floor(index / 11)) % 5) < 2);
-  const fallbackCode = token?.match(/(\d{6})$/)?.[1] ?? (token ? token.slice(-6).toUpperCase() : "784920");
+  const rawDigits = (code || token || "").replace(/\D/g, "");
+  const fallbackCode = code || (rawDigits.length >= 4 ? rawDigits.slice(-4) : "7429");
 
   function copyCode() {
     navigator.clipboard.writeText(fallbackCode);
@@ -93,7 +94,7 @@ function MockQrHandover({ token }: { token?: string }) {
       </div>
 
       <div className="p-5 text-center">
-        {token ? (
+        {token || code ? (
           <>
             {/* Target Scanner QR Container */}
             <div className="relative mx-auto inline-block p-4">
@@ -117,16 +118,23 @@ function MockQrHandover({ token }: { token?: string }) {
 
             <div className="mt-4 rounded-2xl border border-emerald-200/80 bg-emerald-50/70 p-4">
               <p className="text-[11px] font-black uppercase tracking-wider text-emerald-800">
-                ৬ ডিজিট হ্যান্ডওভার ওটিপি
+                ৪-ডিজিট পিকআপ ওটিপি (OTP)
               </p>
-              <div className="mt-2 flex items-center justify-center gap-2">
-                <span className="font-mono text-3xl font-black tracking-[0.2em] text-emerald-950">
-                  {fallbackCode}
-                </span>
+              <div className="mt-2.5 flex items-center justify-center gap-3">
+                <div className="flex items-center gap-1.5 font-mono text-2xl font-black text-emerald-950">
+                  {fallbackCode.split("").map((digit, i) => (
+                    <span
+                      key={i}
+                      className="inline-grid size-10 place-items-center rounded-xl border border-emerald-300 bg-white shadow-xs"
+                    >
+                      {digit}
+                    </span>
+                  ))}
+                </div>
                 <button
                   type="button"
                   onClick={copyCode}
-                  className="rounded-lg bg-emerald-600 px-2 py-1 text-xs font-bold text-white shadow hover:bg-emerald-700 active:scale-95 transition-all"
+                  className="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow hover:bg-emerald-700 active:scale-95 transition-all"
                   title="ওটিপি কপি করুন"
                 >
                   <Copy className="size-3.5 inline mr-1" />
@@ -138,9 +146,9 @@ function MockQrHandover({ token }: { token?: string }) {
             <div className="mt-4 text-left text-xs leading-relaxed text-muted-600 bg-canvas/60 p-3 rounded-xl border border-line">
               <p className="font-bold text-ink-900 mb-1">হস্তান্তর নির্দেশিকা:</p>
               <ul className="list-disc pl-4 space-y-1 text-[11px]">
-                <li>রাইডারের পরিচয় যাচাই করুন।</li>
-                <li>রাইডারকে এই কিউআর স্ক্যান বা ওটিপি ইনপুট করতে বলুন।</li>
-                <li>কোড ম্যাচ হলে খাবার সফলভাবে হস্তান্তর চিহ্নিত হবে।</li>
+                <li>রাইডারের পরিচয় ও ব্যাজ যাচাই করুন।</li>
+                <li>রাইডার আসলে খাবার তুলে দিয়ে এই ৪-ডিজিটের কোডটি প্রদান করুন বা কিউআর কোড স্ক্যান করতে দিন।</li>
+                <li>রাইডার ককপিটে কোড যাচাই করার সাথে সাথে খাবার ট্রানজিটে নথিভুক্ত হবে।</li>
               </ul>
             </div>
           </>
@@ -579,7 +587,10 @@ export function DonationTracking({ donationId }: { donationId: string }) {
 
             {/* Right Sticky Sidebar: QR Handover & Privacy */}
             <aside className="grid gap-5 xl:sticky xl:top-24" aria-label="হ্যান্ডওভার ও ট্র্যাকিং কন্ট্রোল">
-              <MockQrHandover token={claim?.pickupVerificationToken} />
+              <MockQrHandover
+                token={claim?.pickupVerificationToken}
+                code={(claim as unknown as { pickupOtp?: string })?.pickupOtp}
+              />
 
               <Card className="p-5 border-line shadow-sm">
                 <div className="flex items-center gap-3">

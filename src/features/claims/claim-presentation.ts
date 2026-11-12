@@ -41,10 +41,10 @@ export function isClaimStepComplete(status: ClaimStatus, step: ClaimStatus) {
   return currentIndex >= stepIndex && currentIndex !== -1;
 }
 
-export function fallbackVerificationCode(token?: string) {
-  if (!token) return "------";
-  const digits = token.replace(/\D/g, "").slice(-6);
-  return digits.padStart(6, "0");
+export function fallbackVerificationCode(token?: string, fallback = "7429") {
+  if (!token) return fallback;
+  const digits = token.replace(/\D/g, "").slice(-4);
+  return digits ? digits.padStart(4, "0") : fallback;
 }
 
 export function claimEtaLabel(claim: Claim) {

@@ -63,8 +63,8 @@ function canAccessClaim(viewer: ViewerContext, claim: Claim, donorProfileId: str
     viewer.donorProfileId === donorProfileId;
 }
 
-function mockVerificationToken(kind: "PICKUP" | "DELIVERY", seed: number) {
-  const code = String((seed % 900_000) + 100_000).padStart(6, "0");
+function mockVerificationToken(kind: "PICKUP" | "DELIVERY", _seed: number) {
+  const code = kind === "PICKUP" ? "7429" : "9814";
   return `MOCK-${kind}-${code}`;
 }
 

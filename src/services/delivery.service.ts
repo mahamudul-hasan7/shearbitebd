@@ -20,8 +20,8 @@ function cloneReceipt(receipt: DeliveryReceipt) {
 }
 
 function fallbackCode(token?: string) {
-  const digits = token?.replace(/\D/g, "").slice(-6);
-  return digits?.padStart(6, "0") ?? "000000";
+  const digits = token?.replace(/\D/g, "").slice(-4);
+  return digits?.padStart(4, "0") ?? "9814";
 }
 
 export const deliveryService = {
@@ -67,7 +67,7 @@ export const deliveryService = {
           throw new MockApiError({ code: "VALIDATION_ERROR", message: "Confirm the quantity mismatch or report an incident.", status: 422, retryable: false, fieldErrors: { quantityMismatchConfirmed: "Confirm that the received quantity differs from the expected quantity." } });
         }
         if (input.verificationMethod === "FALLBACK_CODE" && input.fallbackCode?.trim() !== fallbackCode(claim.deliveryVerificationToken)) {
-          throw new MockApiError({ code: "VALIDATION_ERROR", message: "The mock fallback code does not match.", status: 422, retryable: false, fieldErrors: { fallbackCode: "Enter the six-digit delivery code shown for this claim." } });
+          throw new MockApiError({ code: "VALIDATION_ERROR", message: "The mock fallback code does not match.", status: 422, retryable: false, fieldErrors: { fallbackCode: "Enter the four-digit delivery code shown for this claim." } });
         }
 
         const now = new Date().toISOString();

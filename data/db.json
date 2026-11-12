@@ -195,7 +195,7 @@
       "quantity": 25,
       "quantityUnit": "MEALS",
       "estimatedMeals": 25,
-      "status": "AVAILABLE",
+      "status": "ASSIGNED",
       "donorName": "rakib mahamud",
       "donorEmail": "rakib@gmail.com",
       "donorId": "rakib@gmail.com",
@@ -208,10 +208,27 @@
       "contactPhone": "+8801700000001",
       "id": "don_mwc9tr5a_fr4g",
       "createdAt": "2026-11-11T15:25:43.726Z",
-      "updatedAt": "2026-11-11T15:25:43.726Z"
+      "updatedAt": "2026-11-12T14:24:11.945Z"
     }
   ],
   "claims": [
+    {
+      "donationId": "don_mwc9tr5a_fr4g",
+      "donationTitle": "Kichuri",
+      "ngoId": "usr_ngo_001",
+      "ngoName": "মাস্তুল ফাউন্ডেশন শেল্টার ও এতিমখানা",
+      "ngoEmail": "ngo@sharebite.demo",
+      "matchScore": 99,
+      "status": "ASSIGNED",
+      "pickupOtp": "7429",
+      "dropoffOtp": "9814",
+      "volunteerId": "VOL-BD-0181",
+      "volunteerName": "Rider Rakib",
+      "id": "clm_mwdn2h7k_dyc2",
+      "claimedAt": "2026-11-12T14:24:11.936Z",
+      "updatedAt": "2026-11-12T14:24:11.940Z",
+      "assignedAt": "2026-11-12T14:24:11.933Z"
+    },
     {
       "donationId": "don_rec-2",
       "donationTitle": "শাহী বিফ তেহারি ও ফিরনি",
@@ -231,6 +248,46 @@
     }
   ],
   "notifications": [
+    {
+      "role": "VOLUNTEER",
+      "type": "DISPATCH",
+      "title": "মিশন বরাদ্দ সফল! 🎯",
+      "message": "আপনি নতুন খাদ্য উদ্ধার মিশন গ্রহণ করেছেন। পিকআপ লোকেশনে পৌঁছান এবং ওটিপি দিয়ে খাবার সংগ্রহ করুন।",
+      "href": "/volunteer/dashboard",
+      "id": "notif_mwdn2h80_on8a",
+      "read": true,
+      "createdAt": "2026-11-12T14:24:11.952Z"
+    },
+    {
+      "role": "NGO",
+      "type": "DISPATCH",
+      "title": "খাদ্য রেসকিউ মিশন শুরু হয়েছে!",
+      "message": "ভলান্টিয়ার রাইডার Rider Rakib খাদ্য সংগ্রহের জন্য রওনা হয়েছেন। ট্রানজিট শেষে শেল্টারে পৌঁছাবেন।",
+      "href": "/ngo/claims",
+      "id": "notif_mwdn2h7x_nno8",
+      "read": false,
+      "createdAt": "2026-11-12T14:24:11.949Z"
+    },
+    {
+      "role": "DONOR",
+      "type": "DISPATCH",
+      "title": "ভলান্টিয়ার রাইডার বরাদ্দ হয়েছে! 🛵",
+      "message": "রাইডার Rider Rakib (01810394869) আপনার উদ্বৃত্ত খাদ্য সংগ্রহ করতে আসছেন।",
+      "href": "/donor/donations",
+      "id": "notif_mwdn2h7v_p8tm",
+      "read": false,
+      "createdAt": "2026-11-12T14:24:11.947Z"
+    },
+    {
+      "title": "রাইডার সেশন সক্রিয় হয়েছে 🛵",
+      "message": "আপনি অন-ডিউটিতে সক্রিয় আছেন। লাইভ জিপিএস ও টেলিমেট্রি চালু হয়েছে।",
+      "href": "/volunteer/dashboard",
+      "type": "VOLUNTEER",
+      "role": "VOLUNTEER",
+      "id": "notif_mwdn25fy_mkjg",
+      "read": true,
+      "createdAt": "2026-11-12T14:23:56.686Z"
+    },
     {
       "title": "রাইডার অফলাইন (ডিউটি বিরতি) ⏸️",
       "message": "আপনার রাইডার শিফট সাময়িকভাবে বন্ধ করা হয়েছে। সুস্থ থাকুন ও বিশ্রাম নিন।",
