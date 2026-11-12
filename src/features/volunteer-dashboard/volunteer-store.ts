@@ -526,12 +526,34 @@ class VolunteerStore {
     this.notify();
   };
 
+  fetchDispatches = async (): Promise<AvailableDispatch[]> => {
+    if (typeof window === "undefined") return this.state.dispatches;
+    try {
+      const res = await fetch("/api/dispatches");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.dispatches) && data.dispatches.length > 0) {
+          this.state = {
+            ...this.state,
+            dispatches: data.dispatches,
+          };
+          this.notify();
+          return data.dispatches;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return this.state.dispatches;
+  };
+
   acceptDispatch = (dispatchId: string): VolunteerMission => {
     const dispatch = this.state.dispatches.find((d: AvailableDispatch) => d.id === dispatchId);
     if (!dispatch) throw new Error("Dispatch not found");
 
     const newMission: VolunteerMission = {
       id: `mission-${dispatch.id}`,
+      claimId: dispatch.claimId,
       donorName: dispatch.donorName,
       donorAddress: dispatch.donorArea,
       donorArea: dispatch.donorArea,
@@ -550,8 +572,8 @@ class VolunteerStore {
       distanceKm: dispatch.distanceKm,
       estimatedTimeMins: Math.round(dispatch.distanceKm * 4),
       currentStage: "assigned",
-      pickupOtp: String(Math.floor(1000 + Math.random() * 9000)),
-      dropoffOtp: String(Math.floor(1000 + Math.random() * 9000)),
+      pickupOtp: dispatch.pickupOtp || "7429",
+      dropoffOtp: dispatch.dropoffOtp || "9814",
       cargoTemp: 65,
       riderSpeed: 30,
       urgency: dispatch.urgency,
@@ -570,16 +592,18 @@ class VolunteerStore {
     };
     this.notify();
 
-    // Persist assignment to real claims table in database
+    // Persist assignment to real database via /api/dispatches POST
     try {
-      fetch("/api/claims", {
-        method: "PATCH",
+      fetch("/api/dispatches", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: newMission.claimId || "clm_mwd36f4j_kr5h",
-          status: "ASSIGNED",
+          dispatchId: dispatch.id,
+          claimId: dispatch.claimId,
+          donationId: dispatch.donationId,
           volunteerId: this.state.profile.id,
           volunteerName: this.state.profile.fullName,
+          volunteerPhone: this.state.profile.phone,
         }),
       }).catch(() => null);
     } catch {
@@ -888,5 +912,6 @@ export function useVolunteerStore() {
     clearActiveMission: volunteerStoreInstance.clearActiveMission,
     loadDemoMission: volunteerStoreInstance.loadDemoMission,
     syncWithUserSession: volunteerStoreInstance.syncWithUserSession,
+    fetchDispatches: volunteerStoreInstance.fetchDispatches,
   };
 }

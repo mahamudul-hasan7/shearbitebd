@@ -232,6 +232,46 @@
   ],
   "notifications": [
     {
+      "title": "রাইডার অফলাইন (ডিউটি বিরতি) ⏸️",
+      "message": "আপনার রাইডার শিফট সাময়িকভাবে বন্ধ করা হয়েছে। সুস্থ থাকুন ও বিশ্রাম নিন।",
+      "href": "/volunteer/dashboard",
+      "type": "SYSTEM",
+      "role": "VOLUNTEER",
+      "id": "notif_mwdfajhf_5i97",
+      "read": true,
+      "createdAt": "2026-11-12T10:46:31.203Z"
+    },
+    {
+      "role": "VOLUNTEER",
+      "type": "DISPATCH",
+      "title": "মিশন বরাদ্দ সফল! 🎯",
+      "message": "আপনি নতুন খাদ্য উদ্ধার মিশন গ্রহণ করেছেন। পিকআপ লোকেশনে পৌঁছান এবং ওটিপি দিয়ে খাবার সংগ্রহ করুন।",
+      "href": "/volunteer/dashboard",
+      "id": "notif_mwdf8r4m_vzdl",
+      "read": true,
+      "createdAt": "2026-11-12T10:45:07.798Z"
+    },
+    {
+      "role": "NGO",
+      "type": "DISPATCH",
+      "title": "খাদ্য রেসকিউ মিশন শুরু হয়েছে!",
+      "message": "ভলান্টিয়ার রাইডার Rider Rakib খাদ্য সংগ্রহের জন্য রওনা হয়েছেন। ট্রানজিট শেষে শেল্টারে পৌঁছাবেন।",
+      "href": "/ngo/claims",
+      "id": "notif_mwdf8r4j_7oyl",
+      "read": false,
+      "createdAt": "2026-11-12T10:45:07.795Z"
+    },
+    {
+      "role": "DONOR",
+      "type": "DISPATCH",
+      "title": "ভলান্টিয়ার রাইডার বরাদ্দ হয়েছে! 🛵",
+      "message": "রাইডার Rider Rakib (01810394869) আপনার উদ্বৃত্ত খাদ্য সংগ্রহ করতে আসছেন।",
+      "href": "/donor/donations",
+      "id": "notif_mwdf8r4e_854y",
+      "read": false,
+      "createdAt": "2026-11-12T10:45:07.790Z"
+    },
+    {
       "userId": "uiu.cafe.492@sharebite.demo",
       "role": "DONOR",
       "type": "SYSTEM",

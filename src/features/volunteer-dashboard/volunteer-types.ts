@@ -10,6 +10,9 @@ export type DutyStatus = "online" | "offline";
 
 export interface AvailableDispatch {
   id: string;
+  claimId?: string;
+  donationId?: string;
+  isRealDb?: boolean;
   donorName: string;
   donorArea: string;
   donorPhone: string;
@@ -27,6 +30,8 @@ export interface AvailableDispatch {
   storageCondition: string;
   dietary: string;
   specialNote?: string;
+  pickupOtp?: string;
+  dropoffOtp?: string;
 }
 
 export interface VolunteerMission {

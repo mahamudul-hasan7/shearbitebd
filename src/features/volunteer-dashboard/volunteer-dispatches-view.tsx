@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Clock,
   Compass,
+  Database,
   Flame,
   Info,
   MapPin,
@@ -17,6 +18,7 @@ import {
   RefreshCw,
   ShieldAlert,
   ShieldCheck,
+  Sparkles,
   Timer,
   Utensils,
   Zap,
@@ -26,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import type { AvailableDispatch } from "@/features/volunteer-dashboard/volunteer-types";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -34,9 +37,24 @@ type FilterUrgency = "all" | "critical" | "high" | "nearby";
 
 export function VolunteerDispatchesView() {
   const router = useRouter();
-  const { dispatches, profile, acceptDispatch } = useVolunteerStore();
+  const { session } = useMockAuth();
+  const { dispatches, profile, acceptDispatch, syncWithUserSession, fetchDispatches } = useVolunteerStore();
   const [filter, setFilter] = useState<FilterUrgency>("all");
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (session?.email) {
+      syncWithUserSession(session.email, session.displayName);
+    }
+    void fetchDispatches();
+  }, [session?.email, session?.displayName, syncWithUserSession, fetchDispatches]);
+
+  async function handleManualRefresh() {
+    setIsRefreshing(true);
+    await fetchDispatches();
+    setTimeout(() => setIsRefreshing(false), 500);
+  }
 
   const filteredDispatches = dispatches.filter((d: AvailableDispatch) => {
     if (filter === "critical") return d.urgency === "critical" || d.expiresInMins <= 45;
@@ -54,7 +72,7 @@ export function VolunteerDispatchesView() {
       } catch {
         setAcceptingId(null);
       }
-    }, 700);
+    }, 600);
   }
 
   return (
@@ -68,6 +86,20 @@ export function VolunteerDispatchesView() {
       avatarInitials={profile.avatarInitials}
       backHref={ROUTES.volunteer.dashboard}
       backLabel="কমান্ড হাবে ফিরুন"
+      actions={
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            leftIcon={<RefreshCw className={cn("size-4", isRefreshing && "animate-spin text-emerald-600")} />}
+            onClick={handleManualRefresh}
+            disabled={isRefreshing}
+            className="font-bold border-line shadow-xs"
+          >
+            {isRefreshing ? "লাইভ রিফ্রেশ হচ্ছে..." : "ফিড রিফ্রেশ করুন"}
+          </Button>
+        </div>
+      }
     >
       <div className="space-y-6">
         {/* Top Radar Status Strip */}
@@ -158,22 +190,34 @@ export function VolunteerDispatchesView() {
               return (
                 <Card
                   key={dispatch.id}
-                  className="flex flex-col justify-between overflow-hidden border-line shadow-sm hover:border-emerald-500/50 hover:shadow-md transition-all duration-200"
+                  className={cn(
+                    "flex flex-col justify-between overflow-hidden border-line shadow-sm hover:border-emerald-500/50 hover:shadow-md transition-all duration-200",
+                    dispatch.isRealDb && "ring-1 ring-emerald-500/30"
+                  )}
                 >
                   <div className="p-6 space-y-4">
                     {/* Header: Urgency badge & distance */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black shadow-xs",
-                          isUrgent
-                            ? "bg-rose-50 text-rose-700 border border-rose-200 animate-pulse"
-                            : "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black shadow-xs",
+                            isUrgent
+                              ? "bg-rose-50 text-rose-700 border border-rose-200 animate-pulse"
+                              : "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                          )}
+                        >
+                          <Timer className="size-3.5" />
+                          নিরাপদ মেয়াদ বাকি: {dispatch.expiresInMins} মিনিট
+                        </span>
+
+                        {dispatch.isRealDb && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-[11px] font-black text-emerald-900 border border-emerald-300">
+                            <Database className="size-3 text-emerald-700" />
+                            লাইভ ডোনেশন ডাটাবেজ
+                          </span>
                         )}
-                      >
-                        <Timer className="size-3.5" />
-                        নিরাপদ মেয়াদ বাকি: {dispatch.expiresInMins} মিনিট
-                      </span>
+                      </div>
 
                       <span className="inline-flex items-center gap-1 rounded-xl bg-canvas px-2.5 py-1 text-xs font-bold text-ink-800 border border-line">
                         <MapPin className="size-3 text-emerald-600" />
@@ -248,7 +292,7 @@ export function VolunteerDispatchesView() {
                       onClick={() => handleAccept(dispatch.id)}
                       className="w-full justify-center font-black py-3 shadow-lg shadow-emerald-700/20 text-sm"
                     >
-                      {isBusy ? "মিশন বরাদ্দ হচ্ছে..." : "মিশন গ্রহণ করুন (Accept Mission 🛵)"}
+                      {isBusy ? "মিশন বরাদ্দ হচ্ছে ও ডাটাবেজে লক হচ্ছে..." : "মিশন গ্রহণ করুন (Accept Mission 🛵)"}
                     </Button>
                   </div>
                 </Card>
