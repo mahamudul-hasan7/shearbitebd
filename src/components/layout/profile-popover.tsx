@@ -187,12 +187,21 @@ export function ProfilePopover({
         />
       </button>
 
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-950/25 backdrop-blur-[2px] sm:hidden animate-in fade-in duration-150"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Top Right Dropdown Popover */}
       {isOpen && (
         <div
           role="dialog"
           aria-label="User Account Settings"
-          className="absolute -right-2 sm:right-0 top-full mt-2.5 z-50 w-[calc(100vw-32px)] sm:w-92 max-w-sm rounded-3xl border border-line bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+          className="fixed inset-x-3.5 top-[64px] sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2.5 z-50 sm:w-92 max-w-sm rounded-3xl border border-line bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Temporary feedback notice */}
           {toastNotice && (

@@ -15,6 +15,7 @@ import {
   Sparkles,
   Truck,
   UsersRound,
+  X,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -238,83 +239,117 @@ export function NotificationPopover({
       >
         <Bell className="size-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex size-4.5 items-center justify-center rounded-full bg-rose-600 text-[10px] font-black text-white shadow-xs ring-2 ring-white">
+          <span className="absolute -top-1 -right-1 flex size-4.5 items-center justify-center rounded-full bg-rose-600 text-[10px] font-black text-white shadow-xs ring-2 ring-white animate-pulse">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
-      {/* Modern Popover Dropdown */}
+      {/* Mobile Backdrop Overlay (Closes dropdown when tapped outside) */}
       {isOpen && (
-        <div className="absolute -right-2 sm:right-0 top-full mt-2.5 w-[calc(100vw-32px)] max-w-[390px] rounded-2xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-400/30 z-50 overflow-hidden text-left animate-in fade-in zoom-in-95 duration-150">
+        <div
+          className="fixed inset-0 z-40 bg-slate-950/25 backdrop-blur-[2px] sm:hidden animate-in fade-in duration-150"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Modern Popover Dropdown - Perfectly centered on mobile (fixed inset-x-3.5) and anchored on desktop */}
+      {isOpen && (
+        <div className="fixed inset-x-3.5 top-[64px] sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2.5 sm:w-[390px] rounded-3xl border border-slate-200/90 bg-white shadow-2xl shadow-slate-900/15 z-50 overflow-hidden text-left animate-in fade-in zoom-in-95 duration-150 max-h-[82vh] flex flex-col">
           {/* Header Bar */}
-          <div className="flex items-center justify-between border-b border-slate-100 p-4 bg-slate-50/70">
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-black text-slate-900 font-heading">
-                লাইভ নোটিফিকেশন
-              </h3>
-              {unreadCount > 0 && (
-                <span className="rounded-full bg-emerald-100/90 px-2.5 py-0.5 text-[11px] font-black text-emerald-800 font-heading">
-                  {unreadCount}টি নতুন
-                </span>
-              )}
+          <div className="flex items-center justify-between border-b border-slate-100 p-4 bg-gradient-to-r from-emerald-50/70 via-slate-50/60 to-white">
+            <div className="flex items-center gap-2.5">
+              <div className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                <Bell className="size-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-black text-slate-900 font-heading">
+                    নোটিফিকেশন
+                  </h3>
+                  {unreadCount > 0 && (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black text-emerald-800">
+                      {unreadCount}টি নতুন
+                    </span>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-400 font-medium">
+                  লাইভ প্ল্যাটফর্ম অ্যালার্ট ও আপডেট
+                </p>
+              </div>
             </div>
 
-            {unreadCount > 0 && (
+            <div className="flex items-center gap-1.5">
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={handleMarkAllAsRead}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 transition-colors bg-white px-2.5 py-1 rounded-lg border border-emerald-200/60 shadow-2xs cursor-pointer disabled:opacity-50"
+                  title="সব নোটিফিকেশন পড়া হয়েছে হিসেবে চিহ্নিত করুন"
+                >
+                  <CheckCheck className="size-3.5" /> সব পঠিত
+                </button>
+              )}
+
+              {/* Close Button on Mobile */}
               <button
                 type="button"
-                onClick={handleMarkAllAsRead}
-                disabled={busy}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 transition-colors font-heading cursor-pointer disabled:opacity-50"
+                onClick={() => setIsOpen(false)}
+                className="grid size-7 place-items-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors sm:hidden cursor-pointer"
+                aria-label="বন্ধ করুন"
               >
-                <CheckCheck className="size-3.5" /> সব পঠিত করুন
+                <X className="size-4" />
               </button>
-            )}
+            </div>
           </div>
 
-          {/* Sub Filter Tabs */}
-          <div className="flex border-b border-slate-100 px-3 pt-2 text-xs font-bold font-heading bg-white">
+          {/* Sub Filter Segmented Pills */}
+          <div className="flex items-center gap-1.5 p-2 bg-slate-50/80 border-b border-slate-100">
             <button
               type="button"
               onClick={() => setActiveTab("ALL")}
               className={cn(
-                "pb-2 px-3 border-b-2 transition-all cursor-pointer",
+                "flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all text-center cursor-pointer select-none",
                 activeTab === "ALL"
-                  ? "border-emerald-600 text-emerald-700 font-black"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  ? "bg-white text-emerald-950 font-black shadow-xs ring-1 ring-slate-200/80"
+                  : "text-slate-600 hover:text-slate-900"
               )}
             >
-              সব ({notifications.length})
+              সকল নোটিফিকেশন ({notifications.length})
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("UNREAD")}
               className={cn(
-                "pb-2 px-3 border-b-2 transition-all cursor-pointer flex items-center gap-1",
+                "flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none",
                 activeTab === "UNREAD"
-                  ? "border-emerald-600 text-emerald-700 font-black"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  ? "bg-white text-emerald-950 font-black shadow-xs ring-1 ring-slate-200/80"
+                  : "text-slate-600 hover:text-slate-900"
               )}
             >
-              অপঠিত
-              {unreadCount > 0 && (
-                <span className="size-1.5 rounded-full bg-emerald-600" />
-              )}
+              <span>অপঠিত</span>
+              {unreadCount > 0 ? (
+                <span className="rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] font-black text-white leading-none">
+                  {unreadCount}
+                </span>
+              ) : null}
             </button>
           </div>
 
           {/* Notification Items List */}
-          <div className="max-h-[380px] overflow-y-auto divide-y divide-slate-100">
+          <div className="flex-1 overflow-y-auto divide-y divide-slate-100 max-h-[380px]">
             {visibleNotifications.length === 0 ? (
-              <div className="py-12 text-center text-slate-400">
+              <div className="py-12 text-center text-slate-400 px-4">
                 <Bell className="mx-auto size-9 stroke-[1.5] text-slate-300" />
-                <p className="mt-2 text-xs font-bold text-slate-600 font-heading">
+                <p className="mt-2 text-xs font-bold text-slate-700 font-heading">
                   কোনো নোটিফিকেশন নেই
                 </p>
-                <p className="text-[11px] text-slate-400 font-normal">
+                <p className="mt-0.5 text-[11px] text-slate-400 font-normal">
                   {activeTab === "UNREAD"
                     ? "আপনার সব নোটিফিকেশন পড়া সম্পন্ন হয়েছে।"
-                    : "নতুন খাদ্য উদ্ধার ও ক্লেইম আপডেট এখানে দেখাবে।"}
+                    : "নতুন খাদ্য উদ্ধার ও ক্লেইম আপডেট আসলে এখানে দেখাবে।"}
                 </p>
               </div>
             ) : (
@@ -329,16 +364,16 @@ export function NotificationPopover({
                     key={item.id}
                     onClick={() => handleItemClick(item)}
                     className={cn(
-                      "group relative flex items-start gap-3 p-3.5 transition-colors cursor-pointer text-left",
+                      "group relative flex items-start gap-3 p-3.5 transition-all cursor-pointer text-left select-none active:scale-[0.99]",
                       isUnread
-                        ? "bg-emerald-50/40 hover:bg-emerald-50/70"
-                        : "bg-white hover:bg-slate-50"
+                        ? "bg-emerald-50/50 hover:bg-emerald-50/80"
+                        : "bg-white hover:bg-slate-50/80"
                     )}
                   >
                     {/* Category Icon */}
                     <span
                       className={cn(
-                        "grid size-9 shrink-0 place-items-center rounded-xl border text-xs shadow-2xs mt-0.5",
+                        "grid size-9 shrink-0 place-items-center rounded-xl border text-xs shadow-2xs mt-0.5 transition-transform group-hover:scale-105",
                         meta.bg,
                         meta.text
                       )}
@@ -347,9 +382,15 @@ export function NotificationPopover({
                     </span>
 
                     {/* Content */}
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">
+                        <span
+                          className={cn(
+                            "rounded-md px-1.5 py-0.5 text-[9px] font-black tracking-wider uppercase font-heading",
+                            meta.bg,
+                            meta.text
+                          )}
+                        >
                           {meta.label}
                         </span>
                         <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
@@ -360,7 +401,7 @@ export function NotificationPopover({
 
                       <h4
                         className={cn(
-                          "mt-0.5 text-xs font-heading leading-snug line-clamp-1",
+                          "text-xs font-heading leading-snug",
                           isUnread
                             ? "font-black text-slate-900 group-hover:text-emerald-700"
                             : "font-bold text-slate-700"
@@ -369,14 +410,14 @@ export function NotificationPopover({
                         {item.title}
                       </h4>
 
-                      <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500 line-clamp-2 font-normal">
+                      <p className="text-[11px] leading-relaxed text-slate-500 line-clamp-2 font-normal">
                         {item.message}
                       </p>
                     </div>
 
                     {/* Unread Indicator */}
                     {isUnread && (
-                      <span className="mt-2 size-2.5 shrink-0 rounded-full bg-emerald-600 shadow-xs ring-2 ring-emerald-100" />
+                      <span className="mt-2.5 size-2 shrink-0 rounded-full bg-emerald-600 shadow-xs ring-2 ring-emerald-200" />
                     )}
                   </div>
                 );
@@ -385,13 +426,14 @@ export function NotificationPopover({
           </div>
 
           {/* Footer: View All Notifications Page */}
-          <div className="border-t border-slate-100 bg-slate-50/70 p-2.5 text-center">
+          <div className="border-t border-slate-100 bg-slate-50/80 p-2.5 text-center">
             <Link
               href={notificationHref}
               onClick={() => setIsOpen(false)}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-white py-2 text-xs font-bold text-slate-800 shadow-2xs border border-slate-200/80 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 transition-all font-heading"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-white py-2.5 text-xs font-bold text-slate-800 shadow-2xs border border-slate-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all font-heading group"
             >
-              সব নোটিফিকেশন দেখুন <ExternalLink className="size-3.5" />
+              <span>সব নোটিফিকেশন ও অডিট হাব দেখুন</span>
+              <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
