@@ -87,6 +87,37 @@
         "availability": "weekends",
         "notes": ""
       }
+    },
+    {
+      "id": "usr_volunteer_mwd3nd0n",
+      "email": "rider@gmail.com",
+      "password": "rider123",
+      "displayName": "Rider Rakib",
+      "role": "VOLUNTEER",
+      "phone": "01810394869",
+      "createdAt": "2026-11-12T05:20:33.959Z",
+      "profile": {
+        "organizationName": "",
+        "address": "Badda",
+        "city": "Dhaka",
+        "donorType": "individual",
+        "registrationNumber": "",
+        "beneficiaryType": "shelter",
+        "transportMethod": "motorcycle",
+        "availability": "flexible",
+        "notes": "Club Service "
+      }
+    },
+    {
+      "id": "usr_donor_mwd40ylc",
+      "email": "autotest_1794461468427@sharebite.demo",
+      "password": "MyPassword123",
+      "displayName": "Lab Test Donor",
+      "role": "DONOR",
+      "createdAt": "2026-11-12T05:31:08.448Z",
+      "profile": {
+        "organizationName": "Lab Test Donor"
+      }
     }
   ],
   "donations": [
@@ -159,7 +190,7 @@
       "type": "VOLUNTEER",
       "role": "VOLUNTEER",
       "id": "notif_mwc9tr9u_zgbd",
-      "read": false,
+      "read": true,
       "createdAt": "2026-11-11T15:25:43.890Z"
     },
     {

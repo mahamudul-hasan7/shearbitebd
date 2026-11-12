@@ -191,23 +191,40 @@ export function RegisterForm() {
       });
 
       const resData = await response.json();
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          email: resData.error || "এই ইমেইল দিয়ে অ্যাকাউন্ট নিবন্ধন করা সম্ভব হয়নি।",
+        }));
+        setCurrentStep(1);
+        setIsSubmitting(false);
+        return;
+      }
+
       if (resData.user?.id) {
         setRegisteredUserId(resData.user.id);
       }
+
+      signIn({
+        email: data.email,
+        displayName: finalDisplayName,
+        role: userRole,
+        remember: true,
+      });
+
+      setCurrentStep(4);
     } catch (err) {
       console.warn("Database sync note:", err);
+      signIn({
+        email: data.email,
+        displayName: finalDisplayName,
+        role: userRole,
+        remember: true,
+      });
+      setCurrentStep(4);
     } finally {
       setIsSubmitting(false);
     }
-
-    signIn({
-      email: data.email,
-      displayName: finalDisplayName,
-      role: userRole,
-      remember: true,
-    });
-
-    setCurrentStep(4);
   }
 
   // Step 4: Celebration Screen
