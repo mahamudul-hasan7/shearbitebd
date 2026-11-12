@@ -407,7 +407,7 @@ export function RegisterForm() {
             ? "আপনার যোগাযোগের মৌলিক তথ্য ও পাসওয়ার্ড প্রদান করে নিবন্ধন শুরু করুন।"
             : currentStep === 2
             ? activeMeta.step2Description
-            : "সিস্টেমে স্বচ্ছতা ও জবাবদিহিতা নিশ্চিত করতে তথ্যসমূহ যাচাই করা হবে।"}
+            : "সিস্টেমে স্বচ্ছতা ও জবাবদিহিতা নিশ্চিত করতে ড্রপডাউন থেকে তথ্যসমূহ নির্বাচন করুন।"}
         </p>
       </div>
 
@@ -446,53 +446,21 @@ export function RegisterForm() {
         {/* STEP 1: Account Setup */}
         {currentStep === 1 && (
           <div className="grid gap-4.5 sm:grid-cols-2">
-            {/* 1-Tap Role Switcher Tabs */}
-            <div className="sm:col-span-2 space-y-1.5">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-600 font-heading">
-                <span>১. ভূমিকা নির্বাচন করুন (Choose Role):</span>
-                <span className="text-emerald-700 font-extrabold">{activeMeta.badge}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80">
-                <button
-                  type="button"
-                  onClick={() => { setRole("donor"); setErrors({}); }}
-                  className={cn(
-                    "flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all touch-manipulation cursor-pointer",
-                    role === "donor"
-                      ? "bg-white text-emerald-800 shadow-sm ring-1 ring-emerald-600/30 font-black"
-                      : "text-slate-600 hover:text-slate-900"
-                  )}
-                >
-                  <Utensils className="size-3.5 text-emerald-600" />
-                  <span>👨‍🍳 ডোনার</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setRole("ngo"); setErrors({}); }}
-                  className={cn(
-                    "flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all touch-manipulation cursor-pointer",
-                    role === "ngo"
-                      ? "bg-white text-teal-800 shadow-sm ring-1 ring-teal-600/30 font-black"
-                      : "text-slate-600 hover:text-slate-900"
-                  )}
-                >
-                  <HeartHandshake className="size-3.5 text-teal-600" />
-                  <span>🏢 এনজিও</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setRole("volunteer"); setErrors({}); }}
-                  className={cn(
-                    "flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition-all touch-manipulation cursor-pointer",
-                    role === "volunteer"
-                      ? "bg-white text-amber-800 shadow-sm ring-1 ring-amber-600/30 font-black"
-                      : "text-slate-600 hover:text-slate-900"
-                  )}
-                >
-                  <Truck className="size-3.5 text-amber-600" />
-                  <span>🚴 ভলান্টিয়ার</span>
-                </button>
-              </div>
+            {/* Role Dropdown */}
+            <div className="sm:col-span-2">
+              <Select
+                label="আপনার ভূমিকা নির্বাচন করুন (Select Role)"
+                name="role"
+                value={role}
+                onChange={(e) => {
+                  setRole(e.target.value as RegistrationRole);
+                  setErrors({});
+                }}
+              >
+                <option value="donor">👨‍🍳 ফুড ডোনার (ক্যাফেটেরিয়া, রেস্তোরাঁ ও মেজবান)</option>
+                <option value="ngo">🏢 এনজিও ও চ্যারিটি (বিদ্যানন্দ, মাস্তুল ও খাদ্য ব্যাংক)</option>
+                <option value="volunteer">🚴 ভলান্টিয়ার স্কোয়াড (রাইডার ও ফিল্ড রেসকিউ টিম)</option>
+              </Select>
             </div>
 
             <Input
@@ -519,33 +487,18 @@ export function RegisterForm() {
               autoComplete="email"
               leftIcon={<Mail className="size-5" />}
             />
-            <div>
-              <Input
-                label="সচল মোবাইল নম্বর"
-                name="phone"
-                type="tel"
-                value={data.phone}
-                onChange={updateField}
-                required
-                error={errors.phone}
-                placeholder="+880 1712-345678 বা 01712345678"
-                autoComplete="tel"
-                leftIcon={<Phone className="size-5" />}
-              />
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] text-slate-400 font-bold">ডেমো নম্বর:</span>
-                {["01712345678", "01812345678", "01912345678"].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => setFieldValue("phone", num)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 font-mono transition-colors cursor-pointer"
-                  >
-                    {num}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <Input
+              label="সচল মোবাইল নম্বর"
+              name="phone"
+              type="tel"
+              value={data.phone}
+              onChange={updateField}
+              required
+              error={errors.phone}
+              placeholder="+880 1712-345678 বা 01712345678"
+              autoComplete="tel"
+              leftIcon={<Phone className="size-5" />}
+            />
 
             <PasswordInput
               label="পাসওয়ার্ড তৈরি করুন"
@@ -567,20 +520,6 @@ export function RegisterForm() {
               autoComplete="new-password"
             />
 
-            {/* Quick Demo Password Setter */}
-            <div className="sm:col-span-2 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => {
-                  setFieldValue("password", "Demo1234");
-                  setFieldValue("confirmPassword", "Demo1234");
-                }}
-                className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-100/70 text-emerald-800 hover:bg-emerald-100 font-bold transition-colors cursor-pointer inline-flex items-center gap-1"
-              >
-                <span>🔑 ডেমো পাসওয়ার্ড বসান (Demo1234)</span>
-              </button>
-            </div>
-
             <div className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-emerald-100 bg-emerald-50/60 p-3 text-xs leading-relaxed text-emerald-900 font-medium">
               <ShieldCheck className="size-4 shrink-0 text-emerald-600 mt-0.5" />
               <span>
@@ -593,133 +532,92 @@ export function RegisterForm() {
         {/* STEP 2: Donor Specific Fields */}
         {currentStep === 2 && role === "donor" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
-            <div className="sm:col-span-2 space-y-1.5">
+            <div className="sm:col-span-2">
               <Select
-                label="দাতার ধরন নির্বাচন করুন"
+                label="দাতার ধরন নির্বাচন করুন (Donor Type)"
                 name="donorType"
                 value={data.donorType}
                 onChange={updateField}
                 required
                 error={errors.donorType}
               >
-                <option value="">-- ধরন নির্বাচন করুন --</option>
+                <option value="">-- দাতার ধরন বেছে নিন --</option>
                 <option value="cafeteria">বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU, AIUB)</option>
                 <option value="restaurant">বাণিজ্যিক রেস্তোরাঁ ও ক্যাফে</option>
                 <option value="event">কমিউনিটি সেন্টার ও বিয়ের মেজবান</option>
                 <option value="bakery">বেকারি ও পেস্ট্রি শপ</option>
                 <option value="individual">ব্যক্তিগত বা পারিবারিক আয়োজন</option>
               </Select>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {[
-                  { id: "cafeteria", label: "🏫 ক্যাফেটেরিয়া" },
-                  { id: "restaurant", label: "🍽️ রেস্তোরাঁ" },
-                  { id: "event", label: "🎪 মেজবান/ইভেন্ট" },
-                  { id: "bakery", label: "🥐 বেকারি" },
-                  { id: "individual", label: "🏠 ব্যক্তিগত" },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setFieldValue("donorType", item.id)}
-                    className={cn(
-                      "px-2.5 py-1 text-xs rounded-lg font-bold border transition-all cursor-pointer touch-manipulation",
-                      data.donorType === item.id
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Input
-                label="প্রতিষ্ঠান বা শাখার নাম (ঐচ্ছিক)"
+            <div className="sm:col-span-2">
+              <Select
+                label="প্রতিষ্ঠান বা শাখার নাম (তালিকা থেকে বেছে নিন)"
                 name="organizationName"
                 value={data.organizationName}
-                onChange={updateField}
-                placeholder="যেমন: UIU সেন্ট্রাল ক্যাফেটেরিয়া / ধানমন্ডি লাউঞ্জ"
-                leftIcon={<Building2 className="size-5" />}
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">জনপ্রিয় প্রতিষ্ঠান প্রিসেট:</span>
-                {[
-                  "UIU সেন্ট্রাল ক্যাফেটেরিয়া",
-                  "BRACU ক্যাফেটেরিয়া",
-                  "সুলতান'স ডাইন",
-                  "কাচ্চি ভাই",
-                  "গ্র্যান্ড নবাব কনভেনশন",
-                ].map((org) => (
-                  <button
-                    key={org}
-                    type="button"
-                    onClick={() => setFieldValue("organizationName", org)}
-                    className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors cursor-pointer"
-                  >
-                    {org}
-                  </button>
-                ))}
-              </div>
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setFieldValue("organizationName", val);
+                  if (val.includes("UIU")) {
+                    setFieldValue("address", "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২");
+                    setFieldValue("donorType", "cafeteria");
+                  } else if (val.includes("BRACU")) {
+                    setFieldValue("address", "মেরুল বাড্ডা, ঢাকা-১২১২");
+                    setFieldValue("donorType", "cafeteria");
+                  } else if (val.includes("ধানমন্ডি")) {
+                    setFieldValue("address", "ধানমন্ডি ২৭, ঢাকা-১২০৯");
+                    setFieldValue("donorType", "restaurant");
+                  } else if (val.includes("মিরপুর")) {
+                    setFieldValue("address", "মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬");
+                    setFieldValue("donorType", "restaurant");
+                  }
+                }}
+              >
+                <option value="">-- প্রতিষ্ঠান নির্বাচন করুন --</option>
+                <option value="UIU সেন্ট্রাল ক্যাফেটেরিয়া">🏫 UIU সেন্ট্রাল ক্যাফেটেরিয়া (ইউনাইটেড সিটি)</option>
+                <option value="BRACU ক্যাফেটেরিয়া">🏫 BRACU ক্যাফেটেরিয়া (মেরুল বাড্ডা)</option>
+                <option value="AIUB সেন্ট্রাল ক্যান্টিন">🏫 AIUB সেন্ট্রাল ক্যান্টিন (কুড়িল)</option>
+                <option value="সুলতান'স ডাইন (ধানমন্ডি শাখা)">🍽️ সুলতান'স ডাইন (ধানমন্ডি শাখা)</option>
+                <option value="কাচ্চি ভাই (মিরপুর শাখা)">🍽️ কাচ্চি ভাই (মিরপুর শাখা)</option>
+                <option value="গ্র্যান্ড নবাব কনভেনশন সেন্টার">🎪 গ্র্যান্ড নবাব কনভেনশন সেন্টার</option>
+                <option value="সেনা কুঞ্জ মেজবান হল">🎪 সেনা কুঞ্জ কনভেনশন সেন্টার</option>
+                <option value="অন্যান্য প্রতিষ্ঠান">✏️ অন্যান্য সাধারণ প্রতিষ্ঠান</option>
+              </Select>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Textarea
-                label="খাদ্য সংগ্রহের প্রাথমিক পিকআপ ঠিকানা"
+            <div className="sm:col-span-2">
+              <Select
+                label="খাদ্য সংগ্রহের প্রাথমিক পিকআপ এলাকা (এলাকা বেছে নিন)"
                 name="address"
                 value={data.address}
                 onChange={updateField}
                 required
                 error={errors.address}
-                placeholder="যেমন: ইউনাইটেড সিটি, মাদানী এভিনিউ, ১০০ ফিট রোড, বাড্ডা, ঢাকা-১২১২"
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">এলাকা প্রিসেট:</span>
-                {[
-                  "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২",
-                  "ধানমন্ডি ২৭, ঢাকা",
-                  "গুলশান ২, ঢাকা-১২১২",
-                  "মিরপুর ১০ গোলচত্বর, ঢাকা",
-                  "উত্তরা সেক্টর ৩, ঢাকা",
-                ].map((loc) => (
-                  <button
-                    key={loc}
-                    type="button"
-                    onClick={() => setFieldValue("address", loc)}
-                    className="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors cursor-pointer"
-                  >
-                    📍 {loc.split(",")[0]}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- পিকআপ এলাকা নির্বাচন করুন --</option>
+                <option value="ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২">📍 মাদানী এভিনিউ, বাড্ডা (UIU ক্যাম্পাস সংলগ্ন)</option>
+                <option value="ধানমন্ডি ২৭, ঢাকা-১২০৯">📍 ধানমন্ডি ২৭ ও সংলগ্ন এলাকা</option>
+                <option value="গুলশান ২, ঢাকা-১২১২">📍 গুলশান ২ ও সার্কেল এরিয়া</option>
+                <option value="মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬">📍 মিরপুর ১০ ও কাজীপাড়া</option>
+                <option value="উত্তরা সেক্টর ৩, ঢাকা-১২৩০">📍 উত্তরা সেক্টর ৩ ও জসিমউদ্দীন মোড়</option>
+                <option value="বনানী ১১ নম্বর রোড, ঢাকা">📍 বনানী ১১ নম্বর ও কামাল আতাতুর্ক</option>
+                <option value="আফতাবনগর প্রধান সড়ক, ঢাকা">📍 আফতাবনগর ও রামপুরা</option>
+              </Select>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Textarea
-                label="অতিরিক্ত হ্যান্ডওভার নির্দেশিকা (ঐচ্ছিক)"
+            <div className="sm:col-span-2">
+              <Select
+                label="উদ্বৃত্ত খাবার প্রস্তুতির সময়সূচি ও নির্দেশিকা (সময় বেছে নিন)"
                 name="notes"
                 value={data.notes}
                 onChange={updateField}
-                placeholder="যেমন: ভবনের সার্ভিস লিফট ব্যবহার করতে হবে বা কিচেন ম্যানেজারকে কল দিতে হবে।"
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">পরামর্শিত নোট:</span>
-                {[
-                  "প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।",
-                  "রাত ১০টায় মেজবানি তাজা খাবার পিকআপ করতে হবে।",
-                  "কিচেন ম্যানেজারের সাথে সরাসরি যোগাযোগ করুন।",
-                ].map((nt) => (
-                  <button
-                    key={nt}
-                    type="button"
-                    onClick={() => setFieldValue("notes", nt)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
-                  >
-                    {nt}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- সময়সূচি বেছে নিন --</option>
+                <option value="প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।">☀️ দুপুর ৩টা (লাঞ্চের উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
+                <option value="রাত ১০টায় মেজবানি ও ডিনারের তাজা খাবার প্রস্তুত থাকে।">🌙 রাত ১০টা (ডিনার ও মেজবানি উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
+                <option value="সন্ধ্যা ৬টা ও মধ্যরাত ১২টায় দিনে ২ বার খাবার হস্তান্তর সম্ভব।">⚡ দিনে ২ বার (বিকাল ও মধ্যরাতে হস্তান্তরের সুযোগ)</option>
+                <option value="জরুরি যে কোনো ইভেন্ট শেষে কল দিয়ে অবগত করা হবে।">📞 জরুরি ইভেন্ট (খাবার তৈরি হলে তাৎক্ষণিক কল দেওয়া হবে)</option>
+              </Select>
             </div>
           </div>
         )}
@@ -727,66 +625,66 @@ export function RegisterForm() {
         {/* STEP 2: NGO Specific Fields */}
         {currentStep === 2 && role === "ngo" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
-            <div className="sm:col-span-2 space-y-1.5">
-              <Input
-                label="সংস্থার প্রাতিষ্ঠানিক নাম"
+            <div className="sm:col-span-2">
+              <Select
+                label="সংস্থার প্রাতিষ্ঠানিক নাম (তালিকা থেকে বেছে নিন)"
                 name="organizationName"
                 value={data.organizationName}
-                onChange={updateField}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setFieldValue("organizationName", val);
+                  if (val.includes("মাস্তুল")) {
+                    setFieldValue("address", "বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২");
+                    setFieldValue("registrationNumber", "NGO-GOV-2026-912");
+                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                    setFieldValue("beneficiaryType", "shelter");
+                    setFieldValue("notes", "দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।");
+                  } else if (val.includes("বিদ্যানন্দ")) {
+                    setFieldValue("address", "বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬");
+                    setFieldValue("registrationNumber", "DSW-DHAKA-4820");
+                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                    setFieldValue("beneficiaryType", "shelter");
+                    setFieldValue("notes", "দৈনিক ৫০০+ প্যাকেট খাবার সংরক্ষণ ও বিতরণ নেটওয়ার্ক সক্রিয় রয়েছে।");
+                  } else if (val.includes("আস-সুন্নাহ")) {
+                    setFieldValue("address", "সেক্টর #৩, উত্তরা, ঢাকা-১২৩০");
+                    setFieldValue("registrationNumber", "BFSA-TEST-REG-09");
+                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                    setFieldValue("beneficiaryType", "community");
+                    setFieldValue("notes", "দৈনিক ৩০০-৫০০ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।");
+                  }
+                }}
                 required
                 error={errors.organizationName}
-                placeholder="যেমন: মাস্তুল ফাউন্ডেশন / বিদ্যানন্দ চ্যারিটি"
-                leftIcon={<Building2 className="size-5" />}
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">পরিচিত সংস্থা:</span>
-                {[
-                  "মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)",
-                  "বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)",
-                  "আস-সুন্নাহ ফাউন্ডেশন",
-                  "এক টাকায় আহার প্রকল্প",
-                ].map((org) => (
-                  <button
-                    key={org}
-                    type="button"
-                    onClick={() => setFieldValue("organizationName", org)}
-                    className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-teal-50 hover:text-teal-800 transition-colors cursor-pointer"
-                  >
-                    {org}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- চ্যারিটি সংস্থা বেছে নিন --</option>
+                <option value="মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)">🏢 মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)</option>
+                <option value="বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)">🏢 বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)</option>
+                <option value="আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)">🏢 আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)</option>
+                <option value="এক টাকায় আহার প্রকল্প (মিরপুর শাখা)">🏢 এক টাকায় আহার প্রকল্প (মিরপুর শাখা)</option>
+                <option value="অন্যান্য সমাজকল্যাণমূলক চ্যারিটি">✏️ অন্যান্য নিবন্ধিত চ্যারিটি বা খাদ্য ব্যাংক</option>
+              </Select>
             </div>
 
             <div>
-              <Input
-                label="সরকারি নিবন্ধন বা লাইসেন্স নম্বর"
+              <Select
+                label="সরকারি নিবন্ধন বা লাইসেন্স নম্বর (নম্বর বেছে নিন)"
                 name="registrationNumber"
                 value={data.registrationNumber}
                 onChange={updateField}
                 required
                 error={errors.registrationNumber}
-                placeholder="যেমন: সমাজসেবা নং- ৪২১০/২০১৯"
-                leftIcon={<FileCheck2 className="size-5" />}
-              />
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] text-slate-400 font-bold">টেস্ট লাইসেন্স:</span>
-                {["NGO-GOV-2026-912", "DSW-DHAKA-4820", "BFSA-TEST-09"].map((lic) => (
-                  <button
-                    key={lic}
-                    type="button"
-                    onClick={() => setFieldValue("registrationNumber", lic)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 font-mono transition-colors cursor-pointer"
-                  >
-                    📜 {lic}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- নিবন্ধন নম্বর নির্বাচন করুন --</option>
+                <option value="NGO-GOV-2026-912">📜 NGO-GOV-2026-912 (সমাজসেবা অধিদপ্তর নিবন্ধিত)</option>
+                <option value="DSW-DHAKA-4820">📜 DSW-DHAKA-4820 (এনজিও বিষয়ক ব্যুরো সনদপ্রাপ্ত)</option>
+                <option value="BFSA-TEST-REG-09">📜 BFSA-TEST-REG-09 (খাদ্য নিরাপত্তা স্ট্যান্ডার্ড সনদ)</option>
+                <option value="RJSC-SOC-5521">📜 RJSC-SOC-5521 (যৌথ মূলধনি কোম্পানি ও সোসাইটি)</option>
+              </Select>
             </div>
 
             <div>
               <Select
-                label="প্রধান সুবিধাভোগী শ্রেণি"
+                label="প্রধান সুবিধাভোগী শ্রেণি (সুবিধাভোগী বেছে নিন)"
                 name="beneficiaryType"
                 value={data.beneficiaryType}
                 onChange={updateField}
@@ -794,117 +692,63 @@ export function RegisterForm() {
                 error={errors.beneficiaryType}
               >
                 <option value="">-- সুবিধাভোগী শ্রেণি বেছে নিন --</option>
-                <option value="shelter">পথশিশু ও বস্তিবাসী পরিবার</option>
-                <option value="community">দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ</option>
-                <option value="elderly">বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি</option>
-                <option value="women">সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন</option>
-                <option value="other">অন্যান্য চ্যারিটি খাদ্য কর্মসূচি</option>
+                <option value="shelter">পথশিশু ও বস্তিবাসী পরিবার (Shelter & Street Children)</option>
+                <option value="community">দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ (Daily Wage Earners)</option>
+                <option value="elderly">বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি (Elderly & Special Needs)</option>
+                <option value="women">সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন (Women & Child Welfare)</option>
+                <option value="other">অন্যান্য চ্যারিটি খাদ্য কর্মসূচি (Other Relief Programs)</option>
               </Select>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {[
-                  { id: "shelter", label: "👶 পথশিশু ও বস্তিবাসী" },
-                  { id: "community", label: "🛠️ দিনমজুর ও শ্রমজীবী" },
-                  { id: "elderly", label: "👵 বৃদ্ধাশ্রম" },
-                  { id: "women", label: "👩 নারী ও শিশু" },
-                ].map((ben) => (
-                  <button
-                    key={ben.id}
-                    type="button"
-                    onClick={() => setFieldValue("beneficiaryType", ben.id)}
-                    className={cn(
-                      "px-2 py-0.5 text-[10px] rounded-md font-bold border transition-all cursor-pointer",
-                      data.beneficiaryType === ben.id
-                        ? "bg-teal-600 text-white border-teal-600"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                    )}
-                  >
-                    {ben.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
             <div className="sm:col-span-2">
-              <Input
-                label="কার্যনির্বাহী শহর ও অঞ্চল"
+              <Select
+                label="কার্যনির্বাহী শহর ও অঞ্চল (শহর বেছে নিন)"
                 name="city"
                 value={data.city}
                 onChange={updateField}
                 required
                 error={errors.city}
-                placeholder="যেমন: ঢাকা (উত্তর ও দক্ষিণ সিটি কর্পোরেশন)"
-                leftIcon={<MapPin className="size-5" />}
-              />
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] text-slate-400 font-bold">শহর:</span>
-                {["ঢাকা", "চট্টগ্রাম", "সিলেট", "রাজশাহী"].map((cty) => (
-                  <button
-                    key={cty}
-                    type="button"
-                    onClick={() => setFieldValue("city", cty)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
-                  >
-                    {cty}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- শহর নির্বাচন করুন --</option>
+                <option value="ঢাকা উত্তর সিটি কর্পোরেশন">ঢাকা উত্তর সিটি কর্পোরেশন (বাড্ডা, উত্তরা, গুলশান, মিরপুর)</option>
+                <option value="ঢাকা দক্ষিণ সিটি কর্পোরেশন">ঢাকা দক্ষিণ সিটি কর্পোরেশন (ধানমন্ডি, মতিঝিল, পুরান ঢাকা)</option>
+                <option value="চট্টগ্রাম সিটি কর্পোরেশন">চট্টগ্রাম সিটি কর্পোরেশন (জিইসি, আগ্রাবাদ, হালিশহর)</option>
+                <option value="সিলেট ও পার্শ্ববর্তী অঞ্চল">সিলেট ও পার্শ্ববর্তী অঞ্চল (জিন্দাবাজার, আম্বরখানা)</option>
+              </Select>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Textarea
-                label="সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা"
+            <div className="sm:col-span-2">
+              <Select
+                label="সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা (ঠিকানা বেছে নিন)"
                 name="address"
                 value={data.address}
                 onChange={updateField}
                 required
                 error={errors.address}
-                placeholder="যেমন: বাড়ি #১৪, রোড #৭, সেক্টর #৩, উত্তরা, ঢাকা"
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">ঠিকানা প্রিসেট:</span>
-                {[
-                  "বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা",
-                  "বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা",
-                  "রোড #৮/এ, ধানমন্ডি, ঢাকা",
-                ].map((loc) => (
-                  <button
-                    key={loc}
-                    type="button"
-                    onClick={() => setFieldValue("address", loc)}
-                    className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
-                  >
-                    📍 {loc.split(",")[0]}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- কার্যালয়ের ঠিকানা নির্বাচন করুন --</option>
+                <option value="বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২">📍 বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২</option>
+                <option value="বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬">📍 বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬</option>
+                <option value="সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০">📍 সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০</option>
+                <option value="বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯">📍 বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯</option>
+              </Select>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Textarea
-                label="খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ"
+            <div className="sm:col-span-2">
+              <Select
+                label="খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ (সক্ষমতা বেছে নিন)"
                 name="notes"
                 value={data.notes}
                 onChange={updateField}
                 required
                 error={errors.notes}
-                placeholder="যেমন: দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।"
-              />
-              <div className="flex flex-wrap items-center gap-1 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">সক্ষমতা প্রিসেট:</span>
-                {[
-                  "দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।",
-                  "দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।",
-                ].map((nt) => (
-                  <button
-                    key={nt}
-                    type="button"
-                    onClick={() => setFieldValue("notes", nt)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer text-left"
-                  >
-                    {nt}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- খাদ্য বণ্টন সক্ষমতা বেছে নিন --</option>
+                <option value="দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ২৫০-৪০০ প্যাকেট (নিজস্ব ভ্যানে বিতরণ সক্ষমতা)</option>
+                <option value="দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।">📦 দৈনিক ৫০০+ প্যাকেট (তাৎক্ষণিক বিতরণকারী স্বেচ্ছাসেবক দল)</option>
+                <option value="দৈনিক ১০০-১৫০ প্যাকেট পথশিশু ও বৃদ্ধাশ্রমে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ১০০-১৫০ প্যাকেট (পথশিশু ও আশ্রমে বিতরণ)</option>
+                <option value="জরুরি রাতে মেজবানি উদ্বৃত্ত খাবার আশ্রমে বিতরণের ব্যবস্থা রয়েছে।">🌙 নাইট স্কোয়াড (জরুরি রাতে উদ্বৃত্ত খাবার আশ্রমে বিতরণ)</option>
+              </Select>
             </div>
           </div>
         )}
@@ -913,34 +757,26 @@ export function RegisterForm() {
         {currentStep === 2 && role === "volunteer" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
             <div>
-              <Input
-                label="আপনার বসবাসরত শহর"
+              <Select
+                label="বসবাসরত শহর ও অঞ্চল (শহর বেছে নিন)"
                 name="city"
                 value={data.city}
                 onChange={updateField}
                 required
                 error={errors.city}
-                placeholder="যেমন: ঢাকা"
-                leftIcon={<MapPin className="size-5" />}
-              />
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] text-slate-400 font-bold">শহর:</span>
-                {["ঢাকা", "চট্টগ্রাম", "সিলেট"].map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setFieldValue("city", c)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- শহর নির্বাচন করুন --</option>
+                <option value="ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)">ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)</option>
+                <option value="ঢাকা (ধানমন্ডি ও জিগাতলা জোন)">ঢাকা (ধানমন্ডি ও জিগাতলা জোন)</option>
+                <option value="ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)">ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)</option>
+                <option value="ঢাকা (উত্তরা ও বিমানবন্দর জোন)">ঢাকা (উত্তরা ও বিমানবন্দর জোন)</option>
+                <option value="চট্টগ্রাম মেট্রো">চট্টগ্রাম মেট্রো</option>
+              </Select>
             </div>
 
             <div>
               <Select
-                label="ব্যবহৃত পরিবহন মাধ্যম"
+                label="ব্যবহৃত পরিবহন মাধ্যম (বাহন বেছে নিন)"
                 name="transport"
                 value={data.transport}
                 onChange={updateField}
@@ -948,38 +784,16 @@ export function RegisterForm() {
                 error={errors.transport}
               >
                 <option value="">-- বাহন নির্বাচন করুন --</option>
-                <option value="bicycle">বাইসাইকেল (শহুরে শর্ট রুটের জন্য উপযুক্ত)</option>
-                <option value="motorcycle">মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)</option>
-                <option value="walking">গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি</option>
-                <option value="car">প্রাইভেট কার / ভ্যান</option>
+                <option value="bicycle">🚴 বাইসাইকেল (শহুরে শর্ট রুট ও দ্রুত ডেলিভারি)</option>
+                <option value="motorcycle">🏍️ মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)</option>
+                <option value="walking">🚶 গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি</option>
+                <option value="car">🚗 প্রাইভেট কার / ভ্যান (বড় ব্যাচ খাবার)</option>
               </Select>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {[
-                  { id: "bicycle", label: "🚴 বাইসাইকেল" },
-                  { id: "motorcycle", label: "🏍️ বাইক" },
-                  { id: "walking", label: "🚶 পায়ে হেঁটে" },
-                  { id: "car", label: "🚗 কার/ভ্যান" },
-                ].map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setFieldValue("transport", t.id)}
-                    className={cn(
-                      "px-2 py-0.5 text-[10px] rounded-md font-bold border transition-all cursor-pointer",
-                      data.transport === t.id
-                        ? "bg-amber-600 text-white border-amber-600"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                    )}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
             <div className="sm:col-span-2">
               <Select
-                label="সক্রিয় থাকার সুবিধাজনক সময়"
+                label="সক্রিয় থাকার সুবিধাজনক সময় (সময় বেছে নিন)"
                 name="availability"
                 value={data.availability}
                 onChange={updateField}
@@ -987,90 +801,43 @@ export function RegisterForm() {
                 error={errors.availability}
               >
                 <option value="">-- সক্রিয় সময় নির্বাচন করুন --</option>
-                <option value="flexible">ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময়)</option>
-                <option value="evenings">সন্ধ্যা ও মধ্যরাত (মেজবানি খাবার উদ্ধার)</option>
-                <option value="weekends">ছুটির দিন (শুক্রবার ও শনিবার)</option>
-                <option value="daytime">দিনের বেলা (ক্যাফেটেরিয়া ও লাঞ্চ)</option>
+                <option value="flexible">⚡ ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময় সক্রিয়)</option>
+                <option value="evenings">🌙 সন্ধ্যা ও মধ্যরাত (মেজবানি ও অনুষ্ঠানের উদ্বৃত্ত খাবার উদ্ধার)</option>
+                <option value="weekends">📅 ছুটির দিন (শুক্রবার ও শনিবার সারাদিন)</option>
+                <option value="daytime">☀️ দিনের বেলা (বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও লাঞ্চ খাবার)</option>
               </Select>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {[
-                  { id: "flexible", label: "⚡ যেকোনো সময়" },
-                  { id: "evenings", label: "🌙 সন্ধ্যা/মধ্যরাত" },
-                  { id: "weekends", label: "📅 ছুটির দিন" },
-                  { id: "daytime", label: "☀️ দিনের বেলা" },
-                ].map((a) => (
-                  <button
-                    key={a.id}
-                    type="button"
-                    onClick={() => setFieldValue("availability", a.id)}
-                    className={cn(
-                      "px-2 py-0.5 text-[10px] rounded-md font-bold border transition-all cursor-pointer",
-                      data.availability === a.id
-                        ? "bg-amber-600 text-white border-amber-600"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                    )}
-                  >
-                    {a.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Input
-                label="পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন"
+            <div className="sm:col-span-2">
+              <Select
+                label="পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন (এলাকা বেছে নিন)"
                 name="address"
                 value={data.address}
                 onChange={updateField}
                 required
                 error={errors.address}
-                placeholder="যেমন: বাড্ডা, রামপুরা, আফতাবনগর ও নতুনবাজার জোন"
-                leftIcon={<MapPin className="size-5" />}
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">এলাকা প্রিসেট:</span>
-                {[
-                  "UIU ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন",
-                  "ধানমন্ডি, শুক্রাবাদ ও জিগাতলা",
-                  "মিরপুর ১ থেকে ১০ নম্বর জোন",
-                  "উত্তরা সেক্টর ১-৯",
-                ].map((area) => (
-                  <button
-                    key={area}
-                    type="button"
-                    onClick={() => setFieldValue("address", area)}
-                    className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors cursor-pointer"
-                  >
-                    📍 {area.split(",")[0]}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- পছন্দের এলাকা নির্বাচন করুন --</option>
+                <option value="ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন">📍 ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন</option>
+                <option value="ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন">📍 ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন</option>
+                <option value="মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন">📍 মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন</option>
+                <option value="উত্তরা সেক্টর ১ থেকে ৯ জোন">📍 উত্তরা সেক্টর ১ থেকে ৯ জোন</option>
+                <option value="খিলগাঁও, মালিবাগ ও রামপুরা জোন">📍 খিলগাঁও, মালিবাগ ও রামপুরা জোন</option>
+              </Select>
             </div>
 
-            <div className="sm:col-span-2 space-y-1.5">
-              <Textarea
-                label="খাদ্য উদ্ধারে আগ্রহের কারণ ও পূর্ব অভিজ্ঞতা (ঐচ্ছিক)"
+            <div className="sm:col-span-2">
+              <Select
+                label="খাদ্য উদ্ধারে আগ্রহ ও অভিজ্ঞতা (অভিজ্ঞতা বেছে নিন)"
                 name="notes"
                 value={data.notes}
                 onChange={updateField}
-                placeholder="কেন ShareBite ভলান্টিয়ার স্কোয়াডে যোগ দিতে চান? সংক্ষেপে লিখুন।"
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-400 font-bold">পরামর্শিত নোট:</span>
-                {[
-                  "উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।",
-                  "ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।",
-                ].map((nt) => (
-                  <button
-                    key={nt}
-                    type="button"
-                    onClick={() => setFieldValue("notes", nt)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer text-left"
-                  >
-                    {nt}
-                  </button>
-                ))}
-              </div>
+              >
+                <option value="">-- অভিজ্ঞতা ও প্রেরণা বেছে নিন --</option>
+                <option value="উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।">উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।</option>
+                <option value="বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।">বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।</option>
+                <option value="জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।">জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।</option>
+              </Select>
             </div>
           </div>
         )}
@@ -1078,46 +845,37 @@ export function RegisterForm() {
         {/* STEP 3: Verification & Legal */}
         {currentStep === 3 && (
           <div className="grid gap-5">
-            {/* Quick 1-Tap Sample Document Attachment Banner */}
-            <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/90 shadow-2xs">
-              <div className="flex items-center gap-2">
-                <span className="grid size-7 place-items-center rounded-xl bg-amber-600 text-white shadow-2xs">
-                  <FileCheck2 className="size-4" />
-                </span>
-                <div>
-                  <p className="text-xs font-bold text-amber-950 font-heading">ফোনে ফাইল বা পিডিএফ নেই?</p>
-                  <p className="text-[11px] text-amber-800">টেস্টিংয়ের জন্য ১-ক্লিকে নমুনা সনদ যুক্ত করে এগিয়ে যান</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setDocumentName(
-                    role === "ngo"
-                      ? "Govt_NGO_Bureau_License_2026.pdf"
-                      : role === "volunteer"
-                      ? "UIU_Student_ID_Verified.jpg"
-                      : "BFSA_Food_Safety_Cert_2026.pdf"
-                  );
+            {/* Verification Document Selector Dropdown */}
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <Select
+                label="যাচাইকরণ সনদের ধরন বেছে নিন (Select Verification Document)"
+                name="documentSelector"
+                value={documentName}
+                onChange={(e) => {
+                  setDocumentName(e.target.value);
                   clearError("document");
                 }}
-                className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all active:scale-95 cursor-pointer touch-manipulation whitespace-nowrap shadow-2xs font-heading"
+                required={role !== "donor"}
+                error={errors.document}
               >
-                📄 ১-ক্লিকে নমুনা সনদ যুক্ত করুন
-              </button>
+                <option value="">-- ড্রপডাউন থেকে সনদ নির্বাচন করুন --</option>
+                <option value="Govt_NGO_Bureau_License_2026.pdf">📄 সরকারি এনজিও বিষয়ক ব্যুরো সনদ (Govt_NGO_Bureau_License_2026.pdf)</option>
+                <option value="BFSA_Food_Safety_Cert_2026.pdf">📄 বাংলাদেশ খাদ্য নিরাপত্তা কর্তৃপক্ষ (BFSA) নিবন্ধন সনদ</option>
+                <option value="UIU_Student_ID_Verified.jpg">📄 জাতীয় পরিচয়পত্র / বিশ্ববিদ্যালয় স্টুডেন্ট আইডি কার্ড (NID_ID_Scan.jpg)</option>
+                <option value="Trade_License_Food_2026.pdf">📄 প্রাতিষ্ঠানিক ট্রেড লাইসেন্স ও ক্যাটারিং পারমিট</option>
+              </Select>
+              {documentName && (
+                <div className="mt-2.5 flex items-center gap-2 text-xs font-bold text-emerald-800">
+                  <BadgeCheck className="size-4 text-emerald-600" />
+                  <span>সনদ সংযুক্ত হয়েছে: {documentName}</span>
+                </div>
+              )}
             </div>
 
             <FileUpload
-              label={
-                role === "ngo"
-                  ? "সংস্থার সরকারি নিবন্ধন কপি বা সনদ (বাধ্যতামূলক)"
-                  : role === "volunteer"
-                  ? "জাতীয় পরিচয়পত্র (NID) বা স্টুডেন্ট আইডি (বাধ্যতামূলক)"
-                  : "বাণিজ্য লাইসেন্স বা প্রাতিষ্ঠানিক পরিচয়পত্র (ঐচ্ছিক)"
-              }
+              label="অথবা আপনার ডিভাইস থেকে নতুন ফাইল আপলোড করুন (ঐচ্ছিক)"
               name="verificationDocument"
               accept=".pdf,.jpg,.jpeg,.png"
-              required={role !== "donor"}
               error={errors.document}
               fileNames={documentName ? [documentName] : []}
               onFilesChange={(files) => {
