@@ -124,9 +124,10 @@ export function useMockAuth() {
   return context;
 }
 
-export function getRoleLandingRoute(role: UserRole) {
-  if (role === UserRole.NGO) return ROUTES.ngo.dashboard;
-  if (role === UserRole.VOLUNTEER) return ROUTES.volunteer.dashboard;
-  if (role === UserRole.ADMIN) return ROUTES.auth.unauthorized;
+export function getRoleLandingRoute(role: UserRole | string) {
+  const norm = String(role || "").toUpperCase();
+  if (norm === "NGO") return ROUTES.ngo.dashboard;
+  if (norm === "VOLUNTEER") return ROUTES.volunteer.dashboard;
+  if (norm === "ADMIN") return ROUTES.auth.unauthorized;
   return ROUTES.donor.dashboard;
 }

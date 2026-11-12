@@ -13,13 +13,14 @@ import { Alert } from "@/components/ui/alert";
 import { DEMO_ACCOUNTS, findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { validateLogin } from "@/features/auth/validation";
+import { UserRole } from "@/lib/constants/roles";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 type LoginErrors = Partial<Record<"email" | "password" | "form", string>>;
 
-function getSafeDestination(requestedPath: string | null, account: DemoAccount) {
-  const landingRoute = getRoleLandingRoute(account.role);
+function getSafeDestination(requestedPath: string | null, account: { role: UserRole | string }) {
+  const landingRoute = getRoleLandingRoute(account.role as UserRole);
   const roleBase = landingRoute.slice(0, landingRoute.lastIndexOf("/") + 1);
   if (requestedPath?.startsWith(roleBase) && !requestedPath.startsWith("//")) return requestedPath;
   return landingRoute;
@@ -37,6 +38,34 @@ export function LoginForm() {
   const [redirecting, setRedirecting] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
 
+  // Prefetch dashboard routes for instant client-side transitions
+  useEffect(() => {
+    try {
+      router.prefetch(ROUTES.donor.dashboard);
+      router.prefetch(ROUTES.ngo.dashboard);
+      router.prefetch(ROUTES.volunteer.dashboard);
+    } catch {
+      // Ignored if prefetch not supported in current environment
+    }
+  }, [router]);
+
+  function navigateToDestination(targetRoute: string) {
+    setRedirecting(true);
+    setLoading(false);
+
+    // Instant client-side router transition
+    router.replace(targetRoute);
+
+    // Fallback in case client routing is delayed
+    const timer = setTimeout(() => {
+      if (typeof window !== "undefined" && window.location.pathname !== targetRoute) {
+        window.location.assign(targetRoute);
+      }
+    }, 900);
+
+    return () => clearTimeout(timer);
+  }
+
   function completeDemoLogin(account: DemoAccount, shouldRemember = remember) {
     signIn({
       email: account.email,
@@ -44,18 +73,8 @@ export function LoginForm() {
       role: account.role,
       remember: shouldRemember,
     });
-    setRedirecting(true);
     const targetRoute = getSafeDestination(searchParams.get("next"), account);
-    // Force direct window navigation to ensure clean session reload on mobile browsers
-    window.location.href = targetRoute;
-  }
-
-  function handleDirectRoleLogin(roleName: "donor" | "ngo" | "volunteer") {
-    const account = DEMO_ACCOUNTS.find((a) => a.role.toLowerCase() === roleName);
-    if (account) {
-      setLoading(true);
-      completeDemoLogin(account);
-    }
+    navigateToDestination(targetRoute);
   }
 
   async function executeLogin(targetEmail: string, targetPass: string) {
@@ -72,35 +91,43 @@ export function LoginForm() {
     setErrors({});
 
     try {
-      // 1. Authenticate with real database API
+      // 1. Authenticate with real database API with a 4-second timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
+        signal: controller.signal,
+      }).catch((err) => {
+        // If fetch aborted or failed
+        return null;
       });
 
-      const resData = await res.json();
+      clearTimeout(timeoutId);
 
-      if (res.ok && resData.user) {
+      let resData: { user?: { email: string; displayName: string; role: UserRole | string }; error?: string } | null = null;
+      if (res) {
+        resData = await res.json().catch(() => null);
+      }
+
+      if (res && res.ok && resData?.user) {
         signIn({
           email: resData.user.email,
           displayName: resData.user.displayName,
-          role: resData.user.role,
+          role: resData.user.role as UserRole,
           remember,
         });
 
-        setRedirecting(true);
         const targetRoute = getSafeDestination(searchParams.get("next"), {
-          email: resData.user.email,
-          displayName: resData.user.displayName,
           role: resData.user.role,
-          password: "",
         });
-        window.location.href = targetRoute;
+        navigateToDestination(targetRoute);
         return;
       }
 
-      // 2. Fallback check for static demo accounts
+      // Fallback check for static demo accounts
       const account = findDemoAccount(cleanEmail);
       if (account) {
         completeDemoLogin(account);
@@ -108,8 +135,10 @@ export function LoginForm() {
       }
 
       setErrors({
-        form: resData.error || "লগইন ব্যর্থ হয়েছে। প্রদত্ত ইমেইল ও পাসওয়ার্ড সঠিক কিনা যাচাই করুন।",
+        form: resData?.error || "লগইন ব্যর্থ হয়েছে। প্রদত্ত ইমেইল ও পাসওয়ার্ড সঠিক কিনা যাচাই করুন।",
       });
+      setLoading(false);
+      setRedirecting(false);
     } catch {
       const account = findDemoAccount(cleanEmail);
       if (account) {
@@ -117,8 +146,8 @@ export function LoginForm() {
         return;
       }
       setErrors({ form: "সার্ভারে যোগাযোগ করা যায়নি। অনুগ্রহ করে আপনার নেটওয়ার্ক সংযোগ যাচাই করুন।" });
-    } finally {
       setLoading(false);
+      setRedirecting(false);
     }
   }
 
@@ -160,43 +189,6 @@ export function LoginForm() {
           description={errors.form}
         />
       )}
-
-      {/* 1-Tap Instant Lab Direct Access (Guaranteed 1-Click Entry) */}
-      <div className="rounded-2xl bg-gradient-to-br from-emerald-950 to-[#022b20] p-3 text-white border border-emerald-700/60 space-y-2 shadow-lg">
-        <div className="flex items-center justify-between text-[11px] font-bold">
-          <span className="text-emerald-300">১-ক্লিক সরাসরি ড্যাশবোর্ডে প্রবেশ:</span>
-          <span className="text-amber-400 font-mono text-[10px]">ইনস্ট্যান্ট</span>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            type="button"
-            onClick={() => handleDirectRoleLogin("donor")}
-            disabled={loading || redirecting}
-            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
-          >
-            <span className="text-base">👨‍🍳</span>
-            <span className="text-xs font-black mt-1 text-white">ডোনার</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleDirectRoleLogin("ngo")}
-            disabled={loading || redirecting}
-            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
-          >
-            <span className="text-base">🏢</span>
-            <span className="text-xs font-black mt-1 text-white">এনজিও</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleDirectRoleLogin("volunteer")}
-            disabled={loading || redirecting}
-            className="flex flex-col items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 py-2.5 px-1 text-center transition-all active:scale-90 border border-white/20 touch-manipulation cursor-pointer shadow-xs"
-          >
-            <span className="text-base">🚴</span>
-            <span className="text-xs font-black mt-1 text-white">ভলান্টিয়ার</span>
-          </button>
-        </div>
-      </div>
 
       {/* Credentials Form */}
       <div className="space-y-4">
@@ -324,12 +316,7 @@ export function LoginForm() {
 
       {/* 4. Submit Button */}
       <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleSubmit();
-        }}
+        type="submit"
         disabled={loading || redirecting}
         className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 text-sm font-black uppercase tracking-wider text-white shadow-md shadow-emerald-700/25 hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none font-heading cursor-pointer touch-manipulation"
       >
