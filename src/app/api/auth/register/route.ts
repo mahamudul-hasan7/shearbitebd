@@ -43,6 +43,20 @@ export async function POST(request: Request) {
       },
     });
 
+    // Create an initial welcome notification in the real database
+    try {
+      db.notifications.create({
+        userId: newUser.email,
+        role: newUser.role,
+        type: "SYSTEM",
+        title: `স্বাগতম! আপনার ${resolvedRole === UserRole.DONOR ? "ফুড ডোনার" : resolvedRole === UserRole.NGO ? "এনজিও" : "ভলান্টিয়ার"} পোর্টাল সক্রিয়`,
+        message: `ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্কে সফলভাবে নিবন্ধিত হয়েছেন। সরাসরি আপনার ড্যাশবোর্ড থেকে কার্যক্রম পরিচালনা করতে পারবেন।`,
+        href: resolvedRole === UserRole.DONOR ? "/donor/dashboard" : resolvedRole === UserRole.NGO ? "/ngo/dashboard" : "/volunteer/dashboard",
+      });
+    } catch {
+      // Ignored if notifications db table has any non-critical issue
+    }
+
     return NextResponse.json({
       success: true,
       message: "অ্যাকাউন্ট সফলভাবে ডেটাবেজে নিবন্ধিত হয়েছে।",

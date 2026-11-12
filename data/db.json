@@ -118,6 +118,53 @@
       "profile": {
         "organizationName": "Lab Test Donor"
       }
+    },
+    {
+      "id": "usr_donor_mwd5wgoi",
+      "email": "test.donor.1794464617589@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "Test Donor UIU",
+      "role": "DONOR",
+      "phone": "01712345678",
+      "createdAt": "2026-11-12T06:23:37.842Z",
+      "profile": {
+        "organizationName": "UIU Cafeteria Test",
+        "address": "Madani Ave, Badda",
+        "donorType": "cafeteria"
+      }
+    },
+    {
+      "id": "usr_ngo_mwd5wgpx",
+      "email": "test.ngo.1794464617589@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "Test NGO Mastul",
+      "role": "NGO",
+      "phone": "01812345678",
+      "createdAt": "2026-11-12T06:23:37.893Z",
+      "profile": {
+        "organizationName": "Mastul Branch Test",
+        "address": "Road 14, Badda",
+        "registrationNumber": "NGO-GOV-2026-912",
+        "beneficiaryType": "shelter",
+        "city": "Dhaka",
+        "notes": "Daily 250 meals"
+      }
+    },
+    {
+      "id": "usr_volunteer_mwd5wgrc",
+      "email": "test.rider.1794464617589@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "Test Rider Hasan",
+      "role": "VOLUNTEER",
+      "phone": "01912345678",
+      "createdAt": "2026-11-12T06:23:37.944Z",
+      "profile": {
+        "organizationName": "Test Rider Hasan",
+        "address": "UIU Campus, Badda",
+        "transportMethod": "bicycle",
+        "availability": "flexible",
+        "city": "Dhaka"
+      }
     }
   ],
   "donations": [
@@ -161,6 +208,39 @@
     }
   ],
   "notifications": [
+    {
+      "userId": "test.rider.1794464617589@sharebite.demo",
+      "role": "VOLUNTEER",
+      "type": "SYSTEM",
+      "title": "স্বাগতম! আপনার ভলান্টিয়ার পোর্টাল সক্রিয়",
+      "message": "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্কে সফলভাবে নিবন্ধিত হয়েছেন। সরাসরি আপনার ড্যাশবোর্ড থেকে কার্যক্রম পরিচালনা করতে পারবেন।",
+      "href": "/volunteer/dashboard",
+      "id": "notif_mwd5wgrg_elj6",
+      "read": false,
+      "createdAt": "2026-11-12T06:23:37.948Z"
+    },
+    {
+      "userId": "test.ngo.1794464617589@sharebite.demo",
+      "role": "NGO",
+      "type": "SYSTEM",
+      "title": "স্বাগতম! আপনার এনজিও পোর্টাল সক্রিয়",
+      "message": "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্কে সফলভাবে নিবন্ধিত হয়েছেন। সরাসরি আপনার ড্যাশবোর্ড থেকে কার্যক্রম পরিচালনা করতে পারবেন।",
+      "href": "/ngo/dashboard",
+      "id": "notif_mwd5wgq2_6ykn",
+      "read": false,
+      "createdAt": "2026-11-12T06:23:37.898Z"
+    },
+    {
+      "userId": "test.donor.1794464617589@sharebite.demo",
+      "role": "DONOR",
+      "type": "SYSTEM",
+      "title": "স্বাগতম! আপনার ফুড ডোনার পোর্টাল সক্রিয়",
+      "message": "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্কে সফলভাবে নিবন্ধিত হয়েছেন। সরাসরি আপনার ড্যাশবোর্ড থেকে কার্যক্রম পরিচালনা করতে পারবেন।",
+      "href": "/donor/dashboard",
+      "id": "notif_mwd5wgom_x7xr",
+      "read": false,
+      "createdAt": "2026-11-12T06:23:37.846Z"
+    },
     {
       "title": "নতুন জরুরি ডেলিভারি মিশন 🚴",
       "message": "Radisson Blu Dhaka Water Garden থেকে 75 প্যাকেট খাবার সংগ্রহের মিশন উপলব্ধ।",
