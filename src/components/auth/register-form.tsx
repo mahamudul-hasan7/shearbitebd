@@ -99,6 +99,7 @@ export function RegisterForm() {
   const [errors, setErrors] = useState<RegistrationErrors>({});
   const [registeredUserId, setRegisteredUserId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customFields, setCustomFields] = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLFormElement>(null);
   const { signIn } = useMockAuth();
 
@@ -113,7 +114,15 @@ export function RegisterForm() {
     clearError(field as RegistrationErrorKey);
   }
 
+  function toggleCustomField(field: string, isCustom: boolean) {
+    setCustomFields((prev) => ({ ...prev, [field]: isCustom }));
+    if (!isCustom) {
+      setFieldValue(field as keyof RegistrationData, "");
+    }
+  }
+
   function applyDemoPreset(targetRole: RegistrationRole = role) {
+    setCustomFields({});
     const randomSuffix = Math.floor(100 + Math.random() * 900);
     if (targetRole === "donor") {
       setData({
@@ -533,91 +542,213 @@ export function RegisterForm() {
         {currentStep === 2 && role === "donor" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Select
-                label="দাতার ধরন নির্বাচন করুন (Donor Type)"
-                name="donorType"
-                value={data.donorType}
-                onChange={updateField}
-                required
-                error={errors.donorType}
-              >
-                <option value="">-- দাতার ধরন বেছে নিন --</option>
-                <option value="cafeteria">বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU, AIUB)</option>
-                <option value="restaurant">বাণিজ্যিক রেস্তোরাঁ ও ক্যাফে</option>
-                <option value="event">কমিউনিটি সেন্টার ও বিয়ের মেজবান</option>
-                <option value="bakery">বেকারি ও পেস্ট্রি শপ</option>
-                <option value="individual">ব্যক্তিগত বা পারিবারিক আয়োজন</option>
-              </Select>
+              {!customFields.donorType ? (
+                <Select
+                  label="দাতার ধরন নির্বাচন করুন (Donor Type)"
+                  name="donorType"
+                  value={data.donorType}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("donorType", true);
+                      setFieldValue("donorType", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.donorType}
+                >
+                  <option value="">-- দাতার ধরন বেছে নিন --</option>
+                  <option value="cafeteria">বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU, AIUB)</option>
+                  <option value="restaurant">বাণিজ্যিক রেস্তোরাঁ ও ক্যাফে</option>
+                  <option value="event">কমিউনিটি সেন্টার ও বিয়ের মেজবান</option>
+                  <option value="bakery">বেকারি ও পেস্ট্রি শপ</option>
+                  <option value="individual">ব্যক্তিগত বা পারিবারিক আয়োজন</option>
+                  <option value="__custom__">✏️ অন্যান্য ধরন (নিজে টাইপ করব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>দাতার ধরন ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("donorType", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="donorType"
+                    value={data.donorType}
+                    onChange={updateField}
+                    placeholder="যেমন: করপোরেট অফিস ক্যান্টিন / ফুড কোর্ট"
+                    autoFocus
+                    required
+                    error={errors.donorType}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="প্রতিষ্ঠান বা শাখার নাম (তালিকা থেকে বেছে নিন)"
-                name="organizationName"
-                value={data.organizationName}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setFieldValue("organizationName", val);
-                  if (val.includes("UIU")) {
-                    setFieldValue("address", "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২");
-                    setFieldValue("donorType", "cafeteria");
-                  } else if (val.includes("BRACU")) {
-                    setFieldValue("address", "মেরুল বাড্ডা, ঢাকা-১২১২");
-                    setFieldValue("donorType", "cafeteria");
-                  } else if (val.includes("ধানমন্ডি")) {
-                    setFieldValue("address", "ধানমন্ডি ২৭, ঢাকা-১২০৯");
-                    setFieldValue("donorType", "restaurant");
-                  } else if (val.includes("মিরপুর")) {
-                    setFieldValue("address", "মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬");
-                    setFieldValue("donorType", "restaurant");
-                  }
-                }}
-              >
-                <option value="">-- প্রতিষ্ঠান নির্বাচন করুন --</option>
-                <option value="UIU সেন্ট্রাল ক্যাফেটেরিয়া">🏫 UIU সেন্ট্রাল ক্যাফেটেরিয়া (ইউনাইটেড সিটি)</option>
-                <option value="BRACU ক্যাফেটেরিয়া">🏫 BRACU ক্যাফেটেরিয়া (মেরুল বাড্ডা)</option>
-                <option value="AIUB সেন্ট্রাল ক্যান্টিন">🏫 AIUB সেন্ট্রাল ক্যান্টিন (কুড়িল)</option>
-                <option value="সুলতান'স ডাইন (ধানমন্ডি শাখা)">🍽️ সুলতান'স ডাইন (ধানমন্ডি শাখা)</option>
-                <option value="কাচ্চি ভাই (মিরপুর শাখা)">🍽️ কাচ্চি ভাই (মিরপুর শাখা)</option>
-                <option value="গ্র্যান্ড নবাব কনভেনশন সেন্টার">🎪 গ্র্যান্ড নবাব কনভেনশন সেন্টার</option>
-                <option value="সেনা কুঞ্জ মেজবান হল">🎪 সেনা কুঞ্জ কনভেনশন সেন্টার</option>
-                <option value="অন্যান্য প্রতিষ্ঠান">✏️ অন্যান্য সাধারণ প্রতিষ্ঠান</option>
-              </Select>
+              {!customFields.organizationName ? (
+                <Select
+                  label="প্রতিষ্ঠান বা শাখার নাম (তালিকা থেকে বেছে নিন)"
+                  name="organizationName"
+                  value={data.organizationName}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("organizationName", true);
+                      setFieldValue("organizationName", "");
+                    } else {
+                      const val = e.target.value;
+                      setFieldValue("organizationName", val);
+                      if (val.includes("UIU")) {
+                        setFieldValue("address", "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২");
+                        setFieldValue("donorType", "cafeteria");
+                      } else if (val.includes("BRACU")) {
+                        setFieldValue("address", "মেরুল বাড্ডা, ঢাকা-১২১২");
+                        setFieldValue("donorType", "cafeteria");
+                      } else if (val.includes("ধানমন্ডি")) {
+                        setFieldValue("address", "ধানমন্ডি ২৭, ঢাকা-১২০৯");
+                        setFieldValue("donorType", "restaurant");
+                      } else if (val.includes("মিরপুর")) {
+                        setFieldValue("address", "মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬");
+                        setFieldValue("donorType", "restaurant");
+                      }
+                    }
+                  }}
+                >
+                  <option value="">-- প্রতিষ্ঠান নির্বাচন করুন --</option>
+                  <option value="UIU সেন্ট্রাল ক্যাফেটেরিয়া">🏫 UIU সেন্ট্রাল ক্যাফেটেরিয়া (ইউনাইটেড সিটি)</option>
+                  <option value="BRACU ক্যাফেটেরিয়া">🏫 BRACU ক্যাফেটেরিয়া (মেরুল বাড্ডা)</option>
+                  <option value="AIUB সেন্ট্রাল ক্যান্টিন">🏫 AIUB সেন্ট্রাল ক্যান্টিন (কুড়িল)</option>
+                  <option value="সুলতান'স ডাইন (ধানমন্ডি শাখা)">🍽️ সুলতান'স ডাইন (ধানমন্ডি শাখা)</option>
+                  <option value="কাচ্চি ভাই (মিরপুর শাখা)">🍽️ কাচ্চি ভাই (মিরপুর শাখা)</option>
+                  <option value="গ্র্যান্ড নবাব কনভেনশন সেন্টার">🎪 গ্র্যান্ড নবাব কনভেনশন সেন্টার</option>
+                  <option value="সেনা কুঞ্জ মেজবান হল">🎪 সেনা কুঞ্জ কনভেনশন সেন্টার</option>
+                  <option value="__custom__">✏️ অন্যান্য প্রতিষ্ঠান (নিজে নাম লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>প্রতিষ্ঠানের নাম ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("organizationName", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="organizationName"
+                    value={data.organizationName}
+                    onChange={updateField}
+                    placeholder="আপনার প্রতিষ্ঠান বা ক্যাফেটেরিয়ার নাম লিখুন"
+                    autoFocus
+                    leftIcon={<Building2 className="size-5" />}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="খাদ্য সংগ্রহের প্রাথমিক পিকআপ এলাকা (এলাকা বেছে নিন)"
-                name="address"
-                value={data.address}
-                onChange={updateField}
-                required
-                error={errors.address}
-              >
-                <option value="">-- পিকআপ এলাকা নির্বাচন করুন --</option>
-                <option value="ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২">📍 মাদানী এভিনিউ, বাড্ডা (UIU ক্যাম্পাস সংলগ্ন)</option>
-                <option value="ধানমন্ডি ২৭, ঢাকা-১২০৯">📍 ধানমন্ডি ২৭ ও সংলগ্ন এলাকা</option>
-                <option value="গুলশান ২, ঢাকা-১২১২">📍 গুলশান ২ ও সার্কেল এরিয়া</option>
-                <option value="মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬">📍 মিরপুর ১০ ও কাজীপাড়া</option>
-                <option value="উত্তরা সেক্টর ৩, ঢাকা-১২৩০">📍 উত্তরা সেক্টর ৩ ও জসিমউদ্দীন মোড়</option>
-                <option value="বনানী ১১ নম্বর রোড, ঢাকা">📍 বনানী ১১ নম্বর ও কামাল আতাতুর্ক</option>
-                <option value="আফতাবনগর প্রধান সড়ক, ঢাকা">📍 আফতাবনগর ও রামপুরা</option>
-              </Select>
+              {!customFields.address ? (
+                <Select
+                  label="খাদ্য সংগ্রহের প্রাথমিক পিকআপ এলাকা (এলাকা বেছে নিন)"
+                  name="address"
+                  value={data.address}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("address", true);
+                      setFieldValue("address", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.address}
+                >
+                  <option value="">-- পিকআপ এলাকা নির্বাচন করুন --</option>
+                  <option value="ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২">📍 মাদানী এভিনিউ, বাড্ডা (UIU ক্যাম্পাস সংলগ্ন)</option>
+                  <option value="ধানমন্ডি ২৭, ঢাকা-১২০৯">📍 ধানমন্ডি ২৭ ও সংলগ্ন এলাকা</option>
+                  <option value="গুলশান ২, ঢাকা-১২১২">📍 গুলশান ২ ও সার্কেল এরিয়া</option>
+                  <option value="মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬">📍 মিরপুর ১০ ও কাজীপাড়া</option>
+                  <option value="উত্তরা সেক্টর ৩, ঢাকা-১২৩০">📍 উত্তরা সেক্টর ৩ ও জসিমউদ্দীন মোড়</option>
+                  <option value="বনানী ১১ নম্বর রোড, ঢাকা">📍 বনানী ১১ নম্বর ও কামাল আতাতুর্ক</option>
+                  <option value="আফতাবনগর প্রধান সড়ক, ঢাকা">📍 আফতাবনগর ও রামপুরা</option>
+                  <option value="__custom__">✏️ অন্যান্য এলাকা (নিজের ঠিকানা লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>পিকআপের বিস্তারিত ঠিকানা ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("address", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="address"
+                    value={data.address}
+                    onChange={updateField}
+                    placeholder="যেমন: বাড়ি #১২, রোড #৪, বনশ্রী, ঢাকা"
+                    autoFocus
+                    required
+                    error={errors.address}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="উদ্বৃত্ত খাবার প্রস্তুতির সময়সূচি ও নির্দেশিকা (সময় বেছে নিন)"
-                name="notes"
-                value={data.notes}
-                onChange={updateField}
-              >
-                <option value="">-- সময়সূচি বেছে নিন --</option>
-                <option value="প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।">☀️ দুপুর ৩টা (লাঞ্চের উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
-                <option value="রাত ১০টায় মেজবানি ও ডিনারের তাজা খাবার প্রস্তুত থাকে।">🌙 রাত ১০টা (ডিনার ও মেজবানি উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
-                <option value="সন্ধ্যা ৬টা ও মধ্যরাত ১২টায় দিনে ২ বার খাবার হস্তান্তর সম্ভব।">⚡ দিনে ২ বার (বিকাল ও মধ্যরাতে হস্তান্তরের সুযোগ)</option>
-                <option value="জরুরি যে কোনো ইভেন্ট শেষে কল দিয়ে অবগত করা হবে।">📞 জরুরি ইভেন্ট (খাবার তৈরি হলে তাৎক্ষণিক কল দেওয়া হবে)</option>
-              </Select>
+              {!customFields.notes ? (
+                <Select
+                  label="উদ্বৃত্ত খাবার প্রস্তুতির সময়সূচি ও নির্দেশিকা (সময় বেছে নিন)"
+                  name="notes"
+                  value={data.notes}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("notes", true);
+                      setFieldValue("notes", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                >
+                  <option value="">-- সময়সূচি বেছে নিন --</option>
+                  <option value="প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।">☀️ দুপুর ৩টা (লাঞ্চের উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
+                  <option value="রাত ১০টায় মেজবানি ও ডিনারের তাজা খাবার প্রস্তুত থাকে।">🌙 রাত ১০টা (ডিনার ও মেজবানি উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
+                  <option value="সন্ধ্যা ৬টা ও মধ্যরাত ১২টায় দিনে ২ বার খাবার হস্তান্তর সম্ভব।">⚡ দিনে ২ বার (বিকাল ও মধ্যরাতে হস্তান্তরের সুযোগ)</option>
+                  <option value="জরুরি যে কোনো ইভেন্ট শেষে কল দিয়ে অবগত করা হবে।">📞 জরুরি ইভেন্ট (খাবার তৈরি হলে তাৎক্ষণিক কল দেওয়া হবে)</option>
+                  <option value="__custom__">✏️ অন্যান্য সময় ও নির্দেশিকা (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>খাদ্য হ্যান্ডওভার নির্দেশিকা ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("notes", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="notes"
+                    value={data.notes}
+                    onChange={updateField}
+                    placeholder="যেমন: কিচেন ম্যানেজারের সাথে সরাসরি যোগাযোগ করুন বা সার্ভিসের সময় লিখুন।"
+                    autoFocus
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -626,129 +757,318 @@ export function RegisterForm() {
         {currentStep === 2 && role === "ngo" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Select
-                label="সংস্থার প্রাতিষ্ঠানিক নাম (তালিকা থেকে বেছে নিন)"
-                name="organizationName"
-                value={data.organizationName}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setFieldValue("organizationName", val);
-                  if (val.includes("মাস্তুল")) {
-                    setFieldValue("address", "বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২");
-                    setFieldValue("registrationNumber", "NGO-GOV-2026-912");
-                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
-                    setFieldValue("beneficiaryType", "shelter");
-                    setFieldValue("notes", "দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।");
-                  } else if (val.includes("বিদ্যানন্দ")) {
-                    setFieldValue("address", "বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬");
-                    setFieldValue("registrationNumber", "DSW-DHAKA-4820");
-                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
-                    setFieldValue("beneficiaryType", "shelter");
-                    setFieldValue("notes", "দৈনিক ৫০০+ প্যাকেট খাবার সংরক্ষণ ও বিতরণ নেটওয়ার্ক সক্রিয় রয়েছে।");
-                  } else if (val.includes("আস-সুন্নাহ")) {
-                    setFieldValue("address", "সেক্টর #৩, উত্তরা, ঢাকা-১২৩০");
-                    setFieldValue("registrationNumber", "BFSA-TEST-REG-09");
-                    setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
-                    setFieldValue("beneficiaryType", "community");
-                    setFieldValue("notes", "দৈনিক ৩০০-৫০০ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।");
-                  }
-                }}
-                required
-                error={errors.organizationName}
-              >
-                <option value="">-- চ্যারিটি সংস্থা বেছে নিন --</option>
-                <option value="মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)">🏢 মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)</option>
-                <option value="বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)">🏢 বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)</option>
-                <option value="আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)">🏢 আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)</option>
-                <option value="এক টাকায় আহার প্রকল্প (মিরপুর শাখা)">🏢 এক টাকায় আহার প্রকল্প (মিরপুর শাখা)</option>
-                <option value="অন্যান্য সমাজকল্যাণমূলক চ্যারিটি">✏️ অন্যান্য নিবন্ধিত চ্যারিটি বা খাদ্য ব্যাংক</option>
-              </Select>
+              {!customFields.organizationName ? (
+                <Select
+                  label="সংস্থার প্রাতিষ্ঠানিক নাম (তালিকা থেকে বেছে নিন)"
+                  name="organizationName"
+                  value={data.organizationName}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "__custom__") {
+                      toggleCustomField("organizationName", true);
+                      setFieldValue("organizationName", "");
+                      return;
+                    }
+                    setFieldValue("organizationName", val);
+                    if (val.includes("মাস্তুল")) {
+                      setFieldValue("address", "বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২");
+                      setFieldValue("registrationNumber", "NGO-GOV-2026-912");
+                      setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                      setFieldValue("beneficiaryType", "shelter");
+                      setFieldValue("notes", "দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।");
+                    } else if (val.includes("বিদ্যানন্দ")) {
+                      setFieldValue("address", "বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬");
+                      setFieldValue("registrationNumber", "DSW-DHAKA-4820");
+                      setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                      setFieldValue("beneficiaryType", "shelter");
+                      setFieldValue("notes", "দৈনিক ৫০০+ প্যাকেট খাবার সংরক্ষণ ও বিতরণ নেটওয়ার্ক সক্রিয় রয়েছে।");
+                    } else if (val.includes("আস-সুন্নাহ")) {
+                      setFieldValue("address", "সেক্টর #৩, উত্তরা, ঢাকা-১২৩০");
+                      setFieldValue("registrationNumber", "BFSA-TEST-REG-09");
+                      setFieldValue("city", "ঢাকা উত্তর সিটি কর্পোরেশন");
+                      setFieldValue("beneficiaryType", "community");
+                      setFieldValue("notes", "দৈনিক ৩০০-৫০০ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।");
+                    }
+                  }}
+                  required
+                  error={errors.organizationName}
+                >
+                  <option value="">-- চ্যারিটি সংস্থা বেছে নিন --</option>
+                  <option value="মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)">🏢 মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)</option>
+                  <option value="বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)">🏢 বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)</option>
+                  <option value="আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)">🏢 আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)</option>
+                  <option value="এক টাকায় আহার প্রকল্প (মিরপুর শাখা)">🏢 এক টাকায় আহার প্রকল্প (মিরপুর শাখা)</option>
+                  <option value="__custom__">✏️ অন্যান্য নিবন্ধিত চ্যারিটি (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>সংস্থার প্রাতিষ্ঠানিক নাম ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("organizationName", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="organizationName"
+                    value={data.organizationName}
+                    onChange={updateField}
+                    placeholder="যেমন: আলোকবর্তিকা মানবকল্যাণ সংস্থা"
+                    autoFocus
+                    required
+                    error={errors.organizationName}
+                    leftIcon={<Building2 className="size-5" />}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <Select
-                label="সরকারি নিবন্ধন বা লাইসেন্স নম্বর (নম্বর বেছে নিন)"
-                name="registrationNumber"
-                value={data.registrationNumber}
-                onChange={updateField}
-                required
-                error={errors.registrationNumber}
-              >
-                <option value="">-- নিবন্ধন নম্বর নির্বাচন করুন --</option>
-                <option value="NGO-GOV-2026-912">📜 NGO-GOV-2026-912 (সমাজসেবা অধিদপ্তর নিবন্ধিত)</option>
-                <option value="DSW-DHAKA-4820">📜 DSW-DHAKA-4820 (এনজিও বিষয়ক ব্যুরো সনদপ্রাপ্ত)</option>
-                <option value="BFSA-TEST-REG-09">📜 BFSA-TEST-REG-09 (খাদ্য নিরাপত্তা স্ট্যান্ডার্ড সনদ)</option>
-                <option value="RJSC-SOC-5521">📜 RJSC-SOC-5521 (যৌথ মূলধনি কোম্পানি ও সোসাইটি)</option>
-              </Select>
+              {!customFields.registrationNumber ? (
+                <Select
+                  label="সরকারি নিবন্ধন বা লাইসেন্স নম্বর (নম্বর বেছে নিন)"
+                  name="registrationNumber"
+                  value={data.registrationNumber}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("registrationNumber", true);
+                      setFieldValue("registrationNumber", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.registrationNumber}
+                >
+                  <option value="">-- নিবন্ধন নম্বর নির্বাচন করুন --</option>
+                  <option value="NGO-GOV-2026-912">📜 NGO-GOV-2026-912 (সমাজসেবা অধিদপ্তর)</option>
+                  <option value="DSW-DHAKA-4820">📜 DSW-DHAKA-4820 (এনজিও বিষয়ক ব্যুরো)</option>
+                  <option value="BFSA-TEST-REG-09">📜 BFSA-TEST-REG-09 (খাদ্য নিরাপত্তা সনদ)</option>
+                  <option value="RJSC-SOC-5521">📜 RJSC-SOC-5521 (যৌথ মূলধনি কোম্পানি)</option>
+                  <option value="__custom__">✏️ অন্যান্য নিবন্ধন নম্বর (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>নিবন্ধন বা লাইসেন্স নম্বর লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("registrationNumber", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="registrationNumber"
+                    value={data.registrationNumber}
+                    onChange={updateField}
+                    placeholder="যেমন: DSW-REG-9876 বা NGO-2026-10"
+                    autoFocus
+                    required
+                    error={errors.registrationNumber}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <Select
-                label="প্রধান সুবিধাভোগী শ্রেণি (সুবিধাভোগী বেছে নিন)"
-                name="beneficiaryType"
-                value={data.beneficiaryType}
-                onChange={updateField}
-                required
-                error={errors.beneficiaryType}
-              >
-                <option value="">-- সুবিধাভোগী শ্রেণি বেছে নিন --</option>
-                <option value="shelter">পথশিশু ও বস্তিবাসী পরিবার (Shelter & Street Children)</option>
-                <option value="community">দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ (Daily Wage Earners)</option>
-                <option value="elderly">বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি (Elderly & Special Needs)</option>
-                <option value="women">সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন (Women & Child Welfare)</option>
-                <option value="other">অন্যান্য চ্যারিটি খাদ্য কর্মসূচি (Other Relief Programs)</option>
-              </Select>
+              {!customFields.beneficiaryType ? (
+                <Select
+                  label="প্রধান সুবিধাভোগী শ্রেণি (সুবিধাভোগী বেছে নিন)"
+                  name="beneficiaryType"
+                  value={data.beneficiaryType}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("beneficiaryType", true);
+                      setFieldValue("beneficiaryType", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.beneficiaryType}
+                >
+                  <option value="">-- সুবিধাভোগী শ্রেণি বেছে নিন --</option>
+                  <option value="shelter">পথশিশু ও বস্তিবাসী পরিবার (Shelter)</option>
+                  <option value="community">দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ (Daily Wage)</option>
+                  <option value="elderly">বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি (Elderly)</option>
+                  <option value="women">সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন (Women & Child)</option>
+                  <option value="__custom__">✏️ অন্যান্য সুবিধাভোগী শ্রেণি (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>সুবিধাভোগী শ্রেণি ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("beneficiaryType", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="beneficiaryType"
+                    value={data.beneficiaryType}
+                    onChange={updateField}
+                    placeholder="যেমন: এতিমখানা ও মাদ্রাসার শিক্ষার্থী"
+                    autoFocus
+                    required
+                    error={errors.beneficiaryType}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="কার্যনির্বাহী শহর ও অঞ্চল (শহর বেছে নিন)"
-                name="city"
-                value={data.city}
-                onChange={updateField}
-                required
-                error={errors.city}
-              >
-                <option value="">-- শহর নির্বাচন করুন --</option>
-                <option value="ঢাকা উত্তর সিটি কর্পোরেশন">ঢাকা উত্তর সিটি কর্পোরেশন (বাড্ডা, উত্তরা, গুলশান, মিরপুর)</option>
-                <option value="ঢাকা দক্ষিণ সিটি কর্পোরেশন">ঢাকা দক্ষিণ সিটি কর্পোরেশন (ধানমন্ডি, মতিঝিল, পুরান ঢাকা)</option>
-                <option value="চট্টগ্রাম সিটি কর্পোরেশন">চট্টগ্রাম সিটি কর্পোরেশন (জিইসি, আগ্রাবাদ, হালিশহর)</option>
-                <option value="সিলেট ও পার্শ্ববর্তী অঞ্চল">সিলেট ও পার্শ্ববর্তী অঞ্চল (জিন্দাবাজার, আম্বরখানা)</option>
-              </Select>
+              {!customFields.city ? (
+                <Select
+                  label="কার্যনির্বাহী শহর ও অঞ্চল (শহর বেছে নিন)"
+                  name="city"
+                  value={data.city}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("city", true);
+                      setFieldValue("city", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.city}
+                >
+                  <option value="">-- শহর নির্বাচন করুন --</option>
+                  <option value="ঢাকা উত্তর সিটি কর্পোরেশন">ঢাকা উত্তর সিটি কর্পোরেশন (বাড্ডা, উত্তরা, গুলশান, মিরপুর)</option>
+                  <option value="ঢাকা দক্ষিণ সিটি কর্পোরেশন">ঢাকা দক্ষিণ সিটি কর্পোরেশন (ধানমন্ডি, মতিঝিল, পুরান ঢাকা)</option>
+                  <option value="চট্টগ্রাম সিটি কর্পোরেশন">চট্টগ্রাম সিটি কর্পোরেশন (জিইসি, আগ্রাবাদ, হালিশহর)</option>
+                  <option value="সিলেট ও পার্শ্ববর্তী অঞ্চল">সিলেট ও পার্শ্ববর্তী অঞ্চল (জিন্দাবাজার, আম্বরখানা)</option>
+                  <option value="__custom__">✏️ অন্যান্য শহর / জেলা (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>শহর বা অঞ্চলের নাম লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("city", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="city"
+                    value={data.city}
+                    onChange={updateField}
+                    placeholder="যেমন: খুলনা সিটি কর্পোরেশন বা রাজশাহী"
+                    autoFocus
+                    required
+                    error={errors.city}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা (ঠিকানা বেছে নিন)"
-                name="address"
-                value={data.address}
-                onChange={updateField}
-                required
-                error={errors.address}
-              >
-                <option value="">-- কার্যালয়ের ঠিকানা নির্বাচন করুন --</option>
-                <option value="বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২">📍 বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২</option>
-                <option value="বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬">📍 বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬</option>
-                <option value="সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০">📍 সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০</option>
-                <option value="বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯">📍 বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯</option>
-              </Select>
+              {!customFields.address ? (
+                <Select
+                  label="সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা (ঠিকানা বেছে নিন)"
+                  name="address"
+                  value={data.address}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("address", true);
+                      setFieldValue("address", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.address}
+                >
+                  <option value="">-- কার্যালয়ের ঠিকানা নির্বাচন করুন --</option>
+                  <option value="বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২">📍 বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২</option>
+                  <option value="বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬">📍 বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬</option>
+                  <option value="সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০">📍 সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০</option>
+                  <option value="বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯">📍 বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯</option>
+                  <option value="__custom__">✏️ অন্যান্য কার্যালয় ঠিকানা (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>সংস্থার কার্যালয়ের বিস্তারিত ঠিকানা লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("address", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="address"
+                    value={data.address}
+                    onChange={updateField}
+                    placeholder="যেমন: বাড়ি #৯, রোড #২, সেক্টর #১০, উত্তরা, ঢাকা"
+                    autoFocus
+                    required
+                    error={errors.address}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ (সক্ষমতা বেছে নিন)"
-                name="notes"
-                value={data.notes}
-                onChange={updateField}
-                required
-                error={errors.notes}
-              >
-                <option value="">-- খাদ্য বণ্টন সক্ষমতা বেছে নিন --</option>
-                <option value="দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ২৫০-৪০০ প্যাকেট (নিজস্ব ভ্যানে বিতরণ সক্ষমতা)</option>
-                <option value="দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।">📦 দৈনিক ৫০০+ প্যাকেট (তাৎক্ষণিক বিতরণকারী স্বেচ্ছাসেবক দল)</option>
-                <option value="দৈনিক ১০০-১৫০ প্যাকেট পথশিশু ও বৃদ্ধাশ্রমে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ১০০-১৫০ প্যাকেট (পথশিশু ও আশ্রমে বিতরণ)</option>
-                <option value="জরুরি রাতে মেজবানি উদ্বৃত্ত খাবার আশ্রমে বিতরণের ব্যবস্থা রয়েছে।">🌙 নাইট স্কোয়াড (জরুরি রাতে উদ্বৃত্ত খাবার আশ্রমে বিতরণ)</option>
-              </Select>
+              {!customFields.notes ? (
+                <Select
+                  label="খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ (সক্ষমতা বেছে নিন)"
+                  name="notes"
+                  value={data.notes}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("notes", true);
+                      setFieldValue("notes", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.notes}
+                >
+                  <option value="">-- খাদ্য বণ্টন সক্ষমতা বেছে নিন --</option>
+                  <option value="দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ২৫০-৪০০ প্যাকেট (নিজস্ব ভ্যানে বিতরণ সক্ষমতা)</option>
+                  <option value="দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।">📦 দৈনিক ৫০০+ প্যাকেট (তাৎক্ষণিক বিতরণকারী স্বেচ্ছাসেবক দল)</option>
+                  <option value="দৈনিক ১০০-১৫০ প্যাকেট পথশিশু ও বৃদ্ধাশ্রমে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ১০০-১৫০ প্যাকেট (পথশিশু ও আশ্রমে বিতরণ)</option>
+                  <option value="জরুরি রাতে মেজবানি উদ্বৃত্ত খাবার আশ্রমে বিতরণের ব্যবস্থা রয়েছে।">🌙 নাইট স্কোয়াড (জরুরি রাতে উদ্বৃত্ত খাবার আশ্রমে বিতরণ)</option>
+                  <option value="__custom__">✏️ অন্যান্য সক্ষমতা বিবরণ (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>খাদ্য বণ্টন সক্ষমতার বিবরণ লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("notes", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="notes"
+                    value={data.notes}
+                    onChange={updateField}
+                    placeholder="যেমন: আমাদের খাদ্য সংরক্ষণ ফ্রিজার রয়েছে এবং নিজস্ব পরিবহনে ২০০+ প্যাকেট খাবার বিতরণ করতে পারব।"
+                    autoFocus
+                    required
+                    error={errors.notes}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -757,87 +1077,245 @@ export function RegisterForm() {
         {currentStep === 2 && role === "volunteer" && (
           <div className="grid gap-4.5 sm:grid-cols-2">
             <div>
-              <Select
-                label="বসবাসরত শহর ও অঞ্চল (শহর বেছে নিন)"
-                name="city"
-                value={data.city}
-                onChange={updateField}
-                required
-                error={errors.city}
-              >
-                <option value="">-- শহর নির্বাচন করুন --</option>
-                <option value="ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)">ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)</option>
-                <option value="ঢাকা (ধানমন্ডি ও জিগাতলা জোন)">ঢাকা (ধানমন্ডি ও জিগাতলা জোন)</option>
-                <option value="ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)">ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)</option>
-                <option value="ঢাকা (উত্তরা ও বিমানবন্দর জোন)">ঢাকা (উত্তরা ও বিমানবন্দর জোন)</option>
-                <option value="চট্টগ্রাম মেট্রো">চট্টগ্রাম মেট্রো</option>
-              </Select>
+              {!customFields.city ? (
+                <Select
+                  label="বসবাসরত শহর ও অঞ্চল (শহর বেছে নিন)"
+                  name="city"
+                  value={data.city}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("city", true);
+                      setFieldValue("city", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.city}
+                >
+                  <option value="">-- শহর নির্বাচন করুন --</option>
+                  <option value="ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)">ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)</option>
+                  <option value="ঢাকা (ধানমন্ডি ও জিগাতলা জোন)">ঢাকা (ধানমন্ডি ও জিগাতলা জোন)</option>
+                  <option value="ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)">ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)</option>
+                  <option value="ঢাকা (উত্তরা ও বিমানবন্দর জোন)">ঢাকা (উত্তরা ও বিমানবন্দর জোন)</option>
+                  <option value="চট্টগ্রাম মেট্রো">চট্টগ্রাম মেট্রো</option>
+                  <option value="__custom__">✏️ অন্যান্য শহর / জোন (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>শহর বা জোনের নাম ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("city", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="city"
+                    value={data.city}
+                    onChange={updateField}
+                    placeholder="যেমন: সিলেট সদর বা রাজশাহী"
+                    autoFocus
+                    required
+                    error={errors.city}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
-              <Select
-                label="ব্যবহৃত পরিবহন মাধ্যম (বাহন বেছে নিন)"
-                name="transport"
-                value={data.transport}
-                onChange={updateField}
-                required
-                error={errors.transport}
-              >
-                <option value="">-- বাহন নির্বাচন করুন --</option>
-                <option value="bicycle">🚴 বাইসাইকেল (শহুরে শর্ট রুট ও দ্রুত ডেলিভারি)</option>
-                <option value="motorcycle">🏍️ মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)</option>
-                <option value="walking">🚶 গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি</option>
-                <option value="car">🚗 প্রাইভেট কার / ভ্যান (বড় ব্যাচ খাবার)</option>
-              </Select>
+              {!customFields.transport ? (
+                <Select
+                  label="ব্যবহৃত পরিবহন মাধ্যম (বাহন বেছে নিন)"
+                  name="transport"
+                  value={data.transport}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("transport", true);
+                      setFieldValue("transport", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.transport}
+                >
+                  <option value="">-- বাহন নির্বাচন করুন --</option>
+                  <option value="bicycle">🚴 বাইসাইকেল (শহুরে শর্ট রুট ও দ্রুত ডেলিভারি)</option>
+                  <option value="motorcycle">🏍️ মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)</option>
+                  <option value="walking">🚶 গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি</option>
+                  <option value="car">🚗 প্রাইভেট কার / ভ্যান (বড় ব্যাচ খাবার)</option>
+                  <option value="__custom__">✏️ অন্যান্য বাহন (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>পরিবহন মাধ্যম ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("transport", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="transport"
+                    value={data.transport}
+                    onChange={updateField}
+                    placeholder="যেমন: ইলেকট্রিক স্কুটার / সিএনজি"
+                    autoFocus
+                    required
+                    error={errors.transport}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="সক্রিয় থাকার সুবিধাজনক সময় (সময় বেছে নিন)"
-                name="availability"
-                value={data.availability}
-                onChange={updateField}
-                required
-                error={errors.availability}
-              >
-                <option value="">-- সক্রিয় সময় নির্বাচন করুন --</option>
-                <option value="flexible">⚡ ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময় সক্রিয়)</option>
-                <option value="evenings">🌙 সন্ধ্যা ও মধ্যরাত (মেজবানি ও অনুষ্ঠানের উদ্বৃত্ত খাবার উদ্ধার)</option>
-                <option value="weekends">📅 ছুটির দিন (শুক্রবার ও শনিবার সারাদিন)</option>
-                <option value="daytime">☀️ দিনের বেলা (বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও লাঞ্চ খাবার)</option>
-              </Select>
+              {!customFields.availability ? (
+                <Select
+                  label="সক্রিয় থাকার সুবিধাজনক সময় (সময় বেছে নিন)"
+                  name="availability"
+                  value={data.availability}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("availability", true);
+                      setFieldValue("availability", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.availability}
+                >
+                  <option value="">-- সক্রিয় সময় নির্বাচন করুন --</option>
+                  <option value="flexible">⚡ ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময় সক্রিয়)</option>
+                  <option value="evenings">🌙 সন্ধ্যা ও মধ্যরাত (মেজবানি ও অনুষ্ঠানের উদ্বৃত্ত খাবার উদ্ধার)</option>
+                  <option value="weekends">📅 ছুটির দিন (শুক্রবার ও শনিবার সারাদিন)</option>
+                  <option value="daytime">☀️ দিনের বেলা (বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও লাঞ্চ খাবার)</option>
+                  <option value="__custom__">✏️ অন্যান্য সুবিধাজনক সময় (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>সক্রিয় থাকার সময় ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("availability", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="availability"
+                    value={data.availability}
+                    onChange={updateField}
+                    placeholder="যেমন: প্রতিদিন রাত ৯টা থেকে ১১টা"
+                    autoFocus
+                    required
+                    error={errors.availability}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন (এলাকা বেছে নিন)"
-                name="address"
-                value={data.address}
-                onChange={updateField}
-                required
-                error={errors.address}
-              >
-                <option value="">-- পছন্দের এলাকা নির্বাচন করুন --</option>
-                <option value="ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন">📍 ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন</option>
-                <option value="ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন">📍 ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন</option>
-                <option value="মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন">📍 মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন</option>
-                <option value="উত্তরা সেক্টর ১ থেকে ৯ জোন">📍 উত্তরা সেক্টর ১ থেকে ৯ জোন</option>
-                <option value="খিলগাঁও, মালিবাগ ও রামপুরা জোন">📍 খিলগাঁও, মালিবাগ ও রামপুরা জোন</option>
-              </Select>
+              {!customFields.address ? (
+                <Select
+                  label="পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন (এলাকা বেছে নিন)"
+                  name="address"
+                  value={data.address}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("address", true);
+                      setFieldValue("address", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                  required
+                  error={errors.address}
+                >
+                  <option value="">-- পছন্দের এলাকা নির্বাচন করুন --</option>
+                  <option value="ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন">📍 ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন</option>
+                  <option value="ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন">📍 ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন</option>
+                  <option value="মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন">📍 মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন</option>
+                  <option value="উত্তরা সেক্টর ১ থেকে ৯ জোন">📍 উত্তরা সেক্টর ১ থেকে ৯ জোন</option>
+                  <option value="খিলগাঁও, মালিবাগ ও রামপুরা জোন">📍 খিলগাঁও, মালিবাগ ও রামপুরা জোন</option>
+                  <option value="__custom__">✏️ অন্যান্য নির্দিষ্ট এলাকা (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>পছন্দের এলাকা ম্যানুয়ালি লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("address", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="address"
+                    value={data.address}
+                    onChange={updateField}
+                    placeholder="যেমন: বনশ্রী, রামপুরা ও হাতিরঝিল সংলগ্ন এলাকা"
+                    autoFocus
+                    required
+                    error={errors.address}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-2">
-              <Select
-                label="খাদ্য উদ্ধারে আগ্রহ ও অভিজ্ঞতা (অভিজ্ঞতা বেছে নিন)"
-                name="notes"
-                value={data.notes}
-                onChange={updateField}
-              >
-                <option value="">-- অভিজ্ঞতা ও প্রেরণা বেছে নিন --</option>
-                <option value="উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।">উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।</option>
-                <option value="বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।">বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।</option>
-                <option value="জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।">জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।</option>
-              </Select>
+              {!customFields.notes ? (
+                <Select
+                  label="খাদ্য উদ্ধারে আগ্রহ ও অভিজ্ঞতা (অভিজ্ঞতা বেছে নিন)"
+                  name="notes"
+                  value={data.notes}
+                  onChange={(e) => {
+                    if (e.target.value === "__custom__") {
+                      toggleCustomField("notes", true);
+                      setFieldValue("notes", "");
+                    } else {
+                      updateField(e);
+                    }
+                  }}
+                >
+                  <option value="">-- অভিজ্ঞতা ও প্রেরণা বেছে নিন --</option>
+                  <option value="উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।">উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।</option>
+                  <option value="বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।">বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।</option>
+                  <option value="জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।">জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।</option>
+                  <option value="__custom__">✏️ অন্যান্য প্রেরণা বা অভিজ্ঞতা (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>আপনার অভিজ্ঞতা ও প্রেরণা সংক্ষেপে লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("notes", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Textarea
+                    name="notes"
+                    value={data.notes}
+                    onChange={updateField}
+                    placeholder="যেমন: স্কাউটিং এবং রেড ক্রিসেন্টে ২ বছরের সেবামূলক কাজের অভিজ্ঞতা রয়েছে।"
+                    autoFocus
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -847,23 +1325,58 @@ export function RegisterForm() {
           <div className="grid gap-5">
             {/* Verification Document Selector Dropdown */}
             <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4">
-              <Select
-                label="যাচাইকরণ সনদের ধরন বেছে নিন (Select Verification Document)"
-                name="documentSelector"
-                value={documentName}
-                onChange={(e) => {
-                  setDocumentName(e.target.value);
-                  clearError("document");
-                }}
-                required={role !== "donor"}
-                error={errors.document}
-              >
-                <option value="">-- ড্রপডাউন থেকে সনদ নির্বাচন করুন --</option>
-                <option value="Govt_NGO_Bureau_License_2026.pdf">📄 সরকারি এনজিও বিষয়ক ব্যুরো সনদ (Govt_NGO_Bureau_License_2026.pdf)</option>
-                <option value="BFSA_Food_Safety_Cert_2026.pdf">📄 বাংলাদেশ খাদ্য নিরাপত্তা কর্তৃপক্ষ (BFSA) নিবন্ধন সনদ</option>
-                <option value="UIU_Student_ID_Verified.jpg">📄 জাতীয় পরিচয়পত্র / বিশ্ববিদ্যালয় স্টুডেন্ট আইডি কার্ড (NID_ID_Scan.jpg)</option>
-                <option value="Trade_License_Food_2026.pdf">📄 প্রাতিষ্ঠানিক ট্রেড লাইসেন্স ও ক্যাটারিং পারমিট</option>
-              </Select>
+              {!customFields.documentSelector ? (
+                <Select
+                  label="যাচাইকরণ সনদের ধরন বেছে নিন (Select Verification Document)"
+                  name="documentSelector"
+                  value={documentName}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "__custom__") {
+                      toggleCustomField("documentSelector", true);
+                      setDocumentName("");
+                      clearError("document");
+                    } else {
+                      setDocumentName(val);
+                      clearError("document");
+                    }
+                  }}
+                  required={role !== "donor"}
+                  error={errors.document}
+                >
+                  <option value="">-- ড্রপডাউন থেকে সনদ নির্বাচন করুন --</option>
+                  <option value="Govt_NGO_Bureau_License_2026.pdf">📄 সরকারি এনজিও বিষয়ক ব্যুরো সনদ (Govt_NGO_Bureau_License_2026.pdf)</option>
+                  <option value="BFSA_Food_Safety_Cert_2026.pdf">📄 বাংলাদেশ খাদ্য নিরাপত্তা কর্তৃপক্ষ (BFSA) নিবন্ধন সনদ</option>
+                  <option value="UIU_Student_ID_Verified.jpg">📄 জাতীয় পরিচয়পত্র / বিশ্ববিদ্যালয় স্টুডেন্ট আইডি কার্ড (NID_ID_Scan.jpg)</option>
+                  <option value="Trade_License_Food_2026.pdf">📄 প্রাতিষ্ঠানিক ট্রেড লাইসেন্স ও ক্যাটারিং পারমিট</option>
+                  <option value="__custom__">✏️ অন্য কোনো সনদের নাম (নিজে লিখব)</option>
+                </Select>
+              ) : (
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                    <span>সনদ বা ডকুমেন্টের নাম লিখুন:</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCustomField("documentSelector", false)}
+                      className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
+                    >
+                      ← ড্রপডাউন তালিকা দেখুন
+                    </button>
+                  </div>
+                  <Input
+                    name="documentSelector"
+                    value={documentName}
+                    onChange={(e) => {
+                      setDocumentName(e.target.value);
+                      clearError("document");
+                    }}
+                    placeholder="যেমন: Bangladesh_Red_Crescent_ID.pdf বা NID_Card_Copy.pdf"
+                    autoFocus
+                    required={role !== "donor"}
+                    error={errors.document}
+                  />
+                </div>
+              )}
               {documentName && (
                 <div className="mt-2.5 flex items-center gap-2 text-xs font-bold text-emerald-800">
                   <BadgeCheck className="size-4 text-emerald-600" />

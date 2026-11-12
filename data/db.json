@@ -165,6 +165,26 @@
         "availability": "flexible",
         "city": "Dhaka"
       }
+    },
+    {
+      "id": "usr_donor_mwd6mv29",
+      "email": "uiu.cafe.492@sharebite.demo",
+      "password": "Demo1234",
+      "displayName": "তানভীর আহমেদ (ক্যাফেটেরিয়া ইনচার্জ)",
+      "role": "DONOR",
+      "phone": "01712345678",
+      "createdAt": "2026-11-12T06:44:09.538Z",
+      "profile": {
+        "organizationName": "UIU সেন্ট্রাল ক্যাফেটেরিয়া",
+        "address": "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২",
+        "city": "ঢাকা",
+        "donorType": "cafeteria",
+        "registrationNumber": "BFSA-2026-UIU-09",
+        "beneficiaryType": "shelter",
+        "transportMethod": "motorcycle",
+        "availability": "flexible",
+        "notes": "প্রতিদিন দুপুর ৩টা এবং রাত ৯টায় ফ্রেশ উদ্বৃত্ত খাবার প্রস্তুত থাকে।"
+      }
     }
   ],
   "donations": [
@@ -208,6 +228,17 @@
     }
   ],
   "notifications": [
+    {
+      "userId": "uiu.cafe.492@sharebite.demo",
+      "role": "DONOR",
+      "type": "SYSTEM",
+      "title": "স্বাগতম! আপনার ফুড ডোনার পোর্টাল সক্রিয়",
+      "message": "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্কে সফলভাবে নিবন্ধিত হয়েছেন। সরাসরি আপনার ড্যাশবোর্ড থেকে কার্যক্রম পরিচালনা করতে পারবেন।",
+      "href": "/donor/dashboard",
+      "id": "notif_mwd6mv2g_e4wh",
+      "read": false,
+      "createdAt": "2026-11-12T06:44:09.545Z"
+    },
     {
       "userId": "test.rider.1794464617589@sharebite.demo",
       "role": "VOLUNTEER",
