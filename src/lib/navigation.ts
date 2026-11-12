@@ -63,6 +63,7 @@ export const volunteerDesktopNavigation: DesktopNavItem[] = [
   { label: "লাইভ মিশন", href: ROUTES.volunteer.mission("mission-uiu-mastul"), icon: Bike, category: "operations", badge: "লাইভ" },
   { label: "উন্মুক্ত ডিসপ্যাচ", href: ROUTES.volunteer.dispatches, icon: Navigation, category: "operations", badge: "৪টি নতুন" },
   { label: "মিশন হিস্ট্রি", href: ROUTES.volunteer.history, icon: History, category: "operations", badge: "৪৮টি" },
+  { label: "নোটিফিকেশন ও অ্যালার্ট", href: ROUTES.volunteer.notifications, icon: Bell, category: "system" },
   { label: "ভলান্টিয়ার আইডি কার্ড", href: ROUTES.volunteer.idCard, icon: ShieldCheck, category: "system" },
 ];
 

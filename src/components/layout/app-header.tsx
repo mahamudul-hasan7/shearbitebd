@@ -282,7 +282,7 @@ export function AppHeader({
               (role === "donor"
                 ? ROUTES.donor.notifications
                 : role === "volunteer"
-                ? ROUTES.volunteer.dashboard
+                ? ROUTES.volunteer.notifications
                 : ROUTES.ngo.notifications)
             }
           />

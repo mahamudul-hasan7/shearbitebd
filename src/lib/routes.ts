@@ -59,6 +59,7 @@ export const ROUTES = {
     dashboard: "/volunteer/dashboard",
     dispatches: "/volunteer/dispatches",
     history: "/volunteer/history",
+    notifications: "/volunteer/notifications",
     mission: (missionId: string) => `/volunteer/missions/${missionId}`,
     idCard: "/volunteer/id-card",
   },
