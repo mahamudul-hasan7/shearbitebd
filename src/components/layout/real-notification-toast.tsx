@@ -1,8 +1,12 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
+import { notificationMessage } from "@/lib/i18n/notification-copy";
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import { Bell, ExternalLink, X, Zap } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
+import { NotificationIcon } from "@/components/notifications/notification-item";
+import styles from "@/components/notifications/notifications.module.css";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import {
   fetchRealNotifications,
@@ -44,127 +48,72 @@ function playNotificationChime() {
 }
 
 export function RealNotificationToast() {
+  const tx = useUiText();
   const { session } = useMockAuth();
-  const [toast, setToast] = useState<RealNotification | null>(null);
+  const owner = session?.id;
+  const [snapshot, setSnapshot] = useState<{ owner: string; item: RealNotification }>();
+  const [closingId, setClosingId] = useState<string>();
   const seenIdsRef = useRef<Set<string>>(new Set());
-  const isInitialLoadRef = useRef(true);
-  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const toast = snapshot?.owner === owner ? snapshot?.item : undefined;
 
-  const showToast = useCallback((notif: RealNotification) => {
-    if (seenIdsRef.current.has(notif.id)) return;
-    seenIdsRef.current.add(notif.id);
-
-    setToast(notif);
-    playNotificationChime();
-
-    if (dismissTimerRef.current) {
-      clearTimeout(dismissTimerRef.current);
-    }
-    dismissTimerRef.current = setTimeout(() => {
-      setToast(null);
-    }, 7000);
+  const dismiss = useCallback((id: string, sessionId: string) => {
+    clearTimeout(dismissTimerRef.current); clearTimeout(exitTimerRef.current);
+    const remove = () => setSnapshot(previous => previous?.owner === sessionId && previous.item.id === id ? undefined : previous);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { remove(); return; }
+    setClosingId(id);
+    exitTimerRef.current = setTimeout(remove, 160);
   }, []);
+  const showToast = useCallback((item: RealNotification, sessionId: string) => {
+    if (seenIdsRef.current.has(item.id)) return;
+    seenIdsRef.current.add(item.id);
+    clearTimeout(dismissTimerRef.current); clearTimeout(exitTimerRef.current);
+    setClosingId(undefined); setSnapshot({ owner:sessionId, item }); playNotificationChime();
+    dismissTimerRef.current = setTimeout(() => dismiss(item.id, sessionId), 7000);
+  }, [dismiss]);
 
-  // Poll for background cross-device notifications
   useEffect(() => {
+    if (!owner) return;
+    let active = true;
+    let initial = true;
+    let inFlight = false;
+    seenIdsRef.current.clear();
     async function checkNew() {
-      const res = await fetchRealNotifications(session?.role, session?.email);
-      if (isInitialLoadRef.current) {
-        // Mark existing as seen so we don't alert old ones on first load
-        for (const item of res.notifications) {
-          seenIdsRef.current.add(item.id);
-        }
-        isInitialLoadRef.current = false;
-        return;
+      if (inFlight) return;
+      inFlight = true;
+      const result = await fetchRealNotifications().catch(() => undefined);
+      inFlight = false;
+      if (!result || !active) return;
+      if (initial) {
+        for (const item of result.notifications) seenIdsRef.current.add(item.id);
+        initial = false; return;
       }
-
-      for (const item of res.notifications) {
-        if (!item.read && !seenIdsRef.current.has(item.id)) {
-          showToast(item);
-          break;
-        }
-      }
+      const item = result.notifications.find(item => !item.read && !seenIdsRef.current.has(item.id));
+      if (item) showToast(item, owner!);
     }
-
     void checkNew();
-    const interval = setInterval(() => {
-      void checkNew();
-    }, 5000);
-
-    const handleEvent = (event: Event) => {
-      const customEvent = event as CustomEvent<RealNotification>;
-      const notif = customEvent.detail;
-      if (notif) {
-        // Verify user / role match
-        const matchesRole = !notif.role || notif.role === "ALL" || notif.role.toLowerCase() === (session?.role ?? "").toLowerCase();
-        const matchesUser = !notif.userId || notif.userId.toLowerCase() === (session?.email ?? "").toLowerCase();
-
-        if (matchesRole && matchesUser) {
-          showToast(notif);
-        }
-      }
-    };
-
-    window.addEventListener("sharebite:notification", handleEvent);
-
+    const timer = setInterval(() => { void checkNew(); }, 5000);
+    const onNotification = () => { void checkNew(); };
+    window.addEventListener("sharebite:notification", onNotification);
     return () => {
-      clearInterval(interval);
-      window.removeEventListener("sharebite:notification", handleEvent);
-      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+      active = false; clearInterval(timer); clearTimeout(dismissTimerRef.current); clearTimeout(exitTimerRef.current);
+      window.removeEventListener("sharebite:notification", onNotification);
     };
-  }, [session?.email, session?.role, showToast]);
+  }, [owner, showToast]);
 
-  if (!toast) return null;
-
-  return (
-    <aside
-      aria-label="নতুন নোটিফিকেশন বিজ্ঞপ্তি"
-      aria-live="polite"
-      className="fixed bottom-5 right-5 z-50 max-w-sm sm:max-w-md w-[calc(100vw-2.5rem)] rounded-2xl border border-emerald-500/30 bg-slate-900/95 p-4 text-white shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-5 fade-in duration-200"
-    >
-      <div className="flex items-start gap-3">
-        <div className="relative grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-600 text-white shadow-md">
-          <Bell className="size-5 animate-bounce" />
-          <span className="absolute -top-1 -right-1 size-3 rounded-full bg-rose-500 ring-2 ring-slate-900" />
-        </div>
-
-        <div className="min-w-0 flex-1 text-left">
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-400 font-heading">
-              <Zap className="size-3" /> লাইভ আপডেট
-            </span>
-            <button
-              type="button"
-              onClick={() => setToast(null)}
-              className="grid size-6 place-items-center rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer"
-              aria-label="বন্ধ করুন"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-
-          <h4 className="mt-1 text-xs font-black font-heading text-white line-clamp-1">
-            {toast.title}
-          </h4>
-
-          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-300 line-clamp-2">
-            {toast.message}
-          </p>
-
-          {toast.href && toast.href !== "#" && (
-            <div className="mt-2.5 flex items-center justify-end">
-              <Link
-                href={toast.href}
-                onClick={() => setToast(null)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1 text-[11px] font-black font-heading text-white shadow-xs hover:bg-emerald-500 transition-colors"
-              >
-                <span>দেখুন</span>
-                <ExternalLink className="size-3" />
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-    </aside>
-  );
+  if (!toast || !owner) return null;
+  const pause = () => clearTimeout(dismissTimerRef.current);
+  const resume = () => {
+    clearTimeout(dismissTimerRef.current);
+    dismissTimerRef.current = setTimeout(() => dismiss(toast.id, owner), 7000);
+  };
+  return <aside key={toast.id} aria-label={tx("New notification")} aria-live="polite" aria-atomic="true" className={styles.toast} data-closing={closingId === toast.id}
+    onMouseEnter={pause} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) resume(); }}
+    onFocusCapture={pause} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) resume(); }}>
+    <div className={styles.toastTop}><NotificationIcon type={toast.type} motion="once" /><div className={styles.toastBody}>
+      <h3>{tx(toast.title)}</h3><p>{notificationMessage(tx,toast)}</p>
+      {toast.href && toast.href !== "#" && <Link href={toast.href} className={styles.toastLink} onClick={() => dismiss(toast.id,owner)}>{tx("See notification details")}<ArrowUpRight size={15} aria-hidden="true" /></Link>}
+    </div><button type="button" className={styles.iconButton} aria-label={tx("Close notification")} onClick={() => dismiss(toast.id,owner)}><X size={18} aria-hidden="true" /></button></div>
+  </aside>;
 }

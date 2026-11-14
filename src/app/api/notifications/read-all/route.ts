@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db/database";
+import { prisma } from "@/lib/prisma";
+import { apiError, requireAuth } from "@/lib/api";
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    const { searchParams } = new URL(request.url);
-    const role = searchParams.get("role") || undefined;
-    const userId = searchParams.get("userId") || undefined;
-
-    db.notifications.markAllRead({ role, userId });
-
-    return NextResponse.json({
-      success: true,
-      message: "সবগুলো নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করা হয়েছে।",
-    });
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Failed to mark notifications read";
-    return NextResponse.json({ error: msg }, { status: 500 });
-  }
+    const { user } = await requireAuth();
+    await prisma.notification.updateMany({ where: { userId: user.id, readAt: null }, data: { readAt: new Date() } });
+    return NextResponse.json({ success: true });
+  } catch (error) { return apiError(error); }
 }
