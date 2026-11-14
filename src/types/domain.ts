@@ -110,6 +110,9 @@ export interface VolunteerProfile {
   serviceAreas: string[];
   transportMethod: TransportMethod;
   availability: string[];
+  isOnDuty: boolean;
+  dutyStartedAt?: ISODateTime | null;
+  dutyVersion: number;
   verificationStatus: VerificationStatus;
   identityDocumentName?: string;
   completedRescues: number;
@@ -152,6 +155,7 @@ export interface DonationPickup {
 }
 
 export interface Donation {
+  sampleImageId?: string;
   id: EntityId;
   donorProfileId: EntityId;
   preferredNgoProfileId?: EntityId;
@@ -179,6 +183,7 @@ export interface Donation {
 }
 
 export interface DonationPickupView {
+  approximateCoordinates?: Coordinates;
   approximateArea: string;
   distanceKm?: number;
   windowStart: ISODateTime;
@@ -192,6 +197,8 @@ export interface DonationPickupView {
 export type DonationView = Omit<Donation, "pickup"> & { pickup: DonationPickupView };
 
 export interface Claim {
+  foodRequestId?: EntityId;
+  requestMealsAllocated?: number;
   id: EntityId;
   donationId: EntityId;
   ngoProfileId: EntityId;
@@ -208,9 +215,14 @@ export interface Claim {
   pickupVerificationToken?: string;
   deliveryVerificationToken?: string;
   updatedAt: ISODateTime;
+  routeStage?: "assigned" | "en_route_pickup" | "at_pickup" | "cargo_loaded" | "en_route_dropoff" | "completed";
 }
 
 export interface FoodRequest {
+  mealsFulfilled?: number;
+  mealsReserved?: number;
+  remainingMeals?: number;
+  linkedClaims?: Array<{ id: string; donationId: string; title: string; status: ClaimStatus; mealsAllocated: number; mealsDistributed: number }>;
   id: EntityId;
   ngoProfileId: EntityId;
   title: string;
@@ -232,6 +244,7 @@ export interface FoodRequest {
   deliveryAddressId: EntityId;
   locationType: "SHELTER" | "COMMUNITY_CENTER" | "OTHER";
   deliveryLocation: {
+    coordinates?: Coordinates;
     addressLine: string;
     area: string;
     city: string;
@@ -285,6 +298,11 @@ export interface ImpactRecord {
 }
 
 export interface IncidentReport {
+  blocksRescue?: boolean;
+  decision?: "RESUME" | "REJECT_FOOD" | null;
+  reporterName?: string;
+  reporterRole?: string;
+  reviews?: Array<{ id: string; actorLabel: string; status: IncidentStatus; decision?: "RESUME" | "REJECT_FOOD" | null; note: string; createdAt: string }>;
   id: EntityId;
   claimId: EntityId;
   reportedByUserId: EntityId;
@@ -311,9 +329,10 @@ export interface DeliveryReceipt {
   foodCondition: DeliveryFoodCondition;
   quantityMismatchConfirmed: boolean;
   distributionBlocked: boolean;
-  verificationMethod: "QR" | "FALLBACK_CODE";
+  verificationMethod: "OTP" | "QR" | "FALLBACK_CODE";
   notes?: string;
   photoNames: string[];
+  photoUrls?: string[];
   receivedAt: ISODateTime;
   createdAt: ISODateTime;
 }
@@ -330,6 +349,7 @@ export interface DistributionRecord {
   addressId: EntityId;
   notes?: string;
   photoUrls: string[];
+  photoNames?: string[];
   beneficiaryConsentConfirmed: boolean;
   createdAt: ISODateTime;
 }

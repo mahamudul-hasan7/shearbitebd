@@ -45,6 +45,9 @@ export function validateDonationTimes({
   if (pickupStart !== undefined && pickupEnd !== undefined && pickupStart > pickupEnd) {
     errors.pickupWindowEnd = "পিকআপ শেষের সময় অবশ্যই শুরুর সময়ের পরে হতে হবে।";
   }
+  if (pickupStart !== undefined && preparedAt !== undefined && pickupStart < preparedAt) {
+    errors.pickupWindowStart = "Pickup cannot start before food preparation.";
+  }
   if (pickupEnd !== undefined && deadline !== undefined && pickupEnd > deadline) {
     errors.pickupWindowEnd = "পিকআপের শেষ সময় অবশ্যই খাবারের নিরাপদ মেয়াদের (Safe Until) সমান বা আগে হতে হবে।";
   }

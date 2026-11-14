@@ -30,12 +30,14 @@ export const ROUTES = {
     support: "/donor/support",
     donation: (donationId: string) => `/donor/donations/${donationId}`,
     donationTracking: (donationId: string) => `/donor/donations/${donationId}/tracking`,
+    reportIssue: (donationId: string, claimId?: string) => `/donor/donations/${donationId}/report-issue${claimId ? "?claimId=" + encodeURIComponent(claimId) : ""}`,
     ngoProfile: (ngoId: string) => `/donor/ngos/${ngoId}`,
   },
   ngo: {
     dashboard: "/ngo/dashboard",
     discover: "/ngo/discover",
     discoverMap: "/ngo/discover/map",
+    addresses: "/ngo/addresses",
     claims: "/ngo/claims",
     requests: "/ngo/requests",
     newRequest: "/ngo/requests/new",
@@ -61,6 +63,7 @@ export const ROUTES = {
     history: "/volunteer/history",
     notifications: "/volunteer/notifications",
     mission: (missionId: string) => `/volunteer/missions/${missionId}`,
+    reportIssue: (missionId: string) => `/volunteer/missions/${missionId}/report-issue`,
     idCard: "/volunteer/id-card",
   },
 } as const;

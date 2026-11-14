@@ -36,12 +36,12 @@ export interface DesktopNavItem {
 
 export const donorDesktopNavigation: DesktopNavItem[] = [
   { label: "ওভারভিউ হাব", href: ROUTES.donor.dashboard, icon: LayoutDashboard, category: "main" },
-  { label: "আমার অনুদানসমূহ", href: ROUTES.donor.donations, icon: PackageSearch, category: "operations", badge: "লাইভ" },
+  { label: "আমার অনুদানসমূহ", href: ROUTES.donor.donations, icon: PackageSearch, category: "operations" },
   { label: "উদ্বৃত্ত খাবার পোস্ট", href: ROUTES.donor.newDonation, icon: Plus, category: "operations", isPrimary: true },
   { label: "পার্টনার এনজিও", href: ROUTES.donor.ngos, icon: Building2, category: "operations", badge: "ভেরিফায়েড" },
   { label: "পিকআপ ঠিকানা", href: ROUTES.donor.addresses, icon: MapPin, category: "operations" },
   { label: "নোটিফিকেশন", href: ROUTES.donor.notifications, icon: Bell, category: "system" },
-  { label: "দাতা প্রোফাইল ও সনদ", href: ROUTES.donor.profile, icon: ShieldCheck, category: "system" },
+  { label: "দাতা প্রোফাইল", href: ROUTES.donor.profile, icon: ShieldCheck, category: "system" },
   { label: "অ্যাকাউন্ট সেটিংস", href: ROUTES.donor.settings, icon: Settings, category: "system" },
   { label: "সহায়তা কেন্দ্র", href: ROUTES.donor.support, icon: FileQuestion, category: "system" },
 ];
@@ -49,10 +49,11 @@ export const donorDesktopNavigation: DesktopNavItem[] = [
 export const ngoDesktopNavigation: DesktopNavItem[] = [
   { label: "ওভারভিউ হাব", href: ROUTES.ngo.dashboard, icon: LayoutDashboard, category: "main" },
   { label: "উদ্বৃত্ত খাদ্য অনুসন্ধান", href: ROUTES.ngo.discover, icon: Search, category: "operations", badge: "কাছাকাছি" },
-  { label: "রেসকিউ রাডার ম্যাপ", href: ROUTES.ngo.discoverMap, icon: Compass, category: "operations" },
+  { label: "রেসকিউ ম্যাপ", href: ROUTES.ngo.discoverMap, icon: Compass, category: "operations" },
   { label: "ক্লেইমকৃত উদ্ধারসমূহ", href: ROUTES.ngo.claims, icon: ClipboardList, category: "operations", badge: "সক্রিয়" },
   { label: "খাদ্য চাহিদা দাখিল", href: ROUTES.ngo.newRequest, icon: Plus, category: "operations", isPrimary: true },
   { label: "নোটিফিকেশন", href: ROUTES.ngo.notifications, icon: Bell, category: "system" },
+  { label: "ডেলিভারি ঠিকানা ও ম্যাপ pin", href: ROUTES.ngo.addresses, icon: MapPin, category: "operations" },
   { label: "এনজিও ভেরিফিকেশন ও প্রোফাইল", href: ROUTES.ngo.profile, icon: ShieldCheck, category: "system" },
   { label: "অ্যাকাউন্ট সেটিংস", href: ROUTES.ngo.settings, icon: Settings, category: "system" },
   { label: "সহায়তা ও হেল্পডেস্ক", href: ROUTES.ngo.support, icon: FileQuestion, category: "system" },
@@ -60,9 +61,9 @@ export const ngoDesktopNavigation: DesktopNavItem[] = [
 
 export const volunteerDesktopNavigation: DesktopNavItem[] = [
   { label: "কমান্ড হাব", href: ROUTES.volunteer.dashboard, icon: LayoutDashboard, category: "main" },
-  { label: "লাইভ মিশন", href: ROUTES.volunteer.mission("mission-uiu-mastul"), icon: Bike, category: "operations", badge: "লাইভ" },
-  { label: "উন্মুক্ত ডিসপ্যাচ", href: ROUTES.volunteer.dispatches, icon: Navigation, category: "operations", badge: "৪টি নতুন" },
-  { label: "মিশন হিস্ট্রি", href: ROUTES.volunteer.history, icon: History, category: "operations", badge: "৪৮টি" },
+  { label: "বর্তমান মিশন", href: ROUTES.volunteer.dashboard + "#active-mission", icon: Bike, category: "operations", badge: "লাইভ" },
+  { label: "উন্মুক্ত ডিসপ্যাচ", href: ROUTES.volunteer.dispatches, icon: Navigation, category: "operations" },
+  { label: "মিশন হিস্ট্রি", href: ROUTES.volunteer.history, icon: History, category: "operations" },
   { label: "নোটিফিকেশন ও অ্যালার্ট", href: ROUTES.volunteer.notifications, icon: Bell, category: "system" },
   { label: "ভলান্টিয়ার আইডি কার্ড", href: ROUTES.volunteer.idCard, icon: ShieldCheck, category: "system" },
 ];

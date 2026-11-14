@@ -1,3 +1,4 @@
+import { approximateCoordinates } from "@/lib/locations";
 import { VerificationStatus } from "@/lib/constants/domain";
 import { UserRole } from "@/lib/constants/roles";
 import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
@@ -73,7 +74,8 @@ export function createDonationView(
   addresses: readonly Address[],
 ): DonationView {
   const sensitiveDetailsVisible = canViewSensitiveDonationFields(viewer, donation, claims);
-  const exactAddress = sensitiveDetailsVisible ? addresses.find((address) => address.id === donation.pickup.addressId) : undefined;
+  const savedAddress = addresses.find((address) => address.id === donation.pickup.addressId);
+  const exactAddress = sensitiveDetailsVisible ? savedAddress : undefined;
 
   return {
     ...donation,
@@ -82,6 +84,7 @@ export function createDonationView(
     photoUrls: [...donation.photoUrls],
     pickup: {
       approximateArea: donation.pickup.approximateArea,
+      approximateCoordinates: savedAddress?.coordinates ? approximateCoordinates(savedAddress.coordinates) : undefined,
       distanceKm: donation.pickup.distanceKm,
       windowStart: donation.pickup.windowStart,
       windowEnd: donation.pickup.windowEnd,
