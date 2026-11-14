@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useId, type InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,9 +12,12 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 export function Checkbox({ label, description, error, id, containerClassName, className, ...props }: CheckboxProps) {
+  const tx = useUiText();
   const generatedId = useId();
   const inputId = id ?? props.name ?? generatedId;
   const descriptionId = `${inputId}-description`;
+  const errorId = `${inputId}-error`;
+  const describedBy = [props["aria-describedby"], description ? descriptionId : undefined, error ? errorId : undefined].filter(Boolean).join(" ") || undefined;
 
   return (
     <div className={cn("grid gap-1.5", containerClassName)}>
@@ -20,16 +26,16 @@ export function Checkbox({ label, description, error, id, containerClassName, cl
           {...props}
           id={inputId}
           type="checkbox"
-          aria-describedby={description || error ? descriptionId : props["aria-describedby"]}
+          aria-describedby={describedBy}
           aria-invalid={error ? true : props["aria-invalid"]}
           className={cn("mt-0.5 size-5 shrink-0 rounded border-line accent-brand-600", className)}
         />
         <span>
-          <span className="block text-sm font-bold text-ink-900">{label}</span>
-          {description && <span className="mt-1 block text-xs leading-5 text-muted-600">{description}</span>}
+          <span className="block text-sm font-bold text-ink-900">{tx(label)}</span>
+          {description && <span id={descriptionId} className="mt-1 block text-xs leading-5 text-muted-600">{tx(description)}</span>}
         </span>
       </label>
-      {error && <span id={descriptionId} role="alert" className="text-xs text-danger">{error}</span>}
+      {error && <span id={errorId} role="alert" className="text-xs text-danger">{tx(error)}</span>}
     </div>
   );
 }

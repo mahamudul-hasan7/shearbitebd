@@ -1,0 +1,6 @@
+.root { display:flex; width:100%; min-width:0; min-height:160px; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px 16px; }
+.fullPage { min-height:100svh; }
+.ring { display:block; width:36px; height:36px; flex-shrink:0; border:3px solid #dfebe4; border-top-color:#08855b; border-radius:50%; animation:loadingCycle .85s linear infinite; }
+.label { max-width:36ch; color:#65786c; font-size:14px; line-height:1.6; text-align:center; }
+@keyframes loadingCycle { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .ring { animation:none; } }

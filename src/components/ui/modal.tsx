@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { X } from "lucide-react";
 import { useId, useRef, type ReactNode } from "react";
@@ -21,6 +22,7 @@ export function Modal({
   footer?: ReactNode;
   size?: "sm" | "md" | "lg";
 }) {
+  const tx = useUiText();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -47,7 +49,7 @@ export function Modal({
             <h2 id={titleId} className="text-xl font-black text-ink-900">{title}</h2>
             {description && <p id={descriptionId} className="mt-1 text-sm leading-6 text-muted-600">{description}</p>}
           </div>
-          <IconButton autoFocus label="Close dialog" onClick={close} className="shrink-0"><X className="size-5" /></IconButton>
+          <IconButton autoFocus label={tx("Close dialog")} onClick={close} className="shrink-0"><X className="size-5" /></IconButton>
         </div>
         <div className="p-5 sm:p-6">{children}</div>
         {footer && <div className="flex flex-col-reverse gap-3 border-t border-line p-5 sm:flex-row sm:flex-wrap sm:justify-end sm:p-6 [&>*]:w-full sm:[&>*]:w-auto">{footer}</div>}

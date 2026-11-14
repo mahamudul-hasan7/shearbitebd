@@ -1,4 +1,5 @@
 "use client";
+import { UiText } from "@/lib/i18n/ui-text-node";
 
 import React, { Component, type ReactNode } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
@@ -32,8 +33,7 @@ export class PortalErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="size-6" />
           </span>
           <h3 className="mt-4 text-lg font-black text-slate-900 font-heading">
-            একটি অপ্রত্যাশিত সমস্যা হয়েছে
-          </h3>
+            <UiText source={"একটি অপ্রত্যাশিত সমস্যা হয়েছে"} /></h3>
           <p className="mt-1 text-xs text-slate-600 max-w-sm mx-auto">
             {this.props.fallbackMessage || "পৃষ্ঠার কম্পোনেন্ট লোড করার সময় ত্রুটি ঘটেছে। দয়া করে পুনরায় চেষ্টা করুন।"}
           </p>
@@ -42,8 +42,7 @@ export class PortalErrorBoundary extends Component<Props, State> {
             onClick={() => this.setState({ hasError: false })}
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 text-xs font-bold font-heading cursor-pointer shadow-xs transition-colors"
           >
-            <RefreshCw className="size-3.5" /> পুনরায় লোড করুন
-          </button>
+            <RefreshCw className="size-3.5" /> <UiText source={"পুনরায় লোড করুন"} /></button>
         </div>
       );
     }

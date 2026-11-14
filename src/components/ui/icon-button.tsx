@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { ActionGlyph } from "@/components/motion/live-icon";
 
 export function IconButton({ label, children, className, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; children: ReactNode }) {
   return (
@@ -13,7 +14,7 @@ export function IconButton({ label, children, className, ...props }: ButtonHTMLA
       )}
       {...props}
     >
-      {children}
+      <ActionGlyph>{children}</ActionGlyph>
     </button>
   );
 }
@@ -29,7 +30,7 @@ export function IconButtonLink({ href, label, children, className, ...props }: O
       )}
       {...props}
     >
-      {children}
+      <ActionGlyph>{children}</ActionGlyph>
     </Link>
   );
 }

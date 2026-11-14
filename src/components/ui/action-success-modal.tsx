@@ -1,8 +1,11 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Check, Sparkles, X, Trophy, HandHeart } from "lucide-react";
+import { Check, CheckCircle2, Sparkles, X, HandHeart, PackageCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LiveIcon } from "@/components/motion/live-icon";
+import motionStyles from "@/components/motion/live-icon.module.css";
 
 export interface CelebrationPayload {
   title: string;
@@ -51,17 +54,8 @@ function playSuccessChime() {
   }
 }
 
-// Decorative floating confetti micro-particles
-const PARTICLES = [
-  { top: "15%", left: "18%", color: "bg-emerald-400", size: "w-2.5 h-2.5", delay: "delay-75" },
-  { top: "20%", right: "20%", color: "bg-amber-400", size: "w-2 h-3 rotate-45", delay: "delay-100" },
-  { top: "35%", left: "10%", color: "bg-teal-400", size: "w-2 h-2 rounded-full", delay: "delay-150" },
-  { top: "30%", right: "12%", color: "bg-emerald-500", size: "w-3 h-1.5 rotate-12", delay: "delay-200" },
-  { bottom: "25%", left: "15%", color: "bg-amber-300", size: "w-2 h-2 rotate-45", delay: "delay-100" },
-  { bottom: "20%", right: "18%", color: "bg-teal-500", size: "w-2 h-2 rounded-full", delay: "delay-150" },
-];
-
 export function ActionSuccessModal() {
+  const tx = useUiText();
   const [data, setData] = useState<CelebrationPayload | null>(null);
   const autoCloseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -109,25 +103,9 @@ export function ActionSuccessModal() {
       role="dialog"
       aria-modal="true"
     >
-      {/* Celebration Particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {PARTICLES.map((p, idx) => (
-          <span
-            key={idx}
-            style={{ top: p.top, left: p.left, right: p.right, bottom: p.bottom }}
-            className={cn(
-              "absolute rounded-xs shadow-xs animate-ping opacity-75 duration-1000",
-              p.color,
-              p.size,
-              p.delay
-            )}
-          />
-        ))}
-      </div>
-
       {/* Main Card */}
       <div
-        className="relative w-full max-w-sm sm:max-w-md rounded-3xl border border-emerald-500/30 bg-white p-7 sm:p-8 shadow-2xl text-center animate-popup-pop z-10"
+        className={cn("relative w-full max-w-sm sm:max-w-md rounded-3xl border border-emerald-500/30 bg-white p-7 sm:p-8 shadow-2xl text-center z-10",motionStyles.successPanel)}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -135,49 +113,13 @@ export function ActionSuccessModal() {
           type="button"
           onClick={close}
           className="absolute top-4 right-4 grid size-8 place-items-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-          aria-label="বন্ধ করুন"
+          aria-label={tx("বন্ধ করুন")}
         >
           <X className="size-4" />
         </button>
 
-        {/* Top Animated Checkmark Circle */}
-        <div className="mx-auto mb-4 flex size-20 items-center justify-center relative">
-          <div className="absolute inset-0 rounded-full bg-emerald-100/70 animate-pulse-ring" />
-          
-          {isComplete ? (
-            <div className="grid size-18 place-items-center rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-white shadow-lg shadow-amber-500/30 ring-4 ring-amber-100">
-              <Trophy className="size-9 animate-bounce" />
-            </div>
-          ) : isClaim ? (
-            <div className="grid size-18 place-items-center rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-600/30 ring-4 ring-emerald-100">
-              <HandHeart className="size-9 animate-icon-breathe" />
-            </div>
-          ) : (
-            <svg
-              className="size-18 drop-shadow-md"
-              viewBox="0 0 52 52"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle
-                className="animate-stroke-circle"
-                cx="26"
-                cy="26"
-                r="25"
-                stroke="#059669"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-              />
-              <path
-                className="animate-stroke-check"
-                d="M14 27l8 8 16-16"
-                stroke="#059669"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
+        <div className={cn("mx-auto mb-4 grid size-20 place-items-center rounded-3xl",isComplete ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800")}>
+          <LiveIcon key={data.title} icon={isClaim ? PackageCheck : isComplete ? HandHeart : CheckCircle2} motion="once" className="size-11" strokeWidth={1.7} />
         </div>
 
         {/* Optional Badge */}

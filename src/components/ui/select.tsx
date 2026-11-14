@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useId, type SelectHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +12,13 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export function Select({ label, hint, error, id, className, containerClassName, children, ...props }: SelectProps) {
+  const tx = useUiText();
   const generatedId = useId();
   const selectId = id ?? props.name ?? generatedId;
   const descriptionId = `${selectId}-description`;
   return (
     <label htmlFor={selectId} className={cn("grid min-w-0 gap-2", containerClassName)}>
-      {label && <span className="text-sm font-bold text-ink-700">{label}</span>}
+      {label && <span className="text-sm font-bold text-ink-700">{tx(label)}</span>}
       <select
         {...props}
         id={selectId}
@@ -28,7 +32,7 @@ export function Select({ label, hint, error, id, className, containerClassName, 
       >
         {children}
       </select>
-      {(error || hint) && <span id={descriptionId} role={error ? "alert" : undefined} className={cn("text-xs", error ? "text-danger" : "text-muted-600")}>{error ?? hint}</span>}
+      {(error || hint) && <span id={descriptionId} role={error ? "alert" : undefined} className={cn("text-xs", error ? "text-danger" : "text-muted-600")}>{tx(error ?? hint)}</span>}
     </label>
   );
 }

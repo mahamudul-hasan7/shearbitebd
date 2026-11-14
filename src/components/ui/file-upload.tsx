@@ -1,8 +1,10 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { CheckCircle2, FileCheck2, UploadCloud, X } from "lucide-react";
 import { useId, useState, type ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
+import { LiveIcon } from "@/components/motion/live-icon";
 
 export function FileUpload({
   label,
@@ -33,6 +35,7 @@ export function FileUpload({
   onFilesChange?: (files: File[]) => void;
   className?: string;
 }) {
+  const tx = useUiText();
   const inputId = useId();
   const descriptionId = `${inputId}-description`;
   const [files, setFiles] = useState<string[]>([]);
@@ -74,7 +77,7 @@ export function FileUpload({
 
   return (
     <div className={cn("grid min-w-0 gap-2", className)}>
-      <span className="text-sm font-bold text-slate-800 font-heading">{label}</span>
+      <span className="text-sm font-bold text-slate-800 font-heading">{tx(label)}</span>
       <label
         htmlFor={inputId}
         className={cn(
@@ -106,7 +109,7 @@ export function FileUpload({
               hasFiles ? "bg-emerald-600 text-white" : "bg-white text-emerald-700 ring-1 ring-slate-200/80"
             )}
           >
-            {hasFiles ? <FileCheck2 className="size-6" /> : <UploadCloud className="size-6" />}
+            <LiveIcon key={hasFiles ? visibleFiles.join(",") : "choose"} icon={hasFiles ? FileCheck2 : UploadCloud} motion={hasFiles ? "once" : "interaction"} className="size-6" />
           </span>
 
           <span
@@ -138,8 +141,7 @@ export function FileUpload({
               onClick={handleClear}
               className="mt-2.5 inline-flex items-center gap-1 rounded-full bg-slate-200/70 hover:bg-rose-100 hover:text-rose-700 px-2.5 py-0.5 text-[11px] font-bold text-slate-600 transition-colors cursor-pointer"
             >
-              <X className="size-3" /> ফাইল বাতিল করুন
-            </button>
+              <X className="size-3" /> {tx("ফাইল বাতিল করুন")}</button>
           )}
         </div>
       </label>

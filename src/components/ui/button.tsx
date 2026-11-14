@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ActionGlyph } from "@/components/motion/live-icon";
 
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
@@ -71,13 +72,13 @@ export function Button({
     >
       {leftIcon && (
         <span className="shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5">
-          {leftIcon}
+          <ActionGlyph>{leftIcon}</ActionGlyph>
         </span>
       )}
       <span>{children}</span>
       {rightIcon && (
         <span className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5">
-          {rightIcon}
+          <ActionGlyph>{rightIcon}</ActionGlyph>
         </span>
       )}
     </button>
@@ -135,13 +136,13 @@ export function ButtonLink({
     <Link href={href} className={classes} {...props}>
       {leftIcon && (
         <span className="shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5">
-          {leftIcon}
+          <ActionGlyph>{leftIcon}</ActionGlyph>
         </span>
       )}
       <span>{children}</span>
       {rightIcon && (
         <span className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5">
-          {rightIcon}
+          <ActionGlyph>{rightIcon}</ActionGlyph>
         </span>
       )}
     </Link>

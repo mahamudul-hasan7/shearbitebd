@@ -1,3 +1,5 @@
+"use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { AlertTriangle, CheckCircle2, CircleAlert, Info, type LucideIcon } from "lucide-react";
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -24,6 +26,7 @@ export function Alert({
   tone?: AlertTone;
   action?: ReactNode;
 }) {
+  const tx = useUiText();
   const style = alertStyles[tone];
   const Icon = style.icon;
 
@@ -31,8 +34,8 @@ export function Alert({
     <div role={tone === "danger" ? "alert" : "status"} className={cn("flex items-start gap-3 rounded-card border p-4", style.className, className)} {...props}>
       <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-bold">{title}</p>
-        {description && <p className="mt-1 text-sm leading-5 opacity-85">{description}</p>}
+        <p className="text-sm font-bold">{tx(title)}</p>
+        {description && <p className="mt-1 text-sm leading-5 opacity-85">{tx(description)}</p>}
       </div>
       {action}
     </div>

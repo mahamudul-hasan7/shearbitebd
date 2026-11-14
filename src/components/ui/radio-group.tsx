@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useId, type ChangeEventHandler } from "react";
 import { cn } from "@/lib/utils";
 
@@ -29,12 +32,13 @@ export function RadioGroup({
   error?: string;
   className?: string;
 }) {
+  const tx = useUiText();
   const groupId = useId();
   const errorId = `${groupId}-error`;
 
   return (
     <fieldset aria-describedby={error ? errorId : undefined} className={className}>
-      <legend className="text-sm font-bold text-ink-700">{label}</legend>
+      <legend className="text-sm font-bold text-ink-700">{tx(label)}</legend>
       <div className={cn("mt-2 grid gap-2", orientation === "horizontal" && "sm:grid-cols-2 lg:grid-cols-3")}>
         {items.map((item) => {
           const itemId = `${groupId}-${item.value}`;
@@ -52,14 +56,14 @@ export function RadioGroup({
                 className="mt-0.5 size-5 shrink-0 accent-brand-600"
               />
               <span>
-                <span className="block text-sm font-bold text-ink-900">{item.label}</span>
-                {item.description && <span className="mt-1 block text-xs leading-5 text-muted-600">{item.description}</span>}
+                <span className="block text-sm font-bold text-ink-900">{tx(item.label)}</span>
+                {item.description && <span className="mt-1 block text-xs leading-5 text-muted-600">{tx(item.description)}</span>}
               </span>
             </label>
           );
         })}
       </div>
-      {error && <p id={errorId} role="alert" className="mt-2 text-xs text-danger">{error}</p>}
+      {error && <p id={errorId} role="alert" className="mt-2 text-xs text-danger">{tx(error)}</p>}
     </fieldset>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/lib/i18n/ui-text-node";
 import { useId, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -34,8 +35,8 @@ export function Switch({
   return (
     <div className={cn("flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-4", disabled && "opacity-55", className)}>
       <div id={labelId}>
-        <p className="text-sm font-bold text-ink-900">{label}</p>
-        {description && <p className="mt-1 text-xs leading-5 text-muted-600">{description}</p>}
+        <p className="text-sm font-bold text-ink-900"><UiText source={label} /></p>
+        {description && <p className="mt-1 text-xs leading-5 text-muted-600"><UiText source={description} /></p>}
       </div>
       <button
         type="button"

@@ -1,4 +1,6 @@
 "use client";
+import { LiveIcon } from "@/components/motion/live-icon";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { Check } from "lucide-react";
 import type { CSSProperties } from "react";
@@ -20,16 +22,17 @@ export function Stepper({
   label?: string;
   onStepClick?: (step: number) => void;
 }) {
+  const tx = useUiText();
   return (
     <div>
       {/* 1. Mobile-First App Segmented Progress Bar (< sm) */}
       <div className="sm:hidden mb-4 rounded-2xl border border-slate-200/80 bg-white/90 p-3.5 shadow-2xs backdrop-blur-md">
         <div className="flex items-center justify-between gap-2 mb-2.5">
           <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full font-heading">
-            ধাপ {current} / {steps.length}
+            {tx("ধাপ")}{current} / {steps.length}
           </span>
           <span className="text-xs font-bold text-slate-800 truncate font-heading">
-            {steps[current - 1]?.label}
+            {tx(steps[current - 1]?.label)}
           </span>
         </div>
         {/* Multi-Segmented Progress Track */}
@@ -52,7 +55,7 @@ export function Stepper({
                   : "bg-slate-200",
                 onStepClick && idx + 1 <= current ? "cursor-pointer" : "cursor-default",
               )}
-              aria-label={`Go to step ${idx + 1}: ${step.label}`}
+              aria-label={tx("Go to step {0}: {1}", idx + 1, tx(step.label))}
             />
           ))}
         </div>
@@ -60,7 +63,7 @@ export function Stepper({
 
       {/* 2. Desktop Full Stepper Grid (>= sm) */}
       <ol
-        aria-label={label}
+        aria-label={tx(label)}
         className="hidden sm:grid min-w-0 gap-3 sm:grid-cols-[repeat(var(--step-count),minmax(0,1fr))]"
         style={{ "--step-count": steps.length } as CSSProperties}
       >
@@ -92,7 +95,7 @@ export function Stepper({
               )}
             >
               {complete ? (
-                <Check className="size-5" aria-hidden="true" />
+                <LiveIcon icon={Check} motion="once" className="size-5" aria-hidden="true" />
               ) : (
                 <span>{number}</span>
               )}
@@ -108,11 +111,11 @@ export function Stepper({
                     : "text-slate-500",
                 )}
               >
-                {step.label}
+                {tx(step.label)}
               </span>
               {step.description && (
                 <span className="mt-0.5 block break-words text-xs leading-5 text-slate-500 font-normal">
-                  {step.description}
+                  {tx(step.description)}
                 </span>
               )}
             </span>
@@ -129,7 +132,7 @@ export function Stepper({
               <button
                 type="button"
                 onClick={() => onStepClick?.(number)}
-                title={`ধাপ ${number}: ${step.label}-এ যান`}
+                title={tx("ধাপ {0}: {1}-এ যান", number, tx(step.label))}
                 className="group w-full text-left cursor-pointer transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 rounded-xl"
               >
                 {content}

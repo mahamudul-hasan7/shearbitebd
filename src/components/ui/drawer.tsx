@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { X } from "lucide-react";
 import { useId, useRef, type ReactNode } from "react";
@@ -16,6 +17,7 @@ export function Drawer({
   description?: string;
   children: ReactNode;
 }) {
+  const tx = useUiText();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -42,10 +44,10 @@ export function Drawer({
               <h2 id={titleId} className="text-xl font-black text-ink-900">{title}</h2>
               {description && <p id={descriptionId} className="mt-1 text-sm leading-6 text-muted-600">{description}</p>}
             </div>
-            <IconButton autoFocus label="Close drawer" onClick={close}><X className="size-5" /></IconButton>
+            <IconButton autoFocus label={tx("Close drawer")} onClick={close}><X className="size-5" /></IconButton>
           </div>
           <div className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-5">{children}</div>
-          <div className="safe-bottom border-t border-line p-4 sm:p-5"><Button fullWidth onClick={close}>Done</Button></div>
+          <div className="safe-bottom border-t border-line p-4 sm:p-5"><Button fullWidth onClick={close}>{tx("Done")}</Button></div>
         </div>
       </dialog>
     </>

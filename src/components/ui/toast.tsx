@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { CheckCircle2, Info, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ export function Toast({
   defaultOpen?: boolean;
   autoDismissMs?: number;
 }) {
+  const tx = useUiText();
   const [open, setOpen] = useState(defaultOpen);
   const Icon = tone === "success" ? CheckCircle2 : Info;
 
@@ -40,7 +42,7 @@ export function Toast({
             <p className="font-bold text-ink-900">{title}</p>
             {description && <p className="mt-1 text-sm leading-6 text-muted-600">{description}</p>}
           </div>
-          <IconButton label="Dismiss notification" onClick={() => setOpen(false)} className="size-9 shrink-0 border-0 shadow-none"><X className="size-4" /></IconButton>
+          <IconButton label={tx("Dismiss notification")} onClick={() => setOpen(false)} className="size-9 shrink-0 border-0 shadow-none"><X className="size-4" /></IconButton>
         </div>
       )}
     </>
