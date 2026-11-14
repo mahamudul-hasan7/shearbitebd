@@ -1,5 +1,6 @@
 import fs from "node:fs";
-import path from "node:path";
+import { randomUUID } from "node:crypto";
+import { dataFile, writeJsonFile } from "@/lib/db/json-file";
 import { UserRole } from "@/lib/constants/roles";
 
 export interface DBUser {
@@ -20,6 +21,10 @@ export interface DBUser {
     address?: string;
     bfsaCertNumber?: string;
     studentId?: string;
+    city?: string;
+    beneficiaryType?: string;
+    availability?: string;
+    notes?: string;
   };
 }
 
@@ -87,8 +92,7 @@ export interface DBDocuments {
   notifications: DBNotification[];
 }
 
-const DATA_DIR = path.resolve(process.cwd(), "data");
-const DB_FILE = path.join(DATA_DIR, "db.json");
+const DB_FILE = dataFile("db.json");
 
 const SEED_USERS: DBUser[] = [
   {
@@ -172,10 +176,6 @@ const SEED_NOTIFICATIONS: DBNotification[] = [
 ];
 
 function ensureDbFile(): DBDocuments {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
   if (!fs.existsSync(DB_FILE)) {
     const initialDb: DBDocuments = {
       users: SEED_USERS,
@@ -183,46 +183,19 @@ function ensureDbFile(): DBDocuments {
       claims: [],
       notifications: SEED_NOTIFICATIONS,
     };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), "utf8");
+    writeJsonFile(DB_FILE, initialDb);
     return initialDb;
   }
 
-  try {
-    const content = fs.readFileSync(DB_FILE, "utf8");
-    const parsed = JSON.parse(content) as DBDocuments;
-    if (!parsed.users || !Array.isArray(parsed.users)) {
-      parsed.users = SEED_USERS;
-    }
-    for (const seed of SEED_USERS) {
-      if (!parsed.users.some((u) => u.email.toLowerCase() === seed.email.toLowerCase())) {
-        parsed.users.push(seed);
-      }
-    }
-    if (!parsed.notifications || !Array.isArray(parsed.notifications)) {
-      parsed.notifications = SEED_NOTIFICATIONS;
-    }
-    return parsed;
-  } catch {
-    const freshDb: DBDocuments = {
-      users: SEED_USERS,
-      donations: [],
-      claims: [],
-      notifications: SEED_NOTIFICATIONS,
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(freshDb, null, 2), "utf8");
-    return freshDb;
+  const parsed = JSON.parse(fs.readFileSync(DB_FILE, "utf8")) as DBDocuments;
+  if (!parsed || ![parsed.users, parsed.donations, parsed.claims, parsed.notifications].every(Array.isArray)) {
+    throw new Error("Invalid account storage. Restore the data file before continuing.");
   }
+  return parsed;
 }
 
 function saveDb(data: DBDocuments) {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf8");
-  } catch (err) {
-    console.error("Failed to write to DB file:", err);
-  }
+  writeJsonFile(DB_FILE, data);
 }
 
 export const db = {
@@ -234,7 +207,7 @@ export const db = {
     },
 
     findByEmail(email: string): DBUser | undefined {
-      return this.findByEmailOrPhone(email);
+      return ensureDbFile().users.find((user) => user.email.toLowerCase() === email.trim().toLowerCase());
     },
 
     findByEmailOrPhone(query: string): DBUser | undefined {
@@ -242,24 +215,13 @@ export const db = {
       const raw = (query || "").trim();
       if (!raw) return undefined;
       const clean = raw.toLowerCase();
-      const digits = raw.replace(/\D/g, "");
+      const normalizePhone = (value: string) => value.replace(/[\s()-]/g, "").replace(/^(?:\+?880)/, "0");
+      const phone = normalizePhone(raw);
 
       return dbData.users.find((u) => {
         // 1. Exact email match
         if (u.email.toLowerCase() === clean) return true;
-        // 2. Simple handle (e.g. typing "donor" matches donor)
-        if (clean === "donor" && u.role === UserRole.DONOR) return true;
-        if (clean === "ngo" && u.role === UserRole.NGO) return true;
-        if ((clean === "volunteer" || clean === "rider") && u.role === UserRole.VOLUNTEER) return true;
-        if (clean === "admin" && u.role === UserRole.ADMIN) return true;
-        // 3. User email prefix match (e.g. "donor" matches "donor@sharebite.demo")
-        if (u.email.toLowerCase().startsWith(clean + "@")) return true;
-        // 4. Phone number match
-        if (digits.length >= 7 && u.phone) {
-          const userDigits = u.phone.replace(/\D/g, "");
-          if (userDigits.endsWith(digits) || digits.endsWith(userDigits)) return true;
-        }
-        return false;
+        return /^01[3-9]\d{8}$/.test(phone) && Boolean(u.phone) && normalizePhone(u.phone!) === phone;
       });
     },
 
@@ -270,7 +232,7 @@ export const db = {
 
     create(input: {
       email: string;
-      password?: string;
+      password: string;
       displayName: string;
       role: UserRole;
       phone?: string;
@@ -283,12 +245,17 @@ export const db = {
       if (existing) {
         throw new Error("এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে।");
       }
+      if (!input.password) throw new Error("Password is required.");
+      const normalizePhone = (value: string) => value.replace(/[\s()-]/g, "").replace(/^(?:\+?880)/, "0");
+      if (input.phone && dbData.users.some((u) => u.phone && normalizePhone(u.phone) === normalizePhone(input.phone!))) {
+        throw new Error("এই মোবাইল নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে।");
+      }
 
       const rolePrefix = input.role.toLowerCase();
       const newUser: DBUser = {
-        id: `usr_${rolePrefix}_${Date.now().toString(36)}`,
+        id: `usr_${rolePrefix}_${randomUUID()}`,
         email: cleanEmail,
-        password: input.password || "Demo1234",
+        password: input.password,
         displayName: input.displayName.trim(),
         role: input.role,
         phone: input.phone?.trim(),
