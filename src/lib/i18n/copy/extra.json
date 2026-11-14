@@ -1,0 +1,891 @@
+[
+  [
+    "Claim not found for your account.",
+    "এই খাবার নেওয়ার তথ্য আপনার অ্যাকাউন্টে নেই।"
+  ],
+  [
+    "Claim not found for your NGO.",
+    "এই খাবার নেওয়ার তথ্য আপনার এনজিওতে নেই।"
+  ],
+  [
+    "A donor profile is required.",
+    "খাবার দাতার পরিচিতি দরকার।"
+  ],
+  [
+    "A volunteer profile is required.",
+    "স্বেচ্ছাসেবকের পরিচিতি দরকার।"
+  ],
+  [
+    "An NGO profile is required.",
+    "এনজিওর পরিচিতি দরকার।"
+  ],
+  [
+    "Delivery received",
+    "খাবার পাওয়া গেছে",
+    "ডেলিভারি প্রাপ্ত"
+  ],
+  [
+    "Volunteer assigned",
+    "স্বেচ্ছাসেবক ঠিক হয়েছে",
+    "ভলান্টিয়ার নির্ধারিত"
+  ],
+  [
+    "Expired",
+    "সময় শেষ হয়েছে",
+    "মেয়াদোত্তীর্ণ"
+  ],
+  [
+    "Dispatch not found.",
+    "খাবার পৌঁছানোর কাজ পাওয়া যায়নি।"
+  ],
+  [
+    "Donation not found for your account.",
+    "এই খাবারের পোস্ট আপনার অ্যাকাউন্টে নেই।"
+  ],
+  [
+    "Food request not found for your NGO.",
+    "এই চাহিদা আপনার এনজিওর তালিকায় নেই।"
+  ],
+  [
+    "Photo not found for your account.",
+    "এই ছবি আপনার অ্যাকাউন্টে নেই।"
+  ],
+  [
+    "Photo not found.",
+    "ছবি পাওয়া যায়নি।"
+  ],
+  [
+    "This rescue is paused for incident review.",
+    "সমস্যা যাচাইয়ের জন্য কাজটি থামানো আছে।"
+  ],
+  [
+    "This submission key was used for different request details.",
+    "এই জমা দেওয়ার নম্বর অন্য চাহিদায় ব্যবহার হয়েছে।"
+  ],
+  [
+    "Account settings",
+    "অ্যাকাউন্টের সেটিংস",
+    "অ্যাকাউন্ট সেটিংস"
+  ],
+  [
+    "Alerts",
+    "খবর",
+    "অ্যালার্ট"
+  ],
+  [
+    "My donations",
+    "আমার দেওয়া খাবার",
+    "আমার অনুদানসমূহ"
+  ],
+  [
+    "Post extra food",
+    "বাড়তি খাবারের পোস্ট দিন",
+    "উদ্বৃত্ত খাবার পোস্ট"
+  ],
+  [
+    "Cancelled",
+    "বাতিল হয়েছে",
+    "বাতিলকৃত"
+  ],
+  [
+    "A photo belongs to a different purpose, record or claim.",
+    "একটি ছবি অন্য কাজ বা খাবারের সঙ্গে যুক্ত।"
+  ],
+  [
+    "A receipt already exists for this delivery.",
+    "এই খাবার পাওয়ার রসিদ আগেই দেওয়া হয়েছে।"
+  ],
+  [
+    "A safe, undistributed receipt is required.",
+    "নিরাপদ খাবারের রসিদ দরকার। খাবার আগে বিতরণ করা থাকলে হবে না।"
+  ],
+  [
+    "A verified delivery handover is required.",
+    "খাবার পৌঁছানোর কোড যাচাই করতে হবে।"
+  ],
+  [
+    "Add a pickup address to your profile first.",
+    "আগে আপনার পরিচিতিতে খাবার নেওয়ার ঠিকানা দিন।"
+  ],
+  [
+    "Add a review note of at least 12 characters.",
+    "যাচাইয়ের বিষয়ে অন্তত ১২ অক্ষর লিখুন।"
+  ],
+  [
+    "Address not found for your account.",
+    "এই ঠিকানা আপনার অ্যাকাউন্টে নেই।"
+  ],
+  [
+    "Administrator",
+    "প্রধান অ্যাডমিন"
+  ],
+  [
+    "An NGO claim is required before you can report a rescue issue.",
+    "সমস্যা জানানোর আগে এনজিওকে খাবার নিতে হবে।"
+  ],
+  [
+    "An NGO or donor account is required.",
+    "এনজিও বা দাতার অ্যাকাউন্ট দরকার।"
+  ],
+  [
+    "Ask the handover owner to generate a code first.",
+    "যিনি খাবার দেবেন তাঁকে আগে কোড তৈরি করতে বলুন।"
+  ],
+  [
+    "Attach up to five uploaded photos.",
+    "নিজের দেওয়া সর্বোচ্চ পাঁচটি ছবি যোগ করুন।"
+  ],
+  [
+    "Attempt limit reached. Ask the owner for a replacement code.",
+    "চেষ্টা করার সুযোগ শেষ। নতুন কোড চেয়ে নিন।"
+  ],
+  [
+    "Check pickup times.",
+    "খাবার নেওয়ার সময় ঠিক করুন।"
+  ],
+  [
+    "Check the food and pickup times.",
+    "খাবার ও নেওয়ার সময় ঠিক করুন।"
+  ],
+  [
+    "Choose a claim for these evidence photos.",
+    "এই প্রমাণের ছবিগুলোর জন্য খাবার নেওয়ার কাজ বেছে নিন।"
+  ],
+  [
+    "Choose a dietary type.",
+    "খাওয়ার ধরন বেছে নিন।"
+  ],
+  [
+    "Choose a future deadline within 90 days.",
+    "আগামী ৯০ দিনের মধ্যে শেষ সময় দিন।"
+  ],
+  [
+    "Choose a valid distribution time, no later than now.",
+    "বিতরণের সঠিক সময় দিন। ভবিষ্যতের সময় দেওয়া যাবে না।"
+  ],
+  [
+    "Choose an available sample image.",
+    "তালিকা থেকে নমুনা ছবি বেছে নিন।"
+  ],
+  [
+    "Choose at least one photo.",
+    "অন্তত একটি ছবি বেছে নিন।"
+  ],
+  [
+    "Choose either an uploaded food photo or a sample image.",
+    "নিজের ছবি বা নমুনা ছবি যেকোনো একটি দিন।"
+  ],
+  [
+    "Choose image files.",
+    "ছবির ফাইল বেছে নিন।"
+  ],
+  [
+    "Choose issue or verify.",
+    "কোড তৈরি বা যাচাইয়ের কাজ বেছে নিন।"
+  ],
+  [
+    "Choose JPEG, PNG or WebP photos.",
+    "JPEG, PNG বা WebP ছবি দিন।"
+  ],
+  [
+    "Choose one to five photos.",
+    "এক থেকে পাঁচটি ছবি বেছে নিন।"
+  ],
+  [
+    "Choose or clear the location pin.",
+    "ম্যাপে জায়গা চিহ্নিত করুন বা আগের চিহ্ন সরান।"
+  ],
+  [
+    "Claimed or closed donations cannot be edited.",
+    "খাবার নেওয়া বা বন্ধ হয়ে যাওয়া পোস্ট বদলানো যাবে না।"
+  ],
+  [
+    "Complete the saved delivery address before publishing.",
+    "পোস্ট দেওয়ার আগে রাখা পৌঁছানোর ঠিকানা পূরণ করুন।"
+  ],
+  [
+    "Complete your active mission first.",
+    "আগে চলমান কাজ শেষ করুন।"
+  ],
+  [
+    "Confirm every food safety declaration.",
+    "খাবারের নিরাপত্তার সব ঘোষণায় টিক দিন।"
+  ],
+  [
+    "Confirm that you reviewed the donor's allergen declaration and request restrictions.",
+    "দাতার অ্যালার্জির তথ্য ও চাহিদার বিধিনিষেধ দেখেছেন কি না নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm the beneficiary privacy and consent declaration.",
+    "খাবারগ্রহীতার গোপনীয়তা ও অনুমতির ঘোষণায় টিক দিন।"
+  ],
+  [
+    "Confirm the received quantity mismatch.",
+    "পাওয়া খাবারের পরিমাণ না মেলার বিষয়টি নিশ্চিত করুন।"
+  ],
+  [
+    "Describe the damaged food condition in at least 12 characters.",
+    "খাবার নষ্ট হলে অবস্থা অন্তত ১২ অক্ষরে লিখুন।"
+  ],
+  [
+    "Describe the issue in at least 12 characters.",
+    "কী সমস্যা অন্তত ১২ অক্ষরে লিখুন।"
+  ],
+  [
+    "Discover, claim, receive, and distribute rescued food.",
+    "খাবার খুঁজুন, নিন, বুঝে নিন ও মানুষের মাঝে দিন।"
+  ],
+  [
+    "Dispatch is already accepted or expired.",
+    "কাজটি কেউ নিয়েছেন বা সময় শেষ হয়েছে।"
+  ],
+  [
+    "Disputed",
+    "সমস্যা যাচাই হচ্ছে"
+  ],
+  [
+    "Distribution cannot precede the recorded receipt.",
+    "রসিদ দেওয়ার সময়ের আগে বিতরণের সময় হতে পারে না।"
+  ],
+  [
+    "Distribution is blocked because the received food was marked damaged or poor.",
+    "পাওয়া খাবার নষ্ট বা খারাপ বলা হয়েছে। তাই বিতরণ বন্ধ আছে।"
+  ],
+  [
+    "Do not attach the same photo twice.",
+    "একই ছবি দুইবার দেবেন না।"
+  ],
+  [
+    "Donation not found.",
+    "খাবারের পোস্ট পাওয়া যায়নি।"
+  ],
+  [
+    "Donation photos are attached when you save the donation.",
+    "পোস্ট রাখার সময় খাবারের ছবি যুক্ত হয়।"
+  ],
+  [
+    "Donation reports not found for your account.",
+    "আপনার অ্যাকাউন্টে এই খাবারের সমস্যার তথ্য নেই।"
+  ],
+  [
+    "Each photo must be between 1 byte and 5 MB.",
+    "প্রতি ছবি ১ বাইট থেকে ৫ MB হতে হবে।"
+  ],
+  [
+    "Enter a valid contact phone.",
+    "যোগাযোগের সঠিক ফোন নম্বর দিন।"
+  ],
+  [
+    "Enter a valid latitude and longitude.",
+    "সঠিক অক্ষাংশ ও দ্রাঘিমাংশ দিন।"
+  ],
+  [
+    "Enter the complete six-digit code.",
+    "পুরো ৬ সংখ্যার কোড দিন।"
+  ],
+  [
+    "Evidence upload requires verified delivery.",
+    "প্রমাণের ছবি দিতে আগে খাবার পৌঁছানো যাচাই করতে হবে।"
+  ],
+  [
+    "Explain the high-priority need in at least twelve characters.",
+    "কেন জরুরি অন্তত ১২ অক্ষরে লিখুন।"
+  ],
+  [
+    "Finding match",
+    "মানানসই খাবার খোঁজা হচ্ছে"
+  ],
+  [
+    "Finish or release the linked rescues before changing or cancelling this request.",
+    "এই চাহিদা বদলানো বা বাতিলের আগে যুক্ত খাবার সংগ্রহের কাজ শেষ বা ছেড়ে দিন।"
+  ],
+  [
+    "Follow the mission sequence. Pickup and completion require OTP verification.",
+    "ধাপ অনুযায়ী কাজ করুন। খাবার নেওয়া ও পৌঁছানোতে কোড যাচাই দরকার।"
+  ],
+  [
+    "Follow the report review sequence.",
+    "সমস্যা যাচাইয়ের ধাপ মেনে চলুন।"
+  ],
+  [
+    "Food Donor",
+    "খাবার দাতা"
+  ],
+  [
+    "Handover verification is not configured. Contact the project operator.",
+    "কোড যাচাইয়ের ব্যবস্থা হয়নি। প্রজেক্টের দায়িত্বে থাকা ব্যক্তিকে জানান।"
+  ],
+  [
+    "Identity, status and fulfillment are controlled by the server.",
+    "পরিচয়, অবস্থা ও পূরণের হিসাব অ্যাপ নিজে ঠিক করে।"
+  ],
+  [
+    "Invalid account storage. Restore the data file before continuing.",
+    "অ্যাকাউন্টের রাখা তথ্যে সমস্যা। দায়িত্বে থাকা ব্যক্তিকে জানান।"
+  ],
+  [
+    "Invalid image signature",
+    "ছবির ধরন ঠিক নেই"
+  ],
+  [
+    "Invalid photo.",
+    "ছবিটি সঠিক নয়।"
+  ],
+  [
+    "Invalid request data.",
+    "পাঠানো তথ্য ঠিক নেই।"
+  ],
+  [
+    "Keep at least one address on your profile.",
+    "আপনার পরিচিতিতে অন্তত একটি ঠিকানা রাখুন।"
+  ],
+  [
+    "Load your assigned mission first.",
+    "আগে আপনার দায়িত্বের কাজের তথ্য আনুন।"
+  ],
+  [
+    "Mission not found for your account.",
+    "এই কাজ আপনার অ্যাকাউন্টে নেই।"
+  ],
+  [
+    "Moderate verification, safety, and disputes.",
+    "অ্যাকাউন্ট যাচাই, নিরাপত্তা ও সমস্যা দেখুন।"
+  ],
+  [
+    "Notification not found.",
+    "খবরটি পাওয়া যায়নি।"
+  ],
+  [
+    "Only an undistributed, delivered claim can be completed.",
+    "পৌঁছানো ও বিতরণ হয়নি এমন খাবারের কাজই শেষ করা যাবে।"
+  ],
+  [
+    "Only rescue participants can submit reports.",
+    "শুধু এই কাজের সঙ্গে যুক্ত ব্যক্তিরা সমস্যা জানাতে পারবেন।"
+  ],
+  [
+    "Only rescue participants can upload photos.",
+    "শুধু এই কাজের সঙ্গে যুক্ত ব্যক্তিরা ছবি দিতে পারবেন।"
+  ],
+  [
+    "Only the assigned volunteer can update this mission.",
+    "শুধু দায়িত্বে থাকা স্বেচ্ছাসেবক এই কাজ বদলাতে পারবেন।"
+  ],
+  [
+    "Only the assigned, verified volunteer can verify this handover.",
+    "শুধু দায়িত্বে থাকা যাচাই করা স্বেচ্ছাসেবক কোড যাচাই করতে পারবেন।"
+  ],
+  [
+    "Only the donor can issue a pickup code; only the receiving NGO can issue a delivery code.",
+    "খাবার নেওয়ার কোড দাতা ও পৌঁছানোর কোড যে এনজিও নেবে তারাই তৈরি করতে পারবেন।"
+  ],
+  [
+    "Only the receiving NGO can record a receipt.",
+    "শুধু যে এনজিও খাবার নিয়েছে তারা রসিদ দিতে পারবেন।"
+  ],
+  [
+    "Only the receiving NGO can record distribution.",
+    "শুধু যে এনজিও খাবার নিয়েছে তারা বিতরণের তথ্য দিতে পারবেন।"
+  ],
+  [
+    "Password is required.",
+    "পাসওয়ার্ড দিন।"
+  ],
+  [
+    "Pending review",
+    "যাচাইয়ের অপেক্ষায়"
+  ],
+  [
+    "People served cannot exceed recorded meals in this workflow.",
+    "এই হিসাবে খাবারের সংখ্যার চেয়ে বেশি মানুষ দেখানো যাবে না।"
+  ],
+  [
+    "Photos saved with a rescue record cannot be removed here.",
+    "কাজের তথ্যে যুক্ত ছবি এখানে সরানো যাবে না।"
+  ],
+  [
+    "Pickup and delivery require their dedicated verification workflow.",
+    "খাবার নেওয়া ও পৌঁছানো আলাদা কোড যাচাই করে নিশ্চিত করতে হবে।"
+  ],
+  [
+    "Pickup cannot start before food preparation.",
+    "খাবার তৈরির আগে নেওয়া শুরু হতে পারে না।"
+  ],
+  [
+    "Post, coordinate, and track surplus food donations.",
+    "বাড়তি খাবারের পোস্ট দিন ও নেওয়ার খোঁজ রাখুন।"
+  ],
+  [
+    "Published",
+    "পোস্ট দেওয়া হয়েছে"
+  ],
+  [
+    "Record at least one requested meal per person.",
+    "প্রতিজনের জন্য অন্তত এক বেলার খাবার দিন।"
+  ],
+  [
+    "Record the NGO delivery receipt first.",
+    "আগে এনজিওর খাবার পাওয়ার রসিদ দিন।"
+  ],
+  [
+    "Record this request's distribution at its declared delivery address.",
+    "এই চাহিদায় দেওয়া পৌঁছানোর ঠিকানায় বিতরণের তথ্য রাখুন।"
+  ],
+  [
+    "Report not found for your account.",
+    "আপনার অ্যাকাউন্টে এই সমস্যার তথ্য নেই।"
+  ],
+  [
+    "Report not found.",
+    "সমস্যার তথ্য পাওয়া যায়নি।"
+  ],
+  [
+    "Request not found.",
+    "চাহিদা পাওয়া যায়নি।"
+  ],
+  [
+    "Request status is controlled by the matching and distribution workflow.",
+    "খাবার মেলানো ও বিতরণের কাজ অনুযায়ী চাহিদার অবস্থা বদলাবে।"
+  ],
+  [
+    "Requests with recorded distribution retain their original requirements.",
+    "বিতরণের তথ্য আছে এমন চাহিদার মূল প্রয়োজন বদলানো যায় না।"
+  ],
+  [
+    "Requests with recorded pickup or delivery retain their original requirements and destination.",
+    "খাবার নেওয়া বা পৌঁছানো হয়েছে এমন চাহিদার প্রয়োজন ও ঠিকানা বদলানো যায় না।"
+  ],
+  [
+    "Select a distribution address owned by your NGO.",
+    "আপনার এনজিওর বিতরণের ঠিকানা বেছে নিন।"
+  ],
+  [
+    "Select a saved delivery address owned by your NGO.",
+    "আপনার এনজিওর রাখা পৌঁছানোর ঠিকানা বেছে নিন।"
+  ],
+  [
+    "Select an available verified NGO.",
+    "পাওয়া যাবে এমন যাচাই করা এনজিও বেছে নিন।"
+  ],
+  [
+    "Select up to five evidence file names.",
+    "সর্বোচ্চ পাঁচটি প্রমাণের ফাইল বেছে নিন।"
+  ],
+  [
+    "Select your own saved pickup address.",
+    "নিজের রাখা খাবার নেওয়ার ঠিকানা বেছে নিন।"
+  ],
+  [
+    "Support verified pickup and delivery tasks.",
+    "খাবার নেওয়া ও পৌঁছানোর কাজে সহায়তা করুন।"
+  ],
+  [
+    "Supporting document uploads are not part of this request form.",
+    "এই ফর্মে কাগজের ফাইল দেওয়া যায় না।"
+  ],
+  [
+    "The assigned mission could not be loaded. Refresh the page.",
+    "দায়িত্বের কাজ আনা যায়নি। পাতা আবার লোড করুন।"
+  ],
+  [
+    "The assigned volunteer must verify delivery before the NGO records its receipt.",
+    "এনজিও রসিদ দেওয়ার আগে স্বেচ্ছাসেবককে পৌঁছানোর কোড যাচাই করতে হবে।"
+  ],
+  [
+    "The beneficiary breakdown exceeds the total.",
+    "আলাদা দলের মানুষ যোগ করলে মোট সংখ্যার চেয়ে বেশি হচ্ছে।"
+  ],
+  [
+    "The donor-declared safe food deadline has expired. Do not distribute this batch.",
+    "দাতার বলা খাবার ভালো থাকার সময় শেষ। এই খাবার বিতরণ করবেন না।"
+  ],
+  [
+    "The donor-declared safe handover deadline has expired.",
+    "দাতার বলা খাবার দেওয়ার শেষ সময় পার হয়েছে।"
+  ],
+  [
+    "The donor-declared safe handover window has expired.",
+    "দাতার বলা খাবার দেওয়ার সময় শেষ হয়েছে।"
+  ],
+  [
+    "The NGO profile is unavailable.",
+    "এনজিওর পরিচিতি পাওয়া যাচ্ছে না।"
+  ],
+  [
+    "The NGO receipt marks this food damaged or poor; it cannot be resumed for distribution.",
+    "এনজিওর রসিদে খাবার খারাপ বা নষ্ট বলা হয়েছে। বিতরণের জন্য আবার চালু করা যাবে না।"
+  ],
+  [
+    "The photo upload could not be read.",
+    "দেওয়া ছবি পড়া যায়নি।"
+  ],
+  [
+    "The receipt has already been saved.",
+    "রসিদ আগেই রাখা হয়েছে।"
+  ],
+  [
+    "The upload is too large.",
+    "ফাইল অনেক বড়।"
+  ],
+  [
+    "This action is not available for your account role.",
+    "আপনার ভূমিকায় এই কাজ করা যায় না।"
+  ],
+  [
+    "This address is used by a donation and cannot be removed.",
+    "এই ঠিকানা খাবারের পোস্টে আছে। সরানো যাবে না।"
+  ],
+  [
+    "This address is used by a donation. Add a new address to keep pickup history accurate.",
+    "এই ঠিকানা খাবারের পোস্টে আছে। আগের তথ্য ঠিক রাখতে নতুন ঠিকানা যোগ করুন।"
+  ],
+  [
+    "This address is used by a food request and cannot be removed.",
+    "এই ঠিকানা চাহিদায় আছে। সরানো যাবে না।"
+  ],
+  [
+    "This batch cannot be resumed from its current status.",
+    "এই অবস্থা থেকে খাবারের কাজ আবার চালু করা যাবে না।"
+  ],
+  [
+    "This category is not accepted by your NGO.",
+    "আপনার এনজিও এই ধরনের খাবার নেয় না।"
+  ],
+  [
+    "This claim belongs to a different donation.",
+    "এই নেওয়ার কাজ অন্য খাবারের পোস্টের সঙ্গে যুক্ত।"
+  ],
+  [
+    "This claim can no longer be released.",
+    "এই খাবার নেওয়ার কাজ এখন ছেড়ে দেওয়া যাবে না।"
+  ],
+  [
+    "This code has already been used.",
+    "এই কোড আগেই ব্যবহার হয়েছে।"
+  ],
+  [
+    "This code has expired. Ask the owner for a replacement.",
+    "কোডের মেয়াদ শেষ। নতুন কোড চেয়ে নিন।"
+  ],
+  [
+    "This donation can no longer be cancelled.",
+    "এই খাবারের পোস্ট এখন বাতিল করা যাবে না।"
+  ],
+  [
+    "This donation does not meet the request's declared category, dietary, allergen, location or timing requirements.",
+    "খাবারটি চাহিদার ধরন, খাওয়ার নিয়ম, অ্যালার্জি, জায়গা বা সময়ের সঙ্গে মিলছে না।"
+  ],
+  [
+    "This file is not a valid, supported photo (maximum 20 megapixels).",
+    "ছবিটি ঠিক নয় বা সমর্থিত নয়। সর্বোচ্চ ২০ মেগাপিক্সেলের ছবি দিন।"
+  ],
+  [
+    "This food is already claimed, expired or unavailable.",
+    "খাবারটি কেউ নিয়েছেন, সময় শেষ বা এখন পাওয়া যাবে না।"
+  ],
+  [
+    "This handover has already been verified.",
+    "খাবার দেওয়ার কোড আগেই যাচাই হয়েছে।"
+  ],
+  [
+    "This photo is too complex. Choose a smaller image.",
+    "ছবিটি জটিল বা বড়। ছোট ছবি দিন।"
+  ],
+  [
+    "This request is closed and cannot be changed.",
+    "চাহিদা বন্ধ হয়েছে। বদলানো যাবে না।"
+  ],
+  [
+    "This request is closed, expired or already fully reserved.",
+    "চাহিদা বন্ধ, মেয়াদ শেষ বা সব খাবার রাখা হয়ে গেছে।"
+  ],
+  [
+    "This rescue is closed to new operational reports.",
+    "এই কাজে এখন নতুন সমস্যা জানানো যাবে না।"
+  ],
+  [
+    "This rescue is closed. New operational reports cannot be submitted.",
+    "কাজ বন্ধ হয়েছে। নতুন সমস্যা জানানো যাবে না।"
+  ],
+  [
+    "This submission key was already used for different report details.",
+    "এই জমা দেওয়ার নম্বর অন্য সমস্যায় ব্যবহার হয়েছে।"
+  ],
+  [
+    "Unknown address operation.",
+    "ঠিকানার এই কাজ চেনা যাচ্ছে না।"
+  ],
+  [
+    "Unsupported image",
+    "এই ছবির ধরন সমর্থিত নয়"
+  ],
+  [
+    "Upload up to five photos, each at most 5 MB.",
+    "সর্বোচ্চ পাঁচটি ছবি দিন। প্রতিটি সর্বোচ্চ ৫ MB।"
+  ],
+  [
+    "Use a multipart photo upload.",
+    "ছবি আপলোডের সঠিক পদ্ধতি ব্যবহার করুন।"
+  ],
+  [
+    "Use a supported donation operation.",
+    "খাবারের পোস্টে করা যায় এমন কাজ বেছে নিন।"
+  ],
+  [
+    "Use a valid report submission key.",
+    "সমস্যা জমার সঠিক নম্বর ব্যবহার করুন।"
+  ],
+  [
+    "Use a valid request submission key.",
+    "চাহিদা জমার সঠিক নম্বর ব্যবহার করুন।"
+  ],
+  [
+    "Use photos uploaded through this application.",
+    "এই অ্যাপে দেওয়া ছবি ব্যবহার করুন।"
+  ],
+  [
+    "Use update or cancel.",
+    "তথ্য বদলানো বা বাতিল বেছে নিন।"
+  ],
+  [
+    "useMockAuth must be used within MockAuthProvider.",
+    "লগইনের তথ্য পাওয়া যাচ্ছে না।"
+  ],
+  [
+    "Verified NGO not found.",
+    "যাচাই করা এনজিও পাওয়া যায়নি।"
+  ],
+  [
+    "Volunteer verification is pending.",
+    "স্বেচ্ছাসেবকের অ্যাকাউন্ট যাচাইয়ের অপেক্ষায়।"
+  ],
+  [
+    "You already have an open report in this category for this claim.",
+    "এই খাবারের একই ধরনের সমস্যা আগেই জানিয়েছেন।"
+  ],
+  [
+    "You can attach only your own uploaded photos.",
+    "শুধু নিজের দেওয়া ছবি যোগ করতে পারবেন।"
+  ],
+  [
+    "You cannot perform this profile operation.",
+    "আপনার পরিচিতিতে এই কাজ করা যাবে না।"
+  ],
+  [
+    "Your donor session is unavailable. Please log in again.",
+    "আপনার লগইন পাওয়া যাচ্ছে না। আবার লগইন করুন।"
+  ],
+  [
+    "Your photo storage limit has been reached. Remove unused photos or contact the project operator.",
+    "আপনার ছবি রাখার সীমা শেষ। ব্যবহার হয়নি এমন ছবি সরান বা প্রজেক্টের দায়িত্বে থাকা ব্যক্তিকে জানান।"
+  ],
+  [
+    "Your role cannot upload this kind of photo.",
+    "আপনার ভূমিকায় এই ধরনের ছবি দেওয়া যায় না।"
+  ],
+  [
+    "Donations",
+    "খাবার দান",
+    "অনুদান"
+  ],
+  [
+    "ID card",
+    "পরিচয়পত্র",
+    "আইডি কার্ড"
+  ],
+  [
+    "Available for collection",
+    "খাবার নেওয়া যাবে",
+    "উদ্ধারযোগ্য"
+  ],
+  [
+    "Find extra food",
+    "বাড়তি খাবার খুঁজুন",
+    "উদ্বৃত্ত খাদ্য অনুসন্ধান"
+  ],
+  [
+    "An account already uses this email.",
+    "এই ইমেইলে আগেই অ্যাকাউন্ট আছে।",
+    "এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে।"
+  ],
+  [
+    "An account already uses this phone number.",
+    "এই ফোন নম্বরে আগেই অ্যাকাউন্ট আছে।",
+    "এই মোবাইল নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে।"
+  ],
+  [
+    "NGO preview",
+    "এনজিওর নমুনা পাতা",
+    "এনজিও প্রিভিউ"
+  ],
+  [
+    "NGO verification and profile",
+    "এনজিও যাচাই ও পরিচিতি",
+    "এনজিও ভেরিফিকেশন ও প্রোফাইল"
+  ],
+  [
+    "Dashboard",
+    "মূল পাতা",
+    "কমান্ড"
+  ],
+  [
+    "Dashboard",
+    "মূল পাতা",
+    "কমান্ড হাব"
+  ],
+  [
+    "Reservations",
+    "নেওয়া খাবার",
+    "ক্লেইম"
+  ],
+  [
+    "My food reservations",
+    "আমার নেওয়া খাবার",
+    "ক্লেইমকৃত উদ্ধারসমূহ"
+  ],
+  [
+    "Find food",
+    "খাবার খুঁজুন",
+    "খাদ্য খুঁজুন"
+  ],
+  [
+    "Request food",
+    "খাবার চাই",
+    "চাহিদা"
+  ],
+  [
+    "Design system",
+    "ডিজাইনের নমুনা",
+    "ডিজাইন সিস্টেম"
+  ],
+  [
+    "Deliveries",
+    "পৌঁছানোর কাজ",
+    "ডিসপ্যাচ"
+  ],
+  [
+    "Delivery addresses and map pins",
+    "খাবার পৌঁছানোর ঠিকানা ও ম্যাপ",
+    "ডেলিভারি ঠিকানা ও ম্যাপ pin"
+  ],
+  [
+    "Donor preview",
+    "দাতার নমুনা পাতা",
+    "ডোনার প্রিভিউ"
+  ],
+  [
+    "Donor profile",
+    "দাতার পরিচিতি",
+    "দাতা প্রোফাইল"
+  ],
+  [
+    "Notifications and alerts",
+    "খবর ও সতর্কতা",
+    "নোটিফিকেশন ও অ্যালার্ট"
+  ],
+  [
+    "Under review",
+    "যাচাই হচ্ছে",
+    "পর্যালোচনাধীন"
+  ],
+  [
+    "Partner NGOs",
+    "সহযোগী এনজিও",
+    "পার্টনার এনজিও"
+  ],
+  [
+    "Pickup addresses",
+    "খাবার নেওয়ার ঠিকানা",
+    "পিকআপ ঠিকানা"
+  ],
+  [
+    "Post",
+    "পোস্ট দিন",
+    "পোস্ট"
+  ],
+  [
+    "Published",
+    "পোস্ট দেওয়া হয়েছে",
+    "প্রকাশিত"
+  ],
+  [
+    "Current mission",
+    "চলমান কাজ",
+    "বর্তমান মিশন"
+  ],
+  [
+    "Issue under review",
+    "সমস্যা যাচাই হচ্ছে",
+    "বিরোধ পর্যালোচনায়"
+  ],
+  [
+    "Volunteer ID card",
+    "স্বেচ্ছাসেবকের পরিচয়পত্র",
+    "ভলান্টিয়ার আইডি কার্ড"
+  ],
+  [
+    "Mission",
+    "কাজ",
+    "মিশন"
+  ],
+  [
+    "Mission history",
+    "আগের কাজ",
+    "মিশন হিস্ট্রি"
+  ],
+  [
+    "Matched",
+    "খাবার মিলেছে",
+    "ম্যাচ হয়েছে"
+  ],
+  [
+    "Finding a match",
+    "খাবার খোঁজা হচ্ছে",
+    "ম্যাচিং চলছে"
+  ],
+  [
+    "Rescue map",
+    "খাবার সংগ্রহের ম্যাপ",
+    "রেসকিউ ম্যাপ"
+  ],
+  [
+    "Could not log out. Try again.",
+    "লগআউট হয়নি। আবার চেষ্টা করুন।",
+    "লগআউট করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Picked up (in transit)",
+    "খাবার নেওয়া হয়েছে (পথে আছে)",
+    "সংগ্রহ সম্পন্ন (চলমান)"
+  ],
+  [
+    "Completed",
+    "শেষ হয়েছে",
+    "সম্পন্ন হয়েছে"
+  ],
+  [
+    "Help and support",
+    "সাহায্য নিন",
+    "সহায়তা ও হেল্পডেস্ক"
+  ],
+  [
+    "Help center",
+    "সাহায্য নিন",
+    "সহায়তা কেন্দ্র"
+  ],
+  [
+    "Could not create a session. Try logging in.",
+    "লগইন রাখা যায়নি। আবার লগইন করুন।",
+    "সেশন তৈরি করা যায়নি। লগইন করে চেষ্টা করুন।"
+  ],
+  [
+    "Could not verify your session. Try again.",
+    "আপনার লগইন যাচাই হয়নি। আবার চেষ্টা করুন।",
+    "সেশন যাচাই করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "History",
+    "আগের কাজ",
+    "হিস্ট্রি"
+  ]
+]

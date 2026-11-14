@@ -1,0 +1,17 @@
+[
+  ["Dismiss delivery offer", "কাজের পপআপ বন্ধ করো"],
+  ["Rider delivery offer", "রাইডারের নতুন কাজ"],
+  ["A food delivery needs you", "খাবার পৌঁছে দেওয়ার কাজ এসেছে"],
+  ["This job is no longer available", "এই কাজটি এখন আর পাওয়া যাচ্ছে না"],
+  ["{0} meals declared by the donor", "দাতার হিসাবে {0} বেলার খাবার"],
+  ["Collect from", "যেখান থেকে নেবে"],
+  ["Deliver to NGO", "যে NGO-র কাছে পৌঁছাবে"],
+  ["Pickup window: about {0} minutes left", "খাবার সংগ্রহের সময় আছে প্রায় {0} মিনিট"],
+  ["Pickup window: less than a minute left", "খাবার সংগ্রহের সময় এক মিনিটেরও কম"],
+  ["Exact addresses and contact details open after you accept. Other riders can also take this job.", "কাজ নিলে বিস্তারিত ঠিকানা ও যোগাযোগের তথ্য দেখাবে। অন্য রাইডারও এই কাজ নিতে পারবে।"],
+  ["The job could not be refreshed. Check again before accepting.", "কাজের নতুন অবস্থা দেখা যাচ্ছে না। নেওয়ার আগে আবার চেষ্টা করো।"],
+  ["Confirming your delivery job…", "কাজ নেওয়া নিশ্চিত হচ্ছে…"],
+  ["Take this delivery", "এই কাজটি নাও"],
+  ["Not now; keep it in the list", "এখন নয়, তালিকায় থাকুক"],
+  ["Got it", "বুঝেছি"]
+]

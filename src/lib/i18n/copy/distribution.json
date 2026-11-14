@@ -1,0 +1,9 @@
+[
+  ["Check the highlighted fields before completing distribution.", "বিতরণ সম্পন্ন করার আগে চিহ্ন দেওয়া ঘরগুলোর তথ্য ঠিক করুন।"],
+  ["Enter a valid distribution date and time.", "বিতরণের সঠিক তারিখ ও সময় দিন।"],
+  ["You can record up to {0} meals from the received food.", "পাওয়া খাবার থেকে সর্বোচ্চ {0} মিল বিতরণের হিসাব দিতে পারবেন।"],
+  ["Received at {0}", "খাবার গ্রহণ করা হয়েছে: {0}"],
+  ["Use current time", "এখনকার সময় দিন"],
+  ["Choose a distribution location", "বিতরণের জায়গা বেছে নিন"],
+  ["Select a distribution address owned by your NGO.", "আপনার NGO-এর সংরক্ষিত ঠিকানা বেছে নিন।"]
+]

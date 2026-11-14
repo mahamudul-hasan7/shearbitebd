@@ -1,0 +1,582 @@
+[
+  [
+    "A verified volunteer is assigned and preparing for pickup.",
+    "স্বেচ্ছাসেবক ঠিক হয়েছে। খাবার নেওয়ার প্রস্তুতি নিচ্ছেন।"
+  ],
+  [
+    "Awaiting schedule",
+    "সময় এখনও ঠিক হয়নি"
+  ],
+  [
+    "Choose a requested time within 90 days.",
+    "আগামী ৯০ দিনের মধ্যে খাবার চাওয়ার সময় দিন।"
+  ],
+  [
+    "Confirm how the food was prepared.",
+    "খাবার কীভাবে তৈরি হয়েছে নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm that allergen information is complete.",
+    "অ্যালার্জির তথ্য পুরো দেওয়া আছে নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm that the food is properly covered.",
+    "খাবার ভালোভাবে ঢাকা আছে নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm that the pickup deadline is realistic.",
+    "খাবার নেওয়ার শেষ সময় ঠিক আছে নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm that the submitted information is accurate.",
+    "দেওয়া তথ্য সঠিক নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm that there are no visible signs of spoilage.",
+    "চোখে পড়ার মতো খাবার নষ্ট হওয়ার লক্ষণ নেই নিশ্চিত করুন।"
+  ],
+  [
+    "Confirm the declared storage condition.",
+    "খাবার কীভাবে রাখা হয়েছে নিশ্চিত করুন।"
+  ],
+  [
+    "Contains meat",
+    "মাছ বা মাংস আছে"
+  ],
+  [
+    "Cooked meal",
+    "রান্না করা খাবার"
+  ],
+  [
+    "Delivery received. A distribution record is the next step.",
+    "খাবার পৌঁছেছে। এবার বিতরণের তথ্য দিন।"
+  ],
+  [
+    "Describe the food and packaging condition.",
+    "খাবার ও প্যাকেটের অবস্থা লিখুন।"
+  ],
+  [
+    "Distribution is complete and included in mock impact records.",
+    "বিতরণ শেষ। তথ্য অবদানের হিসাবে রাখা হয়েছে।"
+  ],
+  [
+    "Donation reserved. Waiting for a verified volunteer assignment.",
+    "খাবার রাখা হয়েছে। যাচাই করা স্বেচ্ছাসেবক ঠিক হওয়ার অপেক্ষায়।"
+  ],
+  [
+    "Due now",
+    "এখনই আসার কথা"
+  ],
+  [
+    "Enter a food title.",
+    "খাবারের নাম দিন।"
+  ],
+  [
+    "Enter a pickup address.",
+    "খাবার নেওয়ার ঠিকানা দিন।"
+  ],
+  [
+    "Enter a positive quantity.",
+    "শূন্যের চেয়ে বেশি পরিমাণ দিন।"
+  ],
+  [
+    "Enter a positive whole number.",
+    "শূন্যের চেয়ে বেশি পূর্ণ সংখ্যা দিন।"
+  ],
+  [
+    "Enter a request title.",
+    "চাহিদার নাম দিন।"
+  ],
+  [
+    "Enter a valid preparation date and time.",
+    "খাবার তৈরির সঠিক তারিখ ও সময় দিন।"
+  ],
+  [
+    "Enter a valid requested date and time.",
+    "খাবার চাওয়ার সঠিক তারিখ ও সময় দিন।"
+  ],
+  [
+    "Enter a valid safe pickup deadline.",
+    "খাবার নেওয়ার সঠিক শেষ সময় দিন।"
+  ],
+  [
+    "Enter the approximate public pickup area.",
+    "সবাই দেখতে পাবে এমন কাছাকাছি এলাকা দিন।"
+  ],
+  [
+    "Enter the city.",
+    "শহরের নাম দিন।"
+  ],
+  [
+    "Enter the delivery area.",
+    "পৌঁছানোর এলাকা দিন।"
+  ],
+  [
+    "Enter the full delivery address.",
+    "পৌঁছানোর পুরো ঠিকানা দিন।"
+  ],
+  [
+    "Enter the intended recipient group.",
+    "কারা খাবার পাবেন লিখুন।"
+  ],
+  [
+    "Enter the pickup contact person.",
+    "খাবার নেওয়ার জন্য যোগাযোগের ব্যক্তির নাম দিন।"
+  ],
+  [
+    "Enter the preparation date and time.",
+    "খাবার তৈরির তারিখ ও সময় দিন।"
+  ],
+  [
+    "Enter the safe pickup deadline.",
+    "নিরাপদে খাবার নেওয়ার শেষ সময় দিন।"
+  ],
+  [
+    "Explain how the food will be used.",
+    "খাবার কী কাজে লাগবে লিখুন।"
+  ],
+  [
+    "Explain the high priority in at least twelve characters.",
+    "কেন জরুরি অন্তত ১২ অক্ষরে লিখুন।"
+  ],
+  [
+    "Food was picked up and is travelling to your NGO.",
+    "খাবার নেওয়া হয়েছে। আপনার এনজিওর পথে আছে।"
+  ],
+  [
+    "Fresh produce",
+    "তাজা সবজি ও ফল"
+  ],
+  [
+    "Hot holding",
+    "গরম অবস্থায় রাখা"
+  ],
+  [
+    "List allergens or enter ‘None known’.",
+    "অ্যালার্জি হতে পারে এমন উপাদান লিখুন। না থাকলে ‘জানা নেই’ লিখুন।"
+  ],
+  [
+    "NGO / Organization",
+    "এনজিও / প্রতিষ্ঠান"
+  ],
+  [
+    "Normal progression is paused while the reported issue is reviewed.",
+    "সমস্যা যাচাইয়ের জন্য স্বাভাবিক কাজ থামানো আছে।"
+  ],
+  [
+    "Requested time must be in the future.",
+    "খাবার চাওয়ার সময় ভবিষ্যতের হতে হবে।"
+  ],
+  [
+    "Safe pickup deadline must be after preparation time.",
+    "খাবার নেওয়ার শেষ সময় তৈরির পরে হতে হবে।"
+  ],
+  [
+    "Safe pickup deadline must be in the future.",
+    "খাবার নেওয়ার শেষ সময় ভবিষ্যতের হতে হবে।"
+  ],
+  [
+    "Select a saved pickup address.",
+    "আগে রাখা খাবার নেওয়ার ঠিকানা বেছে নিন।"
+  ],
+  [
+    "Select an owned saved address.",
+    "নিজের রাখা ঠিকানা বেছে নিন।"
+  ],
+  [
+    "Select at least one dietary preference.",
+    "অন্তত একটি খাওয়ার ধরন বেছে নিন।"
+  ],
+  [
+    "Select at least one food category.",
+    "অন্তত এক ধরনের খাবার বেছে নিন।"
+  ],
+  [
+    "The rescue window expired before completion.",
+    "কাজ শেষ হওয়ার আগে খাবার নেওয়ার সময় শেষ হয়েছে।"
+  ],
+  [
+    "This claim was released and is no longer active.",
+    "খাবার নেওয়ার কাজ ছেড়ে দেওয়া হয়েছে। এখন আর চালু নেই।"
+  ],
+  [
+    "Unknown time",
+    "সময় জানা নেই",
+    "অজানা সময়"
+  ],
+  [
+    "Very urgent",
+    "খুব জরুরি",
+    "অতি জরুরি (দ্রুত রেসকিউ)"
+  ],
+  [
+    "Other food",
+    "অন্য খাবার",
+    "অন্যান্য খাবার"
+  ],
+  [
+    "Other dietary requirement",
+    "অন্য খাওয়ার নিয়ম",
+    "অন্যান্য বিশেষ খাদ্য"
+  ],
+  [
+    "Enter your email address.",
+    "আপনার ইমেইল দিন।",
+    "আপনার ইমেইল ঠিকানা লিখুন।"
+  ],
+  [
+    "Enter your email or phone number.",
+    "আপনার ইমেইল বা ফোন নম্বর দিন।",
+    "আপনার ইমেইল বা মোবাইল নম্বর লিখুন।"
+  ],
+  [
+    "Enter your full name.",
+    "আপনার পুরো নাম লিখুন।",
+    "আপনার পুরো নাম লিখুন।"
+  ],
+  [
+    "Enter your city or district.",
+    "আপনার শহর বা জেলার নাম লিখুন।",
+    "আপনার শহর বা জেলার নাম লিখুন।"
+  ],
+  [
+    "Enter your active phone number.",
+    "আপনার চালু ফোন নম্বর দিন।",
+    "আপনার সচল মোবাইল নম্বর লিখুন।"
+  ],
+  [
+    "Contains fish or meat",
+    "মাছ বা মাংস আছে",
+    "আমিষযুক্ত (মাংস/মাছ)"
+  ],
+  [
+    "Awaiting collection",
+    "খাবার নেওয়ার অপেক্ষায়",
+    "উদ্ধারের অপেক্ষায়"
+  ],
+  [
+    "Extra food posted",
+    "বাড়তি খাবারের পোস্ট দেওয়া হয়েছে",
+    "উদ্বৃত্ত খাবার পোস্টকৃত"
+  ],
+  [
+    "This reservation has been cancelled.",
+    "খাবার নেওয়ার কাজ বাতিল হয়েছে।",
+    "এই ক্লেইমটি বাতিল করা হয়েছে।"
+  ],
+  [
+    "Due now",
+    "এখনই আসার কথা",
+    "এখনই পৌঁছানোর কথা"
+  ],
+  [
+    "Reserved by an NGO",
+    "এনজিও খাবার নিয়েছে",
+    "এনজিও ক্লেইম করেছে"
+  ],
+  [
+    "Enter the city or district where you work.",
+    "যে শহর বা জেলায় কাজ করেন লিখুন।",
+    "কার্যনির্বাহী শহর বা জেলার নাম লিখুন।"
+  ],
+  [
+    "Draft listing",
+    "খসড়া পোস্ট",
+    "খসড়া তালিকা"
+  ],
+  [
+    "Food reserved. Waiting for a verified volunteer.",
+    "খাবার রাখা হয়েছে। যাচাই করা স্বেচ্ছাসেবকের অপেক্ষায়।",
+    "খাদ্য লট সংরক্ষিত হয়েছে। ভেরিফায়েড ভলান্টিয়ার বরাদ্দের অপেক্ষায় রয়েছে।"
+  ],
+  [
+    "Accept the food safety and truthful information terms.",
+    "খাবারের নিরাপত্তা ও সঠিক তথ্য দেওয়ার শর্তে টিক দিন।",
+    "খাদ্য সুরক্ষা ও সত্যতা স্বীকারোক্তি শর্তাবলী গ্রহণ করতে হবে।"
+  ],
+  [
+    "Food received by the NGO. Record distribution next.",
+    "এনজিও খাবার পেয়েছে। এবার বিতরণের তথ্য দিন।",
+    "খাবার এনজিও কেন্দ্রে সফলভাবে পৌঁছেছে। এখন বিতরণ রিপোর্ট প্রস্তুত করুন।"
+  ],
+  [
+    "Enter the pickup address.",
+    "খাবার নেওয়ার ঠিকানা দিন।",
+    "খাবার পিকআপের প্রাথমিক ঠিকানা দিন।"
+  ],
+  [
+    "Pickup complete",
+    "খাবার নেওয়া হয়েছে",
+    "খাবার সংগ্রহ সম্পন্ন"
+  ],
+  [
+    "Food collected. The volunteer is on the way to the NGO.",
+    "খাবার নেওয়া হয়েছে। স্বেচ্ছাসেবক এনজিওর পথে আছেন।",
+    "খাবার সংগ্রহ সম্পন্ন। রাইডার এনজিও কেন্দ্রের পথে রওনা হয়েছে।"
+  ],
+  [
+    "Kept hot (above 60°C)",
+    "গরম অবস্থায় রাখা (৬০°সে-এর বেশি)",
+    "গরম অবস্থায় সংরক্ষিত (>৬০°সে)"
+  ],
+  [
+    "Gluten free",
+    "গ্লুটেন ছাড়া",
+    "গ্লুটেন মুক্ত"
+  ],
+  [
+    "High priority",
+    "জরুরি",
+    "জরুরি অগ্রাধিকার"
+  ],
+  [
+    "Upload a national ID or student ID.",
+    "জাতীয় পরিচয়পত্র বা স্টুডেন্ট আইডি দিন।",
+    "জাতীয় পরিচয়পত্র বা স্টুডেন্ট আইডি আপলোড করুন।"
+  ],
+  [
+    "Trays / large pots",
+    "ট্রে / ডেকচি",
+    "ট্রে / ডেকচি"
+  ],
+  [
+    "Address not available",
+    "ঠিকানা দেখা যাচ্ছে না",
+    "ঠিকানা উন্মুক্ত নয়"
+  ],
+  [
+    "Frozen (-18°C)",
+    "ডিপ ফ্রিজে রাখা (-১৮°সে)",
+    "ডিপ ফ্রিজ (-১৮°সে)"
+  ],
+  [
+    "Delivered to the shelter",
+    "আশ্রয়কেন্দ্রে খাবার পৌঁছেছে",
+    "ডেলিভারি প্রাপ্ত (শেল্টারে)"
+  ],
+  [
+    "Fresh vegetables / fruit",
+    "তাজা সবজি / ফল",
+    "তাজা শাকসবজি / ফল"
+  ],
+  [
+    "Choose your donor type.",
+    "কী ধরনের দাতা বেছে নিন।",
+    "দাতার ধরন নির্বাচন করুন।"
+  ],
+  [
+    "Enter the contact person's name.",
+    "যোগাযোগের ব্যক্তির নাম দিন।",
+    "দায়িত্বপ্রাপ্ত কর্মকর্তার নাম লিখুন।"
+  ],
+  [
+    "The passwords do not match.",
+    "দুটি পাসওয়ার্ড মিলছে না।",
+    "দুটি পাসওয়ার্ড মিলছে না।"
+  ],
+  [
+    "Enter the safe food deadline.",
+    "খাবার ভালো থাকার শেষ সময় দিন।",
+    "নিরাপদ ব্যবহারের শেষ সময় দিন।"
+  ],
+  [
+    "The safe food deadline must be in the future.",
+    "খাবার ভালো থাকার শেষ সময় ভবিষ্যতের হতে হবে।",
+    "নিরাপদ মেয়াদ অবশ্যই ভবিষ্যতের সময় হতে হবে।"
+  ],
+  [
+    "The safe food deadline must be after cooking.",
+    "খাবার ভালো থাকার শেষ সময় রান্নার পরে হতে হবে।",
+    "নিরাপদ মেয়াদ অবশ্যই রান্নার সময়ের পরে হতে হবে।"
+  ],
+  [
+    "Vegetarian",
+    "নিরামিষ",
+    "নিরামিষ (ভেজিটেরিয়ান)"
+  ],
+  [
+    "The pickup time has expired.",
+    "খাবার নেওয়ার সময় শেষ।",
+    "নির্ধারিত পিকআপের সময়সীমা শেষ হয়ে গেছে।"
+  ],
+  [
+    "Enter your preferred service area.",
+    "পছন্দের কাজের এলাকা দিন।",
+    "পছন্দনীয় সেবাদান এলাকা লিখুন।"
+  ],
+  [
+    "Choose your transport.",
+    "যাতায়াতের বাহন বেছে নিন।",
+    "পরিবহন মাধ্যম নির্বাচন করুন।"
+  ],
+  [
+    "Drinks and juice",
+    "পানীয় ও জুস",
+    "পানীয় ও জুস"
+  ],
+  [
+    "Use at least 8 characters for your password.",
+    "পাসওয়ার্ড অন্তত ৮ অক্ষরের দিন।",
+    "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।"
+  ],
+  [
+    "Confirm your password.",
+    "পাসওয়ার্ড আবার দিন।",
+    "পাসওয়ার্ডটি পুনরায় নিশ্চিত করুন।"
+  ],
+  [
+    "Include at least one letter and one number in your password.",
+    "পাসওয়ার্ডে অন্তত একটি ইংরেজি বর্ণ ও একটি সংখ্যা দিন।",
+    "পাসওয়ার্ডে কমপক্ষে একটি বর্ণ ও একটি সংখ্যা থাকতে হবে।"
+  ],
+  [
+    "Set a pickup start time.",
+    "খাবার নেওয়া শুরুর সময় দিন।",
+    "পিকআপ শুরুর সময় নির্ধারণ করুন।"
+  ],
+  [
+    "Pickup must end after it starts.",
+    "খাবার নেওয়ার শেষ সময় শুরুর পরে হতে হবে।",
+    "পিকআপ শেষের সময় অবশ্যই শুরুর সময়ের পরে হতে হবে।"
+  ],
+  [
+    "Set a pickup end time.",
+    "খাবার নেওয়ার শেষ সময় দিন।",
+    "পিকআপ শেষের সময় নির্ধারণ করুন।"
+  ],
+  [
+    "Pickup must finish on or before the safe food deadline.",
+    "খাবার ভালো থাকার শেষ সময়ের মধ্যে নেওয়া শেষ করতে হবে।",
+    "পিকআপের শেষ সময় অবশ্যই খাবারের নিরাপদ মেয়াদের (Safe Until) সমান বা আগে হতে হবে।"
+  ],
+  [
+    "Choose who will receive the food.",
+    "কারা খাবার পাবেন বেছে নিন।",
+    "প্রধান সুবিধাভোগী শ্রেণি নির্বাচন করুন।"
+  ],
+  [
+    "Portions / plates",
+    "অংশ / প্লেট",
+    "প্লেট / অংশ"
+  ],
+  [
+    "Distribution complete and recorded in your impact.",
+    "বিতরণ শেষ। অবদানের হিসাবে রাখা হয়েছে।",
+    "বিতরণ সফলভাবে সম্পন্ন হয়েছে এবং জাতীয় ইমপ্যাক্ট রেকর্ডে অন্তর্ভুক্ত।"
+  ],
+  [
+    "Bakery and pastry",
+    "বেকারি ও পেস্ট্রি",
+    "বেকারি ও পেস্ট্রি"
+  ],
+  [
+    "Volunteer assigned",
+    "স্বেচ্ছাসেবক ঠিক হয়েছে",
+    "ভলান্টিয়ার রাইডার নির্ধারিত"
+  ],
+  [
+    "Volunteer assigned and preparing for pickup.",
+    "স্বেচ্ছাসেবক ঠিক হয়েছে। খাবার নেওয়ার প্রস্তুতি নিচ্ছেন।",
+    "ভেরিফায়েড ভলান্টিয়ার নির্ধারিত হয়েছে এবং পিকআপের উদ্দেশ্যে প্রস্তুত।"
+  ],
+  [
+    "Meals / plates",
+    "বেলার খাবার / প্লেট",
+    "মিল / প্লেট"
+  ],
+  [
+    "Cooked food",
+    "রান্না করা খাবার",
+    "রান্না করা খাবার"
+  ],
+  [
+    "Schedule not set",
+    "সময় ঠিক হয়নি",
+    "শিডিউল নির্ধারিত হয়নি"
+  ],
+  [
+    "Delivered to shelter",
+    "আশ্রয়কেন্দ্রে পৌঁছেছে",
+    "শেল্টারে পৌঁছেছে"
+  ],
+  [
+    "Picked up (in transit)",
+    "খাবার নেওয়া হয়েছে (পথে আছে)",
+    "সংগ্রহ সম্পন্ন (ট্রানজিটে)"
+  ],
+  [
+    "Enter the organization's headquarters address.",
+    "প্রতিষ্ঠানের মূল অফিসের ঠিকানা দিন।",
+    "সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা লিখুন।"
+  ],
+  [
+    "Describe the organization's food distribution capacity.",
+    "প্রতিষ্ঠান কত খাবার বিতরণ করতে পারে লিখুন।",
+    "সংস্থার খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ লিখুন।"
+  ],
+  [
+    "Enter the organization's name.",
+    "প্রতিষ্ঠানের নাম দিন।",
+    "সংস্থার প্রাতিষ্ঠানিক নাম লিখুন।"
+  ],
+  [
+    "Upload the organization's registration document or certificate.",
+    "প্রতিষ্ঠানের নিবন্ধনের কাগজ বা সনদ দিন।",
+    "সংস্থার সরকারি নিবন্ধন কপি বা সনদ আপলোড করুন।"
+  ],
+  [
+    "Choose your available hours.",
+    "কখন সময় দিতে পারবেন বেছে নিন।",
+    "সক্রিয় থাকার সময় নির্বাচন করুন।"
+  ],
+  [
+    "Enter a valid email address (for example, name@example.com).",
+    "সঠিক ইমেইল দিন (যেমন: name@example.com)।",
+    "সঠিক ইমেইল ঠিকানা দিন (যেমন: name@example.com)।"
+  ],
+  [
+    "Enter a valid Bangladeshi phone number (for example, 01712345678 or +8801712345678).",
+    "সঠিক বাংলাদেশি ফোন নম্বর দিন (যেমন: 01712345678 বা +8801712345678)।",
+    "সঠিক বাংলাদেশি মোবাইল নম্বর দিন (যেমন: 01712345678 বা +8801712345678)।"
+  ],
+  [
+    "Choose a valid preparation date and time.",
+    "রান্নার সঠিক তারিখ ও সময় দিন।",
+    "সঠিক রান্নার তারিখ ও সময় নির্বাচন করুন।"
+  ],
+  [
+    "Food rescue paused while the issue is reviewed.",
+    "সমস্যা যাচাইয়ের জন্য খাবার সংগ্রহ থামানো আছে।",
+    "সমস্যা পর্যালোচনার কারণে রেসকিউ সাময়িকভাবে স্থগিত রয়েছে।"
+  ],
+  [
+    "Vegan",
+    "পুরো উদ্ভিদজাত খাবার",
+    "সম্পূর্ণ উদ্ভিদজাত (ভেগান)"
+  ],
+  [
+    "Enter a government registration or license number.",
+    "সরকারি নিবন্ধন বা লাইসেন্স নম্বর দিন।",
+    "সরকারি নিবন্ধন বা লাইসেন্স নম্বর দিন।"
+  ],
+  [
+    "Room temperature",
+    "ঘরের তাপমাত্রায় রাখা",
+    "সাধারণ তাপমাত্রা (রুম টেম্পারেচার)"
+  ],
+  [
+    "Normal",
+    "স্বাভাবিক",
+    "স্বাভাবিক"
+  ],
+  [
+    "Refrigerated (4°C)",
+    "ফ্রিজে রাখা (৪°সে)",
+    "হিমায়িত (রেফ্রিজারেটেড ৪°সে)"
+  ],
+  [
+    "Halal",
+    "হালাল",
+    "১০০% হালাল"
+  ]
+]

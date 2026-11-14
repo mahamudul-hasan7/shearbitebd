@@ -1,0 +1,23 @@
+[
+  ["Your notification inbox", "তোমার নোটিফিকেশনের খবর"],
+  ["Time unavailable", "সময় পাওয়া যায়নি"],
+  ["See notification details", "বিস্তারিত দেখো"],
+  ["No matching updates", "এমন কোনো খবর পাওয়া যায়নি"],
+  ["Try another search or switch to all updates.", "অন্য কিছু লিখে খোঁজো, অথবা সব খবর দেখো।"],
+  ["You're all caught up", "সব খবর পড়া হয়ে গেছে"],
+  ["New unread updates will appear here.", "নতুন কোনো খবর এলে এখানে দেখতে পাবে।"],
+  ["Updates about your food-sharing activity will appear here.", "খাবারের পোস্ট, সংগ্রহ ও ডেলিভারির খবর এখানে দেখতে পাবে।"],
+  ["Checking your updates", "তোমার খবরগুলো আনা হচ্ছে"],
+  ["Your latest food-sharing updates", "তোমার কাজের সাম্প্রতিক খবর"],
+  ["{0} unread updates", "{0}টি খবর এখনো পড়া হয়নি"],
+  ["Your food-sharing updates, all in one place.", "খাবারের পোস্ট, সংগ্রহ ও ডেলিভারির সব খবর এক জায়গায়।"],
+  ["Your activity, without missing a step.", "প্রয়োজনীয় খবরগুলো এক নজরে দেখে নাও।"],
+  ["Notification filters", "খবর বাছাই"],
+  ["Find a notification", "নোটিফিকেশন খোঁজো"],
+  ["Clear notification search", "খোঁজার লেখা মুছে দাও"],
+  ["{0} updates", "{0}টি খবর"],
+  ["Earlier", "আগের খবর"],
+  ["New notification", "নতুন নোটিফিকেশন"],
+  ["New food-sharing update", "তোমার কাজের নতুন খবর"],
+  ["Close notification", "নোটিফিকেশন বন্ধ করো"]
+]

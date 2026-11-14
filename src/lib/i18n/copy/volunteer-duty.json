@@ -1,0 +1,17 @@
+[
+  ["Duty status", "ডিউটির অবস্থা"],
+  ["Duty ON/OFF", "ডিউটি অন/অফ"],
+  ["Duty ON", "ডিউটি ON"],
+  ["Duty OFF", "ডিউটি OFF"],
+  ["Checking duty status…", "ডিউটির অবস্থা দেখা হচ্ছে…"],
+  ["Saving duty status…", "ডিউটির অবস্থা সেভ হচ্ছে…"],
+  ["ON lets you accept new missions. OFF pauses new missions; you can still view the list.", "ON থাকলে নতুন মিশন নিতে পারবেন। OFF থাকলে তালিকা দেখতে পারবেন, তবে নতুন মিশন নিতে পারবেন না।"],
+  ["Mission in progress", "মিশন চলছে"],
+  ["Finish your current mission before accepting another one.", "আরেকটি মিশন নেওয়ার আগে চলমান মিশনটি শেষ করুন।"],
+  ["Turning duty OFF does not cancel your current mission. Continue it as usual.", "ডিউটি OFF করলেও চলমান মিশন বাতিল হবে না। মিশনের কাজ আগের মতোই চালাতে পারবেন।"],
+  ["Turn duty ON before accepting a new mission.", "নতুন মিশন নিতে আগে ডিউটি ON করুন।"],
+  ["Choose duty ON or OFF.", "ডিউটি ON বা OFF বেছে নিন।"],
+  ["Volunteer verification is required before going on duty.", "ডিউটি ON করতে আগে রাইডার অ্যাকাউন্টের যাচাই শেষ হতে হবে।"],
+  ["Duty status could not load. Try again.", "ডিউটির অবস্থা দেখা যায়নি। আবার চেষ্টা করুন।"],
+  ["Duty status could not be saved. Try again.", "ডিউটির অবস্থা সেভ হয়নি। আবার চেষ্টা করুন।"]
+]
