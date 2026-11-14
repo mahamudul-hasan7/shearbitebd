@@ -1,9 +1,10 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { AlertTriangle, Ban, Check, Info, Pencil, Send, X, ShieldAlert } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -48,8 +49,10 @@ export function DonationActions({
   onEdit,
   onCancel,
   onReport,
+  reportHref,
 }: {
   donation: DonationView;
+  reportHref?: string;
   canEdit: boolean;
   canCancel: boolean;
   canReport: boolean;
@@ -57,6 +60,7 @@ export function DonationActions({
   onCancel: (reason: string) => Promise<void>;
   onReport: (input: CreateDonationIncidentInput) => Promise<void>;
 }) {
+  const tx = useUiText();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [action, setAction] = useState<ActionKind>("edit");
   const [busy, setBusy] = useState(false);
@@ -181,9 +185,8 @@ export function DonationActions({
           onClick={() => open("edit")}
           className="w-full justify-start font-bold border-line hover:border-emerald-300 hover:bg-emerald-50/50"
         >
-          অনুদানের তথ্য সম্পাদনা
-        </Button>
-        <Button
+          {tx("অনুদানের তথ্য সম্পাদনা")}</Button>
+        {reportHref ? <ButtonLink href={reportHref} variant="outline" className="w-full justify-start">{tx("Report an issue / history")}</ButtonLink> : <Button
           type="button"
           variant="outline"
           leftIcon={<AlertTriangle className="size-4 text-amber-500" />}
@@ -191,8 +194,7 @@ export function DonationActions({
           onClick={() => open("issue")}
           className="w-full justify-start font-bold border-line hover:border-amber-300 hover:bg-amber-50/50"
         >
-          সমস্যা রিপোর্ট করুন
-        </Button>
+          {tx("সমস্যা রিপোর্ট করুন")}</Button>}
         <Button
           type="button"
           variant="danger"
@@ -201,8 +203,7 @@ export function DonationActions({
           onClick={() => open("cancel")}
           className="w-full justify-start font-bold"
         >
-          অনুদান বাতিল করুন
-        </Button>
+          {tx("অনুদান বাতিল করুন")}</Button>
       </div>
 
       <dialog
@@ -232,36 +233,36 @@ export function DonationActions({
               {descriptionText}
             </p>
           </div>
-          <IconButton autoFocus label="বন্ধ করুন" onClick={close}>
+          <IconButton autoFocus label={tx("বন্ধ করুন")} onClick={close}>
             <X className="size-5" />
           </IconButton>
         </div>
 
         <form onSubmit={submit} noValidate>
           <div className="grid gap-5 p-5 sm:p-6">
-            {error && <Alert tone="danger" title="কার্যক্রম সম্পন্ন করা যায়নি" description={error} />}
+            {error && <Alert tone="danger" title={tx("কার্যক্রম সম্পন্ন করা যায়নি")} description={tx(error)} />}
 
             {action === "edit" && (
               <>
                 <Input
-                  label="খাবারের শিরোনাম"
+                  label={tx("খাবারের শিরোনাম")}
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
                   error={fieldErrors.title}
-                  placeholder="যেমন: দুপুরের স্পেশাল পোলাও ও রোস্ট"
+                  placeholder={tx("যেমন: দুপুরের স্পেশাল পোলাও ও রোস্ট")}
                   required
                 />
                 <Textarea
-                  label="খাবারের বিস্তারিত বিবরণ"
+                  label={tx("খাবারের বিস্তারিত বিবরণ")}
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   error={fieldErrors.description}
-                  placeholder="খাবারের উপাদান, প্যাকেট সংখ্যা এবং বিশেষ হাইজিন তথ্যাদি..."
+                  placeholder={tx("খাবারের উপাদান, প্যাকেট সংখ্যা এবং বিশেষ হাইজিন তথ্যাদি...")}
                   required
                 />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Input
-                    label={`খাবারের মোট পরিমাণ (${unitLabel})`}
+                    label={tx("খাবারের মোট পরিমাণ ({0})", unitLabel)}
                     type="number"
                     min="0.1"
                     step="0.1"
@@ -271,7 +272,7 @@ export function DonationActions({
                     required
                   />
                   <Input
-                    label="আনুমানিক খাদ্যগ্রহীতা (জন)"
+                    label={tx("আনুমানিক খাদ্যগ্রহীতা (জন)")}
                     type="number"
                     min="1"
                     step="1"
@@ -282,7 +283,7 @@ export function DonationActions({
                   />
                 </div>
                 <Input
-                  label="নিরাপদ পিকআপের সর্বোচ্চ মেয়াদ (ডেডলাইন)"
+                  label={tx("নিরাপদ পিকআপের সর্বোচ্চ মেয়াদ (ডেডলাইন)")}
                   type="datetime-local"
                   value={deadline}
                   onChange={(event) => setDeadline(event.target.value)}
@@ -291,7 +292,7 @@ export function DonationActions({
                 />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Input
-                    label="পিকআপ উইন্ডো শুরু"
+                    label={tx("পিকআপ উইন্ডো শুরু")}
                     type="datetime-local"
                     value={pickupStart}
                     onChange={(event) => setPickupStart(event.target.value)}
@@ -299,7 +300,7 @@ export function DonationActions({
                     required
                   />
                   <Input
-                    label="পিকআপ উইন্ডো সমাপ্তি"
+                    label={tx("পিকআপ উইন্ডো সমাপ্তি")}
                     type="datetime-local"
                     value={pickupEnd}
                     onChange={(event) => setPickupEnd(event.target.value)}
@@ -308,10 +309,10 @@ export function DonationActions({
                   />
                 </div>
                 <Textarea
-                  label="রাইডারের জন্য বিশেষ নির্দেশনা (ঐচ্ছিক)"
+                  label={tx("রাইডারের জন্য বিশেষ নির্দেশনা (ঐচ্ছিক)")}
                   value={instructions}
                   onChange={(event) => setInstructions(event.target.value)}
-                  placeholder="ক্যাফেটেরিয়ার পেছনের সার্ভিস গেট ব্যবহার করুন..."
+                  placeholder={tx("ক্যাফেটেরিয়ার পেছনের সার্ভিস গেট ব্যবহার করুন...")}
                 />
               </>
             )}
@@ -320,28 +321,28 @@ export function DonationActions({
               <>
                 <Alert
                   tone="warning"
-                  title="বাতিলের কারণ আবশ্যক"
-                  description="অনুদান বাতিল করলে সেটি অপরিবর্তনীয় এবং অনুদানের হিস্ট্রিতে কারণটি স্থায়ীভাবে সংরক্ষিত থাকবে।"
+                  title={tx("বাতিলের কারণ আবশ্যক")}
+                  description={tx("অনুদান বাতিল করলে সেটি অপরিবর্তনীয় এবং অনুদানের হিস্ট্রিতে কারণটি স্থায়ীভাবে সংরক্ষিত থাকবে।")}
                 />
                 <Select
-                  label="বাতিলের সুনির্দিষ্ট কারণ নির্বাচন করুন"
+                  label={tx("বাতিলের সুনির্দিষ্ট কারণ নির্বাচন করুন")}
                   value={cancelReason}
                   onChange={(event) => setCancelReason(event.target.value)}
                   error={fieldErrors.cancellationReason}
                   required
                 >
-                  <option value="">একটি কারণ নির্বাচন করুন</option>
+                  <option value="">{tx("একটি কারণ নির্বাচন করুন")}</option>
                   {CANCELLATION_REASONS_BN.map((reason) => (
                     <option key={reason.value} value={reason.value}>
-                      {reason.label}
+                      {tx(reason.label)}
                     </option>
                   ))}
                 </Select>
                 <Textarea
-                  label="অতিরিক্ত মন্তব্য বা ব্যাখ্যা (ঐচ্ছিক)"
+                  label={tx("অতিরিক্ত মন্তব্য বা ব্যাখ্যা (ঐচ্ছিক)")}
                   value={cancelDetails}
                   onChange={(event) => setCancelDetails(event.target.value)}
-                  placeholder="বিস্তারিত নোট লিখুন..."
+                  placeholder={tx("বিস্তারিত নোট লিখুন...")}
                 />
               </>
             )}
@@ -350,44 +351,44 @@ export function DonationActions({
               <>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Select
-                    label="সমস্যার ধরণ"
+                    label={tx("সমস্যার ধরণ")}
                     value={incidentType}
                     onChange={(event) => setIncidentType(event.target.value as IncidentType)}
                   >
                     {Object.values(IncidentType).map((item) => (
                       <option key={item} value={item}>
-                        {INCIDENT_LABELS_BN[item] || item}
+                        {tx(INCIDENT_LABELS_BN[item] || item)}
                       </option>
                     ))}
                   </Select>
                   <Select
-                    label="তীব্রতা / অগ্রাধিকার"
+                    label={tx("তীব্রতা / অগ্রাধিকার")}
                     value={severity}
                     onChange={(event) => setSeverity(event.target.value as PriorityLevel)}
                   >
                     {Object.values(PriorityLevel).map((item) => (
                       <option key={item} value={item}>
-                        {PRIORITY_LABELS_BN[item] || item}
+                        {tx(PRIORITY_LABELS_BN[item] || item)}
                       </option>
                     ))}
                   </Select>
                 </div>
                 <Textarea
-                  label="সমস্যার বিস্তারিত বিবরণ"
+                  label={tx("সমস্যার বিস্তারিত বিবরণ")}
                   value={issueDescription}
                   onChange={(event) => setIssueDescription(event.target.value)}
                   error={fieldErrors.description}
-                  placeholder="কী ঘটেছে এবং কী ধরণের সহায়তা প্রয়োজন তা বিস্তারিত লিখুন..."
+                  placeholder={tx("কী ঘটেছে এবং কী ধরণের সহায়তা প্রয়োজন তা বিস্তারিত লিখুন...")}
                   required
                 />
                 <Select
-                  label="পছন্দের যোগাযোগ মাধ্যম"
+                  label={tx("পছন্দের যোগাযোগ মাধ্যম")}
                   value={contactMethod}
                   onChange={(event) => setContactMethod(event.target.value as CreateDonationIncidentInput["preferredContactMethod"])}
                 >
-                  <option value="IN_APP">ইন-অ্যাপ নোটিফিকেশন</option>
-                  <option value="PHONE">সরাসরি ফোন কল</option>
-                  <option value="EMAIL">ইমেইল বার্তা</option>
+                  <option value="IN_APP">{tx("ইন-অ্যাপ নোটিফিকেশন")}</option>
+                  <option value="PHONE">{tx("সরাসরি ফোন কল")}</option>
+                  <option value="EMAIL">{tx("ইমেইল বার্তা")}</option>
                 </Select>
               </>
             )}
@@ -395,21 +396,14 @@ export function DonationActions({
 
           <div className="flex flex-col-reverse gap-3 border-t border-line bg-canvas/40 p-5 sm:flex-row sm:justify-end sm:p-6">
             <Button type="button" variant="ghost" disabled={busy} onClick={close}>
-              ফিরে যান
-            </Button>
+              {tx("ফিরে যান")}</Button>
             <Button
               type="submit"
               variant={action === "cancel" ? "danger" : "primary"}
               rightIcon={<Send className="size-4" />}
               disabled={busy}
             >
-              {busy
-                ? "সংরক্ষণ করা হচ্ছে..."
-                : action === "edit"
-                ? "তথ্য আপডেট করুন"
-                : action === "cancel"
-                ? "বাতিল নিশ্চিত করুন"
-                : "রিপোর্ট জমা দিন"}
+              {busy ? tx("সংরক্ষণ করা হচ্ছে...") : action === "edit" ? tx("তথ্য আপডেট করুন") : action === "cancel" ? tx("বাতিল নিশ্চিত করুন") : tx("রিপোর্ট জমা দিন")}
             </Button>
           </div>
         </form>

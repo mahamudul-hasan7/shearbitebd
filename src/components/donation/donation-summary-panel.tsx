@@ -1,4 +1,7 @@
 "use client";
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { getUiLocale } from "@/lib/i18n/locale";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useMemo } from "react";
 import {
@@ -12,17 +15,17 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { DonationDraft, DonationDraftErrors, DonationWizardStep } from "@/features/donations/types";
+import { hasDonationDraftErrors, validateDonationDraft } from "@/features/donations/validation";
 import {
   FOOD_CATEGORY_LABELS,
   QuantityUnit,
   STORAGE_CONDITION_LABELS,
-  StorageCondition,
 } from "@/lib/constants/domain";
 
 function shortDateBn(value: string) {
   const timestamp = Date.parse(value);
   return Number.isFinite(timestamp)
-    ? new Intl.DateTimeFormat("bn-BD", {
+    ? new Intl.DateTimeFormat(getUiLocale(), {
         month: "short",
         day: "numeric",
         hour: "numeric",
@@ -41,6 +44,7 @@ export function DonationSummaryPanel({
   currentStep: DonationWizardStep;
   errors: DonationDraftErrors;
 }) {
+  const tx = useUiText();
   const declarationCount = [
     draft.freshlyPrepared,
     draft.properlyCovered,
@@ -51,7 +55,8 @@ export function DonationSummaryPanel({
     draft.accuracyConfirmed,
   ].filter(Boolean).length;
 
-  const errorCount = Object.values(errors).filter(Boolean).length;
+  const errorCount = Object.entries(errors).filter(([field, message]) => field !== "form" && Boolean(message)).length;
+  const readyToPublish = !hasDonationDraftErrors(validateDonationDraft(draft));
 
   // Meal impact estimate
   const numQty = Number.parseFloat(draft.quantity);
@@ -72,46 +77,28 @@ export function DonationSummaryPanel({
     return min === max ? `${min} জন` : `${min}-${max} জন`;
   }, [numQty, draft.quantityUnit]);
 
-  // AI Quality Score Estimate
-  const aiSafetyScore = useMemo(() => {
-    let score = 92;
-    if (draft.storageCondition === StorageCondition.FROZEN) score = 98;
-    else if (draft.storageCondition === StorageCondition.REFRIGERATED) score = 95;
-    else if (draft.storageCondition === StorageCondition.AMBIENT) score = 78;
-
-    const deadlineTs = draft.safePickupDeadline ? Date.parse(draft.safePickupDeadline) : NaN;
-    if (Number.isFinite(deadlineTs)) {
-      const remainingMinutes = (deadlineTs - Date.now()) / 60000;
-      if (remainingMinutes <= 0) return { score: 15, label: "মেয়াদোত্তীর্ণ", color: "rose" };
-      if (remainingMinutes <= 60) return { score: 65, label: "জরুরি পিকআপ", color: "amber" };
-    }
-    return { score, label: "উচ্চ ফ্রেশনেস", color: "emerald" };
-  }, [draft.storageCondition, draft.safePickupDeadline]);
-
   return (
     <Card className="xl:sticky xl:top-24 rounded-3xl border border-slate-200/90 bg-white shadow-2xs overflow-hidden">
       <div className="border-b border-slate-100 bg-slate-50/70 p-5">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 font-heading">
-              লাইভ প্রিভিউ
-            </p>
-            <h3 className="mt-1 text-lg font-black text-slate-900 font-heading">অনুদানের সারসংক্ষেপ</h3>
+              {tx("লাইভ প্রিভিউ")}</p>
+            <h3 className="mt-1 text-lg font-black text-slate-900 font-heading">{tx("অনুদানের সারসংক্ষেপ")}</h3>
           </div>
           <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-black text-emerald-800 font-heading">
-            ধাপ {currentStep}/৪
-          </span>
+            {tx("Step {0} of {1}", currentStep, 6)}</span>
         </div>
       </div>
 
       <div className="grid gap-4 p-5 text-xs">
         <div>
-          <p className="text-[11px] font-bold text-slate-400 font-heading uppercase">খাদ্যের নাম</p>
+          <p className="text-[11px] font-bold text-slate-400 font-heading uppercase">{tx("খাদ্যের নাম")}</p>
           <p className="mt-1 text-sm font-black text-slate-900 font-heading">
-            {draft.title || "খাবারের শিরোনাম দিন"}
+            {draft.title || tx("খাবারের শিরোনাম দিন")}
           </p>
           <p className="mt-0.5 text-slate-500 font-medium">
-            {FOOD_CATEGORY_LABELS[draft.category]} · {draft.quantity || "০"} {draft.quantityUnit}
+            {tx(FOOD_CATEGORY_LABELS[draft.category])} · {draft.quantity || "0"} {tx(draft.quantityUnit.toLowerCase())}
           </p>
         </div>
 
@@ -120,38 +107,34 @@ export function DonationSummaryPanel({
           <div className="group rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-2 text-center hover:border-emerald-300 hover:shadow-xs transition-all">
             <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
               <Sparkles className="size-3 animate-icon-breathe text-emerald-600 group-hover:scale-125 transition-transform" />
-              AI সেফটি স্কোর
-            </span>
+              {tx("Donor declaration")}</span>
             <p className="mt-0.5 text-sm font-black text-emerald-950 font-mono">
-              {aiSafetyScore.score}%
+              {declarationCount}/7
             </p>
             <span className="text-[10px] text-emerald-700 font-medium">
-              {aiSafetyScore.label}
-            </span>
+              {tx("সেফটি পরীক্ষা করা হয়নি")}</span>
           </div>
 
           <div className="group rounded-xl border border-rose-200/80 bg-rose-50/50 p-2 text-center hover:border-rose-300 hover:shadow-xs transition-all">
             <span className="flex items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700">
               <Heart className="size-3 text-rose-500 fill-rose-500 animate-heart-beat group-hover:scale-125 transition-transform" />
-              সম্ভাব্য প্রভাব
-            </span>
+              {tx("সম্ভাব্য প্রভাব")}</span>
             <p className="mt-0.5 text-sm font-black text-rose-950 font-mono">
-              {estimatedImpact ?? "০ জন"}
+              {tx(estimatedImpact ?? "0 জন")}
             </p>
             <span className="text-[10px] text-rose-700 font-medium">
-              আহার পাবে
-            </span>
+              {tx("আহার পাবে")}</span>
           </div>
         </div>
 
         <div className="space-y-2.5 rounded-2xl bg-emerald-50/40 p-4 border border-emerald-100/80 font-heading text-slate-700">
           <p className="flex items-center gap-2">
             <Utensils className="size-4 text-emerald-600 shrink-0 animate-icon-breathe" />
-            <span className="font-bold">{STORAGE_CONDITION_LABELS[draft.storageCondition]}</span>
+            <span className="font-bold">{tx(STORAGE_CONDITION_LABELS[draft.storageCondition])}</span>
           </p>
           <p className="flex items-start gap-2">
             <CalendarClock className="mt-0.5 size-4 shrink-0 text-emerald-600 animate-icon-float" />
-            <span>নিরাপদ মেয়াদ: <strong className="text-slate-900">{shortDateBn(draft.safePickupDeadline)}</strong></span>
+            <span>{tx("নিরাপদ মেয়াদ:")}{" "}<strong className="text-slate-900">{shortDateBn(draft.safePickupDeadline)}</strong></span>
           </p>
           <p className="flex items-start gap-2">
             <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600 animate-icon-breathe" />
@@ -159,27 +142,27 @@ export function DonationSummaryPanel({
           </p>
           <p className="flex items-center gap-2">
             <ImageIcon className="size-4 text-emerald-600 shrink-0 animate-icon-float" />
-            <span>{draft.photoNames.length}/৫টি ছবি সংযুক্ত</span>
+            <span>{draft.sampleImageId ? tx("Sample image selected · উদাহরণ ছবি") : tx("{0}/৫টি নিজের ছবি সংযুক্ত", draft.photoUrls.length)}</span>
           </p>
           <p className="flex items-center gap-2">
             <ShieldCheck className="size-4 text-emerald-600 shrink-0 animate-pulse" />
-            <span>{declarationCount}/৭টি স্বাস্থ্যবিধি ঘোষণা</span>
+            <span>{declarationCount}<UiText source={"/৭টি স্বাস্থ্যবিধি ঘোষণা"} /></span>
           </p>
         </div>
 
         {errorCount > 0 ? (
           <p role="status" className="rounded-xl bg-rose-50 p-3 text-xs font-bold text-rose-700 border border-rose-200">
-            {errorCount}টি তথ্যে সংশোধন প্রয়োজন।
-          </p>
+            {errorCount}{tx("টি তথ্যে সংশোধন প্রয়োজন।")}</p>
+        ) : errors.form ? (
+          <p role="status" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs leading-5 text-rose-700">
+            {tx("The post was not saved. Review the message above and try again.")}</p>
         ) : (
-          <p className="rounded-xl bg-emerald-50 p-3 text-xs font-bold text-emerald-700 border border-emerald-200">
-            ✓ সকল প্রয়োজনীয় তথ্য বৈধ রয়েছে।
-          </p>
+          <p className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-700">
+            {readyToPublish ? tx("Food details and declarations are ready to publish.") : tx("Fill in the details and confirm all seven declarations before publishing.")}</p>
         )}
 
         <p className="text-[11px] leading-relaxed text-slate-500 font-normal">
-          তথ্যসমূহ শুধুমাত্র অনুমোদিত এনজিও ও নির্ধারিত ভলান্টিয়ারের কাছে যাচাইকরণের উদ্দেশ্যে দৃশ্যমান হবে।
-        </p>
+          {tx("তথ্যসমূহ শুধুমাত্র অনুমোদিত এনজিও ও নির্ধারিত ভলান্টিয়ারের কাছে যাচাইকরণের উদ্দেশ্যে দৃশ্যমান হবে।")}</p>
       </div>
     </Card>
   );

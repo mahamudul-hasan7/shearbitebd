@@ -1,4 +1,6 @@
 "use client";
+import { getUiLocale } from "@/lib/i18n/locale";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
   ArrowRight,
@@ -146,6 +148,7 @@ function getStageIndex(status: DonationStatus): number {
 }
 
 export function DonationManagementCard({ donation }: { donation: DonationView }) {
+  const tx = useUiText();
   const isUrgent = donation.priority === "URGENT" || donation.priority === "HIGH";
   const badgeConfig = STATUS_BADGE_CONFIG[donation.status] ?? {
     label: donation.status,
@@ -169,7 +172,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
         {/* 1. Food Visual Thumbnail */}
         <div className="relative min-h-52 overflow-hidden bg-slate-100 lg:min-h-full">
           <Image
-            src={donationImageUrl(donation)}
+            src={donationImageUrl(donation)} unoptimized={donationImageUrl(donation).startsWith("/api/photos/")}
             alt={donation.title}
             fill
             sizes="(max-width: 1024px) 100vw, 16rem"
@@ -189,21 +192,20 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
               )}
             >
               <span className={cn("size-2 rounded-full", badgeConfig.dot)} />
-              <span>{badgeConfig.label}</span>
+              <span>{tx(badgeConfig.label)}</span>
             </span>
 
             {isUrgent && (
               <span className="inline-flex items-center gap-1 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-slate-950 shadow-xs font-heading">
                 <Zap className="size-3 fill-slate-950" />
-                জরুরি
-              </span>
+                {tx("জরুরি")}</span>
             )}
           </div>
 
           {/* Reference ID Pill */}
           <div className="absolute bottom-3 left-3 text-white">
             <span className="rounded-lg bg-black/50 px-2 py-0.5 text-[10px] font-mono font-bold tracking-wider backdrop-blur-xs">
-              রেফারেন্স: #{donation.id.slice(-6).toUpperCase()}
+              {tx("রেফারেন্স: #")}{donation.id.slice(-6).toUpperCase()}
             </span>
           </div>
         </div>
@@ -215,7 +217,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <span className="inline-block rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-black text-emerald-800 font-heading">
-                  {FOOD_CATEGORY_LABELS[donation.category]}
+                  {tx(FOOD_CATEGORY_LABELS[donation.category])}
                 </span>
                 <h3 className="mt-1.5 text-lg sm:text-xl font-black text-slate-900 group-hover:text-emerald-700 transition-colors font-heading leading-snug">
                   {donation.title}
@@ -236,8 +238,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-heading">
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3">
                 <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
-                  <Utensils className="size-3.5 text-emerald-600" /> খাবারের পরিমাণ
-                </span>
+                  <Utensils className="size-3.5 text-emerald-600" /> {tx("খাবারের পরিমাণ")}</span>
                 <p className="mt-1 text-sm font-black text-slate-900">
                   {formatDonationQuantity(donation)}
                 </p>
@@ -245,8 +246,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
 
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3">
                 <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
-                  <MapPin className="size-3.5 text-emerald-600" /> পিকআপ অবস্থান
-                </span>
+                  <MapPin className="size-3.5 text-emerald-600" /> {tx("পিকআপ অবস্থান")}</span>
                 <p className="mt-1 text-xs font-black text-slate-800 truncate">
                   {donation.pickup.approximateArea}
                 </p>
@@ -254,8 +254,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
 
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3">
                 <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
-                  <CalendarClock className="size-3.5 text-emerald-600" /> নিরাপদ খাওয়ার সময়
-                </span>
+                  <CalendarClock className="size-3.5 text-emerald-600" /> {tx("নিরাপদ খাওয়ার সময়")}</span>
                 <p className="mt-1 text-xs font-black text-slate-800 truncate">
                   {formatDonationDateTime(donation.safePickupDeadline)}
                 </p>
@@ -268,14 +267,9 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
                 <div className="flex items-center justify-between text-[11px] font-heading mb-2">
                   <span className="font-bold text-slate-500 flex items-center gap-1">
                     <ShieldCheck className="size-3.5 text-emerald-600" />
-                    রেসকিউ প্রসেস ট্র্যাকার
-                  </span>
+                    {tx("রেসকিউ প্রসেস ট্র্যাকার")}</span>
                   <span className="font-bold text-emerald-700">
-                    {isCompleted
-                      ? "বিতরণ সফলভাবে সম্পন্ন"
-                      : isInRescue
-                      ? "উদ্ধার ও ডেলিভারি চলমান"
-                      : "ক্লেইমের অপেক্ষায়"}
+                    {isCompleted ? tx("বিতরণ সফলভাবে সম্পন্ন") : isInRescue ? tx("উদ্ধার ও ডেলিভারি চলমান") : tx("ক্লেইমের অপেক্ষায়")}
                   </span>
                 </div>
                 <div className="grid grid-cols-4 gap-1 sm:gap-2">
@@ -302,7 +296,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
                               : "text-slate-400"
                           )}
                         >
-                          {stage.label}
+                          {tx(stage.label)}
                         </span>
                       </div>
                     );
@@ -322,14 +316,14 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
                     className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-colors font-heading"
                   >
                     <Navigation className="size-3.5" />
-                    <span>লাইভ উদ্ধার ট্র্যাকিং</span>
+                    <span>{tx("লাইভ উদ্ধার ট্র্যাকিং")}</span>
                   </Link>
                   <Link
                     href={ROUTES.donor.donation(donation.id)}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-3.5 py-2 text-xs font-bold text-slate-700 transition-colors font-heading shadow-2xs"
                   >
                     <KeyRound className="size-3.5 text-emerald-600" />
-                    <span>হ্যান্ডওভার ওটিপি পিন</span>
+                    <span>{tx("হ্যান্ডওভার ওটিপি পিন")}</span>
                   </Link>
                 </>
               ) : isCompleted ? (
@@ -339,11 +333,10 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
                     className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-colors font-heading"
                   >
                     <FileCheck2 className="size-3.5" />
-                    <span>বিতরণ অডিট রসিদ ও ফটো</span>
+                    <span>{tx("বিতরণ অডিট রসিদ ও ফটো")}</span>
                   </Link>
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
-                    <CheckCircle2 className="size-3.5" /> ১০০% নিরাপদ বিতরণ
-                  </span>
+                    <CheckCircle2 className="size-3.5" /> {tx("১০০% নিরাপদ বিতরণ")}</span>
                 </>
               ) : (
                 <>
@@ -352,15 +345,15 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
                     className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-colors font-heading"
                   >
                     <Eye className="size-3.5" />
-                    <span>বিস্তারিত দেখুন ও পরিচালনা</span>
+                    <span>{tx("বিস্তারিত দেখুন ও পরিচালনা")}</span>
                   </Link>
                 </>
               )}
             </div>
 
             <span className="text-[11px] text-slate-400 font-medium">
-              আপডেট:{" "}
-              {new Date(donation.updatedAt).toLocaleTimeString("bn-BD", {
+              {tx("আপডেট:")}{" "}
+              {new Date(donation.updatedAt).toLocaleTimeString(getUiLocale(), {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true,

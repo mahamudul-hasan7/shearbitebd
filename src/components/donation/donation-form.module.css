@@ -1,0 +1,49 @@
+.layout { display:grid; min-width:0; gap:18px; margin-top:20px; align-items:start; }
+.card { min-width:0; overflow:clip; background:#fff; border:1px solid #dee7e0; border-radius:20px; }
+.stepHeading { display:none; }
+.formContent { padding:20px 16px; }
+.fields { display:grid; min-width:0; gap:26px; }
+.fieldSection { min-width:0; }
+.fieldSection + .fieldSection { padding-top:23px; border-top:1px solid #e6ece7; }
+.fieldSection > h3 { color:#345741; font-size:15px; font-weight:750; line-height:1.6; margin:0 0 17px; }
+.fieldGrid { display:grid; min-width:0; gap:17px; grid-template-columns:minmax(0,1fr); }
+.pair { display:grid; min-width:0; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+.fields textarea { min-height:84px; }
+.fields input,.fields select,.fields textarea { font-size:16px; border-radius:12px; }
+.samples { grid-column:1/-1; min-width:0; border-top:1px solid #e6ece7; padding-top:3px; }
+.samples > summary { display:flex; min-height:48px; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; list-style:none; color:#316548; font-size:14px; font-weight:650; }
+.samples > summary::-webkit-details-marker { display:none; }
+.samples[open] > summary svg { transform:rotate(180deg); }
+.samples > section { padding:12px 0 4px; }
+.samples > section > h3 { display:none; }
+.samples button img { max-height:110px; }
+.samples > summary:focus-visible,.summaryToggle:focus-visible { outline:3px solid #169c70; outline-offset:3px; }
+.actions { position:sticky; bottom:0; z-index:25; padding:12px 16px max(12px,env(safe-area-inset-bottom)); background:#fffffff5; border-top:1px solid #e3eae5; backdrop-filter:blur(12px); }
+.actionLayout { display:flex; flex-direction:column-reverse; gap:8px; }
+.secondaryActions { display:flex; gap:8px; }
+.secondaryActions > * { flex:1; }
+.primaryAction > button { width:100%; }
+.actions button,.actions a { min-height:46px; height:auto; border-radius:12px; padding:11px 13px; font-size:14px; line-height:1.45; letter-spacing:0; box-shadow:none; transform:none; }
+.primaryAction > button { background:#087b53; background-image:none; border:1px solid #087b53; box-shadow:none; --tw-ring-shadow:0 0 #0000; }
+.primaryAction > button:hover { background:#056343; }
+.secondaryActions > button,.secondaryActions > a { background:transparent; border:1px solid transparent; color:#567060; box-shadow:none; }
+.actions svg { animation:none; }
+.summary { min-width:0; }
+.draftStatus { padding-top:5px; color:#467459; font-size:12px; text-align:center; }
+.summaryToggle { display:flex; width:100%; min-height:48px; align-items:center; justify-content:space-between; gap:10px; padding:12px 2px; color:#4a6d57; font-size:14px; font-weight:600; }
+.summaryToggle svg { transition:transform 180ms; }
+.summaryToggle[aria-expanded="true"] svg { transform:rotate(180deg); }
+.summaryContent { display:none; }
+.summaryContent[data-open="true"] { display:block; animation:reveal 200ms ease-out; }
+.amounts { display:grid; gap:10px; }
+.amounts p { color:#4c6b58; font-size:13px; line-height:1.6; }
+.amounts small { display:block; color:#708075; font-size:12px; line-height:1.6; }
+.presets { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; }
+.presets button { min-height:44px; padding:7px 4px; border:1px solid #dce7df; border-radius:10px; color:#4e6b57; background:#f6f9f6; font-size:13px; font-weight:600; line-height:1.5; transition:background 160ms; }
+.presets button[aria-pressed="true"] { color:#10633e; border-color:#65ad88; background:#e8f5ed; }
+.presets button:focus-visible { outline:3px solid #169c70; outline-offset:2px; }
+@media(min-width:640px) { .formContent { padding:26px; } .stepHeading { display:block; padding:24px 26px; border-bottom:1px solid #e6ece7; } .fieldGrid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; } .pair { grid-column:1/-1; } .fieldSection > h3 { font-size:16px; } .actionLayout { flex-direction:row; align-items:center; justify-content:space-between; gap:14px; } .secondaryActions > * { flex:initial; } .primaryAction > button { min-width:170px; } }
+@media(min-width:1280px) { .layout { grid-template-columns:minmax(0,1fr) 21rem; gap:24px; } .summaryToggle { display:none; } .summaryContent { display:block; } }
+@media(max-width:359px) { .formContent { padding:18px 14px; } .pair { gap:10px; } .fields select { padding-inline:10px; } .presets { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(prefers-reduced-motion:reduce) { .summaryContent,.summaryToggle svg,.presets button { animation:none!important; transition:none!important; } }
+@keyframes reveal { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
