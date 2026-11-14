@@ -1,6 +1,8 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import Link from "next/link";
+import { useLayoutEffect, useRef, type CSSProperties, type PointerEvent } from "react";
 import {
   Bell,
   Bike,
@@ -16,8 +18,15 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
-import { cn } from "@/lib/utils";
+import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
+import { useNotificationFeed } from "@/lib/notifications/use-notification-feed";
 import type { PortalRole } from "@/types/navigation";
+import { LiveIcon } from "@/components/motion/live-icon";
+import styles from "./mobile-bottom-nav.module.css";
+
+// Visual tab positions only; no account information is retained here.
+const lastSelection = new Map<PortalRole,number>();
+const dashboardHrefs = new Set<string>([ROUTES.donor.dashboard,ROUTES.ngo.dashboard,ROUTES.volunteer.dashboard]);
 
 interface MobileTabItem {
   label: string;
@@ -50,7 +59,7 @@ function getMobileTabs(role: PortalRole): MobileTabItem[] {
       return [
         { label: "কমান্ড", href: ROUTES.volunteer.dashboard, icon: LayoutDashboard },
         { label: "ডিসপ্যাচ", href: ROUTES.volunteer.dispatches, icon: Navigation },
-        { label: "মিশন", href: ROUTES.volunteer.mission("mission-uiu-mastul"), icon: Bike, isPrimary: true },
+        { label: "মিশন", href: ROUTES.volunteer.dashboard + "#active-mission", icon: Bike, isPrimary: true },
         { label: "হিস্ট্রি", href: ROUTES.volunteer.history, icon: History },
         { label: "আইডি কার্ড", href: ROUTES.volunteer.idCard, icon: ShieldCheck },
       ];
@@ -60,44 +69,73 @@ function getMobileTabs(role: PortalRole): MobileTabItem[] {
 export function MobileBottomNavigation({
   role,
   activeHref,
-  unreadNotifications = 0,
 }: {
   role: PortalRole;
   activeHref: string;
   unreadNotifications?: number;
 }) {
-  const items = getMobileTabs(role);
+  const tx = useUiText();
+  const { activeMission } = useVolunteerStore();
+  const feed = useNotificationFeed();
+  const unreadNotifications = feed.notifications.filter((item) => !item.read).length;
+  const items = getMobileTabs(role).map((item) => role === "volunteer" && item.href.endsWith("#active-mission") && activeMission ? { ...item, href: ROUTES.volunteer.mission(activeMission.id) } : item);
+  const isTabActive = (href:string) => href === activeHref || (!dashboardHrefs.has(href) && activeHref.startsWith(href));
+  const activeIndex = items.findIndex(item=>!item.isPrimary && isTabActive(item.href));
+  const selection = useRef<HTMLSpanElement>(null);
+
+  useLayoutEffect(()=>{
+    if(activeIndex<0) return;
+    const previous=lastSelection.get(role);
+    lastSelection.set(role,activeIndex);
+    const element=selection.current;
+    const preference=window.matchMedia("(prefers-reduced-motion: reduce)");
+    if(!element || !element.getClientRects().length || previous===undefined || previous===activeIndex || preference.matches || document.hidden || typeof element.animate!=="function") return;
+    const step=element.getBoundingClientRect().width+2;
+    const animation=element.animate([{transform:`translateX(${previous*step}px)`},{transform:`translateX(${activeIndex*step}px)`}],{duration:320,easing:"cubic-bezier(.2,.75,.25,1)"});
+    const stop=()=>{if(preference.matches) animation.cancel();};
+    preference.addEventListener("change",stop);
+    return ()=>{animation.cancel();preference.removeEventListener("change",stop);};
+  },[role,activeIndex]);
+
+  function reflectTouch(event:PointerEvent<HTMLElement>) {
+    const element=event.currentTarget;
+    const box=element.getBoundingClientRect();
+    element.style.setProperty("--glass-x",`${event.clientX-box.left}px`);
+    element.style.setProperty("--glass-y",`${event.clientY-box.top}px`);
+  }
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full border-t border-slate-200/80 bg-white/85 backdrop-blur-xl backdrop-saturate-150 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] lg:hidden transition-all duration-300 pointer-events-auto"
-      style={{ paddingBottom: "max(0.6rem, env(safe-area-inset-bottom))" }}
-      aria-label="Mobile Bottom App Navigation"
+      className={styles.shell}
+      style={{"--active-tab":Math.max(activeIndex,0)} as CSSProperties}
+      onPointerDown={reflectTouch}
+      onPointerMove={reflectTouch}
+      aria-label={tx("Mobile Bottom App Navigation")}
+      data-testid="mobile-bottom-nav"
+      data-role={role}
+      data-active-index={activeIndex}
     >
-      <div className="mx-auto flex h-16 max-w-md items-center justify-around px-3">
+      <div className={styles.items}>
+        <span ref={selection} className={styles.selection} aria-hidden="true" data-visible={activeIndex>=0} data-testid="mobile-nav-selection" />
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive =
-            item.href === activeHref ||
-            (item.href !== ROUTES.donor.dashboard &&
-              item.href !== ROUTES.ngo.dashboard &&
-              item.href !== ROUTES.volunteer.dashboard &&
-              activeHref.startsWith(item.href));
+          const isActive = isTabActive(item.href);
 
           // 1. Center Floating Action Button (FAB)
           if (item.isPrimary) {
             return (
-              <div key={item.label} className="relative -top-3.5 flex flex-col items-center">
+              <div key={item.label} className={styles.primaryItem}>
                 <Link
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className="flex size-13 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-500 text-white shadow-[0_8px_20px_rgba(5,150,105,0.4)] ring-4 ring-white active:scale-90 transition-all duration-150 group cursor-pointer"
-                  aria-label={item.label}
+                  className={styles.primaryAction}
+                  aria-label={tx(item.label)}
+                  data-testid={role === "donor" ? "donor-mobile-post-action" : undefined}
                 >
-                  <Icon className="size-6 transition-transform group-hover:scale-110" aria-hidden="true" />
+                  <LiveIcon icon={Icon} className={styles.primaryIcon} />
                 </Link>
-                <span className="mt-1 text-[10px] font-black tracking-tight text-emerald-800">
-                  {item.label}
+                <span className={styles.primaryLabel}>
+                  {tx(item.label)}
                 </span>
               </div>
             );
@@ -109,27 +147,19 @@ export function MobileBottomNavigation({
               key={item.label}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl py-1 text-center transition-all duration-150 active:scale-95 cursor-pointer",
-                isActive ? "text-emerald-800 font-extrabold" : "text-slate-500 hover:text-slate-900 font-medium",
-              )}
+              className={styles.tab}
             >
-              <div
-                className={cn(
-                  "relative flex size-9 items-center justify-center rounded-xl transition-all duration-200",
-                  isActive ? "bg-emerald-100/70 text-emerald-800 scale-105" : "text-slate-500",
-                )}
-              >
-                <Icon className="size-5" aria-hidden="true" />
+              <div className={styles.iconWrap}>
+                <LiveIcon icon={Icon} key={`${item.href}-${isActive}`} motion={isActive ? "once" : "interaction"} className={styles.icon} />
 
                 {/* Live Unread Notification Dot/Badge */}
                 {item.isNotification && unreadNotifications > 0 && (
-                  <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-black text-white shadow-xs ring-2 ring-white animate-pulse">
+                  <span className={styles.badge}>
                     {unreadNotifications > 9 ? "9+" : unreadNotifications}
                   </span>
                 )}
               </div>
-              <span className="text-[10px] leading-tight tracking-tight">{item.label}</span>
+              <span className={styles.label}>{tx(item.label)}</span>
             </Link>
           );
         })}

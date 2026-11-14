@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 
 export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRole | "home" }) {
+  const tx = useUiText();
   const pathname = usePathname() || "";
 
   const activeRole: PortalRole | "home" =
@@ -22,7 +24,7 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
 
   return (
     <aside
-      aria-label="ইউনিভার্সাল ডেমো রোল কন্ট্রোল বার"
+      aria-label={tx("পোর্টাল নেভিগেশন")}
       className="relative z-40 border-b border-emerald-900/50 bg-gradient-to-r from-[#011e16] via-[#022f23] to-[#011e16] px-3.5 py-1.5 text-white shadow-sm"
     >
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2.5 text-xs">
@@ -33,25 +35,23 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
           </span>
           <span className="font-bold text-emerald-300 tracking-wide">
-            ঢাকা মেট্রো লাইভ রেসকিউ সক্রিয়
-          </span>
+            {tx("ঢাকা মেট্রো লাইভ রেসকিউ সক্রিয়")}</span>
           <span className="hidden md:inline text-white/30">|</span>
           <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-medium text-emerald-100/70">
             <Sparkles className="size-3 text-amber-300" />
-            ডেমো প্রেজেন্টেশন মোড (১-ক্লিক রোল সুইচ)
-          </span>
+            {tx("নিজস্ব অ্যাকাউন্টে লগইন করে পোর্টাল ব্যবহার করুন")}</span>
         </div>
 
         {/* Center / Right: Glassmorphism Segmented Role Switcher Pills */}
         <div
           role="group"
-          aria-label="Select Demo Workspace Role"
+          aria-label={tx("Select workspace")}
           className="inline-flex items-center rounded-xl border border-white/20 bg-white/10 p-0.5 shadow-inner backdrop-blur-md select-none"
         >
           {/* Role 1: Food Donor */}
           <Link
             href={ROUTES.donor.dashboard}
-            title="খাদ্যদাতা ড্যাশবোর্ডে যান"
+            title={tx("খাদ্যদাতা ড্যাশবোর্ডে যান")}
             className={cn(
               "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "donor"
@@ -60,13 +60,13 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">👨‍🍳</span>
-            <span>খাদ্যদাতা</span>
+            <span>{tx("খাদ্যদাতা")}</span>
           </Link>
 
           {/* Role 2: NGO Foundation */}
           <Link
             href={ROUTES.ngo.dashboard}
-            title="মাস্তুল এনজিও ড্যাশবোর্ডে যান"
+            title={tx("মাস্তুল এনজিও ড্যাশবোর্ডে যান")}
             className={cn(
               "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "ngo"
@@ -75,13 +75,13 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:rotate-6">🏢</span>
-            <span>মাস্তুল এনজিও</span>
+            <span>{tx("মাস্তুল এনজিও")}</span>
           </Link>
 
           {/* Role 3: Volunteer Rider */}
           <Link
             href={ROUTES.volunteer.dashboard}
-            title="ভলান্টিয়ার কমান্ড হাবে যান"
+            title={tx("ভলান্টিয়ার কমান্ড হাবে যান")}
             className={cn(
               "group flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
               activeRole === "volunteer"
@@ -90,7 +90,7 @@ export function UniversalRoleSwitcher({ currentRole }: { currentRole?: PortalRol
             )}
           >
             <span className="transition-transform duration-200 group-hover:scale-125 group-hover:-rotate-6">🚴</span>
-            <span>ভলান্টিয়ার রাইডার</span>
+            <span>{tx("ভলান্টিয়ার রাইডার")}</span>
           </Link>
         </div>
       </div>
