@@ -121,7 +121,7 @@ export function createMockAppState(now = new Date()): MockAppState {
       { id: "team-hope-field", ngoProfileId: "ngo-hope", name: "Nusrat Jahan", email: "nusrat@hope-foundation.example.test", role: "FIELD_STAFF", status: "ACTIVE", joinedAt: createdThreeMonthsAgo, createdAt: createdThreeMonthsAgo },
     ],
     volunteerProfiles: [
-      { id: "volunteer-demo", userId: "user-volunteer-demo", addressId: "address-volunteer", serviceAreas: ["Gulshan", "Badda", "Banani", "Rampura"], transportMethod: TransportMethod.MOTORCYCLE, availability: ["Evenings", "Weekends"], verificationStatus: VerificationStatus.VERIFIED, identityDocumentName: "mock-volunteer-id.pdf", completedRescues: 18, createdAt: createdThreeMonthsAgo, updatedAt: updatedRecently },
+      { id: "volunteer-demo", userId: "user-volunteer-demo", addressId: "address-volunteer", serviceAreas: ["Gulshan", "Badda", "Banani", "Rampura"], transportMethod: TransportMethod.MOTORCYCLE, availability: ["Evenings", "Weekends"], isOnDuty: false, dutyVersion: 0, verificationStatus: VerificationStatus.VERIFIED, identityDocumentName: "mock-volunteer-id.pdf", completedRescues: 18, createdAt: createdThreeMonthsAgo, updatedAt: updatedRecently },
     ],
     donations: [
       {
