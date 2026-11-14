@@ -1,0 +1,3 @@
+.slogan { margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: clamp(30px, 4vw, 54px); line-height: 1.3; letter-spacing: 0; color: #fff; overflow-wrap: normal; }
+.slogan > span { display: block; }
+@media (max-width: 639px) { .slogan { font-size: clamp(28px, 7.5vw, 40px); line-height: 1.3; } }

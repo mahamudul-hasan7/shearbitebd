@@ -1,0 +1,46 @@
+@media(max-width:767px) {
+  .headerRow { height:64px; gap:10px; }
+  .page header[data-scrolled="true"] .headerRow { height:56px; }
+  .logo a { min-height:44px; }
+  .language { height:40px; }
+  .language button { min-height:32px; padding:5px 8px; }
+  .menu { width:44px; height:44px; }
+  .hero { padding-top:32px; padding-bottom:44px; }
+  .background { object-position:65% center; }
+  .shade { background:linear-gradient(90deg, #011d15ed 0%, #011d15d9 50%, #011d159c 100%); }
+  .layout { gap:24px; }
+  .content > :not(:last-child) { margin-bottom:18px; }
+  .badge { max-width:100%; gap:6px; padding:6px 10px; font-size:10.5px; font-weight:650; line-height:1.5; }
+  .badge svg { flex-shrink:0; }
+  .badge span { min-width:0; }
+  .subtitle { max-width:36rem; font-size:14px; line-height:1.7; color:#ddede4; }
+  .actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding-top:0; }
+  .actions a { min-width:0; min-height:44px; justify-content:center; padding:10px; border-radius:11px; font-size:13px; line-height:1.5; }
+  .search { min-width:0; padding:10px; border-radius:17px; background:#fffffff5; box-shadow:0 10px 24px #001b1529; }
+  .searchRow { display:grid; grid-template-columns:minmax(0,1fr) 48px; gap:8px; }
+  .inputWrap,.searchAction { min-width:0; grid-column:auto; }
+  .search input { height:48px; min-width:0; padding-left:39px; font-size:16px; font-weight:500; }
+  .search input::placeholder { font-size:13px; }
+  .searchButton { position:relative; height:48px; width:48px; min-width:0; padding:0; border-radius:11px; box-shadow:0 2px 5px #07543e26; }
+  .searchButton svg { width:20px; height:20px; }
+  .searchButton span { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+  .searchButton:focus-visible { outline:2px solid #087b53; outline-offset:3px; }
+  .searchMeta { margin-top:8px; padding:6px 2px 0; font-size:11px; line-height:1.6; }
+  .searchMeta button { min-height:28px; }
+  .searchMeta > span:last-child { display:none; }
+  .process > div { gap:8px; padding-top:16px; }
+  .process > div > div { padding:10px 12px; border-radius:12px; font-weight:600; line-height:1.5; }
+  .page > section:not([id="hero"]) { padding-top:52px; padding-bottom:52px; }
+  .page > section h2 { font-size:clamp(25px,6.8vw,30px); line-height:1.35; }
+}
+@media(max-width:359px) {
+  .headerRow { padding-inline:12px; gap:6px; }
+  .logo a { gap:6px; }
+  .logo a > span:first-child { width:34px; height:34px; }
+  .logo a > span:nth-child(2) > span:first-child { font-size:16px; }
+  .language button { padding-inline:6px; }
+  .hero { padding-top:26px; padding-bottom:36px; }
+  .subtitle { font-size:13px; }
+  .actions { gap:8px; }
+  .actions a { font-size:12px; }
+}

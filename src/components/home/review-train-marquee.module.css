@@ -1,0 +1,50 @@
+.root { width: 100%; overflow: hidden; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 20px; padding: 0 20px 16px; color: #b3d4c4; font-size: 13px; text-align: center; }
+.pauseButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 14px; border: 1px solid #5c997b66; border-radius: 11px; color: #e1f2e9; background: #123d2c; font-size: 13px; }
+.pauseButton:hover { background: #1c513a; }
+.pauseButton:focus-visible { outline: 2px solid #f6cf75; outline-offset: 4px; }
+.window { display: grid; gap: 22px; padding: 10px 0; overflow: hidden; }
+.track { display: flex; width: max-content; animation: reviewTrain 48s linear infinite; }
+.reverse { animation-direction: reverse; animation-duration: 52s; }
+.group { display: flex; gap: 22px; padding-right: 22px; }
+.window:hover .track, .window:focus-within .track, .root[data-paused="true"] .track { animation-play-state: paused; }
+.card { display: flex; flex-direction: column; width: min(390px, calc(100vw - 32px)); min-height: 277px; flex-shrink: 0; padding: 23px; border: 1px solid #17613d66; border-radius: 22px; background: linear-gradient(155deg, #073a2bde, #0b1e25ed 60%, #011a13); box-shadow: 0 10px 22px #0000001c; }
+.card:focus-visible { outline: 2px solid #82d9ad; outline-offset: -3px; }
+.topLine { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.roleBadge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-width: 1px; border-radius: 30px; font-size: 11px; line-height: 1.5; }
+.demoBadge { color: #e9cc89; font-size: 11px; white-space: nowrap; }
+.rating { display: flex; align-items: center; gap: 7px; margin-top: 17px; color: #f7c857; font-size: 12px; }
+.stars { display: flex; gap: 3px; }
+.ratingNote { color: #91b9a5; font-size: 10px; }
+.quote { margin: 15px 0 22px; display: grid; gap: 8px; color: #ddf1e6; }
+.quote > svg { color: #5b9e7c; }
+.quote > p { margin: 0; font-size: 15px; line-height: 1.8; font-weight: 400; }
+.profile { display: flex; align-items: center; gap: 11px; margin-top: auto; padding-top: 16px; border-top: 1px solid #3d7b543d; }
+.avatar { width: 38px; height: 38px; flex-shrink: 0; display: grid; place-items: center; border-width: 1px; border-radius: 11px; font-size: 16px; }
+.profileText { min-width: 0; }
+.profileText > h3 { margin: 0; color: #fff; font-size: 15px; font-weight: 600; letter-spacing: 0; }
+.profileText > p { margin: 3px 0 0; color: #9fc7b3; font-size: 11px; }
+.location { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; color: #8eab9f; font-size: 10px; white-space: nowrap; }
+.hint { text-align: center; padding: 16px 20px 0; color: #9ac4ad; font-size: 12px; }
+.compact .controls { flex-wrap:nowrap; justify-content:space-between; gap:12px; padding:0 18px 12px; text-align:left; font-size:11px; line-height:1.7; }
+.compact .controls > p { flex:1; min-width:0; }
+.compact .pauseButton { flex-shrink:0; gap:6px; padding:8px 10px; font-size:11px; transition:background 150ms,color 150ms,border-color 150ms; }
+.compact .pauseButton:focus-visible { outline:3px solid #51b68b; outline-offset:3px; }
+.compact .window { display:block; padding:5px 18px; }
+.compact .track { animation-duration:85s; }
+.compact .group { gap:12px; padding-right:12px; }
+.compact .card { width:min(310px,calc(100vw - 88px)); min-height:230px; padding:16px; border-radius:17px; }
+.compact .roleBadge,.compact .demoBadge { font-size:10px; }
+.compact .rating { margin-top:12px; }
+.compact .quote { display:block; margin:12px 0 17px; }
+.compact .quote > svg { display:none; }
+.compact .quote > p { font-size:14px; line-height:1.75; }
+.compact .profile { gap:9px; padding-top:12px; }
+.compact .avatar { width:32px; height:32px; font-size:14px; }
+.compact .profileText > h3 { font-size:14px; }
+.compact .profileText > p { font-size:10px; line-height:1.6; }
+.compact .location { display:none; }
+.compact .hint { padding:11px 18px 0; font-size:10px; line-height:1.7; }
+@keyframes reviewTrain { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+@media (max-width: 639px) { .card { padding: 19px; border-radius: 17px; } .quote > p { font-size: 15px; } .group { gap: 15px; padding-right: 15px; } .window { gap: 15px; } }
+@media (prefers-reduced-motion: reduce) { .track { animation: none; transform: none; } .window { overflow-x: auto; } .group[aria-hidden="true"] { display: none; } .pauseButton { display: none; } }

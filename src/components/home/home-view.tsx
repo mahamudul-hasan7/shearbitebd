@@ -1,41 +1,36 @@
 "use client";
+import { LiveIcon, LiveIconGroup } from "@/components/motion/live-icon";
+import homeSloganStyles from "./home-slogan.module.css";
+import mobile from "./home-mobile.module.css";
+import responsive from "./home-responsive.module.css";
+import { MobileHomeView } from "./mobile-home-view";
+import { HeroSloganLine, HeroStoryControls, HeroStoryMedia, HeroStoryProvider } from "./hero-story";
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { useUiText } from "@/lib/i18n/use-ui-text";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { localizeUiCopy } from "@/lib/i18n/ui-text";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  BadgeCheck,
-  Calculator,
-  CheckCircle2,
   ChevronDown,
   Clock,
-  Droplets,
-  HeartHandshake,
   HelpCircle,
-  Leaf,
   MapPin,
   Menu,
-  PackageCheck,
   QrCode,
   Search,
-  ShieldCheck,
   Sparkles,
-  Star,
-  Timer,
-  Truck,
   Utensils,
   X,
-  Zap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
-import { HeroTicker } from "@/components/home/hero-ticker";
 import { ReviewTrainMarquee } from "@/components/home/review-train-marquee";
-import { triggerCelebration } from "@/components/ui/action-success-modal";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { UserRole } from "@/lib/constants/roles";
-import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -44,9 +39,7 @@ const copy = {
     nav: {
       home: "হোম",
       howItWorks: "উদ্ধার প্রক্রিয়া",
-      liveFeed: "লাইভ ফিড",
       safety: "খাদ্য নিরাপত্তা",
-      calculator: "ইমপ্যাক্ট ক্যালকুলেটর",
       impact: "কমিউনিটি ইমপ্যাক্ট",
       faq: "সাধারণ জিজ্ঞাসা",
       partners: "এনজিও ও পার্টনার্স",
@@ -59,8 +52,8 @@ const copy = {
     },
     hero: {
       badge: "স্মার্ট উদ্বৃত্ত খাদ্য সুরক্ষা নেটওয়ার্ক · বাংলাদেশ",
-      titlePart1: "অতিরিক্ত খাবার নষ্ট নয়, ",
-      titleHighlight: "সম্মানের সাথে মানুষের পাতে।",
+      titlePart1: "বাড়তি খাবার ভাগ করে দিন,",
+      titleHighlight: "কারও একবেলার ভরসা হোন।",
       subtitle:
         "ঢাকাসহ সারাদেশে বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU), কমিউনিটি সেন্টারের মেজবান এবং রেস্তোরাঁর তাজা উদ্বৃত্ত খাবার পৌঁছে যাচ্ছে বিদ্যানন্দ, মাস্তুল ফাউন্ডেশন সহ নিবন্ধিত দাতব্য সংস্থায়—রিয়েল-টাইম ট্র্যাকিং ও কিউআর ভেরিফিকেশনের মাধ্যমে।",
       searchPlaceholder: "এলাকা দিন (যেমন: গুলশান, ধানমন্ডি, বাড্ডা...)",
@@ -78,34 +71,6 @@ const copy = {
       stat2Lbl: "সক্রিয় অংশীদার",
       stat3Val: "৮টি",
       stat3Lbl: "বিভাগীয় জোন",
-    },
-    liveFeed: {
-      badge: "ঢাকা মেট্রো লাইভ খাদ্য উদ্ধার বোর্ড",
-      title: "এই মুহূর্তে উদ্ধারযোগ্য তাজা খাবার",
-      subtitle:
-        "বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও ক্যাটারার্স থেকে সদ্য পোস্টকৃত উদ্বৃত্ত খাবার। নিরাপদ খাদ্য প্রোটোকল মেনে দ্রুততম সময়ে ক্লেইম করুন।",
-      allZones: "সব এলাকা",
-      zoneBadda: "বাড্ডা ও আফতাবনগর",
-      zoneGulshan: "গুলশান ও বনানী",
-      zoneDhanmondi: "ধানমন্ডি",
-      zoneMirpur: "মিরপুর",
-      statusClaimed: "ক্লেইম সম্পন্ন",
-      statusPending: "ক্লেইম অপেক্ষমাণ",
-      statusEnroute: "রাইডার রওয়ানা হয়েছে",
-      timeLeft: "বাকি",
-      portions: "প্যাকেট",
-      claimBtn: "ক্লেইম করুন / বিস্তারিত",
-      urgentBadge: "জরুরি রেসকিউ",
-      safetyBadge: "বিএফএসএ সনদপ্রাপ্ত",
-      emptyState: "এই ফিল্টারে কোনো সক্রিয় খাবার পাওয়া যায়নি। অন্যান্য এলাকা চেক করুন।",
-      modalTitle: "খাদ্য উদ্ধারের বিস্তারিত বিবরণ",
-      modalDonor: "দাতা প্রতিষ্ঠান:",
-      modalLocation: "পিকআপ লোকেশন:",
-      modalCooked: "প্রস্তুতের সময়:",
-      modalSafeUntil: "নিরাপদ ব্যবহারের মেয়াদ:",
-      modalTemp: "সংরক্ষণ তাপমাত্রা:",
-      modalActionNgo: "এনজিও হিসেবে ক্লেইম করুন",
-      modalActionClose: "বন্ধ করুন",
     },
     bento: {
       badge: "উদ্ধার প্রক্রিয়া",
@@ -139,23 +104,6 @@ const copy = {
       card3Title: "সার্টিফাইড ইমপ্যাক্ট অডিট",
       card3Desc:
         "অংশগ্রহণকারী রেস্তোরাঁ ও বিশ্ববিদ্যালয়গুলো খাদ্য অপচয় রোধ ও কার্বন হ্রাসের ডিজিটাল ভেরিফাইড সনদপত্র পায়।",
-    },
-    calculator: {
-      badge: "ইমপ্যাক্ট সিমুলেটর",
-      title: "আপনার প্রতিষ্ঠান কত মানুষের মুখে খাবার তুলে দিতে পারে?",
-      subtitle:
-        "ক্যাফেটেরিয়া বা ক্যাটারিংয়ের সাপ্তাহিক উদ্বৃত্ত খাবার নষ্ট না করে কী পরিমাণ মানবিক ও পরিবেশগত প্রভাব তৈরি করতে পারবেন তা পরিমাপ করুন।",
-      sliderLabel: "প্রতি সপ্তাহে আনুমানিক উদ্বৃত্ত খাবার (প্যাকেট সংখ্যা):",
-      monthlyMeals: "মাসে রক্ষা পাওয়া খাবার",
-      peopleFed: "উপকৃত মানুষের সংখ্যা",
-      co2Saved: "কার্বন নির্গমন রোধ",
-      waterSaved: "সংরক্ষিত পানির অপচয়",
-      mealsUnit: "প্যাকেট",
-      peopleUnit: "জন",
-      co2Unit: "কেজি CO₂e",
-      waterUnit: "লিটার",
-      ctaBtn: "খাদ্য দাতা হিসেবে যুক্ত হোন",
-      helper: "জাতিসংঘের পরিবেশ কর্মসূচি (UNEP) ও স্থানীয় ফুড-ওয়েস্ট গবেষণা মডেল অনুযায়ী আনুমানিক হিসাব।",
     },
     stories: {
       badge: "কমিউনিটি ইমপ্যাক্ট ও মানবিক গল্প",
@@ -226,9 +174,7 @@ const copy = {
     nav: {
       home: "Home",
       howItWorks: "Rescue Process",
-      liveFeed: "Live Feed",
       safety: "Food Safety",
-      calculator: "Impact Calculator",
       impact: "Community Impact",
       faq: "FAQ",
       partners: "NGOs & Partners",
@@ -241,8 +187,8 @@ const copy = {
     },
     hero: {
       badge: "Smart Surplus Food Rescue Network · Bangladesh",
-      titlePart1: "No surplus food goes to waste, ",
-      titleHighlight: "reaching plates with dignity.",
+      titlePart1: "Share your extra food,",
+      titleHighlight: "help someone have a meal.",
       subtitle:
         "Across Dhaka and Bangladesh, fresh surplus food from university cafeterias (UIU, BRACU), wedding catering, and premier restaurants reaches verified charities like Bidyanondo and Mastul Foundation—via real-time tracking and verified QR handovers.",
       searchPlaceholder: "Enter area (e.g. Gulshan, Dhanmondi, Badda...)",
@@ -260,34 +206,6 @@ const copy = {
       stat2Lbl: "Active Partners",
       stat3Val: "8",
       stat3Lbl: "Divisional Zones",
-    },
-    liveFeed: {
-      badge: "Dhaka Metro Live Rescue Board",
-      title: "Surplus Meals Available Right Now",
-      subtitle:
-        "Fresh excess meals posted right now from cafeterias and caterers. Claim swiftly in compliance with food safety protocols.",
-      allZones: "All Areas",
-      zoneBadda: "Badda & Aftabnagar",
-      zoneGulshan: "Gulshan & Banani",
-      zoneDhanmondi: "Dhanmondi",
-      zoneMirpur: "Mirpur",
-      statusClaimed: "Claim Completed",
-      statusPending: "Awaiting Claim",
-      statusEnroute: "Rider En Route",
-      timeLeft: "Remaining",
-      portions: "Boxes",
-      claimBtn: "Claim / Inspect",
-      urgentBadge: "Urgent Rescue",
-      safetyBadge: "BFSA Certified",
-      emptyState: "No surplus meals matching this filter right now. Check other areas.",
-      modalTitle: "Surplus Food Rescue Details",
-      modalDonor: "Donor Organization:",
-      modalLocation: "Pickup Location:",
-      modalCooked: "Cooking Time:",
-      modalSafeUntil: "Safe Consumption Window:",
-      modalTemp: "Storage Temperature:",
-      modalActionNgo: "Claim as Verified NGO",
-      modalActionClose: "Close",
     },
     bento: {
       badge: "Rescue Process",
@@ -321,23 +239,6 @@ const copy = {
       card3Title: "Certified Impact Audit",
       card3Desc:
         "Participating restaurants and universities receive digital verified certificates for food waste diversion and carbon reduction.",
-    },
-    calculator: {
-      badge: "Impact Simulator",
-      title: "How many meals could your cafeteria save?",
-      subtitle:
-        "Estimate the humanitarian and environmental benefits your institution can achieve by diverting surplus meals each week.",
-      sliderLabel: "Estimated Weekly Surplus Meals (Portions):",
-      monthlyMeals: "Meals Rescued / Month",
-      peopleFed: "Hungry People Fed",
-      co2Saved: "CO₂ Emissions Diverted",
-      waterSaved: "Water Conserved",
-      mealsUnit: "Boxes",
-      peopleUnit: "People",
-      co2Unit: "kg CO₂e",
-      waterUnit: "Liters",
-      ctaBtn: "Join as Food Donor",
-      helper: "Estimates based on UNEP food waste benchmarks and local Dhaka civic rescue metrics.",
     },
     stories: {
       badge: "Community Impact & Human Stories",
@@ -406,147 +307,46 @@ const copy = {
   },
 };
 
-interface RescueListing {
-  id: string;
-  donor: string;
-  zone: "badda" | "gulshan" | "dhanmondi" | "mirpur";
-  locationBn: string;
-  locationEn: string;
-  titleBn: string;
-  titleEn: string;
-  portions: number;
-  cookTimeBn: string;
-  cookTimeEn: string;
-  timeLeftMinutes: number;
-  status: "enroute" | "pending" | "claimed";
-  statusTextBn: string;
-  statusTextEn: string;
-  receiverBn: string;
-  receiverEn: string;
-  tempBn: string;
-  tempEn: string;
-  urgent: boolean;
-}
-
-const LIVE_RESCUE_LISTINGS: RescueListing[] = [
-  {
-    id: "rec-1",
-    donor: "UIU Central Cafeteria",
-    zone: "badda",
-    locationBn: "মাদানী এভিনিউ, ১০০ ফিট রোড, বাড্ডা",
-    locationEn: "Madani Avenue, 100 Feet Rd, Badda",
-    titleBn: "চিকেন বিরিয়ানি ও ডিম",
-    titleEn: "Chicken Biryani & Boiled Egg",
-    portions: 120,
-    cookTimeBn: "দুপুর ২:৩০",
-    cookTimeEn: "2:30 PM",
-    timeLeftMinutes: 75,
-    status: "enroute",
-    statusTextBn: "রাইডার রওয়ানা হয়েছে 🛵",
-    statusTextEn: "Rider En Route 🛵",
-    receiverBn: "মাস্তুল ফাউন্ডেশন শেল্টার",
-    receiverEn: "Mastul Foundation Shelter",
-    tempBn: "৬০°C হট-হোল্ড",
-    tempEn: "60°C Hot-Hold",
-    urgent: true,
-  },
-  {
-    id: "rec-2",
-    donor: "Radisson Blu Dhaka Water Garden",
-    zone: "gulshan",
-    locationBn: "এয়ারপোর্ট রোড, কুর্মিটোলা, ঢাকা",
-    locationEn: "Airport Road, Kurmitola, Dhaka",
-    titleBn: "শাহী বিফ তেহারি ও ফিরনি",
-    titleEn: "Shahi Beef Tehari & Firni",
-    portions: 75,
-    cookTimeBn: "বিকেল ৫:০০",
-    cookTimeEn: "5:00 PM",
-    timeLeftMinutes: 140,
-    status: "pending",
-    statusTextBn: "ক্লেইম অপেক্ষমাণ 🟢",
-    statusTextEn: "Awaiting Claim 🟢",
-    receiverBn: "যাচাইকৃত এনজিওর অপেক্ষায়",
-    receiverEn: "Waiting for Verified NGO",
-    tempBn: "৬৫°C ইনসুলেটেড",
-    tempEn: "65°C Insulated",
-    urgent: false,
-  },
-  {
-    id: "rec-3",
-    donor: "Dhanmondi Party Center & Convention",
-    zone: "dhanmondi",
-    locationBn: "রোড ২৭, ধানমন্ডি, ঢাকা",
-    locationEn: "Road 27, Dhanmondi, Dhaka",
-    titleBn: "কাচ্চি বিরিয়ানি ও বোরহানি (মেজবান)",
-    titleEn: "Kacchi Biryani & Borhani (Catering)",
-    portions: 180,
-    cookTimeBn: "দুপুর ৩:১৫",
-    cookTimeEn: "3:15 PM",
-    timeLeftMinutes: 40,
-    status: "claimed",
-    statusTextBn: "বিদ্যানন্দ ক্লেইম করেছে 🛡️",
-    statusTextEn: "Claimed by Bidyanondo 🛡️",
-    receiverBn: "বিদ্যানন্দ চ্যারিটি কিচেন",
-    receiverEn: "Bidyanondo Charity Kitchen",
-    tempBn: "হাইজিন সিলযুক্ত",
-    tempEn: "Hygiene Sealed",
-    urgent: true,
-  },
-  {
-    id: "rec-4",
-    donor: "Tasty Treat & Mithai Hub",
-    zone: "mirpur",
-    locationBn: "মিরপুর ১০ গোলচত্বর, ঢাকা",
-    locationEn: "Mirpur 10 Circle, Dhaka",
-    titleBn: "চিকেন পেস্ট্রি, প্যাটিস ও বান",
-    titleEn: "Chicken Pastry, Patties & Buns",
-    portions: 60,
-    cookTimeBn: "সন্ধ্যা ৬:০০",
-    cookTimeEn: "6:00 PM",
-    timeLeftMinutes: 190,
-    status: "pending",
-    statusTextBn: "ক্লেইম অপেক্ষমাণ 🟢",
-    statusTextEn: "Awaiting Claim 🟢",
-    receiverBn: "যাচাইকৃত এনজিওর অপেক্ষায়",
-    receiverEn: "Waiting for Verified NGO",
-    tempBn: "ড্রাই স্টোরেজ ফুডবক্স",
-    tempEn: "Dry Storage Foodbox",
-    urgent: false,
-  },
-];
-
 export function HomeView() {
+  const tx = useUiText();
   const router = useRouter();
-  const { session, signIn } = useMockAuth();
-  const [lang, setLang] = useState<"bn" | "en">("bn");
+  const { session } = useMockAuth();
+  const { language: lang, setLanguage: setLang } = useLanguage();
   const [activeNav, setActiveNav] = useState<string>("hero");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Search & Filter state for Live Rescue Feed
+  // Forward area searches to the account-authorized food discovery page.
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedZone, setSelectedZone] = useState<string>("all");
-  const [activeListingModal, setActiveListingModal] = useState<RescueListing | null>(null);
-  const [isClaiming, setIsClaiming] = useState(false);
-
-  // Impact Calculator state
-  const [impactMeals, setImpactMeals] = useState<number>(120);
 
   // FAQ Accordion state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const t = copy[lang];
+  const original = copy[lang];
+  const isBn = lang === "bn";
+  const t = localizeUiCopy({ ...original,
+    hero: { ...original.hero, subtitle: isBn ? "বিশ্ববিদ্যালয় প্রজেক্ট: surplus food দান, NGO claim, volunteer handover ও distribution record এক জায়গায়। আপনার account দিয়ে আসল তথ্য সংরক্ষণ করুন।" : "A university project connecting food donations, NGO claims, volunteer handovers and recorded distributions. Sign in to work with saved rescue records.", urgentTag: isBn ? "Donor-declared pickup deadline" : "Donor-declared pickup deadline" },
+    bento: { ...original.bento, card3Title: isBn ? "সংরক্ষিত distribution record" : "Recorded distributions", card3Desc: isBn ? "NGO-এর actual distribution থেকে meal ও beneficiary count সংরক্ষিত হয়। Certificate issuance যুক্ত হয়নি।" : "Actual NGO distribution records supply meal and beneficiary counts. Certificate issuance is not connected." },
+    standards: { ...original.standards, badge: isBn ? "কী সংরক্ষণ করা হয়" : "Recorded workflow", title: isBn ? "ঘোষণা, handover ও distribution" : "Declarations, handovers and distributions", subtitle: isBn ? "Food safety পরীক্ষা বা temperature monitoring করা হচ্ছে না।" : "Food testing and temperature monitoring are not connected.", card1Title: isBn ? "দাতার ঘোষণা" : "Donor declarations", card1Desc: isBn ? "দাতা preparation time, pickup deadline ও storage method ঘোষণা করেন।" : "The donor supplies preparation time, pickup deadline and storage declarations.", card2Title: "OTP handover", card2Desc: isBn ? "নির্ধারিত volunteer ছয় সংখ্যার pickup ও delivery code যাচাই করেন।" : "The assigned volunteer verifies six-digit pickup and delivery codes.", card3Title: "Distribution record", card3Desc: isBn ? "NGO receipt ও actual distribution সংরক্ষণ করে।" : "The receiving NGO records receipt and actual distribution." },
+    stories: { ...original.stories, badge: tx("Demo reviews"), title: tx("Small stories about sharing food"), subtitle: tx("Sample names, profiles and comments for the demo. These are not real user reviews.") },
+    faq: { ...original.faq, items: [
+      { q: isBn ? "কীভাবে শুরু করব?" : "How do I start?", a: isBn ? "Donor, NGO অথবা volunteer account খুলে sign in করুন। নতুন NGO ও volunteer account-এর verification project operator করেন।" : "Register and sign in as a donor, NGO or volunteer. New NGO and volunteer accounts need verification by the project operator." },
+      { q: isBn ? "Food safety পরীক্ষা করা হয়?" : "Does the app test food safety?", a: isBn ? "না। App দাতার declaration, deadline ও handover record সংরক্ষণ করে। খাবারের quality বা temperature স্বাধীনভাবে পরীক্ষা করা হয় না।" : "No. The app stores donor declarations, deadlines and handover records. Food quality and temperature are not independently tested." },
+      { q: isBn ? "কীভাবে handover হয়?" : "How do handovers work?", a: isBn ? "NGO claim করার পরে volunteer mission গ্রহণ করেন। Donor pickup code এবং NGO delivery code দেন; assigned volunteer সেগুলো যাচাই করেন।" : "After an NGO claim, a volunteer accepts the mission. The donor issues a pickup code and the NGO a delivery code; the assigned volunteer verifies them." },
+      { q: isBn ? "কোন feature এখনও বাকি?" : "Which features remain pending?", a: isBn ? "Live GPS, road ETA, SMS/push, team invitation, support ticket, certificate issuance ও পূর্ণ admin dashboard এখনও যুক্ত হয়নি।" : "Live GPS, road ETA, SMS/push, team invitations, support tickets, certificates and the full admin dashboard are not connected yet." },
+    ] },
+    footer: { ...original.footer, helpline: isBn ? "Project hotline যুক্ত হয়নি। Account সহায়তার জন্য project operator-এর সাথে যোগাযোগ করুন।" : "A project hotline is not configured. Contact your project operator for account help." },
+  }, lang);
 
   useEffect(() => {
     const sectionIds = [
       "how-it-works",
-      "live-feed",
       "standards",
-      "calculator",
       "impact",
       "faq",
     ];
     const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
       // Dynamic scroll contraction trigger
       const scrolled = window.scrollY > 20;
       setIsScrolled(scrolled);
@@ -562,7 +362,7 @@ export function HomeView() {
           const top = el.offsetTop;
           const height = el.offsetHeight;
           if (scrollPos >= top && scrollPos < top + height) {
-            setActiveNav(id === "calculator" ? "impact" : id);
+            setActiveNav(id);
             break;
           }
         }
@@ -571,13 +371,13 @@ export function HomeView() {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+    return () => { window.removeEventListener("scroll", handleScroll); window.removeEventListener("resize", handleScroll); };
   }, []);
 
   const navLinks = [
     { id: "hero", label: t.nav.home, href: "#hero" },
     { id: "how-it-works", label: t.nav.howItWorks, href: "#how-it-works" },
-    { id: "live-feed", label: t.nav.liveFeed, href: "#live-feed" },
     { id: "standards", label: t.nav.safety, href: "#standards" },
     { id: "impact", label: t.nav.impact, href: "#impact" },
     { id: "faq", label: t.nav.faq, href: "#faq" },
@@ -603,127 +403,26 @@ export function HomeView() {
     }, 60);
   };
 
+  function openFoodDiscovery(query: string) {
+    const value = query.trim();
+    const target = `${ROUTES.ngo.discover}${value ? `?q=${encodeURIComponent(value)}` : ""}`;
+    router.push(session?.role === UserRole.NGO ? target : `${ROUTES.auth.login}?next=${encodeURIComponent(target)}`);
+  }
+
   function handleZoneSelect(zone: string) {
-    setSelectedZone(zone);
-    const feedEl = document.getElementById("live-feed");
-    if (feedEl) {
-      feedEl.scrollIntoView({ behavior: "smooth" });
-    }
+    openFoodDiscovery(zone);
   }
 
-  function handleHeroSearchSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const query = searchQuery.toLowerCase().trim();
-    if (query.includes("বাড্ডা") || query.includes("badda") || query.includes("uiu")) {
-      setSelectedZone("badda");
-    } else if (query.includes("গুলশান") || query.includes("gulshan") || query.includes("বনানী") || query.includes("banani")) {
-      setSelectedZone("gulshan");
-    } else if (query.includes("ধানমন্ডি") || query.includes("dhanmondi")) {
-      setSelectedZone("dhanmondi");
-    } else if (query.includes("মিরপুর") || query.includes("mirpur")) {
-      setSelectedZone("mirpur");
-    } else {
-      setSelectedZone("all");
-    }
-
-    const feedEl = document.getElementById("live-feed");
-    if (feedEl) {
-      feedEl.scrollIntoView({ behavior: "smooth" });
-    }
-  }
-
-  const filteredListings = useMemo(() => {
-    return LIVE_RESCUE_LISTINGS.filter((item) => {
-      const matchZone = selectedZone === "all" || item.zone === selectedZone;
-      const matchSearch =
-        searchQuery.trim() === "" ||
-        item.donor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.titleBn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.titleEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.locationBn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.locationEn.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchZone && matchSearch;
-    });
-  }, [selectedZone, searchQuery]);
-
-  // Reactive calculations for Impact Calculator
-  const calcMonthlyMeals = impactMeals * 4;
-  const calcPeopleFed = Math.round(calcMonthlyMeals * 1.25);
-  const calcCo2Saved = Math.round(calcMonthlyMeals * 2.4);
-  const calcWaterSaved = Math.round(calcMonthlyMeals * 160);
-
-  async function handleExecuteRealClaim(listing: RescueListing) {
-    setIsClaiming(true);
-    try {
-      // 1. Ensure user has an active NGO session (instant demo auth if visitor)
-      if (session?.role !== UserRole.NGO) {
-        signIn({
-          email: "ngo@sharebite.demo",
-          displayName: "Hope & Mastul Foundation",
-          role: UserRole.NGO,
-          remember: true,
-        });
-      }
-
-      // 2. Call real backend API to create claim
-      const donationId = listing.id.startsWith("rec-") ? `don_${listing.id}` : listing.id;
-      await fetch("/api/claims", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          donationId,
-          donationTitle: listing.titleBn,
-          ngoId: "usr_ngo_001",
-          ngoName: "Hope & Mastul Foundation",
-          ngoEmail: "ngo@sharebite.demo",
-          matchScore: 98,
-          pickupOtp: "7429",
-          dropoffOtp: "9814",
-        }),
-      });
-
-      // 3. Dispatch multi-role real notifications across devices
-      void createRealNotification({
-        title: "খাদ্য রেসকিউ ক্লেইম সফল! 🍱",
-        message: `মাস্তুল ফাউন্ডেশন "${listing.titleBn}" খাবারটি ক্লেইম করেছে। ভলান্টিয়ার রওয়ানা হচ্ছে।`,
-        role: "DONOR",
-        userId: "donor@sharebite.demo",
-        href: ROUTES.donor.donations,
-        type: "CLAIM_RESERVED",
-      });
-
-      void createRealNotification({
-        title: "নতুন জরুরি ডেলিভারি মিশন 🚴",
-        message: `${listing.donor} থেকে ${listing.portions} প্যাকেট খাবার সংগ্রহের মিশন উপলব্ধ।`,
-        role: "VOLUNTEER",
-        userId: "volunteer@sharebite.demo",
-        href: ROUTES.volunteer.dashboard,
-        type: "NEARBY_DONATION",
-      });
-
-      // 4. Trigger celebration banner
-      triggerCelebration({
-        title: "খাদ্য উদ্ধার ক্লেইম সংরক্ষিত! 🎉",
-        message: `${listing.donor}-এর ${listing.portions} প্যাকেট "${listing.titleBn}" সফলভাবে ক্লেইম করা হয়েছে।`,
-        badge: "মাস্তুল ফাউন্ডেশন (এনজিও)",
-        type: "CLAIM",
-      });
-
-      // 5. Navigate to NGO Claims tracking
-      setActiveListingModal(null);
-      router.push(ROUTES.ngo.claims);
-    } catch (err) {
-      console.error("Failed to execute real claim:", err);
-      router.push(ROUTES.ngo.claims);
-    } finally {
-      setIsClaiming(false);
-    }
+  function handleHeroSearchSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    openFoodDiscovery(searchQuery);
   }
 
   return (
-    <div className="min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
+    <HeroStoryProvider><MobileHomeView /><div className={cn("min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased", mobile.page, responsive.desktop)}>
       {/* 1. Header / Navbar with Smart Dynamic Scroll Contraction */}
       <header
+        data-scrolled={isScrolled}
         className={cn(
           "sticky top-0 z-50 transition-all duration-300 ease-in-out",
           "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/90 before:to-transparent before:transition-opacity before:duration-300",
@@ -734,13 +433,13 @@ export function HomeView() {
       >
         <div
           className={cn(
-            "mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out",
+            "mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out", mobile.headerRow,
             isScrolled ? "h-14 sm:h-14" : "h-18 sm:h-20",
           )}
         >
           <div
             className={cn(
-              "flex items-center gap-6 transition-transform duration-300 origin-left",
+              "flex items-center gap-6 transition-transform duration-300 origin-left", mobile.logo,
               isScrolled ? "scale-95" : "scale-100",
             )}
           >
@@ -781,12 +480,13 @@ export function HomeView() {
             <div
               className={cn(
                 "inline-flex items-center p-0.5 rounded-xl border border-white/70 bg-slate-200/50 backdrop-blur-md text-xs font-semibold select-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300",
-                isScrolled ? "h-8" : "h-9",
+                isScrolled ? "h-8" : "h-9", mobile.language,
               )}
             >
               <button
                 type="button"
                 onClick={() => setLang("en")}
+                aria-pressed={lang === "en"}
                 className={cn(
                   "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
                   isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
@@ -794,12 +494,11 @@ export function HomeView() {
                     ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
                     : "text-slate-600 hover:text-slate-900",
                 )}
-              >
-                EN
-              </button>
+              ><UiText source={"EN"} /></button>
               <button
                 type="button"
                 onClick={() => setLang("bn")}
+                aria-pressed={lang === "bn"}
                 className={cn(
                   "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
                   isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
@@ -808,8 +507,7 @@ export function HomeView() {
                     : "text-slate-600 hover:text-slate-900",
                 )}
               >
-                বাংলা
-              </button>
+                {tx("বাংলা")}</button>
             </div>
 
             <Link
@@ -839,9 +537,9 @@ export function HomeView() {
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               className={cn(
                 "grid place-items-center rounded-xl border border-slate-300/80 bg-white text-slate-800 shadow-xs lg:hidden hover:bg-slate-50 active:scale-90 cursor-pointer transition-all duration-200 touch-manipulation shrink-0",
-                isScrolled ? "size-9" : "size-9.5",
+                isScrolled ? "size-9" : "size-9.5", mobile.menu,
               )}
-              aria-label="Toggle Navigation Menu"
+              aria-label={tx("Toggle Navigation Menu")}
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X className="size-5.5 text-emerald-800" /> : <Menu className="size-5.5 text-slate-900" />}
@@ -851,7 +549,7 @@ export function HomeView() {
 
         {/* Mobile Slide-down Drawer */}
         {isMobileMenuOpen && (
-          <div className="border-t border-slate-200/60 bg-white/98 backdrop-blur-2xl px-4 py-5 shadow-2xl lg:hidden animate-in slide-in-from-top duration-200 max-h-[calc(100dvh-70px)] overflow-y-auto overscroll-contain touch-pan-y">
+          <div className={cn("border-t border-slate-200/60 bg-white/98 backdrop-blur-2xl px-4 py-5 shadow-2xl lg:hidden animate-in slide-in-from-top duration-200 overflow-y-auto overscroll-contain touch-pan-y", isScrolled ? "max-h-[calc(100dvh-3.75rem)]" : "max-h-[calc(100dvh-4.75rem)] sm:max-h-[calc(100dvh-5.25rem)]")}>
             <nav className="grid gap-1.5">
               {navLinks.map((item) => (
                 <a
@@ -878,7 +576,7 @@ export function HomeView() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md font-heading active:scale-98 cursor-pointer touch-manipulation"
               >
-                <span>🔑 {t.nav.login} করুন (ড্যাশবোর্ড)</span>
+                <span>🔑 {t.nav.login} {" "}{tx("করুন (ড্যাশবোর্ড)")}</span>
                 <ArrowRight className="size-4" />
               </a>
 
@@ -890,7 +588,7 @@ export function HomeView() {
                   className="flex flex-col items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50/80 p-2 text-center text-[11px] font-bold text-emerald-900 active:scale-95"
                 >
                   <span className="text-base">👨‍🍳</span>
-                  <span>ডোনার</span>
+                  <span>{tx("ডোনার")}</span>
                 </Link>
                 <Link
                   href="/login?next=/ngo/dashboard"
@@ -898,7 +596,7 @@ export function HomeView() {
                   className="flex flex-col items-center justify-center rounded-xl border border-teal-100 bg-teal-50/80 p-2 text-center text-[11px] font-bold text-teal-900 active:scale-95"
                 >
                   <span className="text-base">🏢</span>
-                  <span>এনজিও</span>
+                  <span>{tx("এনজিও")}</span>
                 </Link>
                 <Link
                   href="/login?next=/volunteer/dashboard"
@@ -906,7 +604,7 @@ export function HomeView() {
                   className="flex flex-col items-center justify-center rounded-xl border border-amber-100 bg-amber-50/80 p-2 text-center text-[11px] font-bold text-amber-900 active:scale-95"
                 >
                   <span className="text-base">🚴</span>
-                  <span>ভলান্টিয়ার</span>
+                  <span>{tx("ভলান্টিয়ার")}</span>
                 </Link>
               </div>
 
@@ -919,10 +617,10 @@ export function HomeView() {
                   {t.nav.join}
                 </Link>
                 <a
-                  href="tel:+880961274273"
+                  href="#faq"
                   className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 py-3 text-xs font-bold text-emerald-800 font-heading active:scale-98 shadow-xs touch-manipulation"
                 >
-                  📞 হটলাইন কল
+                  {isBn ? tx("সাধারণ জিজ্ঞাসা") : tx("Project help")}
                 </a>
               </div>
             </div>
@@ -931,76 +629,71 @@ export function HomeView() {
       </header>
 
       {/* 2. Hero Section with Background Image & Intact Right Column */}
-      <section id="hero" className="relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 text-white">
+      <section id="hero" className={cn("relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 text-white", mobile.hero)}>
         {/* Full-bleed Emotional Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/bangladesh-food-rescue-hero.jpg"
-            alt="Happy community and volunteers rescuing food in Bangladesh"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
+          <HeroStoryMedia imageClassName={cn("object-cover object-center", mobile.background)} />
           {/* Deep dark-green gradient overlay on the left for contrast, open/transparent on the right so background is visible */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#011d15]/98 via-[#011d15]/80 to-black/20" />
+          <div className={cn("absolute inset-0 bg-gradient-to-r from-[#011d15]/98 via-[#011d15]/80 to-black/20", mobile.shade)} />
           <div className="absolute inset-0 bg-radial-[at_top_left] from-emerald-500/15 via-transparent to-transparent" />
         </div>
+        <HeroStoryControls />
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+          <div className={cn("grid gap-12 lg:grid-cols-12 lg:items-center", mobile.layout)}>
             {/* Left 7 Columns: Content kept on left */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/70 px-4 py-1.5 text-xs font-extrabold text-emerald-300 shadow-lg backdrop-blur-md font-heading">
+            <div className={cn("lg:col-span-7 space-y-6 text-left", mobile.content)}>
+              <div className={cn("inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/70 px-4 py-1.5 text-xs font-extrabold text-emerald-300 shadow-lg backdrop-blur-md font-heading", mobile.badge)}>
                 <Sparkles className="size-3.5 text-amber-400 animate-pulse" />
-                {t.hero.badge}
+                <span>{t.hero.badge}</span>
               </div>
 
-              <h1 className="text-2.5xl sm:text-4xl lg:text-[3.6rem] font-black tracking-tight text-white lg:leading-[1.14] font-heading">
+              <h1 className={homeSloganStyles.slogan}>
                 {t.hero.titlePart1}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">
+                <HeroSloganLine className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">
                   {t.hero.titleHighlight}
-                </span>
+                </HeroSloganLine>
               </h1>
 
-              <p className="max-w-2xl text-xs sm:text-base lg:text-lg leading-relaxed text-emerald-100/90 font-normal">
+              <p className={cn("max-w-2xl text-xs sm:text-base lg:text-lg leading-relaxed text-emerald-100/90 font-normal", mobile.subtitle)}>
                 {t.hero.subtitle}
               </p>
 
               {/* Direct Access CTA Bar for Mobile & Desktop - Compact & Balanced */}
-              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+              <div className={cn("flex flex-wrap items-center gap-2 pt-0.5", mobile.actions)}>
                 <Link
                   href={ROUTES.auth.login}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/25 border border-emerald-400/40 px-3.5 py-1.5 text-xs font-bold text-emerald-200 hover:bg-emerald-500/35 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
                 >
-                  <span>🔑 ড্যাশবোর্ড লগইন</span>
+                  <span>{tx("🔑 ড্যাশবোর্ড লগইন")}</span>
                   <ArrowRight className="size-3.5" />
                 </Link>
                 <Link
                   href={ROUTES.auth.roleSelection}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/20 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
                 >
-                  <span>📋 নতুন একাউন্ট</span>
+                  <span>{tx("📋 নতুন একাউন্ট")}</span>
                 </Link>
               </div>
 
               {/* Integrated Search & Action Box (Floating Glass Style) */}
-              <form onSubmit={handleHeroSearchSubmit} className="rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left">
-                <div className="grid gap-2 sm:grid-cols-12">
-                  <div className="relative flex items-center sm:col-span-7">
+              <form onSubmit={handleHeroSearchSubmit} className={cn("rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left", mobile.search)}>
+                <div className={cn("grid gap-2 sm:grid-cols-12", mobile.searchRow)}>
+                  <div className={cn("relative flex items-center sm:col-span-7", mobile.inputWrap)}>
                     <MapPin className="pointer-events-none absolute left-3.5 size-5 text-emerald-600" />
                     <input
                       type="text"
+                      aria-label={tx("Search by area")}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t.hero.searchPlaceholder}
                       className="h-12 w-full rounded-xl border-none bg-slate-100/80 pl-11 pr-3 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden"
                     />
                   </div>
-                  <div className="sm:col-span-5 flex items-center">
+                  <div className={cn("sm:col-span-5 flex items-center", mobile.searchAction)}>
                     <button
                       type="submit"
-                      className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-emerald-900/40 hover:from-emerald-500 hover:to-teal-600 transition-all font-heading cursor-pointer active:scale-98"
+                      className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-emerald-900/40 hover:from-emerald-500 hover:to-teal-600 transition-all font-heading cursor-pointer active:scale-98", mobile.searchButton)}
                     >
                       <Search className="size-4" />
                       <span>{t.hero.searchBtn}</span>
@@ -1008,7 +701,7 @@ export function HomeView() {
                   </div>
                 </div>
 
-                <div className="mt-2.5 flex flex-wrap items-center justify-between px-2 pt-1.5 text-[11px] text-slate-600 font-medium border-t border-slate-200/60">
+                <div className={cn("mt-2.5 flex flex-wrap items-center justify-between px-2 pt-1.5 text-[11px] text-slate-600 font-medium border-t border-slate-200/60", mobile.searchMeta)}>
                   <span className="flex items-center gap-1.5 flex-wrap">
                     <strong className="text-slate-800">{t.hero.popularLabel}</strong>
                     <button
@@ -1016,31 +709,26 @@ export function HomeView() {
                       onClick={() => handleZoneSelect("gulshan")}
                       className="hover:text-emerald-700 hover:underline cursor-pointer"
                     >
-                      গুলশান ১ ও ২
-                    </button>
+                      {tx("গুলশান ১ ও ২")}</button>
                     <span>·</span>
                     <button
                       type="button"
                       onClick={() => handleZoneSelect("dhanmondi")}
                       className="hover:text-emerald-700 hover:underline cursor-pointer"
                     >
-                      ধানমন্ডি ২৭
-                    </button>
+                      {tx("ধানমন্ডি ২৭")}</button>
                     <span>·</span>
                     <button
                       type="button"
                       onClick={() => handleZoneSelect("badda")}
                       className="hover:text-emerald-700 hover:underline cursor-pointer font-bold text-emerald-800"
                     >
-                      বাড্ডা UIU ক্যাম্পাস
-                    </button>
+                      {tx("বাড্ডা UIU ক্যাম্পাস")}</button>
                   </span>
                   <span className="text-emerald-700 font-extrabold">{t.hero.urgentTag}</span>
                 </div>
               </form>
 
-              {/* Dynamic Live Metric Ticker with Telemetry Pulses */}
-              <HeroTicker lang={lang} />
             </div>
 
             {/* Right 5 Columns: Kept clear so the emotional background image remains visible */}
@@ -1064,11 +752,11 @@ export function HomeView() {
             </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <LiveIconGroup className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Bento Card 1 */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-emerald-500/50 hover:shadow-md transition-all">
               <span className="grid size-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 shadow-2xs">
-                <Utensils className="size-6" />
+                <LiveIcon icon={Utensils} motion="ambient" className="size-6" />
               </span>
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card1Title}
@@ -1081,7 +769,7 @@ export function HomeView() {
             {/* Bento Card 2 */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-teal-500/50 hover:shadow-md transition-all">
               <span className="grid size-12 place-items-center rounded-2xl bg-teal-50 text-teal-700 shadow-2xs">
-                <QrCode className="size-6" />
+                <LiveIcon icon={QrCode} motion="ambient" className="size-6" />
               </span>
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card2Title}
@@ -1094,7 +782,7 @@ export function HomeView() {
             {/* Bento Card 3 */}
             <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-amber-500/50 hover:shadow-md transition-all">
               <span className="grid size-12 place-items-center rounded-2xl bg-amber-50 text-amber-700 shadow-2xs">
-                <Clock className="size-6" />
+                <LiveIcon icon={Clock} motion="ambient" className="size-6" />
               </span>
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card3Title}
@@ -1103,162 +791,7 @@ export function HomeView() {
                 {t.bento.card3Desc}
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Live Emergency Surplus Rescue Board (ঢাকা মেট্রো লাইভ খাদ্য উদ্ধার বোর্ড) */}
-      <section id="live-feed" className="py-20 sm:py-24 bg-[#f8faf9] border-b border-slate-200/90">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
-                <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
-                {t.liveFeed.badge}
-              </span>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl font-heading">
-                {t.liveFeed.title}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600 max-w-2xl font-normal">
-                {t.liveFeed.subtitle}
-              </p>
-            </div>
-
-            {/* Area Filter Tabs */}
-            <div className="flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-1.5 text-xs font-bold font-heading overflow-x-auto max-w-full scrollbar-none snap-x">
-              {[
-                { key: "all", label: t.liveFeed.allZones },
-                { key: "badda", label: t.liveFeed.zoneBadda },
-                { key: "gulshan", label: t.liveFeed.zoneGulshan },
-                { key: "dhanmondi", label: t.liveFeed.zoneDhanmondi },
-                { key: "mirpur", label: t.liveFeed.zoneMirpur },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setSelectedZone(tab.key)}
-                  className={cn(
-                    "shrink-0 snap-start rounded-xl px-3 py-1.5 transition-all cursor-pointer select-none touch-manipulation",
-                    selectedZone === tab.key
-                      ? "bg-emerald-600 text-white shadow-xs font-black"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Surplus Rescue Cards Grid */}
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredListings.map((listing) => {
-              const isUrgent = listing.urgent;
-              return (
-                <div
-                  key={listing.id}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs hover:border-emerald-500/80 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300"
-                >
-                  {/* Top Bar with Urgency and Portions */}
-                  <div>
-                    <div className="flex items-center justify-between gap-2">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold font-heading",
-                          isUrgent
-                            ? "bg-amber-50 text-amber-800 ring-1 ring-amber-500/20"
-                            : "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500/20"
-                        )}
-                      >
-                        {isUrgent && <Zap className="size-3 text-amber-500 fill-amber-500" />}
-                        {isUrgent ? t.liveFeed.urgentBadge : t.liveFeed.safetyBadge}
-                      </span>
-
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-slate-500 font-mono">
-                        <Clock className="size-3 text-slate-400" />
-                        {listing.timeLeftMinutes} মি. {t.liveFeed.timeLeft}
-                      </span>
-                    </div>
-
-                    <h3 className="mt-4 text-lg font-black text-slate-900 group-hover:text-emerald-700 transition-colors font-heading leading-snug">
-                      {lang === "bn" ? listing.titleBn : listing.titleEn}
-                    </h3>
-
-                    <div className="mt-2 space-y-1.5 text-xs text-slate-600">
-                      <p className="flex items-center gap-1.5 font-bold text-slate-800">
-                        <Utensils className="size-3.5 text-emerald-600" />
-                        {listing.donor}
-                      </p>
-                      <p className="flex items-center gap-1.5 text-[11px] text-slate-500 truncate">
-                        <MapPin className="size-3.5 text-slate-400 shrink-0" />
-                        {lang === "bn" ? listing.locationBn : listing.locationEn}
-                      </p>
-                    </div>
-
-                    {/* Portions & Temperature Badge */}
-                    <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-50 p-2.5 text-xs font-heading">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block font-medium">পরিমাণ</span>
-                        <span className="text-sm font-black text-emerald-700">
-                          {listing.portions} {t.liveFeed.portions}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-[10px] text-slate-400 block font-medium">সংরক্ষণ</span>
-                        <span className="text-xs font-bold text-slate-700">
-                          {lang === "bn" ? listing.tempBn : listing.tempEn}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Status & Modal Trigger */}
-                  <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-                    <div className="flex items-center justify-between text-[11px] font-bold">
-                      <span className="text-slate-500">স্ট্যাটাস:</span>
-                      <span
-                        className={cn(
-                          "rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase font-heading",
-                          listing.status === "enroute"
-                            ? "bg-sky-50 text-sky-700 ring-1 ring-sky-300/40"
-                            : listing.status === "claimed"
-                            ? "bg-purple-50 text-purple-700 ring-1 ring-purple-300/40"
-                            : "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-300/40"
-                        )}
-                      >
-                        {lang === "bn" ? listing.statusTextBn : listing.statusTextEn}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveListingModal(listing)}
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-xs font-black text-slate-800 shadow-2xs hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 transition-all font-heading cursor-pointer"
-                    >
-                      {t.liveFeed.claimBtn} <ArrowRight className="size-3.5" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {filteredListings.length === 0 && (
-            <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-slate-50/70 p-12 text-center">
-              <PackageCheck className="mx-auto size-10 text-slate-400" />
-              <p className="mt-3 text-sm font-bold text-slate-600">{t.liveFeed.emptyState}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedZone("all");
-                  setSearchQuery("");
-                }}
-                className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:underline"
-              >
-                সব এলাকার তালিকা দেখুন
-              </button>
-            </div>
-          )}
+          </LiveIconGroup>
         </div>
       </section>
 
@@ -1282,7 +815,7 @@ export function HomeView() {
               <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
                 <Image
                   src="/images/surplus-food-containers.jpg"
-                  alt="Sealed hygienic catering containers with Kacchi Biryani and Polao"
+                  alt={tx("Sealed hygienic catering containers with Kacchi Biryani and Polao")}
                   fill
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover"
@@ -1331,120 +864,7 @@ export function HomeView() {
         </div>
       </section>
 
-      {/* 6. NEW: Interactive Impact Calculator (ইমপ্যাক্ট ক্যালকুলেটর) */}
-      <section id="calculator" className="py-20 sm:py-24 bg-gradient-to-br from-[#02241b] via-[#021f17] to-[#01140e] text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-300 font-heading border border-emerald-400/30">
-              <Calculator className="size-3.5 text-emerald-400" />
-              {t.calculator.badge}
-            </span>
-            <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl font-heading">
-              {t.calculator.title}
-            </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed font-normal">
-              {t.calculator.subtitle}
-            </p>
-          </div>
-
-          <div className="mt-12 max-w-4xl mx-auto rounded-3xl border border-emerald-800/40 bg-emerald-950/60 p-6 sm:p-10 backdrop-blur-md shadow-2xl">
-            {/* Interactive Slider */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <label htmlFor="meals-range" className="text-sm sm:text-base font-bold text-emerald-100 font-heading">
-                  {t.calculator.sliderLabel}
-                </label>
-                <span className="rounded-xl bg-emerald-500/20 px-3 py-1 text-base sm:text-lg font-black text-amber-300 ring-1 ring-emerald-400/30 font-heading">
-                  {impactMeals} {t.calculator.mealsUnit}
-                </span>
-              </div>
-
-              <input
-                id="meals-range"
-                type="range"
-                min="20"
-                max="500"
-                step="10"
-                value={impactMeals}
-                onChange={(e) => setImpactMeals(Number(e.target.value))}
-                className="w-full h-2.5 bg-emerald-900/80 rounded-lg appearance-none cursor-pointer accent-emerald-400"
-              />
-
-              <div className="flex justify-between text-[11px] text-emerald-300/60 font-semibold font-mono">
-                <span>২০ প্যাকেট / সপ্তাহ</span>
-                <span>২৫০ প্যাকেট</span>
-                <span>৫০০ প্যাকেট / সপ্তাহ</span>
-              </div>
-            </div>
-
-            {/* Dynamic Results Grid */}
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 text-center">
-              <div className="rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-4">
-                <span className="mx-auto grid size-10 place-items-center rounded-xl bg-emerald-500/20 text-emerald-300">
-                  <Utensils className="size-5" />
-                </span>
-                <p className="mt-3 text-2xl sm:text-3xl font-black text-white font-heading">
-                  {calcMonthlyMeals.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs text-emerald-200/80 font-medium">
-                  {t.calculator.monthlyMeals}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-4">
-                <span className="mx-auto grid size-10 place-items-center rounded-xl bg-amber-500/20 text-amber-300">
-                  <HeartHandshake className="size-5" />
-                </span>
-                <p className="mt-3 text-2xl sm:text-3xl font-black text-amber-300 font-heading">
-                  {calcPeopleFed.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs text-emerald-200/80 font-medium">
-                  {t.calculator.peopleFed}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-4">
-                <span className="mx-auto grid size-10 place-items-center rounded-xl bg-teal-500/20 text-teal-300">
-                  <Leaf className="size-5" />
-                </span>
-                <p className="mt-3 text-2xl sm:text-3xl font-black text-teal-300 font-heading">
-                  {calcCo2Saved.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs text-emerald-200/80 font-medium">
-                  {t.calculator.co2Saved}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-4">
-                <span className="mx-auto grid size-10 place-items-center rounded-xl bg-sky-500/20 text-sky-300">
-                  <Droplets className="size-5" />
-                </span>
-                <p className="mt-3 text-2xl sm:text-3xl font-black text-sky-300 font-heading">
-                  {calcWaterSaved.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs text-emerald-200/80 font-medium">
-                  {t.calculator.waterSaved}
-                </p>
-              </div>
-            </div>
-
-            {/* CTA action & Methodology Note */}
-            <div className="mt-8 pt-6 border-t border-emerald-800/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <p className="text-[11px] text-emerald-300/70 max-w-md font-normal leading-relaxed">
-                {t.calculator.helper}
-              </p>
-              <Link
-                href={ROUTES.auth.registerDonor}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-400 hover:to-teal-500 transition-all font-heading active:scale-95"
-              >
-                {t.calculator.ctaBtn} <ArrowRight className="size-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Community Stories & Real-Life Impact */}
+      {/* 7. Clearly labelled fictional demo reviews */}
       <section id="impact" className="py-20 sm:py-24 bg-gradient-to-b from-[#01140e] to-[#021f17] text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
@@ -1584,175 +1004,6 @@ export function HomeView() {
         </div>
       </footer>
 
-      {/* Smart Real Claim Detail Modal */}
-      {activeListingModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
-            <button
-              type="button"
-              onClick={() => setActiveListingModal(null)}
-              className="absolute top-5 right-5 grid size-8 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
-              aria-label="বন্ধ করুন"
-            >
-              <X className="size-4" />
-            </button>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 font-heading ring-1 ring-emerald-600/20">
-                <ShieldCheck className="size-3.5 text-emerald-600" />
-                {t.liveFeed.safetyBadge}
-              </span>
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-extrabold font-heading",
-                  activeListingModal.status === "pending"
-                    ? "bg-emerald-100 text-emerald-900 border border-emerald-300"
-                    : activeListingModal.status === "enroute"
-                    ? "bg-amber-100 text-amber-900 border border-amber-300"
-                    : "bg-slate-100 text-slate-700 border border-slate-300"
-                )}
-              >
-                {lang === "bn" ? activeListingModal.statusTextBn : activeListingModal.statusTextEn}
-              </span>
-            </div>
-
-            <h3 className="mt-3 text-xl font-black text-slate-900 font-heading">
-              {lang === "bn" ? activeListingModal.titleBn : activeListingModal.titleEn}
-            </h3>
-
-            <div className="mt-4 space-y-2.5 rounded-2xl bg-slate-50 p-4 text-xs">
-              <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                <span className="text-slate-500 font-medium">{t.liveFeed.modalDonor}</span>
-                <span className="font-bold text-slate-900">{activeListingModal.donor}</span>
-              </div>
-              <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                <span className="text-slate-500 font-medium">{t.liveFeed.modalLocation}</span>
-                <span className="font-bold text-slate-900 text-right">
-                  {lang === "bn" ? activeListingModal.locationBn : activeListingModal.locationEn}
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                <span className="text-slate-500 font-medium">পরিমাণ (মিল সংখ্যা):</span>
-                <span className="font-bold text-emerald-700">
-                  {activeListingModal.portions} প্যাকেট
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                <span className="text-slate-500 font-medium">{t.liveFeed.modalCooked}</span>
-                <span className="font-bold text-slate-900">
-                  {lang === "bn" ? activeListingModal.cookTimeBn : activeListingModal.cookTimeEn}
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                <span className="text-slate-500 font-medium">{t.liveFeed.modalSafeUntil}</span>
-                <span className="font-bold text-emerald-700">
-                  {activeListingModal.timeLeftMinutes} মি. বাকি
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">{t.liveFeed.modalTemp}</span>
-                <span className="font-bold text-slate-900">
-                  {lang === "bn" ? activeListingModal.tempBn : activeListingModal.tempEn}
-                </span>
-              </div>
-            </div>
-
-            {/* Smart Access Control & Claim Action */}
-            <div className="mt-5 space-y-3">
-              {activeListingModal.status === "pending" ? (
-                session?.role === UserRole.NGO ? (
-                  /* Case 1: Verified NGO Logged In */
-                  <div className="space-y-2.5">
-                    <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-900">
-                      <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-                      <span>
-                        আপনি <strong>{session.displayName || "মাস্তুল ফাউন্ডেশন"}</strong> (যাচাইকৃত এনজিও) হিসেবে সাইন-ইন আছেন।
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={isClaiming}
-                      onClick={() => handleExecuteRealClaim(activeListingModal)}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-900/20 hover:from-emerald-500 hover:to-teal-500 transition-all font-heading active:scale-98 cursor-pointer disabled:opacity-60"
-                    >
-                      {isClaiming ? "ক্লেইম প্রসেসিং হচ্ছে..." : "⚡ সরাসরি খাবারটি ক্লেইম করুন"}
-                      <ArrowRight className="size-4" />
-                    </button>
-                  </div>
-                ) : (
-                  /* Case 2: Guest / Non-NGO - Smart 1-Click Demo Bridge */
-                  <div className="space-y-3">
-                    <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-3 text-xs text-emerald-950">
-                      <p className="font-extrabold flex items-center gap-1.5 text-emerald-900">
-                        <ShieldCheck className="size-4 text-emerald-700" />
-                        খাদ্য সুরক্ষা ও বিতরণ প্রোটোকল
-                      </p>
-                      <p className="mt-1 text-[11px] leading-relaxed text-emerald-800">
-                        অপচয় রোধ ও স্বাস্থ্যবিধি নিশ্চিত করতে খাবার ক্লেইম শুধুমাত্র বিএফএসএ অনুমোদিত নিবন্ধিত চ্যারিটি বা এনজিওদের জন্য সংরক্ষিত।
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      disabled={isClaiming}
-                      onClick={() => handleExecuteRealClaim(activeListingModal)}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-900/25 hover:from-emerald-500 hover:to-teal-500 transition-all font-heading active:scale-98 cursor-pointer disabled:opacity-60"
-                    >
-                      {isClaiming ? "ক্লেইম নিশ্চিত হচ্ছে..." : "🏢 ১-ক্লিকে এনজিও হিসেবে ক্লেইম করুন (ডেমো মোড)"}
-                      <ArrowRight className="size-4" />
-                    </button>
-
-                    <div className="flex items-center justify-between gap-2 pt-1">
-                      <Link
-                        href={`/login?role=ngo&next=${ROUTES.ngo.discover}`}
-                        onClick={() => setActiveListingModal(null)}
-                        className="text-[11px] font-bold text-emerald-800 hover:underline inline-flex items-center gap-1 font-heading"
-                      >
-                        <span>🔑 নিজের এনজিও একাউন্টে লগইন করুন</span>
-                      </Link>
-                      <Link
-                        href={`${ROUTES.auth.register}?role=ngo`}
-                        onClick={() => setActiveListingModal(null)}
-                        className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 font-heading"
-                      >
-                        নতুন এনজিও নিবন্ধন
-                      </Link>
-                    </div>
-                  </div>
-                )
-              ) : (
-                /* Case 3: Already Claimed / In Transit */
-                <div className="space-y-2.5">
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-                    <p className="font-bold text-slate-900">
-                      এই খাদ্য লটটি ইতিমধ্যে {activeListingModal.receiverBn} দ্বারা গৃহীত হয়েছে।
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-slate-500">
-                      লাইভ ডেলিভারি ও কোল্ড চেইন হস্তান্তর প্রক্রিয়া দেখতে ট্র্যাকিং বোর্ডে প্রবেশ করুন।
-                    </p>
-                  </div>
-                  <Link
-                    href={ROUTES.ngo.claims}
-                    onClick={() => setActiveListingModal(null)}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-slate-800 transition-all font-heading"
-                  >
-                    <span>📍 লাইভ ক্লেইম ও ট্র্যাকিং বোর্ড দেখুন</span>
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setActiveListingModal(null)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer font-heading"
-              >
-                {t.liveFeed.modalActionClose}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </div></HeroStoryProvider>
   );
 }
