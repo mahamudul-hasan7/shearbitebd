@@ -1,5 +1,19 @@
 # ShareBite BD Project Status
 
+Current implementation work (14 November 2026): server authentication and PostgreSQL
+account/profile/donation/claim/assignment, verified pickup/delivery OTP, receipt,
+distribution, impact, persisted volunteer missions, actual photo storage and incident
+reporting with controlled review, and food requests linked to matching/rescue/distribution
+are implemented. Saved address pins, privacy-preserving donation maps, approximate
+nearby filters and pickup/delivery navigation are now connected. Volunteer GPS and
+road routing/ETA remain pending. Demo cleanup replaces fabricated metrics, certificates,
+photos and account controls with saved records or honest unavailable states. Lint now
+passes with zero errors. Rider duty now uses one saved ON/OFF switch: OFF blocks new
+assignments while preserving an active mission and handovers. See [the Bengali demo guide](DEMO_GUIDE_BN.md).
+See [REAL_IMPLEMENTATION.md](REAL_IMPLEMENTATION.md) for the current
+scope, tests and remaining work. The phase summaries below are historical frontend
+milestones; they do not establish complete backend functionality.
+
 Last audited: 2026-09-18
 Current milestone: Phase 14 complete
 

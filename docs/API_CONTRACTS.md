@@ -1,6 +1,123 @@
 # ShareBite BD Frontend API Contracts
 
-This document describes the future backend boundary represented by the Phase 3 mock services. The current implementation is an in-memory frontend simulation; it is not an authentication, authorization, storage, or food-safety system.
+Current implementation (14 November 2026) uses authenticated /api routes with
+PostgreSQL persistence. See [REAL_IMPLEMENTATION.md](REAL_IMPLEMENTATION.md) for the
+verified scope. The Phase 3 conventions below are historical and do not supersede
+the implemented route handlers.
+
+## Volunteer duty
+
+- GET /api/volunteer/duty returns the authenticated rider's saved duty state,
+  start time, version, active-mission status and permission to go on duty. New accounts start OFF.
+- PATCH /api/volunteer/duty accepts { isOnDuty: boolean }. Identity comes from
+  the session; only verified riders can turn ON. Repeating the same state does
+  not reset the start time or increment its version.
+- POST /api/dispatches requires duty ON. Assignment and duty updates lock the
+  same user row, so concurrent requests respect the committed duty state.
+  Turning OFF does not cancel an assigned mission or prevent its OTP handovers.
+- The rider pages use one inline ON/OFF switch. State is applied after saving,
+  persists across reloads, and refreshes on tab focus and cross-tab changes.
+
+## Distribution form feedback and time
+
+- GET /api/distributions includes serverTime alongside distribution. The form
+  uses this timestamp to account for a different phone/computer clock.
+- Distribution validates counts, received meal capacity, receipt chronology,
+  location and consent before sending. Errors focus the relevant field, while
+  server-only errors scroll into view. Native validation cannot silently stop submission.
+- Use current time fills the time from the server clock offset. Server checks
+  still reject future times, pre-receipt times and expired food.
+- A successful save immediately shows the stored record. A second request is not
+  needed to show completion. test:distribution:browser covers mobile, desktop,
+  invalid form feedback, failed writes, reload and fast/slow device clocks.
+
+## Optional donation sample images
+
+- POST /api/donations accepts optional sampleImageId: packed-meals or meal-trays.
+  The server stores this choice separately from photoUrls and uploaded PhotoAsset
+  records. Arbitrary paths/URLs/IDs and a sample combined with uploaded photos are rejected.
+- Donation responses include the optional sampleImageId. Donor/NGO/claim images
+  resolve it through the fixed catalogue and display an explicit Sample image label.
+- The wizard restores the selected sample from its account-scoped draft. Adding an
+  uploaded photo clears the sample choice. Removing the sample returns to the neutral
+  no-photo state. Receipt, incident and distribution evidence still require real uploads.
+
+## Implemented cleanup behavior
+
+- GET /api/missions also returns completedRescues from the authenticated volunteer
+  profile. Completed-history servings count recorded NGO distribution meals, or zero
+  while distribution is pending; verified delivery and actual distribution are separate.
+- Notification clients use the authenticated /api/notifications and read-all endpoints.
+  Failed requests throw; no read-success broadcast is emitted until the write succeeds.
+  Broadcast payloads cannot create visible server notification records.
+- Read-only verification/profile pages use /api/profile. Disconnected settings,
+  invitations, support tickets and certificate flows no longer simulate successful writes.
+
+## Implemented saved-location behavior
+
+- POST /api/profile accepts addAddress/updateAddress with optional coordinates:
+  { latitude: number, longitude: number } or null to clear. Omitting coordinates
+  on update preserves the pin. All mutations are scoped to the authenticated owner.
+- POST /api/profile also accepts { action: "setCoordinates", id, input:
+  { coordinates: { latitude, longitude } | null } }. This edits only the owned
+  address pin, including addresses whose text is protected by donation history.
+  Latitude is -90..90 and longitude -180..180; both values are required together.
+- Donation publish and request publish/update copy coordinates from the owned saved
+  address. Browser-supplied coordinates/distance do not set rescue snapshots.
+- Donation pickup.approximateCoordinates is rounded to a 0.01-degree grid. Exact
+  coordinates are available only in pickup.exactAddress.coordinates to authorized
+  participants. Old/missing pins are omitted; no coordinate is invented.
+- Claim details.deliveryAddress and assigned mission pickupCoordinates/dropoffCoordinates
+  use saved snapshots. Later address pin edits do not move existing rescue endpoints.
+- Discovery computes approximate straight-line distance client-side from the NGO's
+  own primary pin and the server-provided coarse donation location. Radius defaults
+  to All; a specific radius excludes donations with unavailable distance.
+- GET /api/missions?claimId=... exposes exact endpoints only to the assigned volunteer.
+  Public dispatch listings do not expose exact coordinate pairs or infer exact
+  distances. Maps/navigation use actual endpoints only where permitted.
+
+## Implemented incident endpoints
+
+- GET /api/incidents supports claimId, donationId or id filters. The session limits
+  records to the donor, claiming NGO, assigned volunteer, or an administrator.
+- POST /api/incidents accepts { claimId, input } (donationId can select the latest
+  accessible claim). Input contains type, severity, description (12–2000 characters),
+  preferredContactMethod, optional evidenceUrls, and a 16–100 character submissionKey.
+- Creation returns { incident, created } with 201, or 200 for an identical retry.
+  A changed payload under the same key or duplicate open author/category returns 409.
+- Current rescue reports pause claim/donation as DISPUTED and expire pending OTPs.
+  Reports after DISTRIBUTED are audit reports and preserve historical records.
+- PATCH /api/incidents is ADMIN-only: { id, action, note }. Actions: UNDER_REVIEW,
+  RESUME, REJECT_FOOD, CLOSE. Notes require 12–2000 characters. Review returns
+  { incident }; record history includes actor label, status, decision and timestamp.
+- RESUME restores the held stage only after all blocking reports are resolved and
+  the declared deadline/receipt checks pass. REJECT_FOOD closes the batch; CLOSE
+  follows resolution. Participants cannot clear a hold themselves.
+- Evidence uses POST /api/photos with purpose INCIDENT and claimId. Only actual,
+  owned uploads from the same claim can be attached; protected photo reads enforce
+  participant access. Formats and limits are documented in the roadmap.
+
+## Implemented food request endpoints
+
+- GET /api/requests lists the authenticated NGO's requests; id selects an owned request.
+  Adding matches=true returns current suitable donations with approximate pickup data.
+- POST /api/requests publishes a validated verified-NGO request with an owned
+  deliveryAddressId, submissionKey and the declared food/time/recipient requirements.
+  Returns { request, created } with 201; identical retries return 200.
+- PATCH /api/requests accepts { id, action: "update", input } or { id, action: "cancel" }.
+  Identity, status and fulfillment cannot be set through update input.
+- POST /api/claims accepts optional foodRequestId and allergenReviewAcknowledged.
+  Server matching is rechecked under locks; the claim carries requestMealsAllocated.
+- Request responses contain mealsFulfilled, mealsReserved, remainingMeals and
+  linkedClaims. Reservation sets MATCHED; actual distribution advances fulfillment.
+  Excess batches are capped to the request target while impact retains actual meals.
+- Active linked claims block edits/cancellation. Release, donor cancellation and
+  incident rejection release allocation. Deadline expiry blocks new matches/claims
+  without deleting existing rescue history. Full requirements are in the roadmap.
+- These endpoints are NGO-scoped. Saved delivery snapshots feed assigned missions and
+  distribution validation; unrelated NGOs, donors and volunteers cannot list requests.
+
+## Historical Phase 3 contract proposal
 
 ## Conventions
 
