@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#eef2f1"/>
+  <g fill="none" stroke="#647970" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="320" y="190" width="160" height="120" rx="15"/>
+    <circle cx="365" cy="228" r="12"/>
+    <path d="m330 294 42-40 35 30 30-24 33 34"/>
+  </g>
+  <text x="400" y="365" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="#41594e">Photo not provided</text>
+</svg>
