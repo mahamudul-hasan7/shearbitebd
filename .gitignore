@@ -30,3 +30,9 @@ pnpm-debug.log*
 
 # typescript
 *.tsbuildinfo
+
+# Runtime authentication sessions
+/data/sessions.json
+/data/*.tmp
+/.local-postgres/
+/data/migration-reports/

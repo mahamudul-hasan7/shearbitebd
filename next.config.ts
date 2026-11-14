@@ -5,6 +5,9 @@ const projectRoot = process.cwd();
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async headers() {
+    return [{ source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] }];
+  },
   outputFileTracingRoot: projectRoot,
   turbopack: {
     root: projectRoot,
@@ -24,6 +27,8 @@ const nextConfig: NextConfig = {
     "*.ngrok-free.app",
   ],
   experimental: {
+    // Five 5 MB photos plus multipart framing; the route enforces its own stream cap.
+    proxyClientMaxBodySize: "26mb",
     serverActions: {
       allowedOrigins: [
         "localhost:3000",

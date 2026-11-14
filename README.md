@@ -13,6 +13,28 @@
 > **"অতিরিক্ত খাবার নষ্ট নয়, সম্মানের সাথে মানুষের পাতে।"**  
 > An enterprise-grade, hyper-local civic-tech food rescue platform connecting university cafeterias, restaurants, and catering banquets with nearby charities and volunteer student riders within a 15-minute cycling corridor in Dhaka.
 
+## Real implementation progress — 13 November 2026
+
+The first eight implementation increments now provide PostgreSQL-backed accounts,
+sessions, profiles, donations, NGO claims, volunteer assignment, six-digit handover OTPs,
+delivery receipts, distribution, impact, food/evidence photo uploads and incident reporting.
+NGO food requests now match suitable donations, link claims and count fulfillment from
+actual distribution. Saved address pins now power donation maps, approximate nearby
+filters and pickup/delivery navigation. Incident holds and audited operator review prevent normal rescue
+progression during disputes. Transactions prevent duplicate claims,
+verification and distribution. Password hashing is intentionally deferred at the
+project owner's request. Demo cleanup removes fabricated metrics/certificates and
+marks disconnected secondary modules unavailable. See the [Bengali demo guide](docs/DEMO_GUIDE_BN.md)
+for the three-account presentation. Several secondary modules remain pending.
+
+Local setup: use Node.js 22+ and run `npm run db:setup` once before `npm run dev`.
+The existing Windows launcher also uses the `predev` database-start check. See the
+roadmap for demo accounts, verification, import conflicts and test instructions.
+
+See [the implementation roadmap](docs/REAL_IMPLEMENTATION.md) for completed work,
+remaining gaps, local setup and authentication tests. Older capability descriptions
+below describe the intended product and should not be read as verified backend features.
+
 ---
 
 ## 📌 The Problem We Solve
@@ -28,7 +50,7 @@
 * **🏢 Food Donor Portal (`/donor`):** 60-Second listing interface for cafeteria managers with meal categories, portion estimation, and pickup coordinates.
 * **🌡️ AI Spoilage Countdown Meter:** Dynamic biological countdown tracking ambient temperature and safe thermal windows (BFSA 4-hour auto-lock prevents expired food listings).
 * **🤝 NGO / Charity Cockpit (`/ngo`):** Discover nearby edible meals on interactive feeds, claim food batches, and verify delivery receipts.
-* **🛵 Volunteer Rider Cockpit (`/volunteer`):** Live dispatch radar for student cyclists with double-handshake verification (4-digit pickup OTP and drop-off confirmation).
+* **🛵 Volunteer Rider Cockpit (`/volunteer`):** Live dispatch radar for student cyclists with double-handshake verification (six-digit, single-use pickup and delivery OTPs).
 * **🗄️ Real Database & REST APIs (`/api/auth/*`):** Full database persistence for new Donors, NGOs, and Volunteers with strict Role-Based Access Control (RBAC) preventing unauthorized cross-portal access.
 * **🗺️ Hyper-Local Radar Map (`/explore`):** 100% free OpenStreetMap & Leaflet with zero Google Maps API costs. Visualizes real-time surplus hotspots and 15-minute cycling corridors in Dhaka.
 * **🏢 UIU Campus Pilot Ready:** Pre-configured telemetry centered on United International University (UIU), Madani Avenue, and surrounding shelter homes.
@@ -52,7 +74,7 @@
 ## 🚀 Quick Start & Installation
 
 ### Prerequisites
-* **Node.js:** `v18.18.0` or `v20.x+` (LTS recommended) — [Download Node.js](https://nodejs.org/)
+* **Node.js:** `v22+` (LTS recommended) — [Download Node.js](https://nodejs.org/)
 * **Git:** (Optional if downloaded via ZIP)
 
 ---
@@ -75,8 +97,8 @@ cd shearbitebd
 # 2. Install dependencies (safe cross-platform install)
 npm install
 
-# 3. Setup environment variables (optional for local mock mode)
-cp .env.example .env
+# 3. Configure local PostgreSQL, migrations and OTP secret
+npm run db:setup
 
 # 4. Start the Next.js development server
 npm run dev
