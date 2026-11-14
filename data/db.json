@@ -255,7 +255,7 @@
       "type": "SYSTEM",
       "role": "VOLUNTEER",
       "id": "notif_mwdqfqcg_ghu0",
-      "read": false,
+      "read": true,
       "createdAt": "2026-11-12T15:58:29.152Z"
     },
     {

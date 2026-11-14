@@ -21,6 +21,32 @@ enum UserRole {
   ADMIN
 }
 
+enum VerificationKind {
+  PICKUP
+  DELIVERY
+}
+
+enum PhotoPurpose {
+  DONATION
+  RECEIPT
+  DISTRIBUTION
+  INCIDENT
+}
+
+enum IncidentDecision {
+  RESUME
+  REJECT_FOOD
+}
+
+enum MissionRouteStage {
+  assigned
+  en_route_pickup
+  at_pickup
+  cargo_loaded
+  en_route_dropoff
+  completed
+}
+
 enum DonorType {
   INDIVIDUAL
   CAFETERIA
@@ -122,6 +148,7 @@ enum RequestStatus {
 enum RequestType {
   ONE_TIME
   RECURRING
+  EMERGENCY
 }
 
 enum TransportMethod {
@@ -178,6 +205,10 @@ enum NGOTeamMemberStatus {
 model User {
   id               String            @id @default(cuid())
   email            String            @unique
+  // Plaintext storage is temporary and explicitly requested for the varsity project.
+  password         String?
+  normalizedPhone  String?           @unique
+  registrationDetails Json          @default("{}")
   displayName      String
   phone            String?
   avatarUrl        String?
@@ -192,6 +223,11 @@ model User {
   notifications    Notification[]
   preferences      UserPreference?
   reportedIncidents IncidentReport[]
+  sessions         AuthSession[]
+  issuedChallenges HandoverChallenge[]
+  photos           PhotoAsset[]
+  incidentReviews  IncidentReview[]
+  addresses        Address[]
 
   @@map("users")
 }
@@ -208,15 +244,31 @@ model Address {
   landmark    String?
   latitude    Float?
   longitude   Float?
+  foodRequests FoodRequest[]
   isPrimary   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   donations   Donation[]
   volunteerProfiles VolunteerProfile[]
   distributions DistributionRecord[]
 
   @@map("addresses")
+  @@index([ownerId])
+}
+
+model AuthSession {
+  tokenHash String   @id
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("auth_sessions")
 }
 
 model DonorProfile {
@@ -257,7 +309,7 @@ model NGOProfile {
   publicEmail             String
   publicPhone             String
   galleryUrls             String[]           @default([])
-  verificationStatus      VerificationStatus @default(VERIFIED)
+  verificationStatus      VerificationStatus @default(PENDING)
   verificationDocName     String?
   rating                  Float?             @default(5.0)
   completedRescues        Int                @default(0)
@@ -297,7 +349,10 @@ model VolunteerProfile {
   serviceAreas         String[]           @default([])
   transportMethod      TransportMethod    @default(BICYCLE)
   availability         String[]           @default([])
-  verificationStatus   VerificationStatus @default(VERIFIED)
+  isOnDuty             Boolean            @default(false)
+  dutyStartedAt        DateTime?
+  dutyVersion          Int                @default(0)
+  verificationStatus   VerificationStatus @default(PENDING)
   identityDocumentName String?
   completedRescues     Int                @default(0)
   createdAt            DateTime           @default(now())
@@ -327,11 +382,14 @@ model Donation {
   foodCondition         FoodCondition     @default(FRESHLY_PREPARED)
   allergens             String[]          @default([])
   photoUrls             String[]          @default([])
+  sampleImageId         String?
   specialInstructions   String?
   priority              PriorityLevel     @default(HIGH)
   status                DonationStatus    @default(AVAILABLE)
 
   // Pickup fields
+  pickupLatitude        Float?
+  pickupLongitude       Float?
   pickupAddressId       String
   approximateArea       String
   distanceKm            Float?
@@ -349,6 +407,7 @@ model Donation {
   safetyStoredCorrectly Boolean           @default(true)
   safetyAllergensDisclosed Boolean        @default(true)
   safetyDeadlineConfirmed Boolean         @default(true)
+  safetyAccuracyConfirmed Boolean         @default(true)
   safetyDeclaredAt      DateTime          @default(now())
 
   publishedAt           DateTime?
@@ -359,17 +418,23 @@ model Donation {
 
   donor                 DonorProfile      @relation(fields: [donorProfileId], references: [id], onDelete: Cascade)
   pickupAddress         Address           @relation(fields: [pickupAddressId], references: [id])
-  claim                 Claim?
+  claims                Claim[]
+  photos                PhotoAsset[]
 
   @@map("donations")
 }
 
 model Claim {
+  deliveryAddressSnapshot Json?
   id                        String             @id @default(cuid())
-  donationId                String             @unique
+  donationId                String
+  foodRequestId             String?
+  requestMealsAllocated     Int                @default(0)
   ngoProfileId              String
   volunteerProfileId        String?
   status                    ClaimStatus        @default(RESERVED)
+  routeStage                MissionRouteStage  @default(assigned)
+  incidentHoldStatus        ClaimStatus?
   matchScore                Int                @default(90)
   reservedAt                DateTime           @default(now())
   assignedAt                DateTime?
@@ -384,19 +449,73 @@ model Claim {
   updatedAt                 DateTime           @updatedAt
 
   donation                  Donation           @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  foodRequest               FoodRequest?       @relation(fields: [foodRequestId], references: [id], onDelete: SetNull)
   ngo                       NGOProfile         @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
   volunteer                 VolunteerProfile?  @relation(fields: [volunteerProfileId], references: [id])
   deliveryReceipt           DeliveryReceipt?
   distributionRecord        DistributionRecord?
   impactRecord              ImpactRecord?
   incidentReports           IncidentReport[]
+  challenges                HandoverChallenge[]
+  photos                    PhotoAsset[]
 
   @@map("claims")
+  // Active claim uniqueness is enforced by the partial index in migration 002.
+  @@index([donationId])
+  @@index([foodRequestId])
+}
+
+model HandoverChallenge {
+  id             String           @id @default(cuid())
+  claimId        String
+  kind           VerificationKind
+  codeHash       String
+  issuedByUserId String
+  issuedAt       DateTime         @default(now())
+  expiresAt      DateTime
+  attempts       Int              @default(0)
+  consumedAt     DateTime?
+
+  claim          Claim            @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  issuer         User             @relation(fields: [issuedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, kind])
+  @@index([expiresAt])
+  @@map("handover_challenges")
+}
+
+model PhotoAsset {
+  id           String       @id @default(uuid())
+  ownerId      String
+  purpose      PhotoPurpose
+  originalName String
+  mimeType     String       @default("image/webp")
+  byteSize     Int
+  width        Int
+  height       Int
+  data         Bytes
+  donationId   String?
+  claimId      String?
+  attachedAt   DateTime?
+  createdAt    DateTime     @default(now())
+
+  owner        User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  donation     Donation?    @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  claim        Claim?       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, createdAt])
+  @@index([donationId])
+  @@index([claimId])
+  @@map("photo_assets")
 }
 
 model FoodRequest {
   id                      String          @id @default(cuid())
   ngoProfileId            String
+  deliveryAddressId       String?
+  mealsFulfilled          Int             @default(0)
+  submissionKey           String?
+  submissionHash          String?
   title                   String
   requestType             RequestType     @default(ONE_TIME)
   priority                PriorityLevel   @default(HIGH)
@@ -416,6 +535,8 @@ model FoodRequest {
   locationType            String          @default("SHELTER")
   deliveryArea            String
   deliveryCity            String          @default("Dhaka")
+  deliveryLatitude        Float?
+  deliveryLongitude       Float?
   deliveryAddressLine     String
   deliveryLandmark        String?
   deliveryInstructions    String?
@@ -425,7 +546,11 @@ model FoodRequest {
   updatedAt               DateTime        @updatedAt
 
   ngo                     NGOProfile      @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+  deliveryAddress         Address?        @relation(fields: [deliveryAddressId], references: [id], onDelete: Restrict)
+  claims                  Claim[]
 
+  @@unique([ngoProfileId, submissionKey])
+  @@index([ngoProfileId, status, neededBy])
   @@map("food_requests")
 }
 
@@ -442,6 +567,7 @@ model DeliveryReceipt {
   verificationMethod        String       @default("QR")
   notes                     String?
   photoNames                String[]     @default([])
+  photoUrls                 String[]     @default([])
   receivedAt                DateTime     @default(now())
   createdAt                 DateTime     @default(now())
 
@@ -463,6 +589,7 @@ model DistributionRecord {
   addressId                   String
   notes                       String?
   photoUrls                   String[]   @default([])
+  photoNames                  String[]   @default([])
   beneficiaryConsentConfirmed Boolean    @default(true)
   createdAt                   DateTime   @default(now())
 
@@ -506,11 +633,35 @@ model IncidentReport {
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
   resolvedAt             DateTime?
+  submissionKey          String?
+  submissionHash         String?
+  blocksRescue           Boolean        @default(true)
+  decision               IncidentDecision?
 
   claim                  Claim          @relation(fields: [claimId], references: [id], onDelete: Cascade)
   reportedByUser         User           @relation(fields: [reportedByUserId], references: [id], onDelete: Cascade)
+  reviews                IncidentReview[]
 
+  @@unique([reportedByUserId, submissionKey])
+  @@index([claimId, status])
   @@map("incident_reports")
+}
+
+model IncidentReview {
+  id           String            @id @default(cuid())
+  incidentId   String
+  actorUserId  String?
+  actorLabel   String
+  status       IncidentStatus
+  decision     IncidentDecision?
+  note         String
+  createdAt    DateTime          @default(now())
+
+  incident     IncidentReport    @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  actor        User?             @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([incidentId, createdAt])
+  @@map("incident_reviews")
 }
 
 model Notification {

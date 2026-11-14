@@ -1,0 +1,4 @@
+ALTER TABLE "volunteer_profiles"
+  ADD COLUMN "isOnDuty" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN "dutyStartedAt" TIMESTAMP(3),
+  ADD COLUMN "dutyVersion" INTEGER NOT NULL DEFAULT 0;
