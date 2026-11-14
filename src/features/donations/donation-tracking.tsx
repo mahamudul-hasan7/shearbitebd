@@ -1,32 +1,26 @@
 "use client";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  ArrowLeft,
   Bike,
   Building2,
   CalendarClock,
   Car,
   CheckCircle2,
   Clock3,
-  Copy,
-  ExternalLink,
-  Flame,
-  Gauge,
-  MapPin,
   MessageCircle,
-  Navigation,
   Phone,
-  QrCode,
-  Radio,
   RefreshCw,
-  Route,
   ShieldAlert,
   ShieldCheck,
   Truck,
   UserRound,
-  Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { RescueLocationMap } from "@/components/maps/rescue-location-map";
+import { HandoverCodePanel } from "@/components/donation/handover-code-panel";
 import { DonationStatusTimeline } from "@/components/donation/donation-status-timeline";
 import { RescueClock } from "@/components/donor/rescue-clock";
 import { PortalShell } from "@/components/layout/portal-shell";
@@ -34,7 +28,6 @@ import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink, buttonClassNames } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
   STATUS_TEXT_BN,
@@ -52,123 +45,14 @@ const TRANSPORT_LABELS_BN: Record<TransportMethod, { label: string; icon: React.
 };
 
 function TrackingLoading() {
+  const tx = useUiText();
   return (
-    <SkeletonGroup label="রেসকিউ ট্র্যাকিং লোড হচ্ছে..." className="grid gap-6">
-      <Card className="p-6 border-line">
-        <Skeleton className="h-8 w-1/2" />
-        <Skeleton className="mt-5 h-28 w-full" />
-      </Card>
-      <div className="grid gap-6 xl:grid-cols-[1fr_22rem]">
-        <Skeleton className="h-[30rem] w-full" />
-        <Skeleton className="h-[30rem] w-full" />
-      </div>
-    </SkeletonGroup>
-  );
-}
-
-function MockQrHandover({ token, code }: { token?: string; code?: string }) {
-  const [copied, setCopied] = useState(false);
-  const patternSeed = (token?.length ?? 7) + (code?.length ?? 4);
-  const cells = Array.from({ length: 121 }, (_, index) => ((index * 7 + patternSeed * 3 + Math.floor(index / 11)) % 5) < 2);
-  const rawDigits = (code || token || "").replace(/\D/g, "");
-  const fallbackCode = code || (rawDigits.length >= 4 ? rawDigits.slice(-4) : "7429");
-
-  function copyCode() {
-    navigator.clipboard.writeText(fallbackCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <Card id="handover" className="overflow-hidden border-line shadow-sm">
-      <div className="border-b border-line bg-gradient-to-r from-emerald-50 via-teal-50 to-transparent p-5">
-        <div className="flex items-center gap-3">
-          <span className="grid size-11 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-700/20">
-            <QrCode className="size-5" />
-          </span>
-          <div>
-            <p className="font-black text-ink-900 text-sm">পিকআপ কিউআর ও ওটিপি ভেরিফিকেশন</p>
-            <p className="text-xs text-muted-600">রাইডারকে খাবার হস্তান্তরের ডিজিটাল স্বীকৃতি</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-5 text-center">
-        {token || code ? (
-          <>
-            {/* Target Scanner QR Container */}
-            <div className="relative mx-auto inline-block p-4">
-              <div className="absolute top-1 left-1 size-5 border-t-2 border-l-2 border-emerald-600" />
-              <div className="absolute top-1 right-1 size-5 border-t-2 border-r-2 border-emerald-600" />
-              <div className="absolute bottom-1 left-1 size-5 border-b-2 border-l-2 border-emerald-600" />
-              <div className="absolute bottom-1 right-1 size-5 border-b-2 border-r-2 border-emerald-600" />
-
-              <div
-                aria-label="Secure OTP Handover QR"
-                className="grid size-44 grid-cols-[repeat(11,minmax(0,1fr))] gap-0.5 rounded-2xl border-4 border-white bg-white p-2 shadow-inner ring-1 ring-emerald-200"
-              >
-                {cells.map((filled, index) => (
-                  <span
-                    key={index}
-                    className={filled ? "bg-emerald-950 rounded-[1px]" : "bg-white"}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-emerald-200/80 bg-emerald-50/70 p-4">
-              <p className="text-[11px] font-black uppercase tracking-wider text-emerald-800">
-                ৪-ডিজিট পিকআপ ওটিপি (OTP)
-              </p>
-              <div className="mt-2.5 flex items-center justify-center gap-3">
-                <div className="flex items-center gap-1.5 font-mono text-2xl font-black text-emerald-950">
-                  {fallbackCode.split("").map((digit, i) => (
-                    <span
-                      key={i}
-                      className="inline-grid size-10 place-items-center rounded-xl border border-emerald-300 bg-white shadow-xs"
-                    >
-                      {digit}
-                    </span>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={copyCode}
-                  className="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow hover:bg-emerald-700 active:scale-95 transition-all"
-                  title="ওটিপি কপি করুন"
-                >
-                  <Copy className="size-3.5 inline mr-1" />
-                  {copied ? "কপি হয়েছে!" : "কপি"}
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 text-left text-xs leading-relaxed text-muted-600 bg-canvas/60 p-3 rounded-xl border border-line">
-              <p className="font-bold text-ink-900 mb-1">হস্তান্তর নির্দেশিকা:</p>
-              <ul className="list-disc pl-4 space-y-1 text-[11px]">
-                <li>রাইডারের পরিচয় ও ব্যাজ যাচাই করুন।</li>
-                <li>রাইডার আসলে খাবার তুলে দিয়ে এই ৪-ডিজিটের কোডটি প্রদান করুন বা কিউআর কোড স্ক্যান করতে দিন।</li>
-                <li>রাইডার ককপিটে কোড যাচাই করার সাথে সাথে খাবার ট্রানজিটে নথিভুক্ত হবে।</li>
-              </ul>
-            </div>
-          </>
-        ) : (
-          <div className="grid place-items-center py-10">
-            <div className="grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400">
-              <QrCode className="size-7" />
-            </div>
-            <p className="mt-4 font-black text-ink-900 text-sm">টোকেন এখনও ইস্যু হয়নি</p>
-            <p className="mt-1.5 max-w-xs text-xs leading-5 text-muted-600">
-              ভলান্টিয়ার রাইডার নির্ধারিত হওয়ার পর এখানে স্বয়ংক্রিয়ভাবে কিউআর কোড এবং ওটিপি জেনারেট হবে।
-            </p>
-          </div>
-        )}
-      </div>
-    </Card>
+    <LoadingSpinner label={tx("রেসকিউ ট্র্যাকিং লোড হচ্ছে...")} />
   );
 }
 
 export function DonationTracking({ donationId }: { donationId: string }) {
+  const tx = useUiText();
   const { state, refresh } = useDonationTracking(donationId);
   const data = state.data;
   const donation = data?.donation;
@@ -186,10 +70,10 @@ export function DonationTracking({ donationId }: { donationId: string }) {
     <PortalShell
       role="donor"
       activeHref={ROUTES.donor.donations}
-      title="রেসকিউ লাইভ ট্র্যাকিং 🛵"
-      description="উদ্বৃত্ত খাবার সংগ্রহ হতে আশ্রয়কেন্দ্রে পৌঁছানো পর্যন্ত ভলান্টিয়ারের রিয়েল-টাইম অবস্থান ও হ্যান্ডওভার।"
+      title={tx("রেসকিউ লাইভ ট্র্যাকিং 🛵")}
+      description={tx("উদ্বৃত্ত খাবার সংগ্রহ হতে আশ্রয়কেন্দ্রে পৌঁছানো পর্যন্ত ভলান্টিয়ারের রিয়েল-টাইম অবস্থান ও হ্যান্ডওভার।")}
       backHref={ROUTES.donor.donation(donationId)}
-      backLabel="অনুদানের বিবরণ"
+      backLabel={tx("অনুদানের বিবরণ")}
       actions={
         <div className="flex items-center gap-2">
           <Button
@@ -199,13 +83,11 @@ export function DonationTracking({ donationId }: { donationId: string }) {
             leftIcon={<RefreshCw className="size-4" />}
             onClick={refresh}
             className="text-muted-600 hover:text-emerald-700"
-          >
-            রিফ্রেশ
-          </Button>
+          ><UiText source={"রিফ্রেশ"} /></Button>
         </div>
       }
       profileName="ইউআইইউ ক্যাফেটেরিয়া"
-      profileDescription="ভেরিফাইড ফুড ডোনার · ঢাকা"
+      profileDescription={tx("ভেরিফাইড ফুড ডোনার · ঢাকা")}
       avatarInitials="UC"
       notificationHref={ROUTES.donor.notifications}
       unreadNotifications={1}
@@ -215,8 +97,8 @@ export function DonationTracking({ donationId }: { donationId: string }) {
       {state.status === "error" && !data && (
         <Alert
           tone="danger"
-          title="ট্র্যাকিং তথ্য লোড করা যায়নি"
-          description={state.error.message}
+          title={tx("ট্র্যাকিং তথ্য লোড করা যায়নি")}
+          description={tx(state.error.message)}
           action={
             <Button
               type="button"
@@ -224,9 +106,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
               variant="outline"
               leftIcon={<RefreshCw className="size-4" />}
               onClick={refresh}
-            >
-              পুনরায় চেষ্টা করুন
-            </Button>
+            ><UiText source={"পুনরায় চেষ্টা করুন"} /></Button>
           }
         />
       )}
@@ -236,15 +116,15 @@ export function DonationTracking({ donationId }: { donationId: string }) {
           {state.status === "loading" && (
             <Alert
               tone="info"
-              title="তথ্য সিঙ্ক হচ্ছে..."
-              description="রাইডার লোকেশন ও ট্রানজিশন হিস্ট্রি আপডেট করা হচ্ছে।"
+              title={tx("তথ্য সিঙ্ক হচ্ছে...")}
+              description={tx("রাইডার লোকেশন ও ট্রানজিশন হিস্ট্রি আপডেট করা হচ্ছে।")}
             />
           )}
           {data.incidents[0] && (
             <Alert
               tone="danger"
-              title="রেসকিউ সাময়িকভাবে স্থগিত"
-              description={`একটি উন্মুক্ত সমস্যা রিপোর্ট পর্যালোচনায় রয়েছে: ${data.incidents[0].description}`}
+              title={tx("রেসকিউ সাময়িকভাবে স্থগিত")}
+              description={tx("একটি উন্মুক্ত সমস্যা রিপোর্ট পর্যালোচনায় রয়েছে: {0}", data.incidents[0].description)}
             />
           )}
 
@@ -257,7 +137,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                   {claim && (
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
                       <ShieldCheck className="size-3.5 text-emerald-600" />
-                      ক্লেইম স্ট্যাটাস: {STATUS_TEXT_BN[donation.status] || claim.status}
+                      {tx("ক্লেইম স্ট্যাটাস:")}{STATUS_TEXT_BN[donation.status] || claim.status}
                     </span>
                   )}
                 </div>
@@ -265,7 +145,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                   {donation.title}
                 </h1>
                 <p className="mt-1.5 text-xs text-muted-600">
-                  অনুদান ট্র্যাকিং রেফারেন্স:{" "}
+                  {tx("অনুদান ট্র্যাকিং রেফারেন্স:")}{" "}
                   <span className="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                     {donation.id}
                   </span>
@@ -275,145 +155,14 @@ export function DonationTracking({ donationId }: { donationId: string }) {
             </div>
 
             <div className="mt-6 border-t border-line pt-6">
-              <DonationStatusTimeline status={donation.status} compact />
+              <DonationStatusTimeline status={donation.status} claim={claim} publishedAt={donation.publishedAt} updatedAt={donation.updatedAt} stale={state.status === "error"} compact />
             </div>
           </Card>
 
           {/* Main Grid: Interactive Radar Map (Left) + Handover/Driver controls (Right) */}
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
             <div className="grid gap-6">
-              {/* Live GPS Radar Map Card */}
-              <Card className="overflow-hidden border-line shadow-sm">
-                <div className="border-b border-line bg-gradient-to-r from-emerald-900 to-[#02241b] p-5 sm:p-6 text-white flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="relative flex size-2.5">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
-                      </span>
-                      <p className="text-xs font-black uppercase tracking-wider text-emerald-400">
-                        লাইভ রেসকিউ রাডার · ঢাকা সিটি
-                      </p>
-                    </div>
-                    <h2 className="mt-1 text-xl font-black text-white">
-                      পিকআপ পয়েন্ট হতে আশ্রয়কেন্দ্রে সরাসরি রুট
-                    </h2>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-sm border border-white/15">
-                    <Radio className="size-3.5 text-emerald-400 animate-pulse" />
-                    <span>জিপিএস সিগন্যাল সক্রিয়</span>
-                  </div>
-                </div>
-
-                {/* Radar HUD Screen */}
-                <div className="relative min-h-[30rem] overflow-hidden bg-gradient-to-b from-[#021f18] via-[#022b21] to-[#011712] p-5">
-                  {/* Subtle Radar grid background */}
-                  <div
-                    className="absolute inset-0 opacity-15"
-                    style={{
-                      backgroundImage: `radial-gradient(circle at 50% 50%, #10b981 1px, transparent 1px), linear-gradient(to right, rgba(16, 185, 129, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(16, 185, 129, 0.1) 1px, transparent 1px)`,
-                      backgroundSize: `40px 40px`,
-                    }}
-                  />
-
-                  {/* Concentric radar rings centered on rider */}
-                  <div className="absolute left-[45%] top-[45%] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                    <div className="size-48 rounded-full border border-emerald-500/20 animate-ping opacity-25" />
-                    <div className="absolute inset-0 m-auto size-32 rounded-full border border-emerald-400/30" />
-                    <div className="absolute inset-0 m-auto size-16 rounded-full border border-emerald-400/40" />
-                  </div>
-
-                  {/* Checkpoint 1: Pickup Donor Point */}
-                  <div className="absolute left-[12%] top-[30%] z-10 flex flex-col items-center">
-                    <div className="grid size-12 place-items-center rounded-2xl bg-emerald-600 text-white shadow-xl shadow-emerald-900/60 ring-4 ring-emerald-400/30">
-                      <MapPin className="size-6" />
-                    </div>
-                    <span className="mt-2 rounded-md bg-brand-950/90 px-2 py-0.5 text-[11px] font-black text-emerald-300 border border-emerald-500/30 shadow-md">
-                      পিকআপ পয়েন্ট (ইউআইইউ)
-                    </span>
-                  </div>
-
-                  {/* Checkpoint 2: Moving Volunteer Rider */}
-                  <div className="absolute left-[48%] top-[46%] z-10 flex flex-col items-center">
-                    <div className="relative grid size-14 place-items-center rounded-2xl bg-amber-500 text-brand-950 shadow-2xl shadow-amber-500/50 ring-4 ring-amber-300/40 animate-bounce">
-                      <Navigation className="size-7 rotate-45" />
-                    </div>
-                    <span className="mt-2 rounded-md bg-amber-500/90 px-2 py-0.5 text-[11px] font-black text-brand-950 shadow-md">
-                      🛵 হোসেন আহমেদ (অন-রুট)
-                    </span>
-                  </div>
-
-                  {/* Checkpoint 3: Destination Shelter */}
-                  <div className="absolute right-[12%] bottom-[28%] z-10 flex flex-col items-center">
-                    <div className="grid size-12 place-items-center rounded-2xl bg-teal-600 text-white shadow-xl shadow-teal-900/60 ring-4 ring-teal-400/30">
-                      <Building2 className="size-6" />
-                    </div>
-                    <span className="mt-2 rounded-md bg-brand-950/90 px-2 py-0.5 text-[11px] font-black text-teal-300 border border-teal-500/30 shadow-md">
-                      মাস্তুল শেল্টার হোম
-                    </span>
-                  </div>
-
-                  {/* Connecting Dotted Route */}
-                  <svg
-                    className="absolute inset-0 h-full w-full pointer-events-none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M 150 180 Q 280 140 420 250 T 700 340"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="3"
-                      strokeDasharray="8 6"
-                      className="opacity-60"
-                    />
-                  </svg>
-
-                  {/* Telemetry Floating Bar at bottom */}
-                  <div className="absolute inset-x-4 bottom-4 z-20 grid gap-3 rounded-2xl border border-white/15 bg-brand-950/85 p-4 shadow-2xl backdrop-blur-md sm:grid-cols-3 text-white">
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-10 place-items-center rounded-xl bg-emerald-500/20 text-emerald-400">
-                        <MapPin className="size-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-                          পিকআপ এলাকা
-                        </p>
-                        <p className="font-black text-xs sm:text-sm truncate">
-                          {exactAddress ? `${exactAddress.addressLine}, ${exactAddress.area}` : donation.pickup.approximateArea}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-10 place-items-center rounded-xl bg-amber-500/20 text-amber-400">
-                        <Gauge className="size-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
-                          রাইডার গতি ও দূরত্ব
-                        </p>
-                        <p className="font-black text-xs sm:text-sm">
-                          ৩৫ কিমি/ঘণ্টা · ১.২ কিমি বাকি
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-10 place-items-center rounded-xl bg-teal-500/20 text-teal-400">
-                        <Building2 className="size-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-teal-400">
-                          গন্তব্য এনজিও
-                        </p>
-                        <p className="font-black text-xs sm:text-sm truncate">
-                          {data.receiverNgo?.name ?? "এনজিও অনুমোদনের অপেক্ষায়"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+              <Card className="p-5 sm:p-6"><h2 className="mb-4 text-lg font-bold">{tx("Rescue locations & navigation")}</h2><RescueLocationMap pickup={exactAddress?.coordinates} delivery={data.deliveryAddress?.coordinates} pickupLabel={exactAddress ? `${exactAddress.addressLine}, ${exactAddress.area}` : donation.pickup.approximateArea} deliveryLabel={data.deliveryAddress ? `${data.deliveryAddress.addressLine}, ${data.deliveryAddress.area}` : data.receiverNgo?.name} /></Card>
 
               {/* Timing Schedule Bento */}
               <Card className="p-5 sm:p-6 border-line shadow-sm">
@@ -423,29 +172,28 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                   </span>
                   <div>
                     <p className="text-xs font-black uppercase tracking-wider text-emerald-700">
-                      আনুমানিক সময়সূচি
-                    </p>
-                    <h2 className="text-lg font-black text-ink-900">রেসকিউ শিডিউল ও ইটিএ</h2>
+                      {tx("আনুমানিক সময়সূচি")}</p>
+                    <h2 className="text-lg font-black text-ink-900">{tx("রেসকিউ শিডিউল ও ইটিএ")}</h2>
                   </div>
                 </div>
 
                 <dl className="mt-5 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-line bg-canvas/60 p-4">
-                    <dt className="text-xs font-bold text-muted-600">পিকআপ সময়সীমা শুরু</dt>
+                    <dt className="text-xs font-bold text-muted-600">{tx("পিকআপ সময়সীমা শুরু")}</dt>
                     <dd className="mt-1.5 text-sm font-black text-ink-900">
                       {formatDonationDateTimeBn(donation.pickup.windowStart)}
                     </dd>
                   </div>
                   <div className="rounded-2xl border border-amber-200/80 bg-amber-50/50 p-4">
-                    <dt className="text-xs font-bold text-amber-800">ভলান্টিয়ার পৌঁছানোর ইটিএ</dt>
+                    <dt className="text-xs font-bold text-amber-800">{tx("ভলান্টিয়ার পৌঁছানোর ইটিএ")}</dt>
                     <dd className="mt-1.5 text-sm font-black text-ink-900">
-                      {claim?.estimatedPickupAt ? formatDonationDateTimeBn(claim.estimatedPickupAt) : "নির্ধারিত হচ্ছে"}
+                      {claim?.estimatedPickupAt ? formatDonationDateTimeBn(claim.estimatedPickupAt) : tx("নির্ধারিত হচ্ছে")}
                     </dd>
                   </div>
                   <div className="rounded-2xl border border-teal-200/80 bg-teal-50/50 p-4">
-                    <dt className="text-xs font-bold text-teal-800">শেল্টারে বিতরণের সময়</dt>
+                    <dt className="text-xs font-bold text-teal-800">{tx("শেল্টারে বিতরণের সময়")}</dt>
                     <dd className="mt-1.5 text-sm font-black text-ink-900">
-                      {claim?.estimatedDeliveryAt ? formatDonationDateTimeBn(claim.estimatedDeliveryAt) : "পিকআপের পর নির্ধারিত হবে"}
+                      {claim?.estimatedDeliveryAt ? formatDonationDateTimeBn(claim.estimatedDeliveryAt) : tx("পিকআপের পর নির্ধারিত হবে")}
                     </dd>
                   </div>
                 </dl>
@@ -464,26 +212,24 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                           </span>
                           <div>
                             <p className="text-xs font-black uppercase tracking-wider text-emerald-700">
-                              নিযুক্ত ভলান্টিয়ার রাইডার
-                            </p>
+                              {tx("নিযুক্ত ভলান্টিয়ার রাইডার")}</p>
                             <h2 className="mt-0.5 text-lg font-black text-ink-900">
                               {data.volunteer.name}
                             </h2>
                           </div>
                         </div>
-                        <Badge tone="success">ভেরিফাইড রাইডার ✓</Badge>
+                        <Badge tone="success">{tx("ভেরিফাইড রাইডার ✓")}</Badge>
                       </div>
 
                       <div className="mt-5 grid gap-2.5 text-xs text-muted-600">
                         <div className="flex items-center gap-2 rounded-xl bg-canvas/60 p-2.5 border border-line">
                           {transportInfo && <transportInfo.icon className="size-4 text-emerald-600" />}
-                          <span className="font-bold text-ink-800">বাহন: {transportInfo?.label}</span>
+                          <span className="font-bold text-ink-800">{tx("বাহন:")}{" "}{transportInfo?.label}</span>
                         </div>
                         <div className="flex items-center gap-2 rounded-xl bg-canvas/60 p-2.5 border border-line">
                           <CheckCircle2 className="size-4 text-emerald-600" />
                           <span className="font-bold text-ink-800">
-                            {data.volunteer.completedRescues}টি সফল রেসকিউ সম্পন্ন করেছেন
-                          </span>
+                            {data.volunteer.completedRescues}{tx("টি সফল রেসকিউ সম্পন্ন করেছেন")}</span>
                         </div>
                       </div>
 
@@ -498,8 +244,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                             })}
                           >
                             <Phone className="size-4 mr-1.5" />
-                            সরাসরি কল
-                          </a>
+                            {tx("সরাসরি কল")}</a>
                           <a
                             href={`sms:${data.volunteer.phone}`}
                             className={buttonClassNames({
@@ -509,8 +254,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                             })}
                           >
                             <MessageCircle className="size-4 mr-1.5" />
-                            মেসেজ পাঠান
-                          </a>
+                            {tx("মেসেজ পাঠান")}</a>
                         </div>
                       )}
                     </>
@@ -520,11 +264,9 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                         <Truck className="size-6" />
                       </div>
                       <h2 className="mt-4 text-base font-black text-ink-900">
-                        ভলান্টিয়ার বরাদ্দের অপেক্ষায়
-                      </h2>
+                        {tx("ভলান্টিয়ার বরাদ্দের অপেক্ষায়")}</h2>
                       <p className="mt-1 text-xs text-muted-600">
-                        এনজিও ক্লেইম অনুমোদনের পর নিকটবর্তী ভলান্টিয়ার অ্যাসাইন হবে।
-                      </p>
+                        {tx("এনজিও ক্লেইম অনুমোদনের পর নিকটবর্তী ভলান্টিয়ার অ্যাসাইন হবে।")}</p>
                     </div>
                   )}
                 </Card>
@@ -539,8 +281,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                         </span>
                         <div>
                           <p className="text-xs font-black uppercase tracking-wider text-teal-700">
-                            বিতরণকারী এনজিও
-                          </p>
+                            {tx("বিতরণকারী এনজিও")}</p>
                           <h2 className="mt-0.5 text-lg font-black text-ink-900">
                             {data.receiverNgo.name}
                           </h2>
@@ -549,8 +290,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
 
                       <div className="mt-5 grid gap-2.5 text-xs text-muted-600">
                         <p className="rounded-xl bg-canvas/60 p-2.5 border border-line">
-                          🏆 {data.receiverNgo.completedRescues}টি সফল উদ্ধার · {data.receiverNgo.rating ?? "৫.০"} স্টার রেটিং
-                        </p>
+                          🏆 {data.receiverNgo.completedRescues}{tx("টি সফল উদ্ধার ·")}{" "}{data.receiverNgo.rating ?? "৫.০"} {tx("স্টার রেটিং")}</p>
                         {data.receiverNgo.contactName && (
                           <p className="flex items-center gap-2 rounded-xl bg-canvas/60 p-2.5 border border-line">
                             <Phone className="size-4 text-emerald-600" />
@@ -567,10 +307,9 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                       <div className="grid size-12 place-items-center rounded-2xl bg-slate-100 text-slate-400">
                         <Building2 className="size-6" />
                       </div>
-                      <h2 className="mt-4 text-base font-black text-ink-900">কোনো গ্রহীতা এখনও যুক্ত হয়নি</h2>
+                      <h2 className="mt-4 text-base font-black text-ink-900">{tx("কোনো গ্রহীতা এখনও যুক্ত হয়নি")}</h2>
                       <p className="mt-1 text-xs text-muted-600">
-                        অনুমোদিত এনজিও ক্লেইম করার সাথে সাথে তথ্য এখানে যুক্ত হবে।
-                      </p>
+                        {tx("অনুমোদিত এনজিও ক্লেইম করার সাথে সাথে তথ্য এখানে যুক্ত হবে।")}</p>
                     </div>
                   )}
                 </Card>
@@ -580,17 +319,13 @@ export function DonationTracking({ donationId }: { donationId: string }) {
               <div className="flex items-start gap-3 rounded-2xl border border-amber-300/40 bg-amber-50/70 p-4 text-xs text-amber-950">
                 <ShieldAlert className="mt-0.5 size-4 shrink-0 text-amber-600" />
                 <p className="leading-relaxed">
-                  <strong>খাদ্য সুরক্ষা ও ট্র্যাকিং সতর্কতা:</strong> পিকআপ হওয়ার পূর্ব মুহূর্ত পর্যন্ত খাবার নির্ধারিত তাপমাত্রায় ও সিল করা পাত্রে ঢেকে রাখুন।
-                </p>
+                  <strong>{tx("খাদ্য সুরক্ষা ও ট্র্যাকিং সতর্কতা:")}</strong> {tx("পিকআপ হওয়ার পূর্ব মুহূর্ত পর্যন্ত খাবার নির্ধারিত তাপমাত্রায় ও সিল করা পাত্রে ঢেকে রাখুন।")}</p>
               </div>
             </div>
 
             {/* Right Sticky Sidebar: QR Handover & Privacy */}
-            <aside className="grid gap-5 xl:sticky xl:top-24" aria-label="হ্যান্ডওভার ও ট্র্যাকিং কন্ট্রোল">
-              <MockQrHandover
-                token={claim?.pickupVerificationToken}
-                code={(claim as unknown as { pickupOtp?: string })?.pickupOtp}
-              />
+            <aside className="grid gap-5 xl:sticky xl:top-24" aria-label={tx("হ্যান্ডওভার ও ট্র্যাকিং কন্ট্রোল")}>
+              {claim && <HandoverCodePanel claimId={claim.id} kind="PICKUP" />}
 
               <Card className="p-5 border-line shadow-sm">
                 <div className="flex items-center gap-3">
@@ -598,13 +333,12 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                     <ShieldCheck className="size-5" />
                   </span>
                   <div>
-                    <p className="font-black text-ink-900 text-sm">গোপনীয়তা ও নিরাপত্তা স্ট্যাটাস</p>
-                    <p className="text-[11px] text-muted-600">এনক্রিপ্টেড ট্র্যাকিং তথ্য</p>
+                    <p className="font-black text-ink-900 text-sm">{tx("গোপনীয়তা ও নিরাপত্তা স্ট্যাটাস")}</p>
+                    <p className="text-[11px] text-muted-600">{tx("এনক্রিপ্টেড ট্র্যাকিং তথ্য")}</p>
                   </div>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-muted-600">
-                  আপনার সুনির্দিষ্ট ঠিকানা এবং ফোন নম্বর কেবল খাবার সংগ্রহের দায়িত্বে থাকা ভলান্টিয়ারের কাছেই দৃশ্যমান। অন্য কারো কাছে এটি প্রকাশ করা হয় না।
-                </p>
+                  {tx("আপনার সুনির্দিষ্ট ঠিকানা এবং ফোন নম্বর কেবল খাবার সংগ্রহের দায়িত্বে থাকা ভলান্টিয়ারের কাছেই দৃশ্যমান। অন্য কারো কাছে এটি প্রকাশ করা হয় না।")}</p>
               </Card>
 
               <ButtonLink
@@ -613,8 +347,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                 leftIcon={<CalendarClock className="size-4" />}
                 className="w-full justify-center font-bold border-line hover:bg-emerald-50/50"
               >
-                অনুদানের মূল বিবরণী দেখুন
-              </ButtonLink>
+                {tx("অনুদানের মূল বিবরণী দেখুন")}</ButtonLink>
             </aside>
           </div>
         </div>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { ArrowUpRight, Bell, Leaf, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -19,11 +22,12 @@ const activityStyles = {
 };
 
 export function RecentActivityCard({ activities }: { activities: DashboardActivity[] }) {
+  const tx = useUiText();
   return (
     <Card className="h-full border-slate-200/90 shadow-xs">
       <CardHeader
-        title="সাম্প্রতিক কার্যক্রম ও অডিট"
-        description="আপনার অনুদানের সর্বশেষ স্ট্যাটাস পরিবর্তন, ভলান্টিয়ার পিকআপ ও নোটিফিকেশন।"
+        title={tx("সাম্প্রতিক কার্যক্রম ও অডিট")}
+        description={tx("আপনার অনুদানের সর্বশেষ স্ট্যাটাস পরিবর্তন, ভলান্টিয়ার পিকআপ ও নোটিফিকেশন।")}
       />
       <CardContent className="grid gap-1.5 p-2 sm:p-3">
         {activities.map((activity) => {

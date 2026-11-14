@@ -1,6 +1,9 @@
 "use client";
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { useUiText } from "@/lib/i18n/use-ui-text";
+import { isNoKnownAllergens } from "@/lib/i18n/food-input";
 
-import { ArrowLeft, ArrowRight, Save, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Save, Send } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { DonationConfirmation } from "@/components/donation/donation-confirmation";
 import { DonationSummaryPanel } from "@/components/donation/donation-summary-panel";
@@ -9,33 +12,34 @@ import { PickupInformationStep } from "@/components/donation/pickup-information-
 import { SafetyReviewStep } from "@/components/donation/safety-review-step";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Alert } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Stepper } from "@/components/ui/stepper";
-import { StickyActionBar } from "@/components/layout/sticky-action-bar";
+import styles from "@/components/donation/donation-form.module.css";
 import { createInitialDonationDraft, DONATION_DRAFT_STORAGE_KEY, restoreDonationDraft } from "@/features/donations/donation-draft";
 import type { DonationDraft, DonationDraftErrors, DonationDraftField, DonationWizardResult, DonationWizardStep } from "@/features/donations/types";
-import { hasDonationDraftErrors, validateDonationWizardStep } from "@/features/donations/validation";
+import { donationErrorStep, hasDonationDraftErrors, validateDonationDraft, validateDonationWizardStep } from "@/features/donations/validation";
 import { PriorityLevel, QuantityUnit } from "@/lib/constants/domain";
 import { UserRole } from "@/lib/constants/roles";
 import { DonationStatus } from "@/lib/constants/statuses";
 import { calculateUrgencyScore } from "@/lib/selectors/donation-selectors";
 import { ROUTES } from "@/lib/routes";
-import { donationService, ngoService, MockApiError, type NGODirectoryItem } from "@/services";
+import { donationService } from "@/services/donation.service";
+import { ngoService, type NGODirectoryItem } from "@/services/ngo.service";
+import { profileService } from "@/services/profile.service";
+import { MockApiError } from "@/services/shared";
 import { useMockAuth } from "@/features/auth/mock-auth";
-import { createRealNotification } from "@/lib/notifications/real-notification-client";
 import { triggerCelebration } from "@/components/ui/action-success-modal";
-import type { ViewerContext } from "@/types/domain";
+import type { Address, ViewerContext } from "@/types/domain";
 
 const wizardSteps = [
-  { label: "খাবারের বিবরণ", description: "নাম, পরিমাণ, ছবি ও রান্নার সময়" },
-  { label: "পিকআপ লোকেশন", description: "ঠিকানা, যোগাযোগের ব্যক্তি ও সময়সূচি" },
-  { label: "নিরাপত্তা ও অঙ্গীকার", description: "BFSA স্বাস্থ্যবিধি ও চূড়ান্ত রিভিউ" },
-  { label: "অনুদানের স্বীকৃতি", description: "তাজা খাবার সফলভাবে তালিকাভুক্ত" },
+  { label: "Food details", description: "Food, quantity and allergens" },
+  { label: "Time and storage", description: "Preparation time, deadline and storage" },
+  { label: "Photos (optional)", description: "Upload a photo, choose a sample or continue without one" },
+  { label: "Pickup details", description: "Address, contact and collection window" },
+  { label: "Review and publish", description: "Check the details and confirm your declarations" },
+  { label: "Post published", description: "Your food post has been saved" },
 ];
 
-const DONOR_VIEWER: ViewerContext = { userId: "user-donor-uiu", donorProfileId: "donor-uiu", role: UserRole.DONOR };
 
 function priorityFromScore(score: number) {
   if (score >= 85) return PriorityLevel.URGENT;
@@ -53,16 +57,24 @@ function estimatedMeals(draft: DonationDraft) {
 }
 
 function allergensFromDraft(value: string) {
-  if (/^none(?: known)?[.!]?$/i.test(value.trim())) return [];
+  if (isNoKnownAllergens(value)) return [];
   return value.split(",").map((item) => item.trim()).filter(Boolean);
 }
 
 export function DonationWizard() {
+  const tx = useUiText();
   const { session } = useMockAuth();
+  const userId = session?.id;
+  const draftStorageKey = `${DONATION_DRAFT_STORAGE_KEY}.${userId}`;
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [profileReady, setProfileReady] = useState(false);
   const [currentStep, setCurrentStep] = useState<DonationWizardStep>(1);
   const [draft, setDraft] = useState<DonationDraft>(() => createInitialDonationDraft());
   const [errors, setErrors] = useState<DonationDraftErrors>({});
   const [savedAt, setSavedAt] = useState<string>();
+  const [loadedDraftKey, setLoadedDraftKey] = useState<string>();
+  const [uploading, setUploading] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<DonationWizardResult>();
   const [preferredNgo, setPreferredNgo] = useState<NGODirectoryItem>();
@@ -70,43 +82,61 @@ export function DonationWizard() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const hydrationTimer = window.setTimeout(() => {
+    async function load() {
       try {
-        const rawDraft = window.sessionStorage.getItem(DONATION_DRAFT_STORAGE_KEY);
+        const profile = await profileService.getOwnProfile(userId || "", {}, { signal: controller.signal });
         const preferredNgoProfileId = new URLSearchParams(window.location.search).get("ngo")?.trim() ?? "";
-        let restoredDraft = createInitialDonationDraft();
-        if (rawDraft) {
-          const parsed: unknown = JSON.parse(rawDraft);
-          restoredDraft = restoreDonationDraft(parsed);
-          setSavedAt(new Date().toISOString());
+        let restored = createInitialDonationDraft();
+        try {
+          const raw = window.sessionStorage.getItem(draftStorageKey);
+          if (raw) restored = restoreDonationDraft(JSON.parse(raw));
+        } catch { try { window.sessionStorage.removeItem(draftStorageKey); } catch { /* Storage is optional. */ } }
+        const address = profile.addresses.find((a) => a.id === restored.addressId) || profile.addresses.find((a) => a.isPrimary) || profile.addresses[0];
+        if (!address) throw new Error("Add a pickup address to your profile first.");
+        if (controller.signal.aborted) return;
+        setAddresses(profile.addresses);
+        setDraft({ ...restored, addressId: address.id, pickupAddress: address.addressLine, approximateArea: address.area,
+          contactPerson: restored.contactPerson || profile.user.displayName, phone: restored.phone || profile.user.phone || "",
+          email: profile.user.email, preferredNgoProfileId: preferredNgoProfileId || restored.preferredNgoProfileId });
+        setProfileReady(true);
+        setLoadedDraftKey(draftStorageKey);
+        if (Date.parse(restored.safePickupDeadline) <= Date.now()) {
+          setCurrentStep(2);
+          setErrors({ safePickupDeadline: "Safe pickup deadline must be in the future.", form: "This saved food draft has expired. Check the food condition and enter accurate times before posting." });
         }
-        if (preferredNgoProfileId) restoredDraft.preferredNgoProfileId = preferredNgoProfileId;
-        setDraft(restoredDraft);
-        if (preferredNgoProfileId) {
-          ngoService.getById(preferredNgoProfileId, { signal: controller.signal }).then(setPreferredNgo).catch((error: unknown) => {
-            if (controller.signal.aborted) return;
-            setErrors({ form: error instanceof MockApiError ? error.message : "The preferred NGO context could not be loaded." });
-          });
-        }
-      } catch {
-        window.sessionStorage.removeItem(DONATION_DRAFT_STORAGE_KEY);
+        if (preferredNgoProfileId) setPreferredNgo(await ngoService.getById(preferredNgoProfileId, { signal: controller.signal }));
+      } catch (error) {
+        if (!controller.signal.aborted) setErrors({ form: error instanceof Error ? error.message : "Pickup profile could not be loaded." });
       }
-    }, 0);
-    return () => {
-      controller.abort();
-      window.clearTimeout(hydrationTimer);
-    };
-  }, []);
+    }
+    void load();
+    return () => controller.abort();
+  }, [draftStorageKey, userId]);
+
+  useEffect(() => {
+    // Persist only the loaded account's draft; a submitted form must stay cleared.
+    if (loadedDraftKey !== draftStorageKey || result) return;
+    try { window.sessionStorage.setItem(draftStorageKey, JSON.stringify(draft)); } catch {
+      // The explicit Save draft action reports unavailable browser storage.
+    }
+  }, [draft, draftStorageKey, loadedDraftKey, result]);
 
   function update(field: DonationDraftField, value: string | boolean | string[]) {
-    setDraft((current) => ({ ...current, [field]: value }));
+    const address = field === "addressId" ? addresses.find((item) => item.id === value) : undefined;
+    setDraft((current) => ({ ...current, [field]: value, ...(field === "photoUrls" && Array.isArray(value) && value.length ? { sampleImageId: "" } : {}), ...(address ? { pickupAddress: address.addressLine, approximateArea: address.area } : {}) }));
     setErrors((current) => ({ ...current, [field]: undefined, form: undefined }));
     setSavedAt(undefined);
   }
 
   function revealErrors(nextErrors: DonationDraftErrors) {
     setErrors(nextErrors);
-    window.requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus());
+    const step = donationErrorStep(nextErrors);
+    if (step) setCurrentStep(step);
+    window.requestAnimationFrame(() => {
+      const target = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]') ?? formRef.current?.querySelector<HTMLElement>('[role="alert"]');
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+      target?.focus({ preventScroll: true });
+    });
   }
 
   function validateStep(step = currentStep) {
@@ -121,28 +151,30 @@ export function DonationWizard() {
 
   function persistDraft() {
     try {
-      window.sessionStorage.setItem(DONATION_DRAFT_STORAGE_KEY, JSON.stringify(draft));
+      window.sessionStorage.setItem(draftStorageKey, JSON.stringify(draft));
       setSavedAt(new Date().toISOString());
       setErrors((current) => ({ ...current, form: undefined }));
     } catch {
-      setErrors((current) => ({ ...current, form: "This browser could not save the mock draft." }));
+      setErrors((current) => ({ ...current, form: "This browser could not save the draft." }));
     }
   }
 
   function goNext() {
-    if (!validateStep()) return;
+    if (uploading || !validateStep()) return;
     persistDraft();
-    setCurrentStep((step) => Math.min(3, step + 1) as DonationWizardStep);
+    setCurrentStep((step) => Math.min(5, step + 1) as DonationWizardStep);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function goBack() {
+    if (uploading || submitting) return;
     setErrors({});
     setCurrentStep((step) => Math.max(1, step - 1) as DonationWizardStep);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function editStep(step: DonationWizardStep) {
+    if (uploading || submitting) return;
     setErrors({});
     setCurrentStep(step);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -150,15 +182,25 @@ export function DonationWizard() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!validateStep(3)) return;
+    if (result || submitting || uploading || !profileReady) return;
+    if (currentStep < 5) {
+      goNext();
+      return;
+    }
+    const nextErrors = validateDonationDraft(draft);
+    if (hasDonationDraftErrors(nextErrors)) {
+      revealErrors(nextErrors);
+      return;
+    }
     setSubmitting(true);
     const submittedAt = new Date().toISOString();
 
     try {
       const urgency = calculateUrgencyScore({ safePickupDeadline: draft.safePickupDeadline, priority: draft.priority });
-      const donorId = session?.email || "donor-uiu";
+      const donorId = session?.donorProfileId;
+      if (!donorId || !session?.id) throw new Error("Your donor session is unavailable. Please log in again.");
       const donorViewer: ViewerContext = {
-        userId: session?.email || "user-donor-uiu",
+        userId: session.id,
         donorProfileId: donorId,
         role: UserRole.DONOR,
       };
@@ -176,7 +218,8 @@ export function DonationWizard() {
         storageCondition: draft.storageCondition,
         foodCondition: draft.foodCondition,
         allergens: allergensFromDraft(draft.allergenInfo),
-        photoUrls: draft.photoNames.length > 0 ? ["/images/donor-active-meal.png"] : [],
+        photoUrls: draft.photoUrls,
+        sampleImageId: draft.sampleImageId || undefined,
         specialInstructions: draft.specialInstructions.trim() || undefined,
         pickup: {
           addressId: draft.addressId,
@@ -194,7 +237,7 @@ export function DonationWizard() {
           allergensDisclosed: draft.allergensCompleted,
           pickupDeadlineConfirmed: draft.realisticDeadline,
           donorAccuracyConfirmed: draft.accuracyConfirmed,
-          declaredByUserId: session?.email || "user-donor-uiu",
+          declaredByUserId: session.id,
           declaredAt: submittedAt,
         },
         priority: priorityFromScore(urgency),
@@ -202,80 +245,26 @@ export function DonationWizard() {
         publishedAt: submittedAt,
       }, donorViewer);
 
-      // Also persist directly into disk database
-      try {
-        await fetch("/api/donations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: draft.title.trim(),
-            description: draft.description.trim(),
-            category: draft.category,
-            quantity: Number(draft.quantity),
-            quantityUnit: draft.quantityUnit,
-            estimatedMeals: estimatedMeals(draft),
-            donorName: session?.displayName || "নিবন্ধিত খাদ্য দাতা",
-            donorEmail: session?.email || "donor@sharebite.demo",
-            donorId,
-            preparationTime: new Date(draft.preparationTime).toISOString(),
-            safePickupDeadline: new Date(draft.safePickupDeadline).toISOString(),
-            pickupWindowStart: new Date(draft.pickupWindowStart).toISOString(),
-            pickupWindowEnd: new Date(draft.pickupWindowEnd).toISOString(),
-            approximateArea: draft.approximateArea.trim(),
-            contactPerson: draft.contactPerson.trim(),
-            contactPhone: draft.phone.trim(),
-            specialInstructions: draft.specialInstructions.trim() || undefined,
-          }),
-        });
-      } catch {
-        // Non-blocking fallback
-      }
-
-      window.sessionStorage.removeItem(DONATION_DRAFT_STORAGE_KEY);
       setResult({ donation, submittedAt });
-      setCurrentStep(4);
+      setCurrentStep(6);
       setErrors({});
+      try { window.sessionStorage.removeItem(draftStorageKey); } catch { /* The published donation is already saved. */ }
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       // Trigger Celebration Animation Popup
       triggerCelebration({
         title: "উদ্বৃত্ত খাবার পোস্ট সম্পন্ন!",
-        message: `${draft.title} সফলভাবে তালিকাভুক্ত হয়েছে। আশেপাশের চ্যারিটি ও ভলান্টিয়ারদের জানানো হয়েছে।`,
+        message: `${draft.title} সফলভাবে ডেটাবেজে তালিকাভুক্ত হয়েছে।`,
         badge: "খাদ্য সুরক্ষা যাচাইকৃত",
         type: "SUCCESS",
         actionLabel: "ধন্যবাদ, সম্পন্ন",
       });
 
-      // Trigger Real Database & Platform Notifications
-      void createRealNotification({
-        title: "উদ্বৃত্ত খাবার পোস্ট সফল হয়েছে!",
-        message: `${draft.title} (${draft.quantity} ${draft.quantityUnit}) সফলভাবে পোস্ট করা হয়েছে। ভলান্টিয়ার ও এনজিওরা এখন এটি গ্রহণ করতে পারবে।`,
-        href: "/donor/donations",
-        type: "PICKUP",
-        role: "DONOR",
-        userId: session?.email,
-      });
-
-      void createRealNotification({
-        title: "নতুন উদ্বৃত্ত খাবার উপলব্ধ!",
-        message: `${draft.title} - ${draft.approximateArea || "মাদানী এভিনিউ"} থেকে চ্যারিটির জন্য পোস্ট করা হয়েছে। এখনই ক্লেইম করুন।`,
-        href: "/ngo/discover/map",
-        type: "NEARBY_DONATION",
-        role: "NGO",
-      });
-
-      void createRealNotification({
-        title: "নতুন ফুড রেসকিউ মিশন!",
-        message: `${draft.approximateArea || "নিকটবর্তী এলাকা"} থেকে খাদ্য সংগ্রহের জন্য নতুন ব্যাচ উন্মুক্ত হয়েছে। প্রস্তুত থাকুন!`,
-        href: "/volunteer/dispatches",
-        type: "VOLUNTEER",
-        role: "VOLUNTEER",
-      });
     } catch (error: unknown) {
       if (error instanceof MockApiError) {
-        setErrors({ ...error.fieldErrors, form: error.message });
+        revealErrors({ ...error.fieldErrors, form: error.message });
       } else {
-        setErrors({ form: "The mock donation could not be created. Try again." });
+        setErrors({ form: "The donation could not be saved. Try again." });
       }
     } finally {
       setSubmitting(false);
@@ -283,7 +272,7 @@ export function DonationWizard() {
   }
 
   function addAnother() {
-    setDraft({ ...createInitialDonationDraft(), preferredNgoProfileId: preferredNgo?.profile.id ?? "" });
+    setDraft((current) => ({ ...createInitialDonationDraft(), addressId: current.addressId, pickupAddress: current.pickupAddress, approximateArea: current.approximateArea, contactPerson: current.contactPerson, phone: current.phone, email: current.email, preferredNgoProfileId: preferredNgo?.profile.id ?? "" }));
     setCurrentStep(1);
     setResult(undefined);
     setSavedAt(undefined);
@@ -293,87 +282,85 @@ export function DonationWizard() {
   return (
     <PortalShell
       role="donor"
+      compactHeader
       activeHref={ROUTES.donor.newDonation}
-      title={currentStep === 4 ? "খাদ্য অনুদান সম্পন্ন" : "উদ্বৃত্ত খাবার পোস্ট করুন"}
-      description="ক্যাফেটেরিয়া বা রেস্তোরাঁর তাজা অতিরিক্ত খাবারের বিবরণ ও পিকআপ তথ্য দিয়ে লাইভ ফিডে তালিকাভুক্ত করুন।"
-      profileName="UIU Central Cafeteria"
-      profileDescription="ভেরিফাইড খাদ্য দাতা"
-      avatarInitials="UI"
+      title={currentStep === 6 ? tx("খাদ্য অনুদান সম্পন্ন") : tx("উদ্বৃত্ত খাবার পোস্ট করুন")}
+      description={tx("ক্যাফেটেরিয়া বা রেস্তোরাঁর তাজা অতিরিক্ত খাবারের বিবরণ ও পিকআপ তথ্য দিয়ে লাইভ ফিডে তালিকাভুক্ত করুন।")}
+      profileName={session?.displayName}
+      profileDescription={tx("ভেরিফাইড খাদ্য দাতা")}
+      avatarInitials={session?.displayName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "D"}
       notificationHref={ROUTES.donor.notifications}
-      unreadNotifications={1}
       backHref={ROUTES.donor.dashboard}
-      backLabel="ড্যাশবোর্ডে ফিরুন"
+      backLabel={tx("ড্যাশবোর্ডে ফিরুন")}
     >
       <Stepper
         steps={wizardSteps}
         current={currentStep}
-        label="খাদ্য অনুদান পোস্টের অগ্রগতি"
-        onStepClick={(step) => editStep(step as DonationWizardStep)}
+        label={tx("খাদ্য অনুদান পোস্টের অগ্রগতি")}
+        onStepClick={result || uploading || submitting ? undefined : (step) => editStep(step as DonationWizardStep)}
       />
-      {preferredNgo && currentStep !== 4 && (
+      {preferredNgo && currentStep !== 6 && (
         <Alert
           className="mt-6"
           tone="info"
-          title={`পছন্দনীয় এনজিও: ${preferredNgo.profile.organizationName}`}
-          description="আপনার পছন্দের এই সংস্থাটিকে অগ্রাধিকার ভিত্তিতে অবহিত করা হবে।"
+          title={tx("পছন্দনীয় এনজিও: {0}", preferredNgo.profile.organizationName)}
+          description={tx("আপনার পছন্দের এই সংস্থাটিকে অগ্রাধিকার ভিত্তিতে অবহিত করা হবে।")}
           action={
-            <ButtonLink href={ROUTES.donor.ngoProfile(preferredNgo.profile.id)} size="sm" variant="outline">
-              এনজিও প্রোফাইল দেখুন
-            </ButtonLink>
+            <ButtonLink href={ROUTES.donor.ngoProfile(preferredNgo.profile.id)} size="sm" variant="outline"><UiText source={"এনজিও প্রোফাইল দেখুন"} /></ButtonLink>
           }
         />
       )}
 
-      {currentStep === 4 && result ? (
+      {currentStep === 6 && result ? (
         <div className="mt-10">
           <DonationConfirmation result={result} addAnother={addAnother} />
         </div>
       ) : (
-        <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_21rem] xl:items-start">
-          <Card className="overflow-hidden">
-            <div className="border-b border-line bg-emerald-50/40 p-5 sm:p-7">
+        <div className={styles.layout}>
+          <div className={styles.card}>
+            <div className={styles.stepHeading}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800 font-heading">
-                    ধাপ {currentStep} / ৪
-                  </span>
+                    {tx("Step {0} of {1}", currentStep, wizardSteps.length)}</span>
                   <h2 className="mt-3 text-2xl font-black text-slate-900 sm:text-3xl font-heading">
-                    {wizardSteps[currentStep - 1]?.label}
+                    {tx(wizardSteps[currentStep - 1]?.label)}
                   </h2>
                   <p className="mt-1 text-xs sm:text-sm text-slate-600 font-normal">
-                    {wizardSteps[currentStep - 1]?.description}
+                    {tx(wizardSteps[currentStep - 1]?.description)}
                   </p>
                 </div>
                 {savedAt && (
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-600">
-                    খসড়া সংরক্ষিত রয়েছে
-                  </span>
+                    {tx("খসড়া সংরক্ষিত রয়েছে")}</span>
                 )}
               </div>
             </div>
 
-            <form ref={formRef} onSubmit={handleSubmit} noValidate>
-              <div className="p-5 sm:p-7">
+            <form ref={formRef} onSubmit={handleSubmit} noValidate data-wizard-step={currentStep}>
+              <div className={styles.formContent}>
                 {errors.form && (
-                  <Alert className="mb-5" tone="danger" title="অগ্রসর হওয়া সম্ভব নয়" description={errors.form} />
+                  <Alert className="mb-5" tone="danger" title={tx("অগ্রসর হওয়া সম্ভব নয়")} description={tx(errors.form)} />
                 )}
                 {hasDonationDraftErrors(errors) && !errors.form && (
                   <Alert
                     className="mb-5"
                     tone="danger"
-                    title="চিহ্নিত ঘরগুলো পরীক্ষা করুন"
-                    description="পরবর্তী ধাপে যাওয়ার আগে লাল রঙের ঘরগুলোতে সঠিক তথ্য প্রদান করুন।"
+                    title={tx("চিহ্নিত ঘরগুলো পরীক্ষা করুন")}
+                    description={tx("পরবর্তী ধাপে যাওয়ার আগে লাল রঙের ঘরগুলোতে সঠিক তথ্য প্রদান করুন।")}
                   />
                 )}
-                {currentStep === 1 && <FoodDetailsStep draft={draft} errors={errors} update={update} />}
-                {currentStep === 2 && <PickupInformationStep draft={draft} errors={errors} update={update} />}
-                {currentStep === 3 && <SafetyReviewStep draft={draft} errors={errors} update={update} editStep={editStep} />}
+                {currentStep === 1 && <FoodDetailsStep part="food" draft={draft} errors={errors} update={update} onUploadBusyChange={setUploading} />}
+                {currentStep === 2 && <FoodDetailsStep part="time" draft={draft} errors={errors} update={update} />}
+                {currentStep === 3 && <FoodDetailsStep part="photos" draft={draft} errors={errors} update={update} onUploadBusyChange={setUploading} />}
+                {currentStep === 4 && <PickupInformationStep draft={draft} errors={errors} update={update} addresses={addresses} />}
+                {currentStep === 5 && <SafetyReviewStep draft={draft} errors={errors} update={update} editStep={editStep} />}
               </div>
 
-              <StickyActionBar className="px-4 sm:px-7">
-                <div className="flex w-full flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className={styles.actions} data-testid="donation-form-actions">
+                <div className={styles.actionLayout}>
                   {/* Left Side: Back Navigation & Draft */}
-                  <div className="flex w-full sm:w-auto items-center gap-2">
+                  <div className={styles.secondaryActions}>
                     {currentStep === 1 ? (
                       <ButtonLink
                         href={ROUTES.donor.dashboard}
@@ -381,18 +368,18 @@ export function DonationWizard() {
                         leftIcon={<ArrowLeft className="size-4" />}
                         className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
                       >
-                        ড্যাশবোর্ড
-                      </ButtonLink>
+                        {tx("ড্যাশবোর্ড")}</ButtonLink>
                     ) : (
                       <Button
                         type="button"
                         variant="outline"
                         leftIcon={<ArrowLeft className="size-4" />}
                         onClick={goBack}
+                        data-testid="donation-previous"
+                        disabled={uploading || submitting}
                         className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm"
                       >
-                        পূর্ববর্তী
-                      </Button>
+                        {tx("পূর্ববর্তী")}</Button>
                     )}
                     <Button
                       type="button"
@@ -401,40 +388,49 @@ export function DonationWizard() {
                       onClick={persistDraft}
                       className="flex-1 sm:flex-initial justify-center text-xs sm:text-sm border-slate-300 bg-slate-50/70 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-800"
                     >
-                      খসড়া
-                    </Button>
+                      {tx("খসড়া")}</Button>
                   </div>
 
                   {/* Right Side: Forward Navigation (Primary Mobile Thumb Target) */}
-                  <div className="w-full sm:w-auto">
-                    {currentStep < 3 ? (
+                  <div className={styles.primaryAction}>
+                    {currentStep < 5 ? (
                       <Button
+                        key="next-step"
+                        data-testid="donation-next"
                         type="button"
                         variant="primary"
                         rightIcon={<ArrowRight className="size-4" />}
-                        onClick={goNext}
+                        disabled={uploading || !profileReady} onClick={(event) => { event.preventDefault(); goNext(); }}
                         className="w-full sm:w-auto justify-center px-6 py-2.5 sm:py-2 text-sm sm:text-base font-black shadow-lg shadow-emerald-700/25 ring-2 ring-emerald-500/30"
                       >
-                        পরবর্তী ধাপ
-                      </Button>
+                        {tx("পরবর্তী ধাপ")}</Button>
                     ) : (
                       <Button
+                        key="publish-donation"
                         type="submit"
                         variant="primary"
                         className="w-full sm:w-auto justify-center px-6 py-2.5 sm:py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-sm sm:text-base font-black shadow-xl shadow-emerald-700/30 ring-2 ring-emerald-500/30"
                         rightIcon={<Send className="size-4 animate-icon-float" />}
-                        disabled={submitting}
+                        disabled={submitting || uploading || !profileReady}
                       >
-                        {submitting ? "পোস্ট হচ্ছে..." : "অনুদানের তালিকা প্রকাশ করুন"}
+                        {submitting ? tx("পোস্ট হচ্ছে...") : tx("অনুদানের তালিকা প্রকাশ করুন")}
                       </Button>
                     )}
                   </div>
                 </div>
-              </StickyActionBar>
+                {savedAt && <p className={styles.draftStatus} role="status">{tx("Draft saved")}</p>}
+              </div>
             </form>
-          </Card>
+          </div>
 
-          <DonationSummaryPanel draft={draft} currentStep={currentStep} errors={errors} />
+          <aside className={styles.summary}>
+            <button type="button" className={styles.summaryToggle} aria-expanded={summaryOpen} aria-controls="donation-preview" onClick={() => setSummaryOpen((value) => !value)}>
+              {tx("View donation summary")}<ChevronDown size={17} aria-hidden="true" />
+            </button>
+            <div id="donation-preview" className={styles.summaryContent} data-open={summaryOpen}>
+              <DonationSummaryPanel draft={draft} currentStep={currentStep} errors={errors} />
+            </div>
+          </aside>
         </div>
       )}
     </PortalShell>

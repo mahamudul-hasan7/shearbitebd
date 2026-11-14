@@ -1,3 +1,4 @@
+import { sampleDonationImage } from "@/lib/sample-donation-images";
 import {
   DietaryType,
   FoodCategory,
@@ -22,6 +23,7 @@ export function createInitialDonationDraft(now = new Date()): DonationDraft {
   const deadline = new Date(preparation.getTime() + 180 * 60_000);
 
   return {
+    sampleImageId: "",
     preferredNgoProfileId: "",
     title: "",
     category: FoodCategory.COOKED_MEAL,
@@ -35,13 +37,13 @@ export function createInitialDonationDraft(now = new Date()): DonationDraft {
     allergenInfo: "",
     description: "",
     specialInstructions: "",
-    photoNames: [],
-    addressId: "address-uiu",
-    pickupAddress: "Mock campus gate, United City, Badda, Dhaka",
-    approximateArea: "Badda, Dhaka",
-    contactPerson: "UIU Cafeteria Desk",
-    phone: "+8801700000001",
-    email: "donor@sharebite.demo",
+    photoUrls: [],
+    addressId: "",
+    pickupAddress: "",
+    approximateArea: "",
+    contactPerson: "",
+    phone: "",
+    email: "",
     pickupWindowStart: localDateTime(pickupStart),
     pickupWindowEnd: localDateTime(pickupEnd),
     directions: "",
@@ -79,17 +81,9 @@ export function restoreDonationDraft(value: unknown, fallback = createInitialDon
   if (!Object.values(StorageCondition).includes(restored.storageCondition)) restored.storageCondition = fallback.storageCondition;
   if (!Object.values(PriorityLevel).includes(restored.priority)) restored.priority = fallback.priority;
   if (!["FRESHLY_PREPARED", "SAME_DAY", "PACKAGED"].includes(restored.foodCondition)) restored.foodCondition = fallback.foodCondition;
-  restored.photoNames = restored.photoNames.slice(0, 5);
+  restored.photoUrls = restored.photoUrls.filter((url) => /^\/api\/photos\/[a-f0-9-]{36}$/.test(url)).slice(0, 5);
 
-  // Auto-refresh stale pickup schedule if the restored deadline has already elapsed
-  const deadlineTimestamp = Date.parse(restored.safePickupDeadline);
-  if (Number.isFinite(deadlineTimestamp) && deadlineTimestamp <= Date.now()) {
-    const freshTimes = createInitialDonationDraft();
-    restored.preparationTime = freshTimes.preparationTime;
-    restored.safePickupDeadline = freshTimes.safePickupDeadline;
-    restored.pickupWindowStart = freshTimes.pickupWindowStart;
-    restored.pickupWindowEnd = freshTimes.pickupWindowEnd;
-  }
+  if (!sampleDonationImage(restored.sampleImageId) || restored.photoUrls.length) restored.sampleImageId = "";
 
   return restored;
 }

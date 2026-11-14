@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import {
   Building2,
   CircleHelp,
@@ -11,6 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ROUTES } from "@/lib/routes";
 
 export function DonorQuickActions({ activeDonationId }: { activeDonationId?: string }) {
+  const tx = useUiText();
   const actions = [
     {
       label: "উদ্বৃত্ত খাবার পোস্ট",
@@ -49,11 +53,9 @@ export function DonorQuickActions({ activeDonationId }: { activeDonationId?: str
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div>
             <h3 className="text-base font-black text-slate-900 font-heading">
-              কুইক অ্যাকশন
-            </h3>
+              {tx("কুইক অ্যাকশন")}</h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              প্রয়োজনীয় কাজ দ্রুত সম্পন্ন করুন
-            </p>
+              {tx("প্রয়োজনীয় কাজ দ্রুত সম্পন্ন করুন")}</p>
           </div>
         </div>
 
@@ -74,10 +76,10 @@ export function DonorQuickActions({ activeDonationId }: { activeDonationId?: str
                   </span>
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-900 group-hover:text-emerald-950 font-heading truncate">
-                      {action.label}
+                      {tx(action.label)}
                     </p>
                     <p className="text-[11px] text-slate-500 truncate">
-                      {action.description}
+                      {tx(action.description)}
                     </p>
                   </div>
                 </div>

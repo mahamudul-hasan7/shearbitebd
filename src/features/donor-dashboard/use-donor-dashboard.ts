@@ -1,202 +1,59 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DonationStatus, STATUS_META } from "@/lib/constants/statuses";
-import { UserRole } from "@/lib/constants/roles";
+import { STATUS_META } from "@/lib/constants/statuses";
 import { useMockAuth } from "@/features/auth/mock-auth";
-import {
-  asyncState,
-  donationService,
-  impactService,
-  ngoService,
-  notificationService,
-  profileService,
-  toServiceError,
-  type AsyncState,
-} from "@/services";
-import type { ViewerContext } from "@/types/domain";
-import type { DashboardActivity, DonorDashboardData, SupportedNGOSummary } from "@/features/donor-dashboard/types";
-
-const DASHBOARD_USER_ID = "user-donor-uiu";
-const DASHBOARD_DONOR_ID = "donor-uiu";
-const DASHBOARD_VIEWER: ViewerContext = {
-  userId: DASHBOARD_USER_ID,
-  role: UserRole.DONOR,
-  donorProfileId: DASHBOARD_DONOR_ID,
-};
-
-const ACTIVE_STATUSES = new Set<DonationStatus>([
-  DonationStatus.PUBLISHED,
-  DonationStatus.AVAILABLE,
-  DonationStatus.RESERVED,
-  DonationStatus.ASSIGNED,
-  DonationStatus.PICKED_UP,
-  DonationStatus.DELIVERED,
-]);
-
-function getInitials(name: string) {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "FD";
-}
+import { asyncState, toServiceError, type AsyncState } from "@/services/shared";
+import { donationService } from "@/services/donation.service";
+import { impactService } from "@/services/impact.service";
+import { notificationService } from "@/services/notification.service";
+import { profileService } from "@/services/profile.service";
+import type { DonorDashboardData } from "@/features/donor-dashboard/types";
+import { selectActiveDonation } from "./active-donation";
 
 export function useDonorDashboard() {
   const { session } = useMockAuth();
+  const userId = session?.id;
+  const donorId = session?.donorProfileId;
   const [retryKey, setRetryKey] = useState(0);
-  const [state, setState] = useState<AsyncState<DonorDashboardData>>(() => asyncState.loading());
-
-  const isDefaultDemo = !session?.email || session.email === "donor@sharebite.demo";
-  const donorProfileId = isDefaultDemo ? DASHBOARD_DONOR_ID : session.email;
-  const userId = isDefaultDemo ? DASHBOARD_USER_ID : session.email;
-  const viewer: ViewerContext = {
-    userId,
-    role: UserRole.DONOR,
-    donorProfileId,
-  };
+  const [snapshot, setSnapshot] = useState<{ owner: string; state: AsyncState<DonorDashboardData> }>();
 
   useEffect(() => {
+    if (!userId || !donorId) return;
     const controller = new AbortController();
-    const serviceOptions = { signal: controller.signal };
-
-    if (!isDefaultDemo) {
-      // Dynamic registered user dashboard
-      Promise.all([
-        donationService.list({ donorProfileId, viewer }, serviceOptions),
-        ngoService.listVerified(serviceOptions),
-      ]).then(([donations, ngos]) => {
-        const totalMeals = donations.reduce((sum, d) => sum + (d.quantity.estimatedMeals || 0), 0);
-        const activeDonation = donations.find((donation) => ACTIVE_STATUSES.has(donation.status));
-
-        const donationActivities: DashboardActivity[] = donations.slice(0, 3).map((donation) => ({
-          id: `activity-${donation.id}`,
-          kind: "donation",
-          title: donation.title,
-          description: `অনুদানের বর্তমান অবস্থা: ${STATUS_META[donation.status].label}`,
-          timestamp: donation.updatedAt,
-          href: `/donor/donations/${donation.id}`,
-        }));
-
-        setState(asyncState.success({
-          profile: {
-            name: session?.displayName || "নিবন্ধিত খাদ্য দাতা",
-            email: session?.email || "",
-            initials: getInitials(session?.displayName || "FD"),
-            description: "ভেরিফায়েড খাদ্য দাতা",
-          },
-          stats: {
-            totalDonations: donations.length,
-            activeDonations: donations.filter((d) => ACTIVE_STATUSES.has(d.status)).length,
-            mealsRescued: totalMeals,
-            ngosHelped: donations.filter((d) => d.status === DonationStatus.DELIVERED || d.status === DonationStatus.DISTRIBUTED).length,
-            donorScore: 100,
-            donorScoreDescription: "সক্রিয় কিচেন ট্রাস্ট স্কোর",
-          },
-          donations,
-          activeDonation,
-          activities: donationActivities,
-          supportedNgos: [],
-          impactRecords: [],
-          unreadNotifications: 0,
-        }));
-      }).catch((error: unknown) => {
-        if (controller.signal.aborted) return;
-        setState(asyncState.error(toServiceError(error)));
-      });
-
-      return () => controller.abort();
-    }
-
-    Promise.all([
-      profileService.getOwnProfile(DASHBOARD_USER_ID, DASHBOARD_VIEWER, serviceOptions),
-      donationService.list({ donorProfileId: DASHBOARD_DONOR_ID, viewer: DASHBOARD_VIEWER }, serviceOptions),
-      impactService.getDonorOverview(DASHBOARD_DONOR_ID, DASHBOARD_VIEWER, serviceOptions),
-      notificationService.listForUser(DASHBOARD_USER_ID, DASHBOARD_VIEWER, serviceOptions),
-      ngoService.listVerified(serviceOptions),
-    ]).then(([profile, donations, impact, notifications, ngos]) => {
-      const donorProfile = profile.donorProfile;
-      if (!donorProfile) throw new Error("The donor profile is unavailable.");
-
-      const donationActivities: DashboardActivity[] = donations.slice(0, 3).map((donation) => ({
-        id: `activity-${donation.id}`,
-        kind: "donation",
-        title: donation.title,
-        description: `অনুদানের বর্তমান অবস্থা: ${STATUS_META[donation.status].label}`,
-        timestamp: donation.updatedAt,
-        href: `/donor/donations/${donation.id}`,
-      }));
-      const notificationActivities: DashboardActivity[] = notifications.slice(0, 3).map((notification) => ({
-        id: `activity-${notification.id}`,
-        kind: "notification",
-        title: notification.title,
-        description: notification.message,
-        timestamp: notification.createdAt,
-        href: notification.href,
-      }));
-      const impactActivities: DashboardActivity[] = impact.recentRecords.slice(0, 3).map((record) => ({
-        id: `activity-${record.id}`,
-        kind: "impact",
-        title: `${record.mealsRescued}টি মিল উদ্ধার ও বিতরণ সম্পন্ন`,
-        description: `মোট ${record.foodWeightKg} কেজি খাবার নষ্ট হওয়া থেকে বাঁচানো হয়েছে।`,
-        timestamp: record.recordedAt,
-        href: "/donor/donations",
-      }));
-      const activities = [...donationActivities, ...notificationActivities, ...impactActivities]
-        .sort((left, right) => Date.parse(right.timestamp) - Date.parse(left.timestamp))
-        .slice(0, 6);
-
-      const supportedNgos = impact.recentRecords.reduce<SupportedNGOSummary[]>((items, record) => {
-        if (!record.ngoProfileId) return items;
-        const ngo = ngos.find((item) => item.profile.id === record.ngoProfileId);
-        if (!ngo) return items;
-        const existing = items.find((item) => item.id === ngo.profile.id);
-        if (existing) {
-          existing.mealsSupported += record.mealsRescued;
-          if (Date.parse(record.recordedAt) > Date.parse(existing.lastSupportedAt)) existing.lastSupportedAt = record.recordedAt;
-          return items;
-        }
-        items.push({
-          id: ngo.profile.id,
-          name: ngo.profile.organizationName,
-          serviceAreas: [...ngo.profile.serviceAreas],
-          completedRescues: ngo.profile.completedRescues,
-          mealsSupported: record.mealsRescued,
-          lastSupportedAt: record.recordedAt,
-        });
-        return items;
-      }, []).sort((left, right) => Date.parse(right.lastSupportedAt) - Date.parse(left.lastSupportedAt));
-
-      setState(asyncState.success({
-        profile: {
-          name: profile.user.displayName,
-          email: profile.user.email,
-          initials: getInitials(profile.user.displayName),
-          description: donorProfile.organizationName ? "ভেরিফায়েড খাদ্য দাতা" : "খাদ্য দাতা",
-        },
-        stats: {
-          totalDonations: impact.totalDonations,
-          activeDonations: impact.activeDonations,
-          mealsRescued: impact.mealsRescued,
-          ngosHelped: impact.ngosHelped,
-          donorScore: impact.donorScore,
-          donorScoreDescription: impact.donorScoreDescription,
-        },
-        donations,
-        activeDonation: donations.find((donation) => ACTIVE_STATUSES.has(donation.status)),
-        activities,
-        supportedNgos,
-        impactRecords: impact.recentRecords,
-        unreadNotifications: notifications.filter((notification) => !notification.readAt).length,
-      }));
-    }).catch((error: unknown) => {
+    const options = { signal: controller.signal };
+    let inFlight = false;
+    const poll = async () => {
+      if (inFlight || controller.signal.aborted) return;
+      inFlight = true;
+      try {
+        const [profile, donations, impact, notifications] = await Promise.all([
+      profileService.getOwnProfile(userId, {}, options),
+      donationService.list({}, options),
+      impactService.getDonorOverview(donorId, {}, options),
+      notificationService.listForUser(userId, {}, options),
+        ]);
       if (controller.signal.aborted) return;
-      setState(asyncState.error(toServiceError(error)));
-    });
+      const name = profile.donorProfile?.organizationName || profile.user.displayName;
+      setSnapshot({ owner: userId, state: asyncState.success({
+        profile: { name, email: profile.user.email, initials: name.split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase(), description: profile.donorProfile?.verificationStatus === "VERIFIED" ? "Verified food donor" : "Food donor — verification pending" },
+        stats: { totalDonations: impact.totalDonations, activeDonations: impact.activeDonations, mealsRescued: impact.mealsRescued, ngosHelped: impact.ngosHelped, donorScore: impact.donorScore, donorScoreDescription: impact.donorScoreDescription },
+        donations, activeDonation: selectActiveDonation(donations),
+        activities: donations.slice(0, 6).map((d) => ({ id: d.id, kind: "donation", title: d.title, description: STATUS_META[d.status].label, timestamp: d.updatedAt, href: `/donor/donations/${d.id}` })),
+        supportedNgos: [], impactRecords: impact.recentRecords, unreadNotifications: notifications.filter((n) => !n.readAt).length,
+      }) });
+      } catch (error) {
+        if (!controller.signal.aborted) setSnapshot((previous) => ({ owner: userId, state: asyncState.error(toServiceError(error), previous?.owner === userId ? previous.state.data : undefined) }));
+      } finally { inFlight = false; }
+    };
+    const refreshVisible = () => { if (document.visibilityState === "visible") void poll(); };
+    void poll();
+    const timer = window.setInterval(refreshVisible, 5_000);
+    window.addEventListener("focus", refreshVisible);
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => { controller.abort(); window.clearInterval(timer); window.removeEventListener("focus", refreshVisible); document.removeEventListener("visibilitychange", refreshVisible); };
+  }, [userId, donorId, retryKey]);
 
-    return () => controller.abort();
-  }, [retryKey]);
-
-  function retry() {
-    setState((current) => asyncState.loading(current.data));
-    setRetryKey((current) => current + 1);
-  }
-
-  return { state, retry };
+  const state = snapshot && snapshot.owner === userId ? snapshot.state : asyncState.loading<DonorDashboardData>();
+  return { state, retry: () => setRetryKey((n) => n + 1) };
 }

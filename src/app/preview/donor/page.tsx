@@ -1,3 +1,4 @@
+import { UiText } from "@/lib/i18n/ui-text-node";
 import { ArrowRight, Building2, Clock3, PackageCheck, Plus, Utensils, UsersRound } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,7 @@ export const metadata = { title: "Donor Shell Preview", description: "Preview th
 
 export default function DonorPreviewPage() {
   return (
-    <PortalShell role="donor" activeHref="/preview/donor" title="Hello, Food Donor" description="Your responsive shell adapts from mobile bottom navigation to a desktop sidebar." actions={<Button leftIcon={<Plus className="size-4" />}>Add surplus food</Button>}>
+    <PortalShell role="donor" activeHref="/preview/donor" title="Hello, Food Donor" description="Your responsive shell adapts from mobile bottom navigation to a desktop sidebar." actions={<Button leftIcon={<Plus className="size-4" />}><UiText source={"Add surplus food"} /></Button>}>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total donations" value="12" helper="All time" icon={PackageCheck} />
         <StatCard label="Active donations" value="3" helper="Ongoing" icon={Clock3} tone="accent" />
@@ -20,15 +21,15 @@ export default function DonorPreviewPage() {
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card>
-          <CardHeader title="Active donation" description="A shared card can be composed differently on mobile and desktop." action={<Badge tone="danger">High priority</Badge>} />
+          <CardHeader title="Active donation" description="A shared card can be composed differently on mobile and desktop." action={<Badge tone="danger"><UiText source={"High priority"} /></Badge>} />
           <CardContent>
             <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
               <div>
-                <h3 className="text-2xl font-black">Veg Meal Pack</h3>
-                <p className="mt-2 text-sm text-muted-600">UIU Cafeteria · 40 meal packs · Refrigerated</p>
-                <div className="mt-5 flex flex-wrap gap-2"><Badge>Posted</Badge><Badge tone="success">Matched</Badge><Badge tone="warning">Pickup pending</Badge></div>
+                <h3 className="text-2xl font-black"><UiText source={"Veg Meal Pack"} /></h3>
+                <p className="mt-2 text-sm text-muted-600"><UiText source={"UIU Cafeteria · 40 meal packs · Refrigerated"} /></p>
+                <div className="mt-5 flex flex-wrap gap-2"><Badge><UiText source={"Posted"} /></Badge><Badge tone="success"><UiText source={"Matched"} /></Badge><Badge tone="warning"><UiText source={"Pickup pending"} /></Badge></div>
               </div>
-              <div className="rounded-3xl bg-danger-soft p-5 text-center"><p className="text-xs font-bold uppercase tracking-wider text-danger-strong">Rescue clock</p><p className="mt-2 text-3xl font-black text-danger">01:45:32</p></div>
+              <div className="rounded-3xl bg-danger-soft p-5 text-center"><p className="text-xs font-bold uppercase tracking-wider text-danger-strong"><UiText source={"Rescue clock"} /></p><p className="mt-2 text-3xl font-black text-danger">01:45:32</p></div>
             </div>
           </CardContent>
         </Card>

@@ -1,27 +1,27 @@
+import { getUiLocale, displayUiText } from "@/lib/i18n/locale";
+import { sampleDonationImage } from "@/lib/sample-donation-images";
 import { FoodCategory, DietaryType, StorageCondition, PriorityLevel, QuantityUnit } from "@/lib/constants/domain";
 import { DonationStatus } from "@/lib/constants/statuses";
 import type { DonationView } from "@/types/domain";
 
 export function donationImageUrl(donation: DonationView) {
   const candidate = donation.photoUrls[0];
-  if (candidate && candidate.startsWith("/images/") && candidate !== "/images/donor-active-meal.png") {
-    return candidate;
-  }
-  return "/images/surplus-food-containers.jpg";
+  if (candidate && /^\/api\/photos\/[a-f0-9-]{36}$/.test(candidate)) return candidate;
+  return sampleDonationImage(donation.sampleImageId)?.url || "/images/no-donation-photo.svg";
 }
 
 export function formatDonationDateTime(value: string) {
   const timestamp = Date.parse(value);
   return Number.isFinite(timestamp)
-    ? new Intl.DateTimeFormat("en-BD", { dateStyle: "medium", timeStyle: "short" }).format(timestamp)
-    : "Not available";
+    ? new Intl.DateTimeFormat(getUiLocale(), { dateStyle: "medium", timeStyle: "short" }).format(timestamp)
+    : displayUiText("Not available");
 }
 
 export function formatDonationDateTimeBn(value: string) {
   const timestamp = Date.parse(value);
-  if (!Number.isFinite(timestamp)) return "অজানা সময়";
+  if (!Number.isFinite(timestamp)) return displayUiText("অজানা সময়");
   try {
-    return new Intl.DateTimeFormat("bn-BD", {
+    return new Intl.DateTimeFormat(getUiLocale(), {
       month: "short",
       day: "numeric",
       hour: "numeric",
@@ -95,7 +95,7 @@ export function formatDonationQuantity(donation: DonationView) {
 
 export function formatDonationQuantityBn(donation: DonationView) {
   const unitBn = UNIT_LABELS_BN[donation.quantity.unit] || donation.quantity.unit;
-  return `${donation.quantity.value} ${unitBn}`;
+  return `${donation.quantity.value} ${displayUiText(unitBn)}`;
 }
 
 export const TITLE_TRANSLATIONS: Record<string, string> = {
@@ -125,11 +125,10 @@ export const DONOR_ORGANIZATION_TRANSLATIONS: Record<string, string> = {
 
 export function getDonationTitleBn(title?: string): string {
   if (!title) return "";
-  return TITLE_TRANSLATIONS[title] || title;
+  return title;
 }
 
 export function getDonorOrganizationBn(org?: string): string {
   if (!org) return "";
-  return DONOR_ORGANIZATION_TRANSLATIONS[org] || org;
+  return org;
 }
-

@@ -1,9 +1,10 @@
 import type { DietaryType, FoodCategory, PriorityLevel, QuantityUnit, StorageCondition } from "@/lib/constants/domain";
 import type { DonationView } from "@/types/domain";
 
-export type DonationWizardStep = 1 | 2 | 3 | 4;
+export type DonationWizardStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface DonationDraft {
+  sampleImageId: string;
   preferredNgoProfileId: string;
   title: string;
   category: FoodCategory;
@@ -17,7 +18,7 @@ export interface DonationDraft {
   allergenInfo: string;
   description: string;
   specialInstructions: string;
-  photoNames: string[];
+  photoUrls: string[];
   addressId: string;
   pickupAddress: string;
   approximateArea: string;
