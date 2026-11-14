@@ -1,4 +1,6 @@
 "use client";
+import { getUiLocale } from "@/lib/i18n/locale";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useState } from "react";
 import { Activity, Building2, CheckCircle2, Compass, MapPin, Sparkles, Utensils } from "lucide-react";
@@ -129,6 +131,7 @@ export function BangladeshRadarMap({
 }: {
   variant?: "hero" | "full";
 }) {
+  const tx = useUiText();
   const [selectedDivision, setSelectedDivision] = useState<DivisionData>(
     BANGLADESH_DIVISIONS[0]
   );
@@ -145,8 +148,8 @@ export function BangladeshRadarMap({
         <div className="absolute top-4 left-4 z-20 hidden sm:flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-[#02241b]/90 px-3.5 py-2 shadow-xl backdrop-blur-md animate-float-subtle">
           <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
           <div className="text-left">
-            <p className="text-[11px] font-black text-white font-heading">ঢাকা মেট্রো সক্রিয় মিশন</p>
-            <p className="text-[10px] text-emerald-300 font-semibold">১৪টি টিম মাঠে রয়েছে</p>
+            <p className="text-[11px] font-black text-white font-heading">{tx("ঢাকা মেট্রো সক্রিয় মিশন")}</p>
+            <p className="text-[10px] text-emerald-300 font-semibold">{tx("১৪টি টিম মাঠে রয়েছে")}</p>
           </div>
         </div>
 
@@ -154,8 +157,8 @@ export function BangladeshRadarMap({
         <div className="absolute top-4 right-4 z-20 hidden sm:flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-[#02241b]/90 px-3.5 py-2 shadow-xl backdrop-blur-md">
           <Utensils className="size-3.5 text-amber-400" />
           <div className="text-right">
-            <p className="text-[11px] font-black text-white font-heading">ইউআইইউ ক্যাফেটেরিয়া</p>
-            <p className="text-[10px] text-amber-300 font-semibold">৭৫ বক্স কাচ্চি উদ্ধার</p>
+            <p className="text-[11px] font-black text-white font-heading">{tx("ইউআইইউ ক্যাফেটেরিয়া")}</p>
+            <p className="text-[10px] text-amber-300 font-semibold">{tx("৭৫ বক্স কাচ্চি উদ্ধার")}</p>
           </div>
         </div>
 
@@ -163,8 +166,8 @@ export function BangladeshRadarMap({
         <div className="absolute bottom-4 left-4 z-20 hidden sm:flex items-center gap-2 rounded-2xl border border-teal-500/30 bg-[#02241b]/90 px-3.5 py-2 shadow-xl backdrop-blur-md">
           <CheckCircle2 className="size-3.5 text-teal-400" />
           <div className="text-left">
-            <p className="text-[11px] font-black text-white font-heading">মাস্তুল ও বিদ্যানন্দ</p>
-            <p className="text-[10px] text-teal-300 font-semibold">কিউআর হ্যান্ডওভার কনফার্মড</p>
+            <p className="text-[11px] font-black text-white font-heading">{tx("মাস্তুল ও বিদ্যানন্দ")}</p>
+            <p className="text-[10px] text-teal-300 font-semibold">{tx("কিউআর হ্যান্ডওভার কনফার্মড")}</p>
           </div>
         </div>
 
@@ -173,7 +176,7 @@ export function BangladeshRadarMap({
           <svg
             viewBox="0 0 100 100"
             className="h-full w-full drop-shadow-[0_0_35px_rgba(16,185,129,0.3)]"
-            aria-label="Bangladesh Live Food Rescue Radar Map"
+            aria-label={tx("Bangladesh Live Food Rescue Radar Map")}
           >
             {/* Iconic Delta Boundary of Bangladesh */}
             <path
@@ -301,10 +304,10 @@ export function BangladeshRadarMap({
           </div>
           <div className="flex items-center gap-4 text-xs">
             <span className="text-emerald-300 font-bold">
-              উদ্ধার: <strong className="text-white">{selectedDivision.mealsToday.toLocaleString()} মিল</strong>
+              {tx("উদ্ধার:")}<strong className="text-white">{selectedDivision.mealsToday.toLocaleString(getUiLocale())} {" "}{tx("মিল")}</strong>
             </span>
             <span className="text-amber-300 font-bold">
-              সক্রিয় মিশন: <strong className="text-white">{selectedDivision.activeRescues}</strong>
+              {tx("সক্রিয় মিশন:")}<strong className="text-white">{selectedDivision.activeRescues}</strong>
             </span>
           </div>
         </div>
@@ -325,24 +328,21 @@ export function BangladeshRadarMap({
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/60 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-300">
             <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-            জাতীয় উদ্বৃত্ত খাদ্য উদ্ধার রেডার · বাংলাদেশ
-          </div>
+            {tx("জাতীয় উদ্বৃত্ত খাদ্য উদ্ধার রেডার · বাংলাদেশ")}</div>
           <h3 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl font-heading">
-            সারাদেশে রিয়েল-টাইম খাদ্য উদ্ধার ও বণ্টন নেটওয়ার্ক
-          </h3>
+            {tx("সারাদেশে রিয়েল-টাইম খাদ্য উদ্ধার ও বণ্টন নেটওয়ার্ক")}</h3>
           <p className="mt-1 text-sm text-emerald-200/70 font-normal">
-            বিশ্ববিদ্যালয়, রেস্তোরাঁ ও বিয়ের অনুষ্ঠানের উদ্বৃত্ত খাবার ৮টি বিভাগে নিবন্ধিত এনজিওদের মাধ্যমে বণ্টন।
-          </p>
+            {tx("বিশ্ববিদ্যালয়, রেস্তোরাঁ ও বিয়ের অনুষ্ঠানের উদ্বৃত্ত খাবার ৮টি বিভাগে নিবন্ধিত এনজিওদের মাধ্যমে বণ্টন।")}</p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="rounded-2xl border border-emerald-700/30 bg-emerald-900/40 px-4 py-2 text-center backdrop-blur-md">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/80">সক্রিয় উদ্ধার মিশন</p>
-            <p className="text-xl font-extrabold text-white font-heading">৪৭টি লাইভ</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/80">{tx("সক্রিয় উদ্ধার মিশন")}</p>
+            <p className="text-xl font-extrabold text-white font-heading">{tx("৪৭টি লাইভ")}</p>
           </div>
           <div className="rounded-2xl border border-amber-600/30 bg-amber-950/40 px-4 py-2 text-center backdrop-blur-md">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300/80">আজকের উদ্ধার</p>
-            <p className="text-xl font-extrabold text-amber-400 font-heading">৪,৩৪০+ মিল</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300/80">{tx("আজকের উদ্ধার")}</p>
+            <p className="text-xl font-extrabold text-amber-400 font-heading">{tx("৪,৩৪০+ মিল")}</p>
           </div>
         </div>
       </div>
@@ -354,7 +354,7 @@ export function BangladeshRadarMap({
           <svg
             viewBox="0 0 100 100"
             className="h-full max-h-[460px] w-full drop-shadow-[0_0_25px_rgba(16,185,129,0.2)]"
-            aria-label="Interactive Map of Bangladesh"
+            aria-label={tx("Interactive Map of Bangladesh")}
           >
             {/* Outline Path */}
             <path
@@ -457,40 +457,37 @@ export function BangladeshRadarMap({
             <div className="flex items-start justify-between gap-2">
               <div>
                 <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-emerald-400">
-                  <MapPin className="size-3.5" /> আঞ্চলিক হাবের বিবরণ
-                </span>
+                  <MapPin className="size-3.5" /> {tx("আঞ্চলিক হাবের বিবরণ")}</span>
                 <h4 className="mt-1 text-xl font-black text-white font-heading">{selectedDivision.bengaliName} ({selectedDivision.name})</h4>
                 <p className="text-xs text-emerald-200/70">
-                  স্থানীয় ক্যাফেটেরিয়া, রেস্তোরাঁ ও রেজিস্টার্ড চ্যারিটি কিচেন।
-                </p>
+                  {tx("স্থানীয় ক্যাফেটেরিয়া, রেস্তোরাঁ ও রেজিস্টার্ড চ্যারিটি কিচেন।")}</p>
               </div>
               <span className="rounded-full border border-emerald-500/30 bg-emerald-900/50 px-2.5 py-1 text-xs font-bold text-emerald-300">
-                {selectedDivision.status === "high-activity" ? "⚡ শীর্ষ চাহিদা" : "সক্রিয় রুট"}
+                {selectedDivision.status === "high-activity" ? tx("⚡ শীর্ষ চাহিদা") : tx("সক্রিয় রুট")}
               </span>
             </div>
 
             <div className="mt-5 grid grid-cols-3 gap-2.5 text-center">
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <Utensils className="mx-auto size-4 text-emerald-400 mb-1" />
-                <p className="text-lg font-black text-white font-heading">{selectedDivision.mealsToday.toLocaleString()}</p>
-                <p className="text-[10px] text-emerald-200/60 uppercase font-bold tracking-tight">আজকের মিল</p>
+                <p className="text-lg font-black text-white font-heading">{selectedDivision.mealsToday.toLocaleString(getUiLocale())}</p>
+                <p className="text-[10px] text-emerald-200/60 uppercase font-bold tracking-tight">{tx("আজকের মিল")}</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <Activity className="mx-auto size-4 text-amber-400 mb-1" />
                 <p className="text-lg font-black text-amber-400 font-heading">{selectedDivision.activeRescues}</p>
-                <p className="text-[10px] text-amber-200/60 uppercase font-bold tracking-tight">সক্রিয় রেসকিউ</p>
+                <p className="text-[10px] text-amber-200/60 uppercase font-bold tracking-tight">{tx("সক্রিয় রেসকিউ")}</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <Building2 className="mx-auto size-4 text-sky-400 mb-1" />
                 <p className="text-lg font-black text-white font-heading">{selectedDivision.partnerNgos}</p>
-                <p className="text-[10px] text-sky-200/60 uppercase font-bold tracking-tight">এনজিও পার্টনার</p>
+                <p className="text-[10px] text-sky-200/60 uppercase font-bold tracking-tight">{tx("এনজিও পার্টনার")}</p>
               </div>
             </div>
 
             <div className="mt-5 border-t border-emerald-800/40 pt-4">
               <p className="text-xs font-bold uppercase tracking-wider text-emerald-300/80 mb-2">
-                নিবন্ধিত স্থানীয় চ্যারিটি পার্টনার:
-              </p>
+                {tx("নিবন্ধিত স্থানীয় চ্যারিটি পার্টনার:")}</p>
               <div className="flex flex-wrap gap-1.5">
                 {selectedDivision.keyPartners.map((partner) => (
                   <span
@@ -508,8 +505,7 @@ export function BangladeshRadarMap({
           {/* Division Selector Buttons */}
           <div className="rounded-2xl border border-emerald-900/40 bg-slate-950/40 p-4 backdrop-blur-xs">
             <p className="text-xs font-bold uppercase tracking-wider text-emerald-400/80 mb-2.5 font-heading">
-              বিভাগ নির্বাচন করুন:
-            </p>
+              {tx("বিভাগ নির্বাচন করুন:")}</p>
             <div className="flex flex-wrap gap-2">
               {BANGLADESH_DIVISIONS.map((d) => (
                 <button
