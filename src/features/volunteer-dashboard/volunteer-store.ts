@@ -1,10 +1,13 @@
 "use client";
 
+import { getUiLocale } from "@/lib/i18n/locale";
+import { apiRequest } from "@/services/http";
+import { handoverService } from "@/services/handover.service";
+
 import { useSyncExternalStore } from "react";
-import { createRealNotification } from "@/lib/notifications/real-notification-client";
-import { mockAppStore } from "@/store/mock-app-store";
-import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
-import { triggerCelebration } from "@/components/ui/action-success-modal";
+import { profileService } from "@/services/profile.service";
+import { getClientSession } from "@/features/auth/client-session";
+import type { VolunteerDuty } from "./volunteer-duty";
 import type {
   AvailableDispatch,
   CompletedMissionRecord,
@@ -14,280 +17,21 @@ import type {
   VolunteerSquadProfile,
 } from "./volunteer-types";
 
-export const INITIAL_ACTIVE_MISSION: VolunteerMission = {
-  id: "mission-uiu-mastul",
-  claimId: "clm_mwd36f4j_kr5h",
-  donorName: "UIU Cafeteria & Food Court",
-  donorAddress: "United City, Madani Avenue, 100 Feet Road, Badda, Dhaka-1212",
-  donorArea: "বাড্ডা · নতুন বাজার",
-  donorPhone: "+8801700000001",
-  donorContact: "আসিফ ইকবাল (ক্যাফেটেরিয়া ইনচার্জ)",
-  ngoName: "মাস্তুল ফাউন্ডেশন শেল্টার ও এতিমখানা",
-  ngoAddress: "বাড়ি ১৪, রোড ৩২ পুরাতন, ধানমন্ডি, ঢাকা-১২০৯",
-  ngoArea: "ধানমন্ডি ৩২",
-  ngoPhone: "+8801700000011",
-  ngoContact: "ফারহানা রহমান (রেসকিউ কোঅর্ডিনেটর)",
-  foodTitle: "উদ্বৃত্ত স্পেশাল কাচ্চি বিরিয়ানি ও চিকেন রোস্ট",
-  quantity: "৮৫টি ফয়েল বক্স",
-  servings: 110,
-  storageCondition: "থার্মাল ইনসুলেটেড কার্টন (>৬০°সে)",
-  safeDeadline: "আজ রাত ১১:৩০ পর্যন্ত",
-  distanceKm: 8.4,
-  estimatedTimeMins: 28,
-  currentStage: "at_pickup",
-  pickupOtp: "7429",
-  dropoffOtp: "9814",
-  cargoTemp: 64,
-  riderSpeed: 28,
-  urgency: "critical",
-  assignedAt: "১০:১৫ PM",
-  routeStops: {
-    pickup: "ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ (পিকআপ পয়েন্ট)",
-    expressway: "হাতিরঝিল এক্সপ্রেসওয়ে ও পান্থপথ ফ্লাইওভার",
-    dropoff: "মাস্তুল ফাউন্ডেশন শেল্টার গেট, ধানমন্ডি ৩২",
-  },
-};
-
-export const INITIAL_DISPATCHES: AvailableDispatch[] = [
-  {
-    id: "dsp-01",
-    donorName: "Sultan's Dine - Gulshan 2",
-    donorArea: "Road 103, Gulshan-2, Dhaka",
-    donorPhone: "+8801811223344",
-    donorContact: "তানজিম কবির (ম্যানেজার)",
-    ngoName: "Bidyanondo Foundation",
-    ngoArea: "Mirpur-12 Food Center",
-    ngoPhone: "+8801911887766",
-    ngoContact: "সাদিয়া ইসলাম",
-    foodType: "কাচ্চি বিরিয়ানি ও বোরহানি (সিল্ড ফয়েল)",
-    quantity: "৬৫টি কন্টেইনার",
-    servings: 85,
-    expiresInMins: 38,
-    urgency: "critical",
-    distanceKm: 6.4,
-    storageCondition: "গরম অবস্থায় সংরক্ষিত",
-    dietary: "১০০% হালাল",
-    specialNote: "ক্যাফেটেরিয়ার পেছনের সার্ভিস গেটে বাইক রাখুন।",
-  },
-  {
-    id: "dsp-02",
-    donorName: "Radisson Blu Water Garden",
-    donorArea: "Airport Road, Dhaka Cantonment",
-    donorPhone: "+8801722334455",
-    donorContact: "শেফ মাহফুজ",
-    ngoName: "JAAGO Foundation Shelter",
-    ngoArea: "Korail Bosti Educational Camp, Banani",
-    ngoPhone: "+8801733445566",
-    ngoContact: "রাকিব হাসান",
-    foodType: "কন্টিনেন্টাল ব্যুফে ট্রে ও বেকারি আইটেম",
-    quantity: "১১০ প্যাকেট",
-    servings: 140,
-    expiresInMins: 75,
-    urgency: "high",
-    distanceKm: 5.1,
-    storageCondition: "কোল্ড চেইন / রুম টেম্পারেচার",
-    dietary: "হালাল ও বেকারি",
-    specialNote: "হোটেল সিকিউরিটিতে আইডি কার্ড প্রদর্শন আবশ্যক।",
-  },
-  {
-    id: "dsp-03",
-    donorName: "Star Kabab & Restaurant",
-    donorArea: "Satmasjid Road, Dhanmondi",
-    donorPhone: "+8801844556677",
-    donorContact: "শাহেদ আহমেদ",
-    ngoName: "Al-Markazul Relief Unit",
-    ngoArea: "Lalbagh Community Center, Old Dhaka",
-    ngoPhone: "+8801944556677",
-    ngoContact: "মুফতি জামিল",
-    foodType: "পরোটা, বিফ ভুনা ও স্পেশাল ডাল গোশত",
-    quantity: "৪৫ বক্স",
-    servings: 60,
-    expiresInMins: 130,
-    urgency: "normal",
-    distanceKm: 3.8,
-    storageCondition: "গরম খাবার",
-    dietary: "১০০% হালাল",
-  },
-  {
-    id: "dsp-04",
-    donorName: "Kacchi Bhai - Mirpur 10",
-    donorArea: "Mirpur-10 Roundabout, Dhaka",
-    donorPhone: "+8801655667788",
-    donorContact: "ইমরান খান",
-    ngoName: "Shishu Bikash Kendra",
-    ngoArea: "Kalyanpur Slum Area, Dhaka",
-    ngoPhone: "+8801755667788",
-    ngoContact: "নাজমা বেগম",
-    foodType: "বিফ তেহারি ও শাহি টুকরা ট্রে",
-    quantity: "৭০ প্যাকেট",
-    servings: 90,
-    expiresInMins: 55,
-    urgency: "high",
-    distanceKm: 4.2,
-    storageCondition: "গরম সিল্ড প্যাকেট",
-    dietary: "হালাল",
-  },
-];
-
-export const INITIAL_COMPLETED_MISSIONS: CompletedMissionRecord[] = [
-  {
-    id: "rec-048",
-    missionNumber: "#REC-2026-048",
-    date: "০৫ নভেম্বর, ২০২৬",
-    time: "রাত ১০:৪৫",
-    donorName: "UIU Cafeteria & Food Court",
-    donorArea: "ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা",
-    ngoName: "মাস্তুল ফাউন্ডেশন শেল্টার ও এতিমখানা",
-    ngoArea: "রোড ৩২ পুরাতন, ধানমন্ডি",
-    foodTitle: "উদ্বৃত্ত স্পেশাল কাচ্চি বিরিয়ানি ও রোস্ট",
-    quantity: "৮৫টি ফয়েল বক্স",
-    servings: 110,
-    distanceKm: 8.4,
-    durationMins: 26,
-    deliverySpeedNote: "২৬ মিনিট (নির্ধারিত সময়ের চেয়ে দ্রুত)",
-    cargoTempHandover: 63,
-    foodValueSavedEstimated: 22500,
-    verificationToken: "AUTH-7429-9814",
-    status: "delivered_verified",
-    ngoRating: 5.0,
-    ngoFeedback: "খাবার পুরোপুরি গরম অবস্থায় পাওয়া গেছে। এতিমখানার শিশুরা আনন্দিত।",
-  },
-  {
-    id: "rec-047",
-    missionNumber: "#REC-2026-047",
-    date: "০৪ নভেম্বর, ২০২৬",
-    time: "রাত ৯:৩০",
-    donorName: "Sultan's Dine - Gulshan 2",
-    donorArea: "রোড ১০৩, গুলশান-২",
-    ngoName: "বিদ্যানন্দ ফাউন্ডেশন মিরপুর শেল্টার",
-    ngoArea: "মিরপুর-১২ ফুড সেন্টার",
-    foodTitle: "বাসমতি বিরিয়ানি ও বোরহানি",
-    quantity: "৬৫টি বক্স",
-    servings: 85,
-    distanceKm: 6.2,
-    durationMins: 29,
-    deliverySpeedNote: "২৯ মিনিট (সময়নিষ্ঠ)",
-    cargoTempHandover: 65,
-    foodValueSavedEstimated: 19200,
-    verificationToken: "AUTH-3419-5520",
-    status: "delivered_verified",
-    ngoRating: 5.0,
-    ngoFeedback: "প্যাকেজিং সিল সম্পূর্ণ অক্ষত এবং হাইজিন মান অসাধারণ ছিল।",
-  },
-  {
-    id: "rec-046",
-    missionNumber: "#REC-2026-046",
-    date: "০৩ নভেম্বর, ২০২৬",
-    time: "বিকেল ৫:১৫",
-    donorName: "Radisson Blu Water Garden",
-    donorArea: "এয়ারপোর্ট রোড, ঢাকা ক্যান্টনমেন্ট",
-    ngoName: "JAAGO Foundation Shelter",
-    ngoArea: "কড়াইল বস্তি এডুকেশনাল ক্যাম্প, বনানী",
-    foodTitle: "কন্টিনেন্টাল ব্যুফে ট্রে ও প্রিমিয়াম বেকারি",
-    quantity: "১১০ প্যাকেট",
-    servings: 140,
-    distanceKm: 5.1,
-    durationMins: 22,
-    deliverySpeedNote: "২২ মিনিট (দ্রুতগামী)",
-    cargoTempHandover: 24,
-    foodValueSavedEstimated: 32000,
-    verificationToken: "AUTH-8821-1204",
-    status: "delivered_verified",
-    ngoRating: 5.0,
-    ngoFeedback: "বিকেলের নাস্তা হিসেবে কড়াইল বস্তির শিশুদের মাঝে সুষ্ঠুভাবে বিতরণ সম্পন্ন হয়েছে।",
-  },
-  {
-    id: "rec-045",
-    missionNumber: "#REC-2026-045",
-    date: "০২ নভেম্বর, ২০২৬",
-    time: "রাত ১০:১০",
-    donorName: "Star Kabab & Restaurant",
-    donorArea: "সাতমসজিদ রোড, ধানমন্ডি",
-    ngoName: "Al-Markazul Relief Unit",
-    ngoArea: "লালবাগ কমিউনিটি সেন্টার, পুরান ঢাকা",
-    foodTitle: "পরোটা, স্পেশাল বিফ ভুনা ও ডাল গোশত",
-    quantity: "৪৫ বক্স",
-    servings: 60,
-    distanceKm: 4.2,
-    durationMins: 21,
-    deliverySpeedNote: "২১ মিনিট (অন-টাইম)",
-    cargoTempHandover: 64,
-    foodValueSavedEstimated: 12500,
-    verificationToken: "AUTH-9912-4012",
-    status: "delivered_verified",
-    ngoRating: 4.9,
-    ngoFeedback: "অত্যন্ত দ্রুত ডেলিভারি। রাত ১১টার পূর্বেই সুবিধাবঞ্চিতদের পাতে খাবার পৌঁছেছে।",
-  },
-  {
-    id: "rec-044",
-    missionNumber: "#REC-2026-044",
-    date: "০১ নভেম্বর, ২০২৬",
-    time: "রাত ৯:৫০",
-    donorName: "Kacchi Bhai - Mirpur 10",
-    donorArea: "মিরপুর-১০ গোলচত্বর",
-    ngoName: "শিশু বিকাশ কেন্দ্র",
-    ngoArea: "কল্যাণপুর বস্তি এলাকা",
-    foodTitle: "বিফ তেহারি ও শাহি ফিরনি ট্রে",
-    quantity: "৭০ প্যাকেট",
-    servings: 90,
-    distanceKm: 3.8,
-    durationMins: 18,
-    deliverySpeedNote: "১৮ মিনিট (দ্রুততম)",
-    cargoTempHandover: 62,
-    foodValueSavedEstimated: 16500,
-    verificationToken: "AUTH-5192-3318",
-    status: "delivered_verified",
-    ngoRating: 5.0,
-    ngoFeedback: "চমৎকার সময়নিষ্ঠতা। ভলান্টিয়ার তানভীরের ভদ্র ব্যবহার প্রশংসনীয়।",
-  },
-  {
-    id: "rec-043",
-    missionNumber: "#REC-2026-043",
-    date: "৩১ অক্টোবর, ২০২৬",
-    time: "রাত ৮:৪০",
-    donorName: "North End Coffee Roasters & Cafe",
-    donorArea: "রোড ১১, বনানী",
-    ngoName: "Prochesta Foundation",
-    ngoArea: "মহাখালী রেলগেট সংলগ্ন বস্তি",
-    foodTitle: "স্পেশাল ফ্রাইড রাইস ও গ্রিল্ড চিকেন",
-    quantity: "৫০ বক্স",
-    servings: 65,
-    distanceKm: 3.2,
-    durationMins: 15,
-    deliverySpeedNote: "১৫ মিনিট (সুপার ফাস্ট)",
-    cargoTempHandover: 61,
-    foodValueSavedEstimated: 15000,
-    verificationToken: "AUTH-1102-7741",
-    status: "delivered_verified",
-    ngoRating: 5.0,
-    ngoFeedback: "নির্ধারিত সময়ের ১০ মিনিট পূর্বেই খাবার পৌঁছেছে।",
-  },
-];
-
 export const INITIAL_PROFILE: VolunteerSquadProfile = {
-  id: "VOL-BD-7429",
-  fullName: "তানভীর আহমেদ",
-  role: "র‍্যাপিড রেসকিউ রাইডার (গোল্ড স্কোয়াড)",
-  squadRank: "গোল্ড স্কোয়াড #০৩",
-  squadBadge: "Dhaka North Rapid Elite",
-  avatarInitials: "TA",
-  bloodGroup: "B+ (Positive)",
-  phone: "+880 1712-345678",
-  emergencyContact: "+880 1812-987654 (পিতা)",
-  universityAffiliation: "ইউআইইউ ভলান্টিয়ার উইং (UIU Social Services Club)",
-  vehicleType: "মোটরসাইকেল (হোন্ডা সিবিএফ ১৫০)",
-  vehicleRegNo: "ঢাকা মেট্রো ল-৪৫-৬৭৮৯",
-  bfsaCertificationId: "BFSA-CERT-2026-L2-984",
-  rating: 4.95,
-  reviewsCount: 52,
-  totalRescuedMeals: 3420,
-  completedMissions: 48,
-  onTimeRate: 99.4,
-  joinedDate: "১৫ জানুয়ারি, ২০২৬",
+  id: "", fullName: "Volunteer", role: "", squadRank: "", squadBadge: "", avatarInitials: "V",
+  bloodGroup: "Not provided", phone: "", emergencyContact: "Not provided", universityAffiliation: "Volunteer account",
+  vehicleType: "", vehicleRegNo: "Not provided", bfsaCertificationId: "Not provided", rating: 0, reviewsCount: 0,
+  totalRescuedMeals: 0, completedMissions: 0, onTimeRate: 0, joinedDate: "",
 };
 
 export interface VolunteerStoreData {
   dutyStatus: DutyStatus;
+  dutyReady: boolean;
+  dutySaving: boolean;
+  dutyError: string | null;
+  dutyVersion: number;
+  dutyHasActiveMission: boolean;
+  canGoOnDuty: boolean;
   sessionStartTime: number | null;
   activeMission: VolunteerMission | null;
   dispatches: AvailableDispatch[];
@@ -303,104 +47,39 @@ export interface VolunteerStoreData {
   };
 }
 
-function getAuthSessionUser(): { email?: string; displayName?: string } | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw =
-      localStorage.getItem("sharebite.mock-auth.remembered") ||
-      sessionStorage.getItem("sharebite.mock-auth.session");
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return null;
-}
 
 type Listener = () => void;
 
 class VolunteerStore {
   private state: VolunteerStoreData = {
-    dutyStatus: "online",
-    sessionStartTime: Date.now() - 3600_000 * 1.5, // 1h 30m active by default
+    dutyStatus: "offline",
+    dutyReady: false,
+    dutySaving: false,
+    dutyError: null,
+    dutyVersion: -1,
+    dutyHasActiveMission: false,
+    canGoOnDuty: false,
+    sessionStartTime: null,
     activeMission: null,
-    dispatches: INITIAL_DISPATCHES,
+    dispatches: [],
     completedHistory: [],
     profile: INITIAL_PROFILE,
     sosDelayAlert: null,
     telemetry: {
-      speed: 28,
-      cargoTemp: 64,
-      batteryLevel: 88,
-      gpsStatus: "ঢাকা মেট্রো লাইভ জিপিএস (±৩ মি)",
-      currentZone: "মাদানী এভিনিউ ও হাতিরঝিল রুট",
+      speed: 0,
+      cargoTemp: 0,
+      batteryLevel: 0,
+      gpsStatus: "GPS is not connected",
+      currentZone: "Location not measured",
     },
   };
 
   private listeners = new Set<Listener>();
+  private userId?: string;
 
-  constructor() {
-    if (typeof window !== "undefined") {
-      try {
-        const sessionUser = getAuthSessionUser();
-        const isDemo = !sessionUser?.email || sessionUser.email.toLowerCase().includes("sharebite.demo");
-        const isRakib = sessionUser?.email === "rider@gmail.com" || Boolean(sessionUser?.displayName?.toLowerCase().includes("rakib"));
 
-        if (!isDemo && sessionUser?.email) {
-          // Real registered user session (e.g. Rider Rakib)
-          const userKey = `sharebite_volunteer_v2_${sessionUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
-          const saved = localStorage.getItem(userKey);
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            this.state = {
-              ...this.state,
-              ...parsed,
-            };
-          } else {
-            // Fresh account state: 0 fake missions
-            this.state = {
-              ...this.state,
-              activeMission: null,
-              completedHistory: [],
-              profile: {
-                ...INITIAL_PROFILE,
-                id: isRakib ? "VOL-BD-0181" : `VOL-BD-${Math.floor(1000 + Math.random() * 9000)}`,
-                fullName: sessionUser.displayName || (isRakib ? "Rider Rakib" : "স্বেচ্ছাসেবক রাইডার"),
-                phone: isRakib ? "01810394869" : "+880 1810-000000",
-                universityAffiliation: isRakib ? "বাড্ডা মেট্রো ভলান্টিয়ার উইং (Club Service)" : "ঢাকা সিভিক ভলান্টিয়ার স্কোয়াড",
-                vehicleType: isRakib ? "মোটরসাইকেল" : "বাইসাইকেল",
-                squadRank: "নবাগত রাইডার স্কোয়াড",
-                squadBadge: "Dhaka Metro Volunteer",
-                avatarInitials: (sessionUser.displayName || "RR").split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "RR",
-                totalRescuedMeals: 0,
-                completedMissions: 0,
-                rating: 5.0,
-                reviewsCount: 0,
-                onTimeRate: 100,
-                joinedDate: "১২ নভেম্বর, ২০২৬",
-              },
-            };
-          }
-        } else {
-          // Demo account fallback with showcase records
-          const saved = localStorage.getItem("sharebite_volunteer_v2_store");
-          if (saved) {
-            const parsed = JSON.parse(saved);
-            this.state = {
-              ...this.state,
-              ...parsed,
-            };
-          } else {
-            this.state = {
-              ...this.state,
-              activeMission: INITIAL_ACTIVE_MISSION,
-              completedHistory: INITIAL_COMPLETED_MISSIONS,
-              profile: INITIAL_PROFILE,
-            };
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-  }
+  private readonly initialSnapshot = this.state;
+  getServerSnapshot = () => this.initialSnapshot;
 
   getSnapshot = (): VolunteerStoreData => {
     return this.state;
@@ -414,482 +93,155 @@ class VolunteerStore {
   };
 
   private notify() {
-    if (typeof window !== "undefined") {
-      try {
-        const sessionUser = getAuthSessionUser();
-        const isDemo = !sessionUser?.email || sessionUser.email.toLowerCase().includes("sharebite.demo");
-        const key = !isDemo && sessionUser?.email
-          ? `sharebite_volunteer_v2_${sessionUser.email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`
-          : "sharebite_volunteer_v2_store";
-
-        localStorage.setItem(
-          key,
-          JSON.stringify({
-            dutyStatus: this.state.dutyStatus,
-            sessionStartTime: this.state.sessionStartTime,
-            activeMission: this.state.activeMission,
-            completedHistory: this.state.completedHistory,
-            profile: this.state.profile,
-          })
-        );
-      } catch {
-        // ignore
-      }
-    }
     this.listeners.forEach((listener) => listener());
   }
 
-  syncWithUserSession = (email?: string, displayName?: string) => {
-    if (!email) return;
-    const isDemo = email.toLowerCase().includes("sharebite.demo");
-    const isRakib = email.toLowerCase() === "rider@gmail.com" || Boolean(displayName && displayName.toLowerCase().includes("rakib"));
-
-    if (!isDemo) {
-      const userKey = `sharebite_volunteer_v2_${email.toLowerCase().replace(/[^a-z0-9]/g, "_")}`;
-      let userSaved: Partial<VolunteerStoreData> | null = null;
-      if (typeof window !== "undefined") {
-        try {
-          const raw = localStorage.getItem(userKey);
-          if (raw) userSaved = JSON.parse(raw);
-        } catch {}
-      }
-
-      const realProfile: VolunteerSquadProfile = {
-        id: isRakib ? "VOL-BD-0181" : `VOL-BD-${Math.floor(1000 + Math.random() * 9000)}`,
-        fullName: displayName || (isRakib ? "Rider Rakib" : "স্বেচ্ছাসেবক রাইডার"),
-        role: "র‍্যাপিড রেসকিউ রাইডার (অ্যাক্টিভ)",
-        squadRank: "নবাগত রাইডার স্কোয়াড",
-        squadBadge: "Dhaka North Volunteer",
-        avatarInitials: (displayName || "RR").split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "RR",
-        bloodGroup: isRakib ? "B+ (Positive)" : "O+",
-        phone: isRakib ? "01810394869" : "+880 1810-000000",
-        emergencyContact: "+880 1812-987654",
-        universityAffiliation: isRakib ? "বাড্ডা মেট্রো ভলান্টিয়ার উইং (Club Service)" : "ঢাকা সিভিক ভলান্টিয়ার স্কোয়াড",
-        vehicleType: isRakib ? "মোটরসাইকেল" : "বাইসাইকেল",
-        vehicleRegNo: isRakib ? "ঢাকা মেট্রো ল-৪৫-৬৭৮৯" : "রেজিস্টার্ড বাইক",
-        bfsaCertificationId: "BFSA-CERT-2026-REG",
-        rating: 5.0,
-        reviewsCount: 0,
-        totalRescuedMeals: 0,
-        completedMissions: 0,
-        onTimeRate: 100,
-        joinedDate: "১২ নভেম্বর, ২০২৬",
-        ...(userSaved?.profile || {}),
-      };
-
-      this.state = {
-        ...this.state,
-        activeMission: userSaved?.activeMission ?? null,
-        completedHistory: userSaved?.completedHistory ?? [],
-        profile: realProfile,
-        dutyStatus: userSaved?.dutyStatus ?? "online",
-      };
-      this.notify();
-    }
-  };
-
-  toggleDutyStatus = () => {
-    const nextDuty: DutyStatus = this.state.dutyStatus === "online" ? "offline" : "online";
-    this.state = {
-      ...this.state,
-      dutyStatus: nextDuty,
-      sessionStartTime: nextDuty === "online" ? Date.now() : null,
-    };
-    this.notify();
-
-    if (nextDuty === "online") {
-      void createRealNotification({
-        title: "রাইডার সেশন সক্রিয় হয়েছে 🛵",
-        message: "আপনি অন-ডিউটিতে সক্রিয় আছেন। লাইভ জিপিএস ও টেলিমেট্রি চালু হয়েছে।",
-        href: "/volunteer/dashboard",
-        type: "VOLUNTEER",
-        role: "VOLUNTEER",
-      });
-    } else {
-      void createRealNotification({
-        title: "রাইডার অফলাইন (ডিউটি বিরতি) ⏸️",
-        message: "আপনার রাইডার শিফট সাময়িকভাবে বন্ধ করা হয়েছে। সুস্থ থাকুন ও বিশ্রাম নিন।",
-        href: "/volunteer/dashboard",
-        type: "SYSTEM",
-        role: "VOLUNTEER",
-      });
-    }
-  };
-
-  setDutyStatus = (status: DutyStatus) => {
-    if (this.state.dutyStatus === status) return;
-    this.state = {
-      ...this.state,
-      dutyStatus: status,
-      sessionStartTime: status === "online" ? Date.now() : null,
-    };
+  resetForUser = (userId?: string) => {
+    if (this.userId === userId) return;
+    this.userId = userId;
+    this.state = { ...this.initialSnapshot, profile: { ...INITIAL_PROFILE } };
     this.notify();
   };
 
-  fetchDispatches = async (): Promise<AvailableDispatch[]> => {
-    if (typeof window === "undefined") return this.state.dispatches;
+  private currentUser() {
+    const userId = getClientSession()?.id;
+    if (!userId) throw new Error("Please log in to continue.");
+    this.resetForUser(userId);
+    return userId;
+  }
+
+  private isCurrentUser(userId: string) {
+    return this.userId === userId && getClientSession()?.id === userId;
+  }
+
+  private applyDuty(duty: VolunteerDuty, userId: string) {
+    if (!this.isCurrentUser(userId) || duty.volunteerProfileId !== getClientSession()?.volunteerProfileId || duty.version < this.state.dutyVersion) return;
+    this.state = { ...this.state, dutyStatus: duty.isOnDuty ? "online" : "offline", dutyReady: true,
+      dutyVersion: duty.version, dutyHasActiveMission: duty.hasActiveMission, canGoOnDuty: duty.canGoOnDuty, sessionStartTime: duty.startedAt ? Date.parse(duty.startedAt) : null };
+  }
+
+  refreshDuty = async () => {
+    const userId = this.currentUser();
     try {
-      const res = await fetch("/api/dispatches");
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.dispatches) && data.dispatches.length > 0) {
-          this.state = {
-            ...this.state,
-            dispatches: data.dispatches,
-          };
-          this.notify();
-          return data.dispatches;
-        }
-      }
-    } catch {
-      // ignore
+      const { duty } = await apiRequest<{ duty: VolunteerDuty }>("/api/volunteer/duty");
+      if (!this.isCurrentUser(userId)) return;
+      this.applyDuty(duty, userId);
+      this.state = { ...this.state, dutyError: null };
+    } catch (error) {
+      if (!this.isCurrentUser(userId)) return;
+      this.state = { ...this.state, dutyError: error instanceof Error ? error.message : "Duty status could not load. Try again." };
     }
+    this.notify();
+  };
+
+  syncWithUserSession = async (email?: string, displayName?: string, signal?: AbortSignal) => {
+    void email; void displayName;
+    const userId = this.currentUser();
+    const bundle = await profileService.getOwnProfile("", {}, { signal });
+    const volunteer = bundle.volunteerProfile;
+    if (!volunteer || signal?.aborted || !this.isCurrentUser(userId) || bundle.user.id !== userId) return;
+    const user = bundle.user;
+    this.state = { ...this.state, profile: {
+      ...INITIAL_PROFILE, id: volunteer.id, fullName: user.displayName, phone: user.phone || "",
+      avatarInitials: user.displayName.split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase(),
+      role: volunteer.verificationStatus === "VERIFIED" ? "Verified volunteer" : "Verification pending",
+      vehicleType: volunteer.transportMethod, completedMissions: volunteer.completedRescues,
+      joinedDate: new Intl.DateTimeFormat(getUiLocale(), { timeZone: "Asia/Dhaka", dateStyle: "medium" }).format(new Date(user.createdAt)),
+    } };
+    this.notify();
+    await this.fetchDispatches(signal);
+  };
+
+  setDutyStatus = async (status: DutyStatus) => {
+    const userId = this.currentUser();
+    if (!this.state.dutyReady || this.state.dutySaving || this.state.dutyStatus === status) return;
+    this.state = { ...this.state, dutySaving: true, dutyError: null };
+    this.notify();
+    try {
+      const { duty } = await apiRequest<{ duty: VolunteerDuty }>("/api/volunteer/duty", { method: "PATCH", body: JSON.stringify({ isOnDuty: status === "online" }) });
+      if (!this.isCurrentUser(userId)) return;
+      this.applyDuty(duty, userId);
+      if (typeof BroadcastChannel !== "undefined") {
+        const channel = new BroadcastChannel("sharebite-volunteer-duty");
+        channel.postMessage({ userId });
+        channel.close();
+      }
+    } catch (error) {
+      if (!this.isCurrentUser(userId)) return;
+      this.state = { ...this.state, dutyError: error instanceof Error ? error.message : "Duty status could not be saved. Try again." };
+    } finally {
+      if (this.isCurrentUser(userId)) {
+        this.state = { ...this.state, dutySaving: false };
+        this.notify();
+      }
+    }
+  };
+
+  fetchDispatches = async (signal?: AbortSignal): Promise<AvailableDispatch[]> => {
+    const userId = this.currentUser();
+    const [dispatches, missions] = await Promise.all([
+      apiRequest<{ dispatches: AvailableDispatch[]; duty: VolunteerDuty }>("/api/dispatches", { signal }),
+      apiRequest<{ activeMission: VolunteerMission | null; completedHistory: CompletedMissionRecord[]; completedRescues: number }>("/api/missions", { signal }),
+    ]);
+    if (signal?.aborted || !this.isCurrentUser(userId) || dispatches.duty.volunteerProfileId !== getClientSession()?.volunteerProfileId) return [];
+    this.applyDuty(dispatches.duty, userId);
+    const previous = this.state.activeMission;
+    let active = missions.activeMission;
+    if (active && previous?.id === active.id && Date.parse(previous.updatedAt ?? "") > Date.parse(active.updatedAt ?? "")) active = previous;
+    if (!active && previous?.currentStage === "completed" && missions.completedHistory.some((item) => item.id === previous.claimId && item.status === "delivered_verified")) active = previous;
+    this.state = { ...this.state, dispatches: dispatches.dispatches, activeMission: active, completedHistory: missions.completedHistory,
+      profile: { ...this.state.profile, completedMissions: missions.completedRescues, totalRescuedMeals: missions.completedHistory.reduce((n, m) => n + m.servings, 0) } };
+    this.notify();
     return this.state.dispatches;
   };
 
-  acceptDispatch = (dispatchId: string): VolunteerMission => {
-    const dispatch = this.state.dispatches.find((d: AvailableDispatch) => d.id === dispatchId);
-    if (!dispatch) throw new Error("Dispatch not found");
-
-    const newMission: VolunteerMission = {
-      id: `mission-${dispatch.id}`,
-      claimId: dispatch.claimId,
-      donorName: dispatch.donorName,
-      donorAddress: dispatch.donorArea,
-      donorArea: dispatch.donorArea,
-      donorPhone: dispatch.donorPhone,
-      donorContact: dispatch.donorContact,
-      ngoName: dispatch.ngoName,
-      ngoAddress: dispatch.ngoArea,
-      ngoArea: dispatch.ngoArea,
-      ngoPhone: dispatch.ngoPhone,
-      ngoContact: dispatch.ngoContact,
-      foodTitle: dispatch.foodType,
-      quantity: dispatch.quantity,
-      servings: dispatch.servings,
-      storageCondition: dispatch.storageCondition,
-      safeDeadline: `পরবর্তী ${dispatch.expiresInMins} মিনিট`,
-      distanceKm: dispatch.distanceKm,
-      estimatedTimeMins: Math.round(dispatch.distanceKm * 4),
-      currentStage: "assigned",
-      pickupOtp: dispatch.pickupOtp || "7429",
-      dropoffOtp: dispatch.dropoffOtp || "9814",
-      cargoTemp: 65,
-      riderSpeed: 30,
-      urgency: dispatch.urgency,
-      assignedAt: "এখনই বরাদ্দকৃত",
-      routeStops: {
-        pickup: dispatch.donorArea,
-        expressway: "ঢাকা মেট্রো মেইন এক্সপ্রেসওয়ে",
-        dropoff: dispatch.ngoArea,
-      },
-    };
-
-    this.state = {
-      ...this.state,
-      activeMission: newMission,
-      dispatches: this.state.dispatches.filter((d: AvailableDispatch) => d.id !== dispatchId),
-    };
+  loadMission = async (missionId: string, signal?: AbortSignal) => {
+    const userId = this.currentUser();
+    const claimId = missionId.startsWith("mission-") ? missionId.slice(8) : missionId;
+    const data = await apiRequest<{ mission: VolunteerMission }>(`/api/missions?claimId=${encodeURIComponent(claimId)}`, { signal });
+    if (signal?.aborted || !this.isCurrentUser(userId)) return;
+    if (this.state.activeMission?.id === data.mission.id && Date.parse(this.state.activeMission.updatedAt ?? "") > Date.parse(data.mission.updatedAt ?? "")) return;
+    this.state = { ...this.state, activeMission: data.mission };
     this.notify();
+  };
 
-    // Persist assignment to real database via /api/dispatches POST
+  acceptDispatch = async (dispatchId: string): Promise<VolunteerMission> => {
+    this.currentUser();
+    if (!this.state.dutyReady || this.state.dutySaving || this.state.dutyStatus !== "online") throw new Error("Turn duty ON before accepting a new mission.");
+    if (!this.state.canGoOnDuty) throw new Error("Volunteer verification is required before going on duty.");
+    const dispatch = this.state.dispatches.find((d) => d.id === dispatchId);
+    if (!dispatch?.claimId) throw new Error("Dispatch not found.");
+    try { await apiRequest("/api/dispatches", { method: "POST", body: JSON.stringify({ claimId: dispatch.claimId }) }); }
+    catch (error) { await this.refreshDuty(); throw error; }
+    await this.fetchDispatches();
+    if (!this.state.activeMission) throw new Error("The assigned mission could not be loaded. Refresh the page.");
+    return this.state.activeMission;
+  };
+
+  advanceStage = async (nextStage: MissionStage) => {
+    const mission = this.state.activeMission;
+    if (!mission?.claimId) throw new Error("Load your assigned mission first.");
+    if (mission.incidentPaused) throw new Error("This rescue is paused for incident review.");
+    await apiRequest("/api/missions", { method: "PATCH", body: JSON.stringify({ claimId: mission.claimId, stage: nextStage }) });
+    await this.loadMission(mission.id);
+  };
+
+  verifyOtp = async (inputPin: string): Promise<{ success: boolean; message: string }> => {
+    const mission = this.state.activeMission;
+    if (!mission?.claimId || mission.currentStage === "completed") return { success: false, message: "No active handover." };
+    if (mission.incidentPaused) return { success: false, message: "This rescue is paused for incident review." };
     try {
-      fetch("/api/dispatches", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dispatchId: dispatch.id,
-          claimId: dispatch.claimId,
-          donationId: dispatch.donationId,
-          volunteerId: this.state.profile.id,
-          volunteerName: this.state.profile.fullName,
-          volunteerPhone: this.state.profile.phone,
-        }),
-      }).catch(() => null);
-    } catch {
-      // non-blocking
-    }
-
-    return newMission;
-  };
-
-  advanceStage = (nextStage: MissionStage) => {
-    const mission = this.state.activeMission;
-    if (!mission) return;
-
-    const updatedMission: VolunteerMission = {
-      ...mission,
-      currentStage: nextStage,
-    };
-
-    if (nextStage === "completed") {
-      const newHistoryItem: CompletedMissionRecord = {
-        id: `rec-${Date.now()}`,
-        missionNumber: `#REC-2026-0${this.state.completedHistory.length + 1}`,
-        date: "০৫ নভেম্বর, ২০২৬",
-        time: "এখনই সম্পন্ন",
-        donorName: mission.donorName,
-        donorArea: mission.donorArea,
-        ngoName: mission.ngoName,
-        ngoArea: mission.ngoArea,
-        foodTitle: mission.foodTitle,
-        quantity: mission.quantity,
-        servings: mission.servings,
-        distanceKm: mission.distanceKm,
-        durationMins: mission.estimatedTimeMins,
-        deliverySpeedNote: `${mission.estimatedTimeMins} মিনিট (সময়নিষ্ঠ)`,
-        cargoTempHandover: mission.cargoTemp,
-        foodValueSavedEstimated: mission.servings * 200,
-        verificationToken: `AUTH-${mission.pickupOtp}-${mission.dropoffOtp}`,
-        status: "delivered_verified",
-        ngoRating: 5.0,
-        ngoFeedback: "খাদ্য সুরক্ষা মান ও তাপমাত্রা পুরোপুরি অক্ষত অবস্থায় পাওয়া গেছে।",
-      };
-
-      this.state = {
-        ...this.state,
-        activeMission: updatedMission,
-        completedHistory: [newHistoryItem, ...this.state.completedHistory],
-        profile: {
-          ...this.state.profile,
-          totalRescuedMeals: this.state.profile.totalRescuedMeals + mission.servings,
-          completedMissions: this.state.profile.completedMissions + 1,
-        },
-      };
-    } else {
-      this.state = {
-        ...this.state,
-        activeMission: updatedMission,
-      };
-    }
-    this.notify();
-  };
-
-  verifyOtp = (inputPin: string): { success: boolean; message: string } => {
-    const mission = this.state.activeMission;
-    if (!mission) return { success: false, message: "কোনো সক্রিয় মিশন পাওয়া যায়নি।" };
-
-    const isPickupPhase =
-      mission.currentStage === "assigned" ||
-      mission.currentStage === "en_route_pickup" ||
-      mission.currentStage === "at_pickup";
-
-    const isDropoffPhase =
-      mission.currentStage === "cargo_loaded" ||
-      mission.currentStage === "en_route_dropoff";
-
-    const cleanPin = inputPin.trim();
-
-    // PHASE 1: PICKUP VERIFICATION (Donor -> Rider)
-    if (isPickupPhase) {
-      const expectedPickupPin = mission.pickupOtp || "7429";
-      if (cleanPin === expectedPickupPin || cleanPin === "7429") {
-        this.advanceStage("cargo_loaded");
-
-        // Sync platform state to PICKED_UP
-        try {
-          fetch("/api/claims", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: mission.claimId || "clm_mwd36f4j_kr5h",
-              status: "PICKED_UP",
-              volunteerId: this.state.profile.id,
-              volunteerName: this.state.profile.fullName,
-            }),
-          }).catch(() => null);
-
-          fetch("/api/donations", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: "don_rec-2",
-              status: "PICKED_UP",
-            }),
-          }).catch(() => null);
-
-          mockAppStore.update((s) => ({
-            ...s,
-            claims: s.claims.map((c) =>
-              c.status === ClaimStatus.RESERVED || c.status === ClaimStatus.ASSIGNED
-                ? { ...c, status: ClaimStatus.PICKED_UP, pickedUpAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
-                : c
-            ),
-            donations: s.donations.map((d) =>
-              d.status === DonationStatus.RESERVED || d.status === DonationStatus.ASSIGNED
-                ? { ...d, status: DonationStatus.PICKED_UP, updatedAt: new Date().toISOString() }
-                : d
-            ),
-          }));
-        } catch {
-          // non-blocking
-        }
-
-        // Real notifications for Pickup Verification
-        void createRealNotification({
-          title: "খাদ্য পিকআপ সম্পন্ন হয়েছে! 🛵",
-          message: "ভলান্টিয়ার রাইডার সফলভাবে খাদ্য সংগ্রহ করেছেন। এনজিও ড্রপঅফ লোকেশনের দিকে রওনা হয়েছেন।",
-          href: "/donor/donations",
-          type: "PICKUP",
-          role: "DONOR",
-        });
-
-        void createRealNotification({
-          title: "রাইডার খাদ্য সংগ্রহ করেছেন!",
-          message: "ভলান্টিয়ার রাইডার সফলভাবে খাদ্য তুলেছেন এবং এনজিও সেন্টারের উদ্দেশ্যে ট্রানজিটে আছেন।",
-          href: "/ngo/claims",
-          type: "PICKUP",
-          role: "NGO",
-        });
-
-        void createRealNotification({
-          title: "পিকআপ সফল হয়েছে!",
-          message: "ইনসুলেটেড ব্যাগে খাবার সুরক্ষিত রাখুন। ড্রপঅফে পৌঁছে ডেলিভারি ওটিপি: ৯৮১৪ যাচাই করুন।",
-          href: "/volunteer/dashboard",
-          type: "PICKUP",
-          role: "VOLUNTEER",
-        });
-
-        triggerCelebration({
-          title: "পিকআপ ওটিপি সফলভাবে যাচাই হয়েছে!",
-          message: "খাবার নিরাপদে ব্যাগে সংগ্রহ ও সিল করা হয়েছে। এবার ম্যাপ দেখে ড্রপ-অফ শেল্টারের উদ্দেশ্যে রওনা দিন।",
-          badge: "পিকআপ ওটিপি #৭৪২৯ ভেরিফায়েড",
-          type: "SUCCESS",
-          actionLabel: "ডেলিভারি শুরু করুন",
-        });
-
-        return {
-          success: true,
-          message: "পিকআপ সফল! খাবার কার্গো ব্যাগে সিল করা হয়েছে। এবার শেল্টারের উদ্দেশ্যে রওনা দিন।",
-        };
-      } else if (cleanPin === mission.dropoffOtp || cleanPin === "9814") {
-        return {
-          success: false,
-          message: "এটি ডেলিভারি ড্রপ-অফ কোড! আগে ডোনারের কাছ থেকে ৪-সংখ্যার পিকআপ ওটিপি (৭৪২৯) দিয়ে খাবার সংগ্রহ করুন।",
-        };
-      } else {
-        return {
-          success: false,
-          message: "ভুল পিকআপ ওটিপি! ডোনারের স্ক্রিনে প্রদর্শিত ৪-ডিজিটের কোডটি (৭৪২৯) প্রবেশ করান।",
-        };
-      }
-    }
-
-    // PHASE 2: DROPOFF VERIFICATION (Rider -> NGO)
-    if (isDropoffPhase) {
-      const expectedDropoffPin = mission.dropoffOtp || "9814";
-      if (cleanPin === expectedDropoffPin || cleanPin === "9814") {
-        this.advanceStage("completed");
-
-        // Sync platform state to DELIVERED
-        try {
-          fetch("/api/claims", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: mission.claimId || "clm_mwd36f4j_kr5h",
-              status: "DELIVERED",
-              volunteerId: this.state.profile.id,
-              volunteerName: this.state.profile.fullName,
-            }),
-          }).catch(() => null);
-
-          fetch("/api/donations", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: "don_rec-2",
-              status: "DELIVERED",
-            }),
-          }).catch(() => null);
-
-          mockAppStore.update((s) => ({
-            ...s,
-            claims: s.claims.map((c) =>
-              c.status === ClaimStatus.PICKED_UP
-                ? { ...c, status: ClaimStatus.DELIVERED, deliveredAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
-                : c
-            ),
-            donations: s.donations.map((d) =>
-              d.status === DonationStatus.PICKED_UP
-                ? { ...d, status: DonationStatus.DELIVERED, updatedAt: new Date().toISOString() }
-                : d
-            ),
-          }));
-        } catch {
-          // non-blocking
-        }
-
-        // Real notifications for Drop-off Verification
-        void createRealNotification({
-          title: "খাদ্য বিতরণ ও মিশন সফল! 🎉",
-          message: "আপনার দান করা খাবার নিরাপদে গন্তব্যে পৌঁছে গেছে। অসংখ্য মানুষের মুখে হাসি ফোটানোর জন্য ধন্যবাদ!",
-          href: "/donor/donations",
-          type: "DELIVERY",
-          role: "DONOR",
-        });
-
-        void createRealNotification({
-          title: "খাদ্য ড্রপ-অফ সফলভাবে সম্পন্ন! 📦",
-          message: "রাইডার খাদ্য সেন্টারে পৌঁছে দিয়েছেন। এবার সুবিধাবঞ্চিতদের মাঝে বিতরণ সম্পন্ন করুন।",
-          href: "/ngo/claims",
-          type: "DELIVERY",
-          role: "NGO",
-        });
-
-        void createRealNotification({
-          title: "রেসকিউ মিশন সম্পূর্ণ! 🌟",
-          message: "অভিনন্দন! আপনি সফলভাবে খাদ্য উদ্ধার ও সুবিধাবঞ্চিত মানুষের সেবায় ভূমিকা রাখলেন। +৫০ পয়েন্ট যোগ হয়েছে!",
-          href: "/volunteer/dashboard",
-          type: "DELIVERY",
-          role: "VOLUNTEER",
-        });
-
-        triggerCelebration({
-          title: "রেসকিউ মিশন সম্পূর্ণ! 🌟",
-          message: "অভিনন্দন! আপনি সফলভাবে খাদ্য উদ্ধার ও সুবিধাবঞ্চিত মানুষের সেবায় ভূমিকা রাখলেন।",
-          badge: "+৫০ গ্রিন পয়েন্ট যোগ হয়েছে",
-          type: "COMPLETE",
-          actionLabel: "অসাধারণ! সম্পন্ন",
-        });
-
-        return { success: true, message: "ডেলিভারি ওটিপি সফলভাবে যাচাই হয়েছে! মিশন সফলভাবে সম্পন্ন।" };
-      } else if (cleanPin === mission.pickupOtp || cleanPin === "7429") {
-        return {
-          success: false,
-          message: "পিকআপ ওটিপি ইতিমধ্যে যাচাই হয়েছে। এখন এনজিও সেন্টারের ৪-সংখ্যার ডেলিভারি ওটিপি (৯৮১৪) দিন।",
-        };
-      } else {
-        return {
-          success: false,
-          message: "ভুল ডেলিভারি ওটিপি! এনজিও প্রতিনিধির টার্মিনালের ৪-ডিজিটের কোডটি (৯৮১৪) প্রবেশ করান।",
-        };
-      }
-    }
-
-    if (mission.currentStage === "completed") {
-      return { success: false, message: "এই মিশনটি ইতিমধ্যে সফলভাবে সম্পন্ন হয়েছে।" };
-    }
-
-    return { success: false, message: "ভুল ওটিপি কোড! অনুগ্রহ করে সঠিক ৪-ডিজিট পিন দিন।" };
+      const kind = ["assigned", "en_route_pickup", "at_pickup"].includes(mission.currentStage) ? "PICKUP" : "DELIVERY";
+      await handoverService.verify(mission.claimId, kind, inputPin);
+      await this.fetchDispatches();
+      await this.loadMission(mission.id);
+      return { success: true, message: kind === "PICKUP" ? "Pickup verified. Food is now in transit." : "Delivery verified and saved." };
+    } catch (error) { return { success: false, message: error instanceof Error ? error.message : "Verification failed." }; }
   };
 
   broadcastSos = (reason: string, delayMins: number) => {
-    const mission = this.state.activeMission;
-    const alertMsg = `🚨 ট্রানজিট SOS প্রেরিত: ${reason}। বিলম্ব +${delayMins} মিনিট। এনজিও (${mission?.ngoName ?? "মাস্তুল"}) ও কন্ট্রোল রুমে লাইভ আপডেট পাঠানো হয়েছে।`;
-    this.state = {
-      ...this.state,
-      sosDelayAlert: alertMsg,
-    };
+    this.state = { ...this.state, sosDelayAlert: `SOS delivery is not connected. Contact the NGO directly. Your note: ${reason}; delay: ${delayMins} minutes.` };
     this.notify();
-
-    void createRealNotification({
-      title: "🚨 ট্রানজিট বিলম্ব ও জরুরি আপডেট!",
-      message: `রাইডার ট্রানজিটে বিলম্বের তথ্য জানিয়েছেন: ${reason} (বিলম্ব +${delayMins} মিনিট)।`,
-      href: "/ngo/claims",
-      type: "URGENT",
-      role: "NGO",
-    });
   };
 
   dismissSos = () => {
@@ -901,6 +253,7 @@ class VolunteerStore {
   };
 
   clearActiveMission = () => {
+    if (this.state.activeMission && this.state.activeMission.currentStage !== "completed") return;
     this.state = {
       ...this.state,
       activeMission: null,
@@ -908,13 +261,7 @@ class VolunteerStore {
     this.notify();
   };
 
-  loadDemoMission = () => {
-    this.state = {
-      ...this.state,
-      activeMission: INITIAL_ACTIVE_MISSION,
-    };
-    this.notify();
-  };
+
 }
 
 const volunteerStoreInstance = new VolunteerStore();
@@ -923,27 +270,13 @@ export function useVolunteerStore() {
   const storeData = useSyncExternalStore(
     volunteerStoreInstance.subscribe,
     volunteerStoreInstance.getSnapshot,
-    () => ({
-      dutyStatus: "online" as DutyStatus,
-      sessionStartTime: Date.now() - 3600_000 * 1.5,
-      activeMission: INITIAL_ACTIVE_MISSION,
-      dispatches: INITIAL_DISPATCHES,
-      completedHistory: INITIAL_COMPLETED_MISSIONS,
-      profile: INITIAL_PROFILE,
-      sosDelayAlert: null,
-      telemetry: {
-        speed: 28,
-        cargoTemp: 64,
-        batteryLevel: 88,
-        gpsStatus: "ঢাকা মেট্রো লাইভ জিপিএস (±৩ মি)",
-        currentZone: "মাদানী এভিনিউ ও হাতিরঝিল রুট",
-      },
-    })
+    volunteerStoreInstance.getServerSnapshot
   );
 
   return {
     ...storeData,
-    toggleDutyStatus: volunteerStoreInstance.toggleDutyStatus,
+    resetForUser: volunteerStoreInstance.resetForUser,
+    refreshDuty: volunteerStoreInstance.refreshDuty,
     setDutyStatus: volunteerStoreInstance.setDutyStatus,
     acceptDispatch: volunteerStoreInstance.acceptDispatch,
     advanceStage: volunteerStoreInstance.advanceStage,
@@ -951,8 +284,8 @@ export function useVolunteerStore() {
     broadcastSos: volunteerStoreInstance.broadcastSos,
     dismissSos: volunteerStoreInstance.dismissSos,
     clearActiveMission: volunteerStoreInstance.clearActiveMission,
-    loadDemoMission: volunteerStoreInstance.loadDemoMission,
     syncWithUserSession: volunteerStoreInstance.syncWithUserSession,
     fetchDispatches: volunteerStoreInstance.fetchDispatches,
+    loadMission: volunteerStoreInstance.loadMission,
   };
 }

@@ -1,3 +1,4 @@
+import type { Coordinates } from "@/types/domain";
 export type MissionStage =
   | "assigned"
   | "en_route_pickup"
@@ -35,6 +36,13 @@ export interface AvailableDispatch {
 }
 
 export interface VolunteerMission {
+  updatedAt?: string;
+  pickedUpAt?: string;
+  deliveredAt?: string;
+  pickupCoordinates?: Coordinates;
+  dropoffCoordinates?: Coordinates;
+  claimStatus?: string;
+  incidentPaused?: boolean;
   id: string;
   claimId?: string;
   donorName: string;

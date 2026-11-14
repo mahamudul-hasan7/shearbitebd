@@ -20,8 +20,6 @@ export function VolunteerNotifications() {
   return (
     <NotificationCenterView
       role="volunteer"
-      title="ভলান্টিয়ার অ্যালার্ট ও ডিসপ্যাচ কমান্ড"
-      description="নিকটস্থ এলাকার জরুরি খাদ্য উদ্ধার, পিকআপ উইন্ডো ও ডেলিভারি ওটিপির রিয়েল-টাইম নোটিফিকেশন।"
       profileName={volunteerName}
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={initials}

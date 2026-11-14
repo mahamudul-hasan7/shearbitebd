@@ -1,13 +1,17 @@
 import type { ReactNode } from "react";
 import { MockRouteGuard } from "@/features/auth/mock-route-guard";
 import { UserRole } from "@/lib/constants/roles";
-import { RiderSessionBar } from "@/features/volunteer-dashboard/rider-session-bar";
+import { requirePortalRole } from "@/lib/auth/server";
+import { VolunteerDutySync } from "@/features/volunteer-dashboard/volunteer-duty-sync";
+import { RiderIncomingOffer } from "@/features/volunteer-dashboard/rider-incoming-offer";
 
-export default function VolunteerLayout({ children }: { children: ReactNode }) {
+export default async function VolunteerLayout({ children }: { children: ReactNode }) {
+  await requirePortalRole(UserRole.VOLUNTEER);
   return (
     <MockRouteGuard allowedRole={UserRole.VOLUNTEER}>
       {children}
-      <RiderSessionBar />
+      <VolunteerDutySync />
+      <RiderIncomingOffer />
     </MockRouteGuard>
   );
 }

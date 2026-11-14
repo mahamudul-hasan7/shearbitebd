@@ -1,4 +1,7 @@
 "use client";
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { getUiLocale } from "@/lib/i18n/locale";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -39,15 +42,17 @@ import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function VolunteerHistoryView() {
+  const tx = useUiText();
   const { session } = useMockAuth();
   const { completedHistory, profile, syncWithUserSession } = useVolunteerStore();
+  const [loadError, setLoadError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArea, setSelectedArea] = useState<string>("all");
   const [selectedReceipt, setSelectedReceipt] = useState<CompletedMissionRecord | null>(null);
 
   useEffect(() => {
     if (session?.email) {
-      syncWithUserSession(session.email, session.displayName);
+      void syncWithUserSession(session.email, session.displayName).catch((error: Error) => setLoadError(error.message));
     }
   }, [session?.email, session?.displayName, syncWithUserSession]);
 
@@ -83,13 +88,13 @@ export function VolunteerHistoryView() {
     <PortalShell
       role="volunteer"
       activeHref={ROUTES.volunteer.history}
-      title="সম্পন্ন খাদ্য উদ্ধার মিশন হিস্ট্রি ও অডিট লগ"
-      description="আপনার পরিচালিত প্রতিটি রেসকিউ মিশনের পুঙ্খানুপুঙ্খ বিবরণ, রুট টাইম, থার্মাল তাপমাত্রা এবং ডিজিটাল রসিদ।"
+      title={tx("সম্পন্ন খাদ্য উদ্ধার মিশন হিস্ট্রি ও অডিট লগ")}
+      description={tx("Database-এ সংরক্ষিত verified delivery, সময় এবং NGO receipt-এর অবস্থা।")}
       profileName={profile.fullName}
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={profile.avatarInitials}
       backHref={ROUTES.volunteer.dashboard}
-      backLabel="কমান্ড হাবে ফিরুন"
+      backLabel={tx("কমান্ড হাবে ফিরুন")}
       actions={
         <div className="flex items-center gap-2">
           <Button
@@ -98,68 +103,59 @@ export function VolunteerHistoryView() {
             leftIcon={<Printer className="size-4" />}
             onClick={handlePrintSummary}
             className="font-bold shadow-md shadow-emerald-700/20"
-          >
-            অডিট রিপোর্ট প্রিন্ট করুন
-          </Button>
+          ><UiText source={"অডিট রিপোর্ট প্রিন্ট করুন"} /></Button>
         </div>
       }
     >
       <div className="space-y-7">
+        {loadError && <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-700">{loadError}</p>}
         {/* Top 4 Impact KPI Bento */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
             <div className="flex items-center gap-2 text-emerald-400">
               <Utensils className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">মোট উদ্ধারকৃত মিল</p>
+              <p className="text-[11px] font-black uppercase tracking-wider">{tx("মোট উদ্ধারকৃত মিল")}</p>
             </div>
             <p className="mt-2 text-2xl font-black text-white sm:text-3xl">
-              {totalServings.toLocaleString()}টি
-            </p>
+              {totalServings.toLocaleString(getUiLocale())}{tx("টি")}</p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {completedHistory.length > 0
-                ? `${completedHistory.length}টি সফল মিশনে প্রত্যক্ষ সুবিধাপ্রাপ্ত`
-                : "এখনো কোনো সম্পন্ন মিশন নেই"}
+              {completedHistory.length > 0 ? tx("{0}টি সফল মিশনে প্রত্যক্ষ সুবিধাপ্রাপ্ত", completedHistory.length) : tx("এখনো কোনো সম্পন্ন মিশন নেই")}
             </p>
           </div>
 
           <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
             <div className="flex items-center gap-2 text-emerald-400">
               <Coins className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">বাঁচানো খাবারের মূল্য</p>
+              <p className="text-[11px] font-black uppercase tracking-wider">{tx("বাঁচানো খাবারের মূল্য")}</p>
             </div>
             <p className="mt-2 text-2xl font-black text-amber-300 sm:text-3xl">
-              ৳{totalValueSaved.toLocaleString()}
+              {tx("৳")}{totalValueSaved.toLocaleString(getUiLocale())}
             </p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              খাদ্য অপচয় রোধকৃত বাজারমূল্য
-            </p>
+              {tx("খাদ্য অপচয় রোধকৃত বাজারমূল্য")}</p>
           </div>
 
           <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
             <div className="flex items-center gap-2 text-emerald-400">
               <Truck className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">মোট অতিক্রান্ত দূরত্ব</p>
+              <p className="text-[11px] font-black uppercase tracking-wider">{tx("মোট অতিক্রান্ত দূরত্ব")}</p>
             </div>
             <p className="mt-2 text-2xl font-black text-white sm:text-3xl">
-              {totalKm.toFixed(1)} কিমি
-            </p>
+              {totalKm.toFixed(1)} {tx("কিমি")}</p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              ঢাকা মেট্রো সিটি করিডোর জুড়ে
-            </p>
+              {tx("সংরক্ষিত endpoints-এর সরাসরি দূরত্বের যোগফল")}</p>
           </div>
 
           <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
             <div className="flex items-center gap-2 text-emerald-400">
               <Activity className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">গড় রেসকিউ সময়</p>
+              <p className="text-[11px] font-black uppercase tracking-wider">{tx("গড় রেসকিউ সময়")}</p>
             </div>
             <p className="mt-2 text-2xl font-black text-emerald-300 sm:text-3xl">
-              {completedHistory.length > 0 ? `${avgMins} মিনিট` : "নতুন রাইডার"}
+              {completedHistory.length > 0 ? tx("{0} মিনিট", avgMins) : tx("নতুন রাইডার")}
             </p>
             <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {completedHistory.length > 0
-                ? `সময়নিষ্ঠতা রেটিং: ${profile.onTimeRate}%`
-                : "স্ট্যান্ডার্ড অন-টাইম রেটিং: ১০০%"}
+              {tx("সময়নিষ্ঠতার rating মাপা হয়নি")}
             </p>
           </div>
         </div>
@@ -170,7 +166,7 @@ export function VolunteerHistoryView() {
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-400" />
             <input
               type="text"
-              placeholder="খাবারের নাম, রেস্তোরাঁ, এলাকা বা এনজিও নাম দিয়ে খুঁজুন..."
+              placeholder={tx("খাবারের নাম, রেস্তোরাঁ, এলাকা বা এনজিও নাম দিয়ে খুঁজুন...")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-10 w-full rounded-xl border border-line bg-white pl-10 pr-4 text-xs font-medium text-ink-900 placeholder:text-muted-400 focus:border-emerald-600 focus:outline-hidden"
@@ -183,18 +179,17 @@ export function VolunteerHistoryView() {
               onChange={(e) => setSelectedArea(e.target.value)}
               className="h-10 rounded-xl border border-line bg-white px-3 text-xs font-bold text-ink-900 focus:border-emerald-600 focus:outline-hidden"
             >
-              <option value="all">সকল এলাকা (Dhaka Metro)</option>
-              <option value="বাড্ডা">বাড্ডা / নতুন বাজার</option>
-              <option value="গুলশান">গুলশান / বনানী</option>
-              <option value="ধানমন্ডি">ধানমন্ডি ৩২</option>
-              <option value="মিরপুর">মিরপুর ১২ ও ১০</option>
-              <option value="ক্যান্টনমেন্ট">ঢাকা ক্যান্টনমেন্ট</option>
-              <option value="লালবাগ">পুরান ঢাকা / লালবাগ</option>
+              <option value="all">{tx("সকল এলাকা (Dhaka Metro)")}</option>
+              <option value="বাড্ডা">{tx("বাড্ডা / নতুন বাজার")}</option>
+              <option value="গুলশান">{tx("গুলশান / বনানী")}</option>
+              <option value="ধানমন্ডি">{tx("ধানমন্ডি ৩২")}</option>
+              <option value="মিরপুর">{tx("মিরপুর ১২ ও ১০")}</option>
+              <option value="ক্যান্টনমেন্ট">{tx("ঢাকা ক্যান্টনমেন্ট")}</option>
+              <option value="লালবাগ">{tx("পুরান ঢাকা / লালবাগ")}</option>
             </select>
 
             <span className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-800 border border-emerald-200 shrink-0">
-              রেকর্ড: {filteredMissions.length}টি
-            </span>
+              {tx("রেকর্ড:")}{filteredMissions.length}{tx("টি")}</span>
           </div>
         </div>
 
@@ -215,7 +210,7 @@ export function VolunteerHistoryView() {
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/70 px-2.5 py-0.5 text-[11px] font-bold text-emerald-900">
                         <CheckCircle2 className="size-3 text-emerald-600" />
-                        বিতরণ ও ডিজিটাল ভেরিফিকেশন সম্পন্ন
+                        {item.status === "disputed" ? tx("Incident / review history available") : tx("Delivery OTP verified")}
                       </span>
                       <span className="text-xs text-muted-500 font-medium">
                         🗓️ {item.date} · {item.time}
@@ -226,13 +221,11 @@ export function VolunteerHistoryView() {
                       <h3 className="text-lg font-black text-ink-900">{item.foodTitle}</h3>
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
                         <span className="font-bold text-emerald-950 bg-canvas px-2.5 py-1 rounded-lg border border-line">
-                          🍱 {item.quantity} (~{item.servings} জনের খাবার)
-                        </span>
+                          🍱 {item.quantity} (~{item.servings} {tx("জনের খাবার)")}</span>
                         <span className="font-medium text-amber-900 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-                          🌡️ হস্তান্তর তাপমাত্রা: {item.cargoTempHandover}°C (হট সিল্ড)
-                        </span>
+                          {tx("তাপমাত্রা মাপা হয়নি")}</span>
                         <span className="font-medium text-muted-600 bg-canvas px-2.5 py-1 rounded-lg border border-line">
-                          ⏱️ সময়: {item.deliverySpeedNote}
+                          {tx("⏱️ সময়:")}{item.deliverySpeedNote}
                         </span>
                       </div>
                     </div>
@@ -242,7 +235,7 @@ export function VolunteerHistoryView() {
                       <div className="flex items-start gap-2">
                         <MapPin className="size-3.5 text-emerald-600 mt-0.5 shrink-0" />
                         <div>
-                          <strong className="text-ink-900">উৎস (ডোনার):</strong>
+                          <strong className="text-ink-900">{tx("উৎস (ডোনার):")}</strong>
                           <p className="text-muted-600">{item.donorName} ({item.donorArea})</p>
                         </div>
                       </div>
@@ -250,7 +243,7 @@ export function VolunteerHistoryView() {
                       <div className="flex items-start gap-2">
                         <Building2 className="size-3.5 text-amber-600 mt-0.5 shrink-0" />
                         <div>
-                          <strong className="text-ink-900">গন্তব্য (এনজিও):</strong>
+                          <strong className="text-ink-900">{tx("গন্তব্য (এনজিও):")}</strong>
                           <p className="text-muted-600">{item.ngoName} ({item.ngoArea})</p>
                         </div>
                       </div>
@@ -260,21 +253,22 @@ export function VolunteerHistoryView() {
                     <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-2.5 text-xs text-emerald-950">
                       <p className="flex items-center gap-1.5 font-bold text-emerald-900">
                         <Star className="size-3 text-amber-500 fill-amber-500" />
-                        <span>এনজিও ফিডব্যাক ({item.ngoRating} ★):</span>
+                        <span>{tx("NGO receipt status:")}</span>
                       </p>
-                      <p className="mt-0.5 text-emerald-800 italic">&ldquo;{item.ngoFeedback}&rdquo;</p>
+                      <p className="mt-0.5 text-emerald-800 italic"><UiText source={"&ldquo;"} />{item.ngoFeedback}<UiText source={"&rdquo;"} /></p>
                     </div>
                   </div>
 
                   {/* Right: Actions & Digital Receipt Button */}
                   <div className="flex lg:flex-col items-center justify-between lg:justify-center gap-3 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-line">
                     <div className="text-right hidden lg:block">
-                      <p className="text-[10px] font-bold uppercase text-muted-500">অনলাইন অডিট হ্যাশ</p>
+                      <p className="text-[10px] font-bold uppercase text-muted-500">{tx("Verification record ID")}</p>
                       <p className="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
                         {item.verificationToken}
                       </p>
                     </div>
 
+                    <ButtonLink href={ROUTES.volunteer.reportIssue(`mission-${item.id}`)} variant="outline" size="sm">{tx("Report / review history")}</ButtonLink>
                     <Button
                       type="button"
                       variant="outline"
@@ -283,8 +277,7 @@ export function VolunteerHistoryView() {
                       onClick={() => setSelectedReceipt(item)}
                       className="font-bold border-line hover:bg-emerald-50/60"
                     >
-                      হস্তান্তর রসিদ দেখুন 🧾
-                    </Button>
+                      {tx("হস্তান্তর রসিদ দেখুন 🧾")}</Button>
                   </div>
                 </div>
               </Card>
@@ -293,14 +286,12 @@ export function VolunteerHistoryView() {
         ) : (
           <Card className="p-12 text-center border-line">
             <CheckCircle2 className="size-12 text-emerald-600 mx-auto" />
-            <h3 className="mt-4 text-xl font-black text-ink-900">কোনো হিস্ট্রি রেকর্ড নেই</h3>
+            <h3 className="mt-4 text-xl font-black text-ink-900">{tx("কোনো হিস্ট্রি রেকর্ড নেই")}</h3>
             <p className="mt-1 text-xs text-muted-600 max-w-sm mx-auto">
-              আপনি এখনো কোনো খাদ্য উদ্ধার মিশন সম্পন্ন করেননি। উন্মুক্ত ডিসপ্যাচ তালিকা হতে আপনার প্রথম মিশন সম্পন্ন করুন।
-            </p>
+              {tx("আপনি এখনো কোনো খাদ্য উদ্ধার মিশন সম্পন্ন করেননি। উন্মুক্ত ডিসপ্যাচ তালিকা হতে আপনার প্রথম মিশন সম্পন্ন করুন।")}</p>
             <div className="mt-5 flex justify-center">
               <ButtonLink href={ROUTES.volunteer.dispatches} variant="primary" className="font-bold shadow-md shadow-emerald-700/20">
-                উন্মুক্ত ডিসপ্যাচ ফিড দেখুন ➔
-              </ButtonLink>
+                {tx("উন্মুক্ত ডিসপ্যাচ ফিড দেখুন ➔")}</ButtonLink>
             </div>
           </Card>
         )}
@@ -316,8 +307,8 @@ export function VolunteerHistoryView() {
                     <FileCheck2 className="size-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-black text-white">ডিজিটাল খাদ্য উদ্ধার ও হস্তান্তর রসিদ</h3>
-                    <p className="text-[11px] text-emerald-300">শেয়ারবাইট বিডি অফিসিয়াল অডিট ট্রেইল</p>
+                    <h3 className="text-sm font-black text-white">{tx("ডিজিটাল খাদ্য উদ্ধার ও হস্তান্তর রসিদ")}</h3>
+                    <p className="text-[11px] text-emerald-300">{tx("শেয়ারবাইট বিডি অফিসিয়াল অডিট ট্রেইল")}</p>
                   </div>
                 </div>
                 <button
@@ -339,44 +330,43 @@ export function VolunteerHistoryView() {
                     <p className="text-muted-500">{selectedReceipt.date} · {selectedReceipt.time}</p>
                   </div>
                   <span className="rounded-full bg-emerald-100 px-3 py-1 font-bold text-emerald-800">
-                    ভেরিফায়েড সম্পন্ন ✓
+                    {selectedReceipt.status === "disputed" ? tx("Incident recorded") : tx("Delivery OTP verified ✓")}
                   </span>
                 </div>
 
                 <div className="space-y-2 bg-canvas p-3.5 rounded-2xl border border-line">
                   <div className="flex justify-between">
-                    <span className="text-muted-600">খাবারের বিবরণ:</span>
+                    <span className="text-muted-600">{tx("খাবারের বিবরণ:")}</span>
                     <strong className="text-ink-900">{selectedReceipt.foodTitle}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-600">মোট পরিমাণ ও মিল:</span>
-                    <strong className="text-ink-900">{selectedReceipt.quantity} ({selectedReceipt.servings} জন)</strong>
+                    <span className="text-muted-600">{tx("মোট পরিমাণ ও মিল:")}</span>
+                    <strong className="text-ink-900">{selectedReceipt.quantity} ({selectedReceipt.servings} {" "}{tx("জন)")}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-600">দাতা প্রতিষ্ঠান:</span>
+                    <span className="text-muted-600">{tx("দাতা প্রতিষ্ঠান:")}</span>
                     <strong className="text-ink-900">{selectedReceipt.donorName}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-600">গ্রহীতা এনজিও:</span>
+                    <span className="text-muted-600">{tx("গ্রহীতা এনজিও:")}</span>
                     <strong className="text-ink-900">{selectedReceipt.ngoName}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-600">হস্তান্তর তাপমাত্রা:</span>
-                    <strong className="text-amber-800">{selectedReceipt.cargoTempHandover}°C (BFSA Standard Pass)</strong>
+                    <span className="text-muted-600">{tx("হস্তান্তর তাপমাত্রা:")}</span>
+                    <strong className="text-amber-800">{tx("Not measured")}</strong>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-600">রাইডার পরিচয়:</span>
+                    <span className="text-muted-600">{tx("রাইডার পরিচয়:")}</span>
                     <strong className="text-ink-900">{profile.fullName} ({profile.id})</strong>
                   </div>
                 </div>
 
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 text-[11px] leading-relaxed text-emerald-950">
-                  <p className="font-bold">ডিজিটাল সত্যতা স্বীকৃতি:</p>
+                  <p className="font-bold">{tx("ডিজিটাল সত্যতা স্বীকৃতি:")}</p>
                   <p className="mt-0.5 text-emerald-900">
-                    এই রসিদটি দাতা এবং এনজিও প্রতিনিধিদের দ্বিমুখী ওটিপি পিন কোড বিনিময়ের মাধ্যমে ডিজিটাল ক্রিপ্টোগ্রাফিক হ্যাশে সিস্টেম দ্বারা স্বয়ংক্রিয়ভাবে তৈরি হয়েছে।
-                  </p>
+                    {tx("Assigned volunteer-এর সফল delivery OTP verification অনুযায়ী এই mission log সংরক্ষিত হয়েছে। NGO receipt আলাদাভাবে সংরক্ষিত হয়।")}</p>
                   <p className="font-mono text-[10px] text-emerald-700 mt-1">
-                    ভেরিফিকেশন কি: {selectedReceipt.verificationToken}
+                    {tx("Verification record ID:")}{selectedReceipt.verificationToken}
                   </p>
                 </div>
               </div>
@@ -390,16 +380,14 @@ export function VolunteerHistoryView() {
                   leftIcon={<Printer className="size-4" />}
                   className="flex-1 justify-center font-bold"
                 >
-                  রসিদ প্রিন্ট করুন
-                </Button>
+                  {tx("রসিদ প্রিন্ট করুন")}</Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setSelectedReceipt(null)}
                   className="border-line font-bold"
                 >
-                  বন্ধ করুন
-                </Button>
+                  {tx("বন্ধ করুন")}</Button>
               </div>
             </div>
           </div>
