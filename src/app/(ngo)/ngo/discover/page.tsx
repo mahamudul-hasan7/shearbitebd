@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { NGODiscoveryList } from "@/features/ngo-discovery/ngo-discovery-list";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export default function NGODiscoverPage() {
     <Suspense
       fallback={
         <div className="p-6">
-          <Skeleton className="h-[40rem] rounded-3xl" />
+          <LoadingSpinner />
         </div>
       }
     >

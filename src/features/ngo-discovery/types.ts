@@ -17,7 +17,7 @@ export interface DiscoveryFilters {
 
 export const DEFAULT_DISCOVERY_FILTERS: DiscoveryFilters = {
   search: "",
-  radiusKm: 15,
+  radiusKm: 0,
   category: "ALL",
   dietary: "ALL",
   minMeals: 0,

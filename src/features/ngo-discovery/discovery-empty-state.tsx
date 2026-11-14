@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useMemo, useState } from "react";
 import { BellRing, Plus, RotateCcw, SearchX, SlidersHorizontal } from "lucide-react";
@@ -30,6 +31,7 @@ export function DiscoveryEmptyState({
   filters: DiscoveryFilters;
   resetFilters: () => void;
 }) {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
   const [notify, setNotify] = useState(false);
@@ -79,12 +81,10 @@ export function DiscoveryEmptyState({
       </div>
 
       <h3 className="mt-5 text-xl font-black text-slate-900 sm:text-2xl">
-        {isBn ? "আপনার ফিল্টারের সাথে মিলে এমন কোনো খাবার পাওয়া যায়নি" : "No surplus food matches right now"}
+        {isBn ? tx("আপনার ফিল্টারের সাথে মিলে এমন কোনো খাবার পাওয়া যায়নি") : tx("No surplus food matches right now")}
       </h3>
       <p className="mt-2 max-w-md text-xs leading-relaxed text-slate-600 sm:text-sm">
-        {isBn
-          ? "অনুগ্রহ করে দূরত্বের পরিধি বাড়ান বা ক্যাটাগরি ফিল্টার পরিবর্তন করুন, অথবা সকল উপলব্ধ খাবার দেখতে ফিল্টার রিসেট করুন।"
-          : "Adjust your search radius or category criteria, view all available food donations, or submit an urgent food request."}
+        {isBn ? tx("অনুগ্রহ করে দূরত্বের পরিধি বাড়ান বা ক্যাটাগরি ফিল্টার পরিবর্তন করুন, অথবা সকল উপলব্ধ খাবার দেখতে ফিল্টার রিসেট করুন।") : tx("Adjust your search radius or category criteria, view all available food donations, or submit an urgent food request.")}
       </p>
 
       {/* Applied Criteria Chips */}
@@ -109,7 +109,7 @@ export function DiscoveryEmptyState({
           size="md"
           leftIcon={<RotateCcw className="size-4" />}
         >
-          {isBn ? "সকল উপলব্ধ খাবার দেখুন (ফিল্টার রিসেট)" : "View all available food"}
+          {isBn ? tx("সকল উপলব্ধ খাবার দেখুন (ফিল্টার রিসেট)") : tx("View all available food")}
         </Button>
         <ButtonLink
           href={ROUTES.ngo.newRequest}
@@ -117,18 +117,16 @@ export function DiscoveryEmptyState({
           size="md"
           leftIcon={<Plus className="size-4" />}
         >
-          {isBn ? "জরুরি খাদ্য চাহিদাপত্র দাখিল করুন" : "Submit food need request"}
+          {isBn ? tx("জরুরি খাদ্য চাহিদাপত্র দাখিল করুন") : tx("Submit food need request")}
         </ButtonLink>
       </div>
 
       {/* Realtime Notification Switch */}
       <div className="mt-8 w-full max-w-md border-t border-slate-100 pt-5 text-left">
         <Switch
-          label={isBn ? "এই ধরনের খাবার পাওয়া গেলে নোটিফিকেশন দিন" : "Notify me when matching food is available"}
+          label={isBn ? tx("এই ধরনের খাবার পাওয়া গেলে নোটিফিকেশন দিন") : tx("Notify me when matching food is available")}
           description={
-            isBn
-              ? "নতুন খাবার পোস্ট হওয়ামাত্রই আপনার এনজিও প্যানেলে তাৎক্ষণিক পুশ অ্যালার্ট পাঠানো হবে।"
-              : "Frontend notification preference for matching donations in your selected radius."
+            isBn ? tx("নতুন খাবার পোস্ট হওয়ামাত্রই আপনার এনজিও প্যানেলে তাৎক্ষণিক পুশ অ্যালার্ট পাঠানো হবে।") : tx("Frontend notification preference for matching donations in your selected radius.")
           }
           checked={notify}
           onCheckedChange={updateNotify}

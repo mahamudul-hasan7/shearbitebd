@@ -1,14 +1,17 @@
-import { CheckCircle2, ClipboardList, Plus, Search } from "lucide-react";
-import { ButtonLink } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ROUTES } from "@/lib/routes";
+"use client";
 
-export function NGOQuickActions({ activeClaimId }: { activeClaimId?: string }) {
+import Link from "next/link";
+import { ArrowRight, Building2, ChartNoAxesCombined, MapPin } from "lucide-react";
+import { useUiText } from "@/lib/i18n/use-ui-text";
+import { ROUTES } from "@/lib/routes";
+import styles from "./ngo-dashboard.module.css";
+
+export function NGOQuickActions() {
+  const tx = useUiText();
   const actions = [
-    { label: "Browse Food", description: "See nearby safe surplus listings", href: ROUTES.ngo.discover, icon: Search, primary: true },
-    { label: "My Claims", description: "Manage reserved and active rescues", href: ROUTES.ngo.claims, icon: ClipboardList },
-    { label: "Create Demand Request", description: "Publish a verified food need", href: ROUTES.ngo.newRequest, icon: Plus },
-    { label: "Confirm Delivery", description: activeClaimId ? "Continue the active rescue" : "Available with an active claim", href: activeClaimId ? ROUTES.ngo.confirmDelivery(activeClaimId) : ROUTES.ngo.claims, icon: CheckCircle2, disabled: !activeClaimId },
+    {label:"Food collection map",description:"Explore the posted pickup areas.",href:ROUTES.ngo.discoverMap,icon:MapPin},
+    {label:"Distribution records",description:"Review recorded meals and people served.",href:ROUTES.ngo.impact,icon:ChartNoAxesCombined},
+    {label:"Saved delivery addresses",description:"Manage your NGO's locations and map pins.",href:ROUTES.ngo.addresses,icon:Building2},
   ];
-  return <Card><CardHeader title="Quick actions" description="Move a verified food rescue forward." /><CardContent className="grid gap-3">{actions.map((action) => <ButtonLink key={action.label} href={action.href} disabled={action.disabled} variant={action.primary ? "primary" : "outline"} fullWidth className="h-auto justify-start px-4 py-3 text-left" leftIcon={<span className={`grid size-10 shrink-0 place-items-center rounded-2xl ${action.primary ? "bg-white/15" : "bg-brand-100 text-brand-700"}`}><action.icon className="size-5" /></span>}><span><span className="block font-black">{action.label}</span><span className={`mt-0.5 block text-xs font-medium ${action.primary ? "text-white/75" : "text-muted-600"}`}>{action.description}</span></span></ButtonLink>)}</CardContent></Card>;
+  return <nav className={styles.linksCard} aria-label={tx("Useful NGO links")}><h2>{tx("Useful NGO links")}</h2>{actions.map(({label,description,href,icon:Icon})=><Link key={href} href={href}><Icon size={19} aria-hidden="true" /><span><strong>{tx(label)}</strong><small>{tx(description)}</small></span><ArrowRight size={15} aria-hidden="true" /></Link>)}</nav>;
 }

@@ -1,6 +1,7 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { Check, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import {
@@ -22,7 +23,7 @@ import {
 import type { DiscoveryFilters } from "@/features/ngo-discovery/types";
 import { useLanguage } from "@/lib/i18n/language-context";
 
-const RADIUS_OPTIONS = [3, 5, 10, 15, 25];
+const RADIUS_OPTIONS = [0, 3, 5, 10, 15, 25];
 const QUANTITY_OPTIONS = [
   { value: 0, labelBn: "যেকোনো পরিমাণ", labelEn: "Any quantity" },
   { value: 20, labelBn: "২০+ মিলস", labelEn: "20+ meals" },
@@ -40,6 +41,7 @@ export function DiscoveryFilterFields({
   updateFilter: <K extends keyof DiscoveryFilters>(key: K, value: DiscoveryFilters[K]) => void;
   resetFilters: () => void;
 }) {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
 
@@ -48,9 +50,9 @@ export function DiscoveryFilterFields({
       {/* 1. Distance Radius Chips */}
       <div>
         <label className="mb-2 block text-xs font-bold text-slate-800">
-          {isBn ? "সর্বোচ্চ দূরত্বের পরিধি" : "Distance radius"}
+          {isBn ? tx("সর্বোচ্চ দূরত্বের পরিধি") : tx("Distance radius")}
         </label>
-        <div className="grid grid-cols-5 gap-1.5">
+        <div className="grid grid-cols-3 gap-1.5">
           {RADIUS_OPTIONS.map((km) => {
             const active = filters.radiusKm === km;
             return (
@@ -64,23 +66,24 @@ export function DiscoveryFilterFields({
                     : "border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50"
                 }`}
               >
-                {km} {isBn ? "কিমি" : "km"}
+                {km === 0 ? (isBn ? "সব দূরত্ব" : "All") : `${km} ${isBn ? "কিমি" : "km"}`}
               </button>
             );
           })}
         </div>
       </div>
 
+      <p className="text-xs text-muted-600">{tx("Distance is an approximate straight line from your primary NGO address. A radius excludes donations with unknown distance.")}</p>
       {/* 2. Food Category */}
       <div>
         <Select
-          label={isBn ? "খাদ্য বিভাগ" : "Food category"}
+          label={isBn ? tx("খাদ্য বিভাগ") : tx("Food category")}
           value={filters.category}
           onChange={(event) =>
             updateFilter("category", event.target.value as DiscoveryFilters["category"])
           }
         >
-          <option value="ALL">{isBn ? "সকল প্রকার খাদ্য" : "All food categories"}</option>
+          <option value="ALL">{isBn ? tx("সকল প্রকার খাদ্য") : tx("All food categories")}</option>
           {Object.values(FoodCategory).map((value) => (
             <option key={value} value={value}>
               {isBn ? CATEGORY_LABELS_BN[value] || FOOD_CATEGORY_LABELS[value] : FOOD_CATEGORY_LABELS[value]}
@@ -92,13 +95,13 @@ export function DiscoveryFilterFields({
       {/* 3. Dietary Compatibility */}
       <div>
         <Select
-          label={isBn ? "খাদ্যের ধরন ও উপযুক্ততা" : "Dietary compatibility"}
+          label={isBn ? tx("খাদ্যের ধরন ও উপযুক্ততা") : tx("Dietary compatibility")}
           value={filters.dietary}
           onChange={(event) =>
             updateFilter("dietary", event.target.value as DiscoveryFilters["dietary"])
           }
         >
-          <option value="ALL">{isBn ? "যেকোনো ডায়েট" : "Any dietary type"}</option>
+          <option value="ALL">{isBn ? tx("যেকোনো ডায়েট") : tx("Any dietary type")}</option>
           {Object.values(DietaryType).map((value) => (
             <option key={value} value={value}>
               {isBn ? DIETARY_LABELS_BN[value] || DIETARY_TYPE_LABELS[value] : DIETARY_TYPE_LABELS[value]}
@@ -110,7 +113,7 @@ export function DiscoveryFilterFields({
       {/* 4. Minimum Quantity Chips */}
       <div>
         <label className="mb-2 block text-xs font-bold text-slate-800">
-          {isBn ? "ন্যূনতম আহারের পরিমাণ" : "Minimum quantity"}
+          {isBn ? tx("ন্যূনতম আহারের পরিমাণ") : tx("Minimum quantity")}
         </label>
         <div className="flex flex-wrap gap-1.5">
           {QUANTITY_OPTIONS.map((opt) => {
@@ -136,13 +139,13 @@ export function DiscoveryFilterFields({
       {/* 5. Urgency / Priority */}
       <div>
         <Select
-          label={isBn ? "অগ্রাধিকার ও জরুরি অবস্থা" : "Urgency level"}
+          label={isBn ? tx("অগ্রাধিকার ও জরুরি অবস্থা") : tx("Urgency level")}
           value={filters.urgency}
           onChange={(event) =>
             updateFilter("urgency", event.target.value as DiscoveryFilters["urgency"])
           }
         >
-          <option value="ALL">{isBn ? "যেকোনো অগ্রাধিকার" : "Any priority level"}</option>
+          <option value="ALL">{isBn ? tx("যেকোনো অগ্রাধিকার") : tx("Any priority level")}</option>
           {Object.values(PriorityLevel).map((value) => (
             <option key={value} value={value}>
               {isBn ? PRIORITY_LABELS_BN[value] || PRIORITY_META[value].label : PRIORITY_META[value].label}
@@ -154,13 +157,13 @@ export function DiscoveryFilterFields({
       {/* 6. Storage Condition */}
       <div>
         <Select
-          label={isBn ? "সংরক্ষণ তাপমাত্রা ও অবস্থা" : "Storage condition"}
+          label={isBn ? tx("সংরক্ষণ তাপমাত্রা ও অবস্থা") : tx("Storage condition")}
           value={filters.storage}
           onChange={(event) =>
             updateFilter("storage", event.target.value as DiscoveryFilters["storage"])
           }
         >
-          <option value="ALL">{isBn ? "যেকোনো সংরক্ষণ শর্ত" : "Any storage condition"}</option>
+          <option value="ALL">{isBn ? tx("যেকোনো সংরক্ষণ শর্ত") : tx("Any storage condition")}</option>
           {Object.values(StorageCondition).map((value) => (
             <option key={value} value={value}>
               {isBn ? STORAGE_LABELS_BN[value] || STORAGE_CONDITION_LABELS[value] : STORAGE_CONDITION_LABELS[value]}
@@ -172,15 +175,15 @@ export function DiscoveryFilterFields({
       {/* 7. Pickup Deadline */}
       <div>
         <Select
-          label={isBn ? "পিকআপের সময়সীমা" : "Pickup deadline"}
+          label={isBn ? tx("পিকআপের সময়সীমা") : tx("Pickup deadline")}
           value={filters.deadlineHours}
           onChange={(event) => updateFilter("deadlineHours", Number(event.target.value))}
         >
-          <option value={0}>{isBn ? "যেকোনো সময়সীমা" : "Any open deadline"}</option>
-          <option value={2}>{isBn ? "২ ঘণ্টার মধ্যে সংগ্রহ আবশ্যক" : "Within 2 hours"}</option>
-          <option value={4}>{isBn ? "৪ ঘণ্টার মধ্যে সংগ্রহ" : "Within 4 hours"}</option>
-          <option value={8}>{isBn ? "৮ ঘণ্টার মধ্যে সংগ্রহ" : "Within 8 hours"}</option>
-          <option value={24}>{isBn ? "২৪ ঘণ্টার মধ্যে সংগ্রহ" : "Within 24 hours"}</option>
+          <option value={0}>{isBn ? tx("যেকোনো সময়সীমা") : tx("Any open deadline")}</option>
+          <option value={2}>{isBn ? tx("২ ঘণ্টার মধ্যে সংগ্রহ আবশ্যক") : tx("Within 2 hours")}</option>
+          <option value={4}>{isBn ? tx("৪ ঘণ্টার মধ্যে সংগ্রহ") : tx("Within 4 hours")}</option>
+          <option value={8}>{isBn ? tx("৮ ঘণ্টার মধ্যে সংগ্রহ") : tx("Within 8 hours")}</option>
+          <option value={24}>{isBn ? tx("২৪ ঘণ্টার মধ্যে সংগ্রহ") : tx("Within 24 hours")}</option>
         </Select>
       </div>
 
@@ -193,7 +196,7 @@ export function DiscoveryFilterFields({
           leftIcon={<RotateCcw className="size-3.5" />}
           onClick={resetFilters}
         >
-          {isBn ? "ফিল্টার রিসেট করুন" : "Reset filters"}
+          {isBn ? tx("ফিল্টার রিসেট করুন") : tx("Reset filters")}
         </Button>
       </div>
     </div>

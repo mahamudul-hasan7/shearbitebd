@@ -61,10 +61,12 @@ export function useNgoRequest(requestId: string) {
 
   useEffect(() => {
     const controller = new AbortController();
-    requestService.getById(requestId, { signal: controller.signal })
+    const poll = () => requestService.getById(requestId, { signal: controller.signal })
       .then((request) => setState(asyncState.success(request)))
       .catch((error: unknown) => { if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error))); });
-    return () => controller.abort();
+    void poll();
+    const timer = window.setInterval(() => { void poll(); }, 10_000);
+    return () => { controller.abort(); window.clearInterval(timer); };
   }, [requestId, retryKey]);
 
   const runAction = useCallback(async (action: () => Promise<FoodRequest>, successMessage: string) => {
@@ -90,7 +92,7 @@ export function useNgoRequest(requestId: string) {
     message,
     actionError,
     retry: () => setRetryKey((value) => value + 1),
-    update: (input: UpdateFoodRequestInput) => runAction(() => requestService.update(requestId, input, NGO_VIEWER), "Request details updated in the mock workspace."),
+    update: (input: UpdateFoodRequestInput) => runAction(() => requestService.update(requestId, input, NGO_VIEWER), "Request details saved to the database."),
     cancel: () => runAction(() => requestService.transitionStatus(requestId, RequestStatus.CANCELLED, NGO_VIEWER), "The request was cancelled and removed from active matching."),
   };
 }

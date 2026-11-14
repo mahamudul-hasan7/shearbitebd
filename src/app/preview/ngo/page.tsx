@@ -1,3 +1,4 @@
+import { UiText } from "@/lib/i18n/ui-text-node";
 import { ArrowRight, Box, Clock3, MapPin, PackageCheck, Search, UsersRound } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,7 @@ const donations = [
 
 export default function NgoPreviewPage() {
   return (
-    <PortalShell role="ngo" activeHref="/preview/ngo" title="Recommended for your NGO" description="Discover nearby surplus food using a clean list and map-ready desktop layout." actions={<Button leftIcon={<Search className="size-4" />}>Browse food</Button>}>
+    <PortalShell role="ngo" activeHref="/preview/ngo" title="Recommended for your NGO" description="Discover nearby surplus food using a clean list and map-ready desktop layout." actions={<Button leftIcon={<Search className="size-4" />}><UiText source={"Browse food"} /></Button>}>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Available nearby" value="18" helper="Within 5 km" icon={Box} />
         <StatCard label="Active claims" value="4" helper="Ongoing" icon={Clock3} tone="accent" />
@@ -32,15 +33,15 @@ export default function NgoPreviewPage() {
             <div className="mt-5 grid gap-3">
               {donations.map((donation) => (
                 <article key={donation.title} className="grid gap-4 rounded-2xl border border-line p-4 sm:grid-cols-[1fr_auto] sm:items-center">
-                  <div><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{donation.title}</h3><Badge tone={donation.priority === "High" ? "danger" : "warning"}>{donation.priority} priority</Badge></div><p className="mt-2 text-sm text-muted-600">{donation.donor} · {donation.quantity}</p><p className="mt-2 flex items-center gap-1 text-xs font-bold text-brand-700"><MapPin className="size-4" />{donation.distance} away</p></div>
-                  <div className="flex items-center justify-between gap-3 sm:block sm:text-right"><Badge>{donation.match} match</Badge><Button size="sm" className="sm:mt-3" rightIcon={<ArrowRight className="size-4" />}>Details</Button></div>
+                  <div><div className="flex flex-wrap items-center gap-2"><h3 className="font-black">{donation.title}</h3><Badge tone={donation.priority === "High" ? "danger" : "warning"}>{donation.priority} {" "}<UiText source={"priority"} /></Badge></div><p className="mt-2 text-sm text-muted-600">{donation.donor} · {donation.quantity}</p><p className="mt-2 flex items-center gap-1 text-xs font-bold text-brand-700"><MapPin className="size-4" />{donation.distance} {" "}<UiText source={"away"} /></p></div>
+                  <div className="flex items-center justify-between gap-3 sm:block sm:text-right"><Badge>{donation.match} {" "}<UiText source={"match"} /></Badge><Button size="sm" className="sm:mt-3" rightIcon={<ArrowRight className="size-4" />}><UiText source={"Details"} /></Button></div>
                 </article>
               ))}
             </div>
           </CardContent>
         </Card>
         <Card className="overflow-hidden">
-          <div className="surface-grid grid min-h-72 place-items-center bg-brand-50 p-6 text-center"><div><span className="mx-auto grid size-16 place-items-center rounded-full bg-brand-600 text-white"><MapPin className="size-8" /></span><h3 className="mt-5 text-xl font-black">Map-ready panel</h3><p className="mt-2 text-sm leading-6 text-muted-600">Leaflet or another map provider can be integrated later without changing the surrounding layout.</p><Button variant="outline" className="mt-5">Open map view</Button></div></div>
+          <div className="surface-grid grid min-h-72 place-items-center bg-brand-50 p-6 text-center"><div><span className="mx-auto grid size-16 place-items-center rounded-full bg-brand-600 text-white"><MapPin className="size-8" /></span><h3 className="mt-5 text-xl font-black"><UiText source={"Map-ready panel"} /></h3><p className="mt-2 text-sm leading-6 text-muted-600"><UiText source={"Leaflet or another map provider can be integrated later without changing the surrounding layout."} /></p><Button variant="outline" className="mt-5"><UiText source={"Open map view"} /></Button></div></div>
         </Card>
       </div>
     </PortalShell>

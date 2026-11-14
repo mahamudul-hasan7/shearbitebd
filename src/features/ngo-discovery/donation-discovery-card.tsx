@@ -1,10 +1,10 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import Image from "next/image";
+import { DonationPhoto } from "@/components/donation/donation-photo";
 import {
   AlertTriangle,
   Bookmark,
-  Calendar,
   CheckCircle2,
   ChevronRight,
   Clock3,
@@ -16,16 +16,14 @@ import {
   Utensils,
 } from "lucide-react";
 import { RescueClock } from "@/components/donor/rescue-clock";
-import { Badge, type BadgeTone } from "@/components/ui/badge";
-import { Button, ButtonLink } from "@/components/ui/button";
+import type { BadgeTone } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   CATEGORY_LABELS_BN,
   DIETARY_LABELS_BN,
-  PRIORITY_LABELS_BN,
   STORAGE_LABELS_BN,
   UNIT_LABELS_BN,
-  donationImageUrl,
   formatDonationDateTimeBn,
 } from "@/features/donations/donation-presentation";
 import { FOOD_CATEGORY_LABELS, PriorityLevel } from "@/lib/constants/domain";
@@ -99,6 +97,7 @@ export function DonationDiscoveryCard({
   saved: boolean;
   onToggleSaved: () => void;
 }) {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
   const donation = item.donation;
@@ -111,16 +110,16 @@ export function DonationDiscoveryCard({
     ? CATEGORY_LABELS_BN[donation.category] || FOOD_CATEGORY_LABELS[donation.category]
     : FOOD_CATEGORY_LABELS[donation.category];
   const priorityInfo = priorityBadgeConfig(donation.priority, isBn);
-  const distanceFormatted = donation.pickup.distanceKm !== undefined ? donation.pickup.distanceKm.toFixed(1) : "৩.২";
+  const distanceFormatted = donation.pickup.distanceKm !== undefined ? donation.pickup.distanceKm.toFixed(1) : undefined;
 
   return (
     <Card className="group overflow-hidden border-slate-200/90 shadow-xs transition hover:border-emerald-300 hover:shadow-md">
       <div className="grid lg:grid-cols-[18rem_minmax(0,1fr)]">
         {/* Left Side: Visual Image & Floating Badges */}
         <div className="relative min-h-[15rem] overflow-hidden bg-slate-900 lg:min-h-full">
-          <Image
-            src={donationImageUrl(donation)}
-            alt={donation.title}
+          <DonationPhoto
+            donation={donation}
+
             fill
             sizes="(max-width: 1024px) 100vw, 288px"
             className="object-cover transition duration-300 group-hover:scale-105"
@@ -129,11 +128,11 @@ export function DonationDiscoveryCard({
           {/* Top Overlays */}
           <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-2 p-3.5">
             <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-slate-900/80 px-2.5 py-1 text-[11px] font-bold text-white shadow-xs backdrop-blur-md">
-              {priorityInfo.label}
+              {tx(priorityInfo.label)}
             </span>
             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/40 bg-emerald-950/85 px-2.5 py-1 text-[11px] font-black text-emerald-300 shadow-xs backdrop-blur-md">
               <Sparkles className="size-3 text-emerald-400" />
-              {item.matchScore}% {isBn ? "ম্যাচ" : "fit"}
+              {item.eligibility.eligible ? (isBn ? "ক্লেইম করা যাবে" : "Eligible to claim") : (isBn ? "যোগ্যতা দেখুন" : "Check eligibility")}
             </span>
           </div>
 
@@ -144,7 +143,7 @@ export function DonationDiscoveryCard({
               <p className="text-sm font-black tracking-tight">{item.donorOrganization}</p>
             </div>
             <p className="mt-0.5 text-[11px] font-semibold text-slate-300">
-              {isBn ? "বিএফএসএ ভেরিফায়েড খাদ্য পার্টনার" : "BFSA Verified Food Donor"}
+              {isBn ? tx("খাদ্যদাতার ঘোষিত তথ্য") : tx("Donor-declared details")}
             </p>
           </div>
         </div>
@@ -172,12 +171,12 @@ export function DonationDiscoveryCard({
                 {item.eligibility.eligible ? (
                   <span className="inline-flex items-center gap-1 rounded-lg bg-teal-50 px-2.5 py-1 text-[11px] font-bold text-teal-800 ring-1 ring-inset ring-teal-600/20">
                     <CheckCircle2 className="size-3 text-teal-600" />
-                    {isBn ? "রেসকিউয়ের জন্য প্রস্তুত" : "Eligible"}
+                    {isBn ? tx("রেসকিউয়ের জন্য প্রস্তুত") : tx("Eligible")}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 rounded-lg bg-rose-50 px-2.5 py-1 text-[11px] font-bold text-rose-800 ring-1 ring-inset ring-rose-600/20">
                     <AlertTriangle className="size-3 text-rose-600" />
-                    {isBn ? "যোগ্যতা যাচাই আবশ্যক" : "Review eligibility"}
+                    {isBn ? tx("যোগ্যতা যাচাই আবশ্যক") : tx("Review eligibility")}
                   </span>
                 )}
               </div>
@@ -186,7 +185,7 @@ export function DonationDiscoveryCard({
               <button
                 type="button"
                 onClick={onToggleSaved}
-                aria-label={saved ? "সংরক্ষণ তালিকা থেকে সরান" : "সংরক্ষণ করুন"}
+                aria-label={saved ? tx("সংরক্ষণ তালিকা থেকে সরান") : tx("সংরক্ষণ করুন")}
                 className={`grid size-9 place-items-center rounded-xl border transition ${
                   saved
                     ? "border-amber-300 bg-amber-50 text-amber-700"
@@ -214,11 +213,11 @@ export function DonationDiscoveryCard({
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <MapPin className="size-3.5 text-emerald-600" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    {isBn ? "দূরত্ব ও জোন" : "Distance"}
+                    {isBn ? tx("দূরত্ব ও জোন") : tx("Distance")}
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-black text-slate-900">
-                  {distanceFormatted} {isBn ? "কিমি" : "km"} · {donation.pickup.approximateArea}
+                  {distanceFormatted === undefined ? (isBn ? "দূরত্ব পাওয়া যায়নি" : "Distance unavailable") : tx("~{0} km straight line", distanceFormatted)} · {donation.pickup.approximateArea}
                 </p>
               </div>
 
@@ -227,11 +226,11 @@ export function DonationDiscoveryCard({
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <PackageOpen className="size-3.5 text-teal-600" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    {isBn ? "পরিমাণ ও আহার" : "Quantity"}
+                    {isBn ? tx("পরিমাণ ও আহার") : tx("Quantity")}
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-black text-slate-900">
-                  {donation.quantity.estimatedMeals} {isBn ? "মিলস" : "meals"} ({donation.quantity.value}{" "}
+                  {donation.quantity.estimatedMeals} {isBn ? tx("মিলস") : tx("meals")} ({donation.quantity.value}{" "}
                   {isBn ? UNIT_LABELS_BN[donation.quantity.unit] || donation.quantity.unit : donation.quantity.unit})
                 </p>
               </div>
@@ -241,10 +240,10 @@ export function DonationDiscoveryCard({
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <Refrigerator className="size-3.5 text-blue-600" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    {isBn ? "সংরক্ষণ তাপমাত্রা" : "Storage"}
+                    {isBn ? tx("সংরক্ষণ তাপমাত্রা") : tx("Storage")}
                   </span>
                 </div>
-                <p className="mt-1 truncate text-xs font-black text-slate-900" title={STORAGE_LABELS_BN[donation.storageCondition]}>
+                <p className="mt-1 truncate text-xs font-black text-slate-900" title={tx(STORAGE_LABELS_BN[donation.storageCondition])}>
                   {isBn ? STORAGE_LABELS_BN[donation.storageCondition] : donation.storageCondition}
                 </p>
               </div>
@@ -254,7 +253,7 @@ export function DonationDiscoveryCard({
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <Clock3 className="size-3.5 text-amber-600" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    {isBn ? "প্রস্তুতির সময়" : "Prepared"}
+                    {isBn ? tx("প্রস্তুতির সময়") : tx("Prepared")}
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-black text-slate-900">
@@ -279,7 +278,7 @@ export function DonationDiscoveryCard({
                 size="md"
                 leftIcon={<ShieldCheck className="size-4" />}
               >
-                <span>{isBn ? "বিস্তারিত ও ক্লেইম করুন" : "View & Claim"}</span>
+                <span>{isBn ? tx("বিস্তারিত ও ক্লেইম করুন") : tx("View & Claim")}</span>
                 <ChevronRight className="ml-1 size-4" />
               </ButtonLink>
             </div>

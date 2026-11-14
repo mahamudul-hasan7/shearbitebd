@@ -14,12 +14,13 @@ export function createInitialFoodRequestDraft(now = new Date()): FoodRequestDraf
 
   return {
     title: "",
+    deliveryAddressId: "",
+    submissionKey: "",
     requestType: RequestType.ONE_TIME,
     priority: PriorityLevel.MEDIUM,
     priorityReason: "",
     purpose: "",
     recipientType: "",
-    supportingDocumentNames: [],
     categories: [FoodCategory.COOKED_MEAL],
     dietaryTypes: [DietaryType.HALAL],
     specificPreferences: "",
@@ -31,10 +32,10 @@ export function createInitialFoodRequestDraft(now = new Date()): FoodRequestDraf
     preferredTimeSlot: "",
     notes: "",
     locationType: "SHELTER",
-    addressLine: "House 12, Road 4",
-    area: "Badda",
-    city: "Dhaka",
-    landmark: "Near the community clinic",
+    addressLine: "",
+    area: "",
+    city: "",
+    landmark: "",
     locationInstructions: "",
   };
 }
@@ -60,6 +61,6 @@ export function restoreFoodRequestDraft(value: unknown, fallback = createInitial
   if (!restored.dietaryTypes.every((item) => Object.values(DietaryType).includes(item))) restored.dietaryTypes = fallback.dietaryTypes;
   if (!["ASAP", "TODAY", "TOMORROW", "CUSTOM"].includes(restored.neededWhen)) restored.neededWhen = fallback.neededWhen;
   if (!["SHELTER", "COMMUNITY_CENTER", "OTHER"].includes(restored.locationType)) restored.locationType = fallback.locationType;
-  restored.supportingDocumentNames = restored.supportingDocumentNames.slice(0, 3);
+  if (Date.parse(restored.neededBy) <= Date.now()) { restored.neededBy = fallback.neededBy; restored.submissionKey = ""; }
   return restored;
 }

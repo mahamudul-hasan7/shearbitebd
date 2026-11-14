@@ -6,12 +6,13 @@ export type RequestTiming = "ASAP" | "TODAY" | "TOMORROW" | "CUSTOM";
 
 export interface FoodRequestDraft {
   title: string;
+  deliveryAddressId: string;
+  submissionKey: string;
   requestType: RequestType;
   priority: PriorityLevel;
   priorityReason: string;
   purpose: string;
   recipientType: string;
-  supportingDocumentNames: string[];
   categories: FoodCategory[];
   dietaryTypes: DietaryType[];
   specificPreferences: string;

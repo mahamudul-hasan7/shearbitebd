@@ -1,6 +1,7 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import Image from "next/image";
+import { DonationPhoto } from "@/components/donation/donation-photo";
 import {
   ArrowRight,
   Bike,
@@ -26,7 +27,6 @@ import {
   formatClaimDateTimeBn,
 } from "@/features/claims/claim-presentation";
 import {
-  donationImageUrl,
   formatDonationDateTimeBn,
   formatDonationQuantity,
   formatDonationQuantityBn,
@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import type { ClaimCoordinationDetails } from "@/services";
 
 export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
 
@@ -58,9 +59,9 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
       <div className="grid md:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)]">
         {/* Left Side: Food Image Thumbnail */}
         <div className="relative min-h-52 overflow-hidden bg-emerald-50 sm:min-h-56 md:min-h-full">
-          <Image
-            src={donationImageUrl(donation)}
-            alt={displayTitle}
+          <DonationPhoto
+            donation={donation}
+
             fill
             sizes="(max-width: 768px) 100vw, 256px"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -71,7 +72,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
           <div className="absolute left-3 top-3">
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600/95 px-2.5 py-1 text-xs font-black text-white shadow-md backdrop-blur-xs">
               <Sparkles className="size-3 text-amber-300" />
-              {isBn ? `${claim.matchScore}% ম্যাচ` : `${claim.matchScore}% match`}
+              {isBn ? tx("সংরক্ষিত ক্লেইম") : tx("Saved claim")}
             </span>
           </div>
 
@@ -81,7 +82,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
               #{claim.id.replace("claim-", "")}
             </span>
             <span className="text-[11px] font-medium text-white/80">
-              {donation.pickup.distanceKm ? `~${donation.pickup.distanceKm} km` : ""}
+              {donation.pickup.distanceKm ? tx("~{0} km", donation.pickup.distanceKm) : ""}
             </span>
           </div>
         </div>
@@ -102,7 +103,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
               </div>
               <p className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
                 <Clock3 className="size-3.5 text-slate-400" />
-                {isBn ? `আপডেট: ${formatClaimDateTimeBn(claim.updatedAt)}` : `Updated ${formatClaimDateTime(claim.updatedAt)}`}
+                {isBn ? tx("আপডেট: {0}", formatClaimDateTimeBn(claim.updatedAt)) : tx("Updated {0}", formatClaimDateTime(claim.updatedAt))}
               </p>
             </div>
 
@@ -116,7 +117,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 <span className="text-sm font-bold text-emerald-800">{displayDonor}</span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
                   <ShieldCheck className="size-3 text-emerald-600" />
-                  {isBn ? "ভেরিফায়েড খাদ্যদাতা" : "Verified donor"}
+                  {isBn ? tx("ভেরিফায়েড খাদ্যদাতা") : tx("Verified donor")}
                 </span>
               </div>
             </div>
@@ -130,7 +131,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                     {donation.pickup.approximateArea}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    {isBn ? "পিকআপ এলাকা" : "Pickup area"}
+                    {isBn ? tx("পিকআপ এলাকা") : tx("Pickup area")}
                   </span>
                 </div>
               </div>
@@ -142,7 +143,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                     {isBn ? formatDonationQuantityBn(donation) : formatDonationQuantity(donation)}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    ~{donation.quantity.estimatedMeals} {isBn ? "জনের খাবার" : "estimated meals"}
+                    ~{donation.quantity.estimatedMeals} {isBn ? tx("জনের খাবার") : tx("estimated meals")}
                   </span>
                 </div>
               </div>
@@ -155,16 +156,10 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 )}
                 <div className="min-w-0">
                   <span className="block font-bold text-slate-900 truncate">
-                    {volunteer ? volunteer.displayName : isBn ? "ভলান্টিয়ার বরাদ্দ অপেক্ষমাণ" : "Awaiting volunteer"}
+                    {volunteer ? volunteer.displayName : isBn ? tx("ভলান্টিয়ার বরাদ্দ অপেক্ষমাণ") : tx("Awaiting volunteer")}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    {volunteer
-                      ? isBn
-                        ? "ভেরিফাইড রাইডার"
-                        : "Assigned rider"
-                      : isBn
-                        ? "অটো-ম্যাচিং সক্রিয়"
-                        : "Auto-matching"}
+                    {volunteer ? isBn ? tx("ভেরিফাইড রাইডার") : tx("Assigned rider") : isBn ? tx("অটো-ম্যাচিং সক্রিয়") : tx("Auto-matching")}
                   </span>
                 </div>
               </div>
@@ -176,7 +171,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                     {formatDonationDateTimeBn(donation.preparationTime)}
                   </span>
                   <span className="text-[11px] text-slate-500">
-                    {isBn ? "রান্নার সময়" : "Preparation time"}
+                    {isBn ? tx("রান্নার সময়") : tx("Preparation time")}
                   </span>
                 </div>
               </div>
@@ -195,13 +190,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                   <Bike className="size-4 text-blue-600" />
                   <div>
                     <span className="font-semibold text-blue-700">
-                      {claim.status === ClaimStatus.PICKED_UP
-                        ? isBn
-                          ? "শেল্টারে পৌঁছানোর সময়: "
-                          : "ETA to shelter: "
-                        : isBn
-                          ? "পিকআপে পৌঁছানোর সময়: "
-                          : "ETA to pickup: "}
+                      {claim.status === ClaimStatus.PICKED_UP ? isBn ? tx("শেল্টারে পৌঁছানোর সময়:") : tx("ETA to shelter:") : isBn ? tx("পিকআপে পৌঁছানোর সময়:") : tx("ETA to pickup:")}
                     </span>
                     <span className="font-black text-blue-950">
                       {isBn ? claimEtaLabelBn(claim) : claimEtaLabel(claim)}
@@ -212,17 +201,13 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
               {claim.status === ClaimStatus.DELIVERED && (
                 <div className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">
                   <CheckCircle2 className="size-4 text-emerald-600" />
-                  {isBn
-                    ? "খাবার সফলভাবে পৌঁছেছে · বিতরণ রিপোর্ট দিন"
-                    : "Delivered to NGO · Ready for distribution record"}
+                  {isBn ? tx("খাবার সফলভাবে পৌঁছেছে · বিতরণ রিপোর্ট দিন") : tx("Delivered to NGO · Ready for distribution record")}
                 </div>
               )}
               {claim.status === ClaimStatus.DISTRIBUTED && (
                 <div className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">
                   <PackageCheck className="size-4 text-emerald-600" />
-                  {isBn
-                    ? "বিতরণ সম্পন্ন ও জাতীয় রেকর্ডে যুক্ত"
-                    : "Distributed & added to impact records"}
+                  {isBn ? tx("বিতরণ সম্পন্ন ও জাতীয় রেকর্ডে যুক্ত") : tx("Distributed & added to impact records")}
                 </div>
               )}
             </div>
@@ -235,7 +220,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                   size="sm"
                   className="bg-emerald-600 text-white hover:bg-emerald-700"
                 >
-                  {isBn ? "বিতরণ রিপোর্ট দিন" : "Record distribution"}
+                  {isBn ? tx("বিতরণ রিপোর্ট দিন") : tx("Record distribution")}
                 </ButtonLink>
               )}
               {claim.status === ClaimStatus.PICKED_UP && (
@@ -244,7 +229,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                   size="sm"
                   className="bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  {isBn ? "ডেলিভারি নিশ্চিত করুন" : "Confirm delivery"}
+                  {isBn ? tx("ডেলিভারি নিশ্চিত করুন") : tx("Confirm delivery")}
                 </ButtonLink>
               )}
               <ButtonLink
@@ -253,7 +238,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 size="sm"
                 rightIcon={<ArrowRight className="size-3.5" />}
               >
-                {isBn ? "ক্লেইম বিবরণ ও ট্র্যাকিং" : "View claim"}
+                {isBn ? tx("ক্লেইম বিবরণ ও ট্র্যাকিং") : tx("View claim")}
               </ButtonLink>
             </div>
           </div>

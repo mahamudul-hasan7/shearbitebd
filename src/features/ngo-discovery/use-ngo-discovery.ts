@@ -34,7 +34,7 @@ function applyFilters(items: NGODiscoveryItem[], filters: DiscoveryFilters) {
   const search = filters.search.toLowerCase();
   return items.filter(({ donation, donorOrganization }) => {
     if (search && !`${donation.title} ${donation.description} ${donation.pickup.approximateArea} ${donorOrganization}`.toLowerCase().includes(search)) return false;
-    if ((donation.pickup.distanceKm ?? Number.POSITIVE_INFINITY) > filters.radiusKm) return false;
+    if (filters.radiusKm > 0 && (donation.pickup.distanceKm === undefined || donation.pickup.distanceKm > filters.radiusKm)) return false;
     if (filters.category !== "ALL" && donation.category !== filters.category) return false;
     if (filters.dietary !== "ALL" && !donation.dietaryTypes.includes(filters.dietary)) return false;
     if (donation.quantity.estimatedMeals < filters.minMeals) return false;
@@ -46,7 +46,7 @@ function applyFilters(items: NGODiscoveryItem[], filters: DiscoveryFilters) {
     if (filters.sort === "NEAREST") return (left.donation.pickup.distanceKm ?? 999) - (right.donation.pickup.distanceKm ?? 999);
     if (filters.sort === "DEADLINE") return Date.parse(left.donation.safePickupDeadline) - Date.parse(right.donation.safePickupDeadline);
     if (filters.sort === "QUANTITY") return right.donation.quantity.estimatedMeals - left.donation.quantity.estimatedMeals;
-    return right.matchScore - left.matchScore;
+    return Date.parse(right.donation.publishedAt || right.donation.createdAt) - Date.parse(left.donation.publishedAt || left.donation.createdAt);
   });
 }
 
@@ -61,11 +61,13 @@ export function useNgoDiscovery() {
   useEffect(() => {
     const controller = new AbortController();
     discoveryService.listAvailable(NGO_PROFILE_ID, NGO_VIEWER, { signal: controller.signal }).then((items) => setState(asyncState.success(items))).catch((error: unknown) => { if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error))); });
-    return () => controller.abort();
+    const refresh = () => setRetryKey((value) => value + 1);
+    window.addEventListener("sharebite:auth-changed", refresh);
+    return () => { controller.abort(); window.removeEventListener("sharebite:auth-changed", refresh); };
   }, [retryKey]);
 
   const filteredItems = useMemo(() => applyFilters(state.data ?? [], filters), [filters, state.data]);
-  const activeFilterCount = [filters.search, filters.radiusKm !== 15, filters.category !== "ALL", filters.dietary !== "ALL", filters.minMeals > 0, filters.urgency !== "ALL", filters.storage !== "ALL", filters.deadlineHours > 0].filter(Boolean).length;
+  const activeFilterCount = [filters.search, filters.radiusKm !== DEFAULT_DISCOVERY_FILTERS.radiusKm, filters.category !== "ALL", filters.dietary !== "ALL", filters.minMeals > 0, filters.urgency !== "ALL", filters.storage !== "ALL", filters.deadlineHours > 0].filter(Boolean).length;
 
   function updateFilter<K extends keyof DiscoveryFilters>(key: K, value: DiscoveryFilters[K]) {
     const next = new URLSearchParams(searchParams.toString());

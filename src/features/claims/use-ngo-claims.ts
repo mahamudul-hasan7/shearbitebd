@@ -8,7 +8,6 @@ import { claimStatusLabelBn } from "@/features/claims/claim-presentation";
 import { getDonationTitleBn, getDonorOrganizationBn } from "@/features/donations/donation-presentation";
 import { asyncState, claimService, toServiceError, type AsyncState, type ClaimCoordinationDetails } from "@/services";
 
-const DEMO_VOLUNTEER_ID = "volunteer-demo";
 
 async function loadNgoClaims(signal?: AbortSignal) {
   const claims = await claimService.list({ ngoProfileId: NGO_PROFILE_ID }, { signal });
@@ -75,10 +74,23 @@ export function useNgoClaim(claimId: string) {
 
   useEffect(() => {
     const controller = new AbortController();
-    claimService.getCoordinationDetails(claimId, NGO_VIEWER, { signal: controller.signal })
-      .then((details) => setState(asyncState.success(details)))
-      .catch((error: unknown) => { if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error))); });
-    return () => controller.abort();
+    let inFlight = false;
+    const poll = async () => {
+      if (inFlight || controller.signal.aborted) return;
+      inFlight = true;
+      try {
+        const details = await claimService.getCoordinationDetails(claimId, NGO_VIEWER, { signal: controller.signal });
+        if (!controller.signal.aborted) setState((current) => current.data && Date.parse(current.data.claim.updatedAt) > Date.parse(details.claim.updatedAt) ? current : asyncState.success(details));
+      } catch (error) {
+        if (!controller.signal.aborted) setState((current) => asyncState.error(toServiceError(error), current.data));
+      } finally { inFlight = false; }
+    };
+    const refreshVisible = () => { if (document.visibilityState === "visible") void poll(); };
+    void poll();
+    const timer = window.setInterval(refreshVisible, 5_000);
+    window.addEventListener("focus", refreshVisible);
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => { controller.abort(); window.clearInterval(timer); window.removeEventListener("focus", refreshVisible); document.removeEventListener("visibilitychange", refreshVisible); };
   }, [claimId, retryKey]);
 
   const runAction = useCallback(async (action: () => Promise<unknown>, successMessage: string) => {
@@ -102,8 +114,6 @@ export function useNgoClaim(claimId: string) {
     actionError,
     actionMessage,
     retry: () => setRetryKey((value) => value + 1),
-    assignVolunteer: () => runAction(() => claimService.assignDemoVolunteer(claimId, DEMO_VOLUNTEER_ID, NGO_VIEWER), "A verified demo volunteer was assigned."),
     releaseClaim: () => runAction(() => claimService.transitionStatus(claimId, ClaimStatus.CANCELLED, NGO_VIEWER), "The claim was released and the donation is available again."),
-    markPickedUp: () => runAction(() => claimService.transitionStatus(claimId, ClaimStatus.PICKED_UP, NGO_VIEWER), "Pickup verification completed in demo mode."),
   };
 }

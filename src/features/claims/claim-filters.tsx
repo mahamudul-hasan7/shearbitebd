@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { Search, X } from "lucide-react";
 import { ClaimStatus } from "@/lib/constants/statuses";
@@ -20,6 +21,7 @@ export function ClaimFilters({
   onFilterChange: (filter: ClaimFilter) => void;
   onSearchChange: (search: string) => void;
 }) {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
 
@@ -37,9 +39,7 @@ export function ClaimFilters({
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder={
-            isBn
-              ? "খাদ্যের নাম, দাতা সংস্থা, এলাকা বা ক্লেইম আইডি দিয়ে খুঁজুন..."
-              : "Search by food title, donor organization, area, volunteer, or claim ID..."
+            isBn ? tx("খাদ্যের নাম, দাতা সংস্থা, এলাকা বা ক্লেইম আইডি দিয়ে খুঁজুন...") : tx("Search by food title, donor organization, area, volunteer, or claim ID...")
           }
           className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white pl-11 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 shadow-xs transition hover:border-slate-300 focus:border-emerald-600 focus:outline-none focus:ring-3 focus:ring-emerald-500/15"
         />
@@ -47,7 +47,7 @@ export function ClaimFilters({
           <button
             type="button"
             onClick={() => onSearchChange("")}
-            title={isBn ? "সার্চ মুছুন" : "Clear search"}
+            title={isBn ? tx("সার্চ মুছুন") : tx("Clear search")}
             className="absolute right-3.5 grid size-6 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800"
           >
             <X className="size-3.5" />
@@ -58,7 +58,7 @@ export function ClaimFilters({
       {/* Status Filter Pill Row */}
       <div
         role="group"
-        aria-label={isBn ? "স্ট্যাটাস অনুসারে ক্লেইম ফিল্টার করুন" : "Filter claims by status"}
+        aria-label={isBn ? tx("স্ট্যাটাস অনুসারে ক্লেইম ফিল্টার করুন") : tx("Filter claims by status")}
         className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
       >
         {CLAIM_FILTERS.map((item) => {

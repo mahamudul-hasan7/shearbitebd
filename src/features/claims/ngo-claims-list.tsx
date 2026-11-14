@@ -1,4 +1,7 @@
 "use client";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
   Activity,
@@ -15,7 +18,6 @@ import {
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/ui/stat-card";
 import { ClaimCard } from "@/features/claims/claim-card";
 import { ClaimFilters } from "@/features/claims/claim-filters";
@@ -65,6 +67,7 @@ function ClaimSection({
 }
 
 export function NGOClaimsList() {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
 
@@ -76,14 +79,12 @@ export function NGOClaimsList() {
     <PortalShell
       role="ngo"
       activeHref={ROUTES.ngo.claims}
-      title={isBn ? "ক্লেইমকৃত খাদ্য উদ্ধারসমূহ" : "My claims"}
+      title={isBn ? tx("ক্লেইমকৃত খাদ্য উদ্ধারসমূহ") : tx("My claims")}
       description={
-        isBn
-          ? "সংরক্ষিত খাদ্য লট, ভলান্টিয়ার ট্র্যাকিং, হ্যান্ডওভার ও সফল বিতরণ রেকর্ড পরিচালনা করুন।"
-          : "Track reserved food, volunteer assignment, pickup, delivery, and completed rescue history."
+        isBn ? tx("সংরক্ষিত খাদ্য লট, ভলান্টিয়ার ট্র্যাকিং, হ্যান্ডওভার ও সফল বিতরণ রেকর্ড পরিচালনা করুন।") : tx("Track reserved food, volunteer assignment, pickup, delivery, and completed rescue history.")
       }
       profileName={isBn ? "মাস্তুল ফাউন্ডেশন" : "Hope Foundation"}
-      profileDescription={isBn ? "অনুমোদিত ও ভেরিফায়েড এনজিও" : "Verified NGO"}
+      profileDescription={isBn ? tx("অনুমোদিত ও ভেরিফায়েড এনজিও") : tx("Verified NGO")}
       avatarInitials="HF"
       notificationHref={ROUTES.ngo.notifications}
       actions={
@@ -101,29 +102,29 @@ export function NGOClaimsList() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             icon={Box}
-            label={isBn ? "মোট উদ্ধার ক্লেইম" : "Total claims"}
+            label={isBn ? tx("মোট উদ্ধার ক্লেইম") : tx("Total claims")}
             value={String(stats.total)}
-            helper={isBn ? "সকল সক্রিয় ও সম্পন্ন লট" : "All visible rescue claims"}
+            helper={isBn ? tx("সকল সক্রিয় ও সম্পন্ন লট") : tx("All visible rescue claims")}
           />
           <StatCard
             icon={Clock3}
-            label={isBn ? "অপেক্ষমাণ লট" : "Reserved"}
+            label={isBn ? tx("অপেক্ষমাণ লট") : tx("Reserved")}
             value={String(stats.reserved)}
-            helper={isBn ? "ভলান্টিয়ার বরাদ্দের অপেক্ষায়" : "Awaiting volunteer"}
+            helper={isBn ? tx("ভলান্টিয়ার বরাদ্দের অপেক্ষায়") : tx("Awaiting volunteer")}
             tone="accent"
           />
           <StatCard
             icon={Truck}
-            label={isBn ? "চলমান পিকআপ ও ট্রানজিট" : "In progress"}
+            label={isBn ? tx("চলমান পিকআপ ও ট্রানজিট") : tx("In progress")}
             value={String(stats.inProgress)}
-            helper={isBn ? "সংগ্রহ বা শেল্টারের পথে" : "Pickup or delivery"}
+            helper={isBn ? tx("সংগ্রহ বা শেল্টারের পথে") : tx("Pickup or delivery")}
             tone="info"
           />
           <StatCard
             icon={PackageCheck}
-            label={isBn ? "সফল বিতরণ সম্পন্ন" : "Completed"}
+            label={isBn ? tx("সফল বিতরণ সম্পন্ন") : tx("Completed")}
             value={String(stats.completed)}
-            helper={isBn ? "ইমপ্যাক্ট রেকর্ডে অন্তর্ভুক্ত" : "Distribution recorded"}
+            helper={isBn ? tx("ইমপ্যাক্ট রেকর্ডে অন্তর্ভুক্ত") : tx("Distribution recorded")}
             tone="success"
           />
         </div>
@@ -141,19 +142,15 @@ export function NGOClaimsList() {
 
         {/* Loading Skeletons */}
         {state.status === "loading" && !state.data && (
-          <SkeletonGroup label="Loading NGO claims" className="grid gap-4">
-            <Skeleton className="h-12 rounded-2xl" />
-            <Skeleton className="h-56 rounded-3xl" />
-            <Skeleton className="h-56 rounded-3xl" />
-          </SkeletonGroup>
+          <LoadingSpinner label={tx("Loading NGO claims")} />
         )}
 
         {/* Error State */}
         {state.status === "error" && !state.data && (
           <EmptyState
             icon={RefreshCw}
-            title={isBn ? "ক্লেইম তালিকা লোড করা যায়নি" : "Claims could not load"}
-            description={state.error.message}
+            title={isBn ? tx("ক্লেইম তালিকা লোড করা যায়নি") : tx("Claims could not load")}
+            description={tx(state.error.message)}
             action={<Button onClick={retry}>{isBn ? "পুনরায় চেষ্টা করুন" : "Try again"}</Button>}
           />
         )}
@@ -162,11 +159,9 @@ export function NGOClaimsList() {
         {state.data && filteredItems.length === 0 && (
           <EmptyState
             icon={Box}
-            title={isBn ? "এই ফিল্টারে কোনো ক্লেইম পাওয়া যায়নি" : "No claims match this view"}
+            title={isBn ? tx("এই ফিল্টারে কোনো ক্লেইম পাওয়া যায়নি") : tx("No claims match this view")}
             description={
-              isBn
-                ? "অন্য কোনো স্ট্যাটাস ফিল্টার নির্বাচন করুন অথবা সার্চ বক্সে নতুন নাম দিয়ে চেষ্টা করুন।"
-                : "Try another status or clear the search. New claims appear here after reserving an eligible donation."
+              isBn ? tx("অন্য কোনো স্ট্যাটাস ফিল্টার নির্বাচন করুন অথবা সার্চ বক্সে নতুন নাম দিয়ে চেষ্টা করুন।") : tx("Try another status or clear the search. New claims appear here after reserving an eligible donation.")
             }
             action={
               <div className="flex flex-wrap justify-center gap-2">
@@ -190,7 +185,7 @@ export function NGOClaimsList() {
         {filteredItems.length > 0 && (
           <div className="grid gap-8">
             <ClaimSection
-              title={isBn ? "চলমান ও লাইভ রেসকিউ কার্যক্রম" : "Active claims"}
+              title={isBn ? tx("চলমান ও লাইভ রেসকিউ কার্যক্রম") : tx("Active claims")}
               subtitle={
                 isBn
                   ? "খাদ্য সংগ্রহ, ভলান্টিয়ার ট্র্যাকিং এবং ডেলিভারি প্রাপ্তির অপেক্ষায় থাকা সক্রিয় ক্লেইমসমূহ"
@@ -201,7 +196,7 @@ export function NGOClaimsList() {
               badgeTone="brand"
             />
             <ClaimSection
-              title={isBn ? "সম্পন্ন ও পূর্ববর্তী রেসকিউ হিস্ট্রি" : "Claim history"}
+              title={isBn ? tx("সম্পন্ন ও পূর্ববর্তী রেসকিউ হিস্ট্রি") : tx("Claim history")}
               subtitle={
                 isBn
                   ? "সফলভাবে বিতরণকৃত এবং জাতীয় প্রভাব রেকর্ডে অন্তর্ভুক্ত খাদ্য উদ্ধারসমূহ"
@@ -222,14 +217,10 @@ export function NGOClaimsList() {
             </span>
             <div>
               <p className="font-black text-slate-900">
-                {isBn
-                  ? "দায়িত্বশীল খাদ্য উদ্ধারে আপনার ভূমিকার জন্য আন্তরিক ধন্যবাদ।"
-                  : "Thank you for rescuing food responsibly."}
+                {isBn ? tx("দায়িত্বশীল খাদ্য উদ্ধারে আপনার ভূমিকার জন্য আন্তরিক ধন্যবাদ।") : tx("Thank you for rescuing food responsibly.")}
               </p>
               <p className="mt-1 text-xs text-slate-600">
-                {isBn
-                  ? "প্রতিটি সফল বিতরণ শেয়ারবাইট বিডি-র স্বচ্ছ ইমপ্যাক্ট মেট্রিক্সে সংরক্ষিত হয় এবং সুবিধাবঞ্চিত মানুষের মুখে হাসি ফোটায়।"
-                  : "Every completed distribution contributes to transparent impact reporting across Bangladesh."}
+                {isBn ? tx("প্রতিটি সফল বিতরণ শেয়ারবাইট বিডি-র স্বচ্ছ ইমপ্যাক্ট মেট্রিক্সে সংরক্ষিত হয় এবং সুবিধাবঞ্চিত মানুষের মুখে হাসি ফোটায়।") : tx("Every completed distribution contributes to transparent impact reporting across Bangladesh.")}
               </p>
             </div>
           </div>
@@ -238,7 +229,7 @@ export function NGOClaimsList() {
             variant="outline"
             className="border-emerald-300 text-emerald-800 hover:bg-emerald-100/60"
           >
-            {isBn ? "জাতীয় প্রভাব মেট্রিক্স দেখুন" : "View impact"}
+            {isBn ? tx("জাতীয় প্রভাব মেট্রিক্স দেখুন") : tx("View impact")}
           </ButtonLink>
         </div>
       </div>

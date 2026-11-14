@@ -1,3 +1,4 @@
+import { getUiLocale, displayUiText } from "@/lib/i18n/locale";
 import { ClaimStatus, CLAIM_LIFECYCLE } from "@/lib/constants/statuses";
 import type { Address, Claim } from "@/types/domain";
 
@@ -5,7 +6,7 @@ export function formatClaimDateTime(value?: string) {
   if (!value) return "Pending";
   const timestamp = Date.parse(value);
   return Number.isFinite(timestamp)
-    ? new Intl.DateTimeFormat("en-BD", { dateStyle: "medium", timeStyle: "short" }).format(timestamp)
+    ? new Intl.DateTimeFormat(getUiLocale(), { dateStyle: "medium", timeStyle: "short" }).format(timestamp)
     : "Pending";
 }
 
@@ -14,7 +15,7 @@ export function formatClaimDateTimeBn(value?: string) {
   const timestamp = Date.parse(value);
   if (!Number.isFinite(timestamp)) return "অপেক্ষমাণ";
   try {
-    return new Intl.DateTimeFormat("bn-BD", {
+    return new Intl.DateTimeFormat(getUiLocale(), {
       month: "short",
       day: "numeric",
       hour: "numeric",
@@ -80,7 +81,7 @@ export function claimProgressMessage(claim: Claim) {
     [ClaimStatus.EXPIRED]: "The rescue window expired before completion.",
     [ClaimStatus.DISPUTED]: "Normal progression is paused while the reported issue is reviewed.",
   };
-  return messages[claim.status];
+  return displayUiText(messages[claim.status]);
 }
 
 export function claimProgressMessageBn(claim: Claim) {
@@ -94,7 +95,7 @@ export function claimProgressMessageBn(claim: Claim) {
     [ClaimStatus.EXPIRED]: "নির্ধারিত পিকআপের সময়সীমা শেষ হয়ে গেছে।",
     [ClaimStatus.DISPUTED]: "সমস্যা পর্যালোচনার কারণে রেসকিউ সাময়িকভাবে স্থগিত রয়েছে।",
   };
-  return messages[claim.status];
+  return displayUiText(messages[claim.status]);
 }
 
 export function claimStatusLabelBn(status: ClaimStatus) {
@@ -108,5 +109,5 @@ export function claimStatusLabelBn(status: ClaimStatus) {
     [ClaimStatus.EXPIRED]: "মেয়াদোত্তীর্ণ",
     [ClaimStatus.DISPUTED]: "বিরোধ পর্যালোচনায়",
   };
-  return map[status] || status;
+  return displayUiText(map[status] || status);
 }
