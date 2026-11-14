@@ -1,3 +1,4 @@
+import { getUiLocale } from "@/lib/i18n/locale";
 import { UserRole } from "@/lib/constants/roles";
 import type { ViewerContext } from "@/types/domain";
 
@@ -10,5 +11,5 @@ export function getInitials(name: string) {
 }
 
 export function formatAccountDate(value: string) {
-  return new Intl.DateTimeFormat("en-BD", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat(getUiLocale(), { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
