@@ -40,8 +40,12 @@ export type RegistrationErrorKey = keyof RegistrationData | "terms" | "document"
 export type RegistrationErrors = Partial<Record<RegistrationErrorKey, string>>;
 
 export interface MockAuthSession {
+  id: string;
   email: string;
   displayName: string;
   role: UserRole;
   signedInAt: string;
+  donorProfileId?: string;
+  ngoProfileId?: string;
+  volunteerProfileId?: string;
 }
