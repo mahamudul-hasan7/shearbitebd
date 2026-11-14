@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { ArrowRight, HeartHandshake, Leaf, PackageOpen } from "lucide-react";
 import Link from "next/link";
@@ -7,6 +8,7 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 import { ROUTES } from "@/lib/routes";
 
 export function SplashScreen() {
+  const tx = useUiText();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function SplashScreen() {
       <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col items-center justify-center text-center">
         <div className="absolute right-0 top-0">
           <Link href={ROUTES.auth.onboarding} className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-4 py-2 text-sm font-black text-brand-700 shadow-sm backdrop-blur hover:bg-white">
-            Skip <ArrowRight className="size-4" />
+            {tx("Skip")}<ArrowRight className="size-4" />
           </Link>
         </div>
 
@@ -38,14 +40,14 @@ export function SplashScreen() {
         </div>
 
         <div className="mt-10 scale-125 sm:scale-150"><BrandLogo href={ROUTES.auth.onboarding} /></div>
-        <p className="mt-7 text-sm font-bold uppercase tracking-[0.16em] text-muted-600 sm:text-base">Smart Surplus Food Rescue Platform</p>
-        <h1 className="mt-8 max-w-3xl text-3xl font-black leading-tight text-brand-900 sm:text-5xl">অতিরিক্ত খাবার নষ্ট না করে, সঠিক সময়ে সঠিক মানুষের কাছে পৌঁছে দেওয়া</h1>
+        <p className="mt-7 text-sm font-bold uppercase tracking-[0.16em] text-muted-600 sm:text-base">{tx("Smart Surplus Food Rescue Platform")}</p>
+        <h1 className="mt-8 max-w-3xl text-3xl font-black leading-tight text-brand-900 sm:text-5xl">{tx("অতিরিক্ত খাবার নষ্ট না করে, সঠিক সময়ে সঠিক মানুষের কাছে পৌঁছে দেওয়া")}</h1>
 
         <div className="mt-10 flex items-center gap-3 rounded-3xl border border-brand-100 bg-white/80 px-5 py-4 shadow-card backdrop-blur">
           <PackageOpen className="size-8 text-accent-500" />
           <div className="text-left">
-            <p className="font-black text-brand-800">Rescue Food · Respect Time · Measure Impact</p>
-            <p className="mt-1 text-sm text-muted-600">UIU Campus pilot experience</p>
+            <p className="font-black text-brand-800">{tx("Rescue Food · Respect Time · Measure Impact")}</p>
+            <p className="mt-1 text-sm text-muted-600">{tx("UIU Campus pilot experience")}</p>
           </div>
         </div>
 
@@ -61,7 +63,7 @@ export function SplashScreen() {
         </div>
 
         <Link href={ROUTES.auth.onboarding} className="mt-8 inline-flex items-center gap-2 font-black text-brand-700 hover:text-brand-800">
-          Continue <ArrowRight className="size-5" />
+          {tx("Continue")}<ArrowRight className="size-5" />
         </Link>
       </div>
     </main>

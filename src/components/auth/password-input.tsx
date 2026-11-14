@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { useState } from "react";
@@ -16,6 +17,7 @@ export function PasswordInput({
   required = true,
   ...props
 }: PasswordInputProps) {
+  const tx = useUiText();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -36,7 +38,7 @@ export function PasswordInput({
         type="button"
         onClick={() => setVisible((value) => !value)}
         className="absolute right-2 top-8 grid size-8 place-items-center rounded-lg text-muted-600 transition hover:bg-brand-50 hover:text-brand-700"
-        aria-label={visible ? "Hide password" : "Show password"}
+        aria-label={visible ? tx("Hide password") : tx("Show password")}
       >
         {visible ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
       </button>

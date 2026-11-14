@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
   ArrowLeft,
@@ -6,10 +7,8 @@ import {
   BadgeCheck,
   Building2,
   CheckCircle2,
-  FileCheck2,
   HeartHandshake,
   Mail,
-  MapPin,
   Phone,
   ShieldCheck,
   Sparkles,
@@ -18,7 +17,7 @@ import {
   Utensils,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { AuthProgress } from "@/components/auth/auth-progress";
 import { PasswordInput } from "@/components/auth/password-input";
@@ -86,7 +85,7 @@ const ROLE_METAS: Record<RegistrationRole, RoleMeta> = {
 };
 
 export function RegisterForm() {
-  const router = useRouter();
+  const tx = useUiText();
   const searchParams = useSearchParams();
   const rawRole = searchParams.get("role");
   const initialRole: RegistrationRole = rawRole === "ngo" || rawRole === "volunteer" ? rawRole : "donor";
@@ -101,7 +100,7 @@ export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customFields, setCustomFields] = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLFormElement>(null);
-  const { signIn } = useMockAuth();
+  const { refreshSession } = useMockAuth();
 
   const activeMeta = ROLE_METAS[role];
 
@@ -240,7 +239,6 @@ export function RegisterForm() {
 
     setIsSubmitting(true);
     const userRole = role === "ngo" ? UserRole.NGO : role === "volunteer" ? UserRole.VOLUNTEER : UserRole.DONOR;
-    const finalDisplayName = (role === "ngo" ? data.organizationName : (data.fullName || data.organizationName)) || "ShareBite Member";
 
     try {
       const response = await fetch("/api/auth/register", {
@@ -253,6 +251,7 @@ export function RegisterForm() {
           organizationName: data.organizationName,
           phone: data.phone,
           role: userRole,
+          termsAccepted,
           details: {
             address: data.address,
             city: data.city,
@@ -282,23 +281,13 @@ export function RegisterForm() {
         setRegisteredUserId(resData.user.id);
       }
 
-      signIn({
-        email: data.email,
-        displayName: finalDisplayName,
-        role: userRole,
-        remember: true,
-      });
+      const session = await refreshSession();
+      if (!session) throw new Error("সেশন তৈরি করা যায়নি। লগইন করে চেষ্টা করুন।");
 
       setCurrentStep(4);
-    } catch (err) {
-      console.warn("Database sync note:", err);
-      signIn({
-        email: data.email,
-        displayName: finalDisplayName,
-        role: userRole,
-        remember: true,
-      });
-      setCurrentStep(4);
+    } catch (error) {
+      setErrors({ email: error instanceof Error ? error.message : "সার্ভারে যোগাযোগ করা যায়নি। আবার চেষ্টা করুন।" });
+      setCurrentStep(1);
     } finally {
       setIsSubmitting(false);
     }
@@ -325,20 +314,17 @@ export function RegisterForm() {
         <div className="mt-6">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/20 font-heading">
             <BadgeCheck className="size-3.5 text-emerald-600" />
-            আবেদন সফলভাবে গৃহীত হয়েছে
-          </span>
+            {tx("আবেদন সফলভাবে গৃহীত হয়েছে")}</span>
           <h1 className="mt-3 text-2xl font-black text-slate-900 sm:text-3xl font-heading">
-            ShareBite BD-তে আপনাকে স্বাগতম!
-          </h1>
+            {tx("ShareBite BD-তে আপনাকে স্বাগতম!")}</h1>
           <p className="mx-auto mt-2 max-w-md text-xs sm:text-sm leading-relaxed text-slate-600 font-normal">
-            আপনার <strong className="text-slate-900">{activeMeta.title}</strong> প্রোফাইল রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।
-          </p>
+            {tx("আপনার")}<strong className="text-slate-900">{tx(activeMeta.title)}</strong> {tx("প্রোফাইল রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।")}</p>
         </div>
 
         {/* Verification Summary Card */}
         <div className="mx-auto mt-6 max-w-lg rounded-2xl border border-slate-200/90 bg-slate-50/70 p-5 text-left shadow-xs">
           <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-            <span className="text-xs font-bold text-slate-500 font-heading">ট্র্যাকিং রেফারেন্স আইডি</span>
+            <span className="text-xs font-bold text-slate-500 font-heading">{tx("ট্র্যাকিং রেফারেন্স আইডি")}</span>
             <span className="rounded-md bg-white px-2.5 py-1 text-xs font-black text-emerald-700 ring-1 ring-slate-200 font-mono">
               {trackingId}
             </span>
@@ -348,14 +334,10 @@ export function RegisterForm() {
             <ShieldCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" />
             <div>
               <p className="text-sm font-bold text-slate-900 font-heading">
-                {role === "donor"
-                  ? "ডোনার প্রোফাইল ব্যবহারের জন্য প্রস্তুত"
-                  : "প্রাতিষ্ঠানিক নথি ভেরিফিকেশন প্রক্রিয়াধীন"}
+                {role === "donor" ? tx("ডোনার প্রোফাইল ব্যবহারের জন্য প্রস্তুত") : tx("প্রাতিষ্ঠানিক নথি ভেরিফিকেশন প্রক্রিয়াধীন")}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600 font-normal">
-                {role === "donor"
-                  ? "আপনার প্রতিষ্ঠানের ক্যাফেটেরিয়া বা রেস্তোরাঁর উদ্বৃত্ত খাবারের তথ্য পোস্ট করতে এখনই ড্যাশবোর্ডে প্রবেশ করতে পারেন।"
-                  : "নিবন্ধিত সনদ ও পরিচয়পত্র প্রশাসন কর্তৃক অডিট সম্পন্ন করা হচ্ছে। ডেমো সংস্করণে আপনি এখনই টেস্ট ড্যাশবোর্ড পরখ করে দেখতে পারবেন।"}
+                {role === "donor" ? tx("আপনার প্রতিষ্ঠানের ক্যাফেটেরিয়া বা রেস্তোরাঁর উদ্বৃত্ত খাবারের তথ্য পোস্ট করতে এখনই ড্যাশবোর্ডে প্রবেশ করতে পারেন।") : tx("নিবন্ধিত সনদ ও পরিচয়পত্র প্রশাসন কর্তৃক অডিট সম্পন্ন করা হচ্ছে। ডেমো সংস্করণে আপনি এখনই টেস্ট ড্যাশবোর্ড পরখ করে দেখতে পারবেন।")}
               </p>
             </div>
           </div>
@@ -369,26 +351,23 @@ export function RegisterForm() {
             className="w-full sm:w-auto shadow-md shadow-emerald-700/20"
             rightIcon={<ArrowRight className="size-4" />}
           >
-            সরাসরি ড্যাশবোর্ডে প্রবেশ করুন
-          </ButtonLink>
+            {tx("সরাসরি ড্যাশবোর্ডে প্রবেশ করুন")}</ButtonLink>
           <ButtonLink
             href={ROUTES.auth.login}
             size="lg"
             variant="outline"
             className="w-full sm:w-auto"
           >
-            লগইন পেজে যান
-          </ButtonLink>
+            {tx("লগইন পেজে যান")}</ButtonLink>
         </div>
 
         <p className="mt-5 text-center text-xs text-slate-500">
-          ভিন্ন রোলে অ্যাকাউন্ট তৈরি করতে চান?{" "}
+          {tx("ভিন্ন রোলে অ্যাকাউন্ট তৈরি করতে চান?")}{" "}
           <Link
             href={ROUTES.auth.roleSelection}
             className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors font-heading"
           >
-            সব ভূমিকা নির্বাচন পেজ দেখুন
-          </Link>
+            {tx("সব ভূমিকা নির্বাচন পেজ দেখুন")}</Link>
         </p>
       </div>
     );
@@ -402,21 +381,13 @@ export function RegisterForm() {
       {/* 2. Step Header */}
       <div className="border-b border-slate-200/80 pb-4">
         <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/15 font-heading">
-          ধাপ {currentStep}: {steps[currentStep - 1].label}
+          {tx("ধাপ")}{currentStep}: {tx(steps[currentStep - 1].label)}
         </span>
         <h1 className="mt-2 text-xl font-black text-slate-900 sm:text-2xl font-heading">
-          {currentStep === 1
-            ? `${activeMeta.title} হিসেবে অ্যাকাউন্ট তৈরি করুন`
-            : currentStep === 2
-            ? activeMeta.step2Title
-            : "যাচাইকরণ নথি ও খাদ্য নিরাপত্তা শর্ত"}
+          {currentStep === 1 ? tx("{0} হিসেবে অ্যাকাউন্ট তৈরি করুন", tx(activeMeta.title)) : currentStep === 2 ? tx(activeMeta.step2Title) : tx("যাচাইকরণ নথি ও খাদ্য নিরাপত্তা শর্ত")}
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-slate-600 font-normal">
-          {currentStep === 1
-            ? "আপনার যোগাযোগের মৌলিক তথ্য ও পাসওয়ার্ড প্রদান করে নিবন্ধন শুরু করুন।"
-            : currentStep === 2
-            ? activeMeta.step2Description
-            : "সিস্টেমে স্বচ্ছতা ও জবাবদিহিতা নিশ্চিত করতে ড্রপডাউন থেকে তথ্যসমূহ নির্বাচন করুন।"}
+          {currentStep === 1 ? tx("আপনার যোগাযোগের মৌলিক তথ্য ও পাসওয়ার্ড প্রদান করে নিবন্ধন শুরু করুন।") : currentStep === 2 ? tx(activeMeta.step2Description) : tx("সিস্টেমে স্বচ্ছতা ও জবাবদিহিতা নিশ্চিত করতে ড্রপডাউন থেকে তথ্যসমূহ নির্বাচন করুন।")}
         </p>
       </div>
 
@@ -428,8 +399,8 @@ export function RegisterForm() {
               <Sparkles className="size-4" />
             </span>
             <div>
-              <p className="text-xs font-bold text-slate-800 font-heading">সহজে ১-ক্লিকে টেস্ট করতে চান?</p>
-              <p className="text-[11px] text-slate-500">প্রিসেট ডেমো ডেটা দিয়ে পলকে সব তথ্য পূরণ করুন</p>
+              <p className="text-xs font-bold text-slate-800 font-heading">{tx("সহজে ১-ক্লিকে টেস্ট করতে চান?")}</p>
+              <p className="text-[11px] text-slate-500">{tx("প্রিসেট ডেমো ডেটা দিয়ে পলকে সব তথ্য পূরণ করুন")}</p>
             </div>
           </div>
           <button
@@ -437,7 +408,7 @@ export function RegisterForm() {
             onClick={() => applyDemoPreset(role)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition-all active:scale-95 shadow-sm shadow-emerald-700/20 cursor-pointer touch-manipulation font-heading"
           >
-            <span>⚡ ডেমো অটো-ফিল</span>
+            <span>{tx("⚡ ডেমো অটো-ফিল")}</span>
           </button>
         </div>
       )}
@@ -447,8 +418,8 @@ export function RegisterForm() {
         {hasErrors(errors) && (
           <Alert
             tone="danger"
-            title="তথ্যগুলো আবার পরীক্ষা করুন"
-            description="অনুগ্রহ করে নিচে লাল রঙে চিহ্নিত ঘরগুলোতে সঠিক তথ্য প্রদান করুন।"
+            title={tx("তথ্যগুলো আবার পরীক্ষা করুন")}
+            description={tx("অনুগ্রহ করে নিচে লাল রঙে চিহ্নিত ঘরগুলোতে সঠিক তথ্য প্রদান করুন।")}
           />
         )}
 
@@ -458,7 +429,7 @@ export function RegisterForm() {
             {/* Role Dropdown */}
             <div className="sm:col-span-2">
               <Select
-                label="আপনার ভূমিকা নির্বাচন করুন (Select Role)"
+                label={tx("আপনার ভূমিকা নির্বাচন করুন (Select Role)")}
                 name="role"
                 value={role}
                 onChange={(e) => {
@@ -466,74 +437,73 @@ export function RegisterForm() {
                   setErrors({});
                 }}
               >
-                <option value="donor">👨‍🍳 ফুড ডোনার (ক্যাফেটেরিয়া, রেস্তোরাঁ ও মেজবান)</option>
-                <option value="ngo">🏢 এনজিও ও চ্যারিটি (বিদ্যানন্দ, মাস্তুল ও খাদ্য ব্যাংক)</option>
-                <option value="volunteer">🚴 ভলান্টিয়ার স্কোয়াড (রাইডার ও ফিল্ড রেসকিউ টিম)</option>
+                <option value="donor">{tx("👨‍🍳 ফুড ডোনার (ক্যাফেটেরিয়া, রেস্তোরাঁ ও মেজবান)")}</option>
+                <option value="ngo">{tx("🏢 এনজিও ও চ্যারিটি (বিদ্যানন্দ, মাস্তুল ও খাদ্য ব্যাংক)")}</option>
+                <option value="volunteer">{tx("🚴 ভলান্টিয়ার স্কোয়াড (রাইডার ও ফিল্ড রেসকিউ টিম)")}</option>
               </Select>
             </div>
 
             <Input
-              label={role === "ngo" ? "দায়িত্বপ্রাপ্ত কর্মকর্তার পুরো নাম" : "আপনার পুরো নাম"}
+              label={role === "ngo" ? tx("দায়িত্বপ্রাপ্ত কর্মকর্তার পুরো নাম") : tx("আপনার পুরো নাম")}
               name="fullName"
               value={data.fullName}
               onChange={updateField}
               required
-              error={errors.fullName}
-              placeholder={role === "ngo" ? "যেমন: তানভীর আহমেদ (প্রজেক্ট কো-অর্ডিনেটর)" : "যেমন: সাজিদ মাহমুদ"}
+              error={tx(errors.fullName)}
+              placeholder={role === "ngo" ? tx("যেমন: তানভীর আহমেদ (প্রজেক্ট কো-অর্ডিনেটর)") : tx("যেমন: সাজিদ মাহমুদ")}
               autoComplete="name"
               leftIcon={<UserRound className="size-5" />}
               containerClassName="sm:col-span-2"
             />
             <Input
-              label="অফিসিয়াল ইমেইল ঠিকানা"
+              label={tx("অফিসিয়াল ইমেইল ঠিকানা")}
               name="email"
               type="email"
               value={data.email}
               onChange={updateField}
               required
-              error={errors.email}
+              error={tx(errors.email)}
               placeholder="name@institution.com"
               autoComplete="email"
               leftIcon={<Mail className="size-5" />}
             />
             <Input
-              label="সচল মোবাইল নম্বর"
+              label={tx("সচল মোবাইল নম্বর")}
               name="phone"
               type="tel"
               value={data.phone}
               onChange={updateField}
               required
-              error={errors.phone}
-              placeholder="+880 1712-345678 বা 01712345678"
+              error={tx(errors.phone)}
+              placeholder={tx("+880 1712-345678 বা 01712345678")}
               autoComplete="tel"
               leftIcon={<Phone className="size-5" />}
             />
 
             <PasswordInput
-              label="পাসওয়ার্ড তৈরি করুন"
+              label={tx("পাসওয়ার্ড তৈরি করুন")}
               name="password"
               value={data.password}
               onChange={updateField}
-              error={errors.password}
-              hint="কমপক্ষে ৮ অক্ষর, একটি বর্ণ ও একটি সংখ্যা থাকতে হবে।"
-              placeholder="পাসওয়ার্ড লিখুন (Demo1234)"
+              error={tx(errors.password)}
+              hint={tx("কমপক্ষে ৮ অক্ষর, একটি বর্ণ ও একটি সংখ্যা থাকতে হবে।")}
+              placeholder={tx("পাসওয়ার্ড লিখুন (Demo1234)")}
               autoComplete="new-password"
             />
             <PasswordInput
-              label="পাসওয়ার্ড নিশ্চিত করুন"
+              label={tx("পাসওয়ার্ড নিশ্চিত করুন")}
               name="confirmPassword"
               value={data.confirmPassword}
               onChange={updateField}
-              error={errors.confirmPassword}
-              placeholder="পাসওয়ার্ড পুনরায় লিখুন"
+              error={tx(errors.confirmPassword)}
+              placeholder={tx("পাসওয়ার্ড পুনরায় লিখুন")}
               autoComplete="new-password"
             />
 
             <div className="sm:col-span-2 flex items-start gap-2.5 rounded-xl border border-emerald-100 bg-emerald-50/60 p-3 text-xs leading-relaxed text-emerald-900 font-medium">
               <ShieldCheck className="size-4 shrink-0 text-emerald-600 mt-0.5" />
               <span>
-                🔒 আপনার ব্যক্তিগত মোবাইল নম্বর ও তথ্য সম্পূর্ণ এনক্রিপ্ট থাকে এবং শুধুমাত্র খাবার হ্যান্ডওভারের সময় ওটিপি যাচাইকরণের জন্য ব্যবহৃত হবে।
-              </span>
+                {tx("🔒 আপনার ব্যক্তিগত মোবাইল নম্বর ও তথ্য সম্পূর্ণ এনক্রিপ্ট থাকে এবং শুধুমাত্র খাবার হ্যান্ডওভারের সময় ওটিপি যাচাইকরণের জন্য ব্যবহৃত হবে।")}</span>
             </div>
           </div>
         )}
@@ -544,7 +514,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.donorType ? (
                 <Select
-                  label="দাতার ধরন নির্বাচন করুন (Donor Type)"
+                  label={tx("দাতার ধরন নির্বাচন করুন (Donor Type)")}
                   name="donorType"
                   value={data.donorType}
                   onChange={(e) => {
@@ -556,36 +526,35 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.donorType}
+                  error={tx(errors.donorType)}
                 >
-                  <option value="">-- দাতার ধরন বেছে নিন --</option>
-                  <option value="cafeteria">বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU, AIUB)</option>
-                  <option value="restaurant">বাণিজ্যিক রেস্তোরাঁ ও ক্যাফে</option>
-                  <option value="event">কমিউনিটি সেন্টার ও বিয়ের মেজবান</option>
-                  <option value="bakery">বেকারি ও পেস্ট্রি শপ</option>
-                  <option value="individual">ব্যক্তিগত বা পারিবারিক আয়োজন</option>
-                  <option value="__custom__">✏️ অন্যান্য ধরন (নিজে টাইপ করব)</option>
+                  <option value="">{tx("-- দাতার ধরন বেছে নিন --")}</option>
+                  <option value="cafeteria">{tx("বিশ্ববিদ্যালয় ক্যাফেটেরিয়া (UIU, BRACU, AIUB)")}</option>
+                  <option value="restaurant">{tx("বাণিজ্যিক রেস্তোরাঁ ও ক্যাফে")}</option>
+                  <option value="event">{tx("কমিউনিটি সেন্টার ও বিয়ের মেজবান")}</option>
+                  <option value="bakery">{tx("বেকারি ও পেস্ট্রি শপ")}</option>
+                  <option value="individual">{tx("ব্যক্তিগত বা পারিবারিক আয়োজন")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য ধরন (নিজে টাইপ করব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>দাতার ধরন ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("দাতার ধরন ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("donorType", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="donorType"
                     value={data.donorType}
                     onChange={updateField}
-                    placeholder="যেমন: করপোরেট অফিস ক্যান্টিন / ফুড কোর্ট"
+                    placeholder={tx("যেমন: করপোরেট অফিস ক্যান্টিন / ফুড কোর্ট")}
                     autoFocus
                     required
-                    error={errors.donorType}
+                    error={tx(errors.donorType)}
                   />
                 </div>
               )}
@@ -594,7 +563,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.organizationName ? (
                 <Select
-                  label="প্রতিষ্ঠান বা শাখার নাম (তালিকা থেকে বেছে নিন)"
+                  label={tx("প্রতিষ্ঠান বা শাখার নাম (তালিকা থেকে বেছে নিন)")}
                   name="organizationName"
                   value={data.organizationName}
                   onChange={(e) => {
@@ -620,33 +589,32 @@ export function RegisterForm() {
                     }
                   }}
                 >
-                  <option value="">-- প্রতিষ্ঠান নির্বাচন করুন --</option>
-                  <option value="UIU সেন্ট্রাল ক্যাফেটেরিয়া">🏫 UIU সেন্ট্রাল ক্যাফেটেরিয়া (ইউনাইটেড সিটি)</option>
-                  <option value="BRACU ক্যাফেটেরিয়া">🏫 BRACU ক্যাফেটেরিয়া (মেরুল বাড্ডা)</option>
-                  <option value="AIUB সেন্ট্রাল ক্যান্টিন">🏫 AIUB সেন্ট্রাল ক্যান্টিন (কুড়িল)</option>
-                  <option value="সুলতান'স ডাইন (ধানমন্ডি শাখা)">🍽️ সুলতান'স ডাইন (ধানমন্ডি শাখা)</option>
-                  <option value="কাচ্চি ভাই (মিরপুর শাখা)">🍽️ কাচ্চি ভাই (মিরপুর শাখা)</option>
-                  <option value="গ্র্যান্ড নবাব কনভেনশন সেন্টার">🎪 গ্র্যান্ড নবাব কনভেনশন সেন্টার</option>
-                  <option value="সেনা কুঞ্জ মেজবান হল">🎪 সেনা কুঞ্জ কনভেনশন সেন্টার</option>
-                  <option value="__custom__">✏️ অন্যান্য প্রতিষ্ঠান (নিজে নাম লিখব)</option>
+                  <option value="">{tx("-- প্রতিষ্ঠান নির্বাচন করুন --")}</option>
+                  <option value="UIU সেন্ট্রাল ক্যাফেটেরিয়া">{tx("🏫 UIU সেন্ট্রাল ক্যাফেটেরিয়া (ইউনাইটেড সিটি)")}</option>
+                  <option value="BRACU ক্যাফেটেরিয়া">{tx("🏫 BRACU ক্যাফেটেরিয়া (মেরুল বাড্ডা)")}</option>
+                  <option value="AIUB সেন্ট্রাল ক্যান্টিন">{tx("🏫 AIUB সেন্ট্রাল ক্যান্টিন (কুড়িল)")}</option>
+                  <option value="সুলতান'স ডাইন (ধানমন্ডি শাখা)">{tx("🍽️ সুলতান'স ডাইন (ধানমন্ডি শাখা)")}</option>
+                  <option value="কাচ্চি ভাই (মিরপুর শাখা)">{tx("🍽️ কাচ্চি ভাই (মিরপুর শাখা)")}</option>
+                  <option value="গ্র্যান্ড নবাব কনভেনশন সেন্টার">{tx("🎪 গ্র্যান্ড নবাব কনভেনশন সেন্টার")}</option>
+                  <option value="সেনা কুঞ্জ মেজবান হল">{tx("🎪 সেনা কুঞ্জ কনভেনশন সেন্টার")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য প্রতিষ্ঠান (নিজে নাম লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>প্রতিষ্ঠানের নাম ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("প্রতিষ্ঠানের নাম ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("organizationName", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="organizationName"
                     value={data.organizationName}
                     onChange={updateField}
-                    placeholder="আপনার প্রতিষ্ঠান বা ক্যাফেটেরিয়ার নাম লিখুন"
+                    placeholder={tx("আপনার প্রতিষ্ঠান বা ক্যাফেটেরিয়ার নাম লিখুন")}
                     autoFocus
                     leftIcon={<Building2 className="size-5" />}
                   />
@@ -657,7 +625,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.address ? (
                 <Select
-                  label="খাদ্য সংগ্রহের প্রাথমিক পিকআপ এলাকা (এলাকা বেছে নিন)"
+                  label={tx("খাদ্য সংগ্রহের প্রাথমিক পিকআপ এলাকা (এলাকা বেছে নিন)")}
                   name="address"
                   value={data.address}
                   onChange={(e) => {
@@ -669,38 +637,37 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.address}
+                  error={tx(errors.address)}
                 >
-                  <option value="">-- পিকআপ এলাকা নির্বাচন করুন --</option>
-                  <option value="ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২">📍 মাদানী এভিনিউ, বাড্ডা (UIU ক্যাম্পাস সংলগ্ন)</option>
-                  <option value="ধানমন্ডি ২৭, ঢাকা-১২০৯">📍 ধানমন্ডি ২৭ ও সংলগ্ন এলাকা</option>
-                  <option value="গুলশান ২, ঢাকা-১২১২">📍 গুলশান ২ ও সার্কেল এরিয়া</option>
-                  <option value="মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬">📍 মিরপুর ১০ ও কাজীপাড়া</option>
-                  <option value="উত্তরা সেক্টর ৩, ঢাকা-১২৩০">📍 উত্তরা সেক্টর ৩ ও জসিমউদ্দীন মোড়</option>
-                  <option value="বনানী ১১ নম্বর রোড, ঢাকা">📍 বনানী ১১ নম্বর ও কামাল আতাতুর্ক</option>
-                  <option value="আফতাবনগর প্রধান সড়ক, ঢাকা">📍 আফতাবনগর ও রামপুরা</option>
-                  <option value="__custom__">✏️ অন্যান্য এলাকা (নিজের ঠিকানা লিখব)</option>
+                  <option value="">{tx("-- পিকআপ এলাকা নির্বাচন করুন --")}</option>
+                  <option value="ইউনাইটেড সিটি, মাদানী এভিনিউ, বাড্ডা, ঢাকা-১২১২">{tx("📍 মাদানী এভিনিউ, বাড্ডা (UIU ক্যাম্পাস সংলগ্ন)")}</option>
+                  <option value="ধানমন্ডি ২৭, ঢাকা-১২০৯">{tx("📍 ধানমন্ডি ২৭ ও সংলগ্ন এলাকা")}</option>
+                  <option value="গুলশান ২, ঢাকা-১২১২">{tx("📍 গুলশান ২ ও সার্কেল এরিয়া")}</option>
+                  <option value="মিরপুর ১০ গোলচত্বর, ঢাকা-১২১৬">{tx("📍 মিরপুর ১০ ও কাজীপাড়া")}</option>
+                  <option value="উত্তরা সেক্টর ৩, ঢাকা-১২৩০">{tx("📍 উত্তরা সেক্টর ৩ ও জসিমউদ্দীন মোড়")}</option>
+                  <option value="বনানী ১১ নম্বর রোড, ঢাকা">{tx("📍 বনানী ১১ নম্বর ও কামাল আতাতুর্ক")}</option>
+                  <option value="আফতাবনগর প্রধান সড়ক, ঢাকা">{tx("📍 আফতাবনগর ও রামপুরা")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য এলাকা (নিজের ঠিকানা লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>পিকআপের বিস্তারিত ঠিকানা ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("পিকআপের বিস্তারিত ঠিকানা ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("address", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="address"
                     value={data.address}
                     onChange={updateField}
-                    placeholder="যেমন: বাড়ি #১২, রোড #৪, বনশ্রী, ঢাকা"
+                    placeholder={tx("যেমন: বাড়ি #১২, রোড #৪, বনশ্রী, ঢাকা")}
                     autoFocus
                     required
-                    error={errors.address}
+                    error={tx(errors.address)}
                   />
                 </div>
               )}
@@ -709,7 +676,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.notes ? (
                 <Select
-                  label="উদ্বৃত্ত খাবার প্রস্তুতির সময়সূচি ও নির্দেশিকা (সময় বেছে নিন)"
+                  label={tx("উদ্বৃত্ত খাবার প্রস্তুতির সময়সূচি ও নির্দেশিকা (সময় বেছে নিন)")}
                   name="notes"
                   value={data.notes}
                   onChange={(e) => {
@@ -721,30 +688,29 @@ export function RegisterForm() {
                     }
                   }}
                 >
-                  <option value="">-- সময়সূচি বেছে নিন --</option>
-                  <option value="প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।">☀️ দুপুর ৩টা (লাঞ্চের উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
-                  <option value="রাত ১০টায় মেজবানি ও ডিনারের তাজা খাবার প্রস্তুত থাকে।">🌙 রাত ১০টা (ডিনার ও মেজবানি উদ্বৃত্ত খাবার প্রস্তুত থাকে)</option>
-                  <option value="সন্ধ্যা ৬টা ও মধ্যরাত ১২টায় দিনে ২ বার খাবার হস্তান্তর সম্ভব।">⚡ দিনে ২ বার (বিকাল ও মধ্যরাতে হস্তান্তরের সুযোগ)</option>
-                  <option value="জরুরি যে কোনো ইভেন্ট শেষে কল দিয়ে অবগত করা হবে।">📞 জরুরি ইভেন্ট (খাবার তৈরি হলে তাৎক্ষণিক কল দেওয়া হবে)</option>
-                  <option value="__custom__">✏️ অন্যান্য সময় ও নির্দেশিকা (নিজে লিখব)</option>
+                  <option value="">{tx("-- সময়সূচি বেছে নিন --")}</option>
+                  <option value="প্রতিদিন দুপুর ৩টায় লাঞ্চের উদ্বৃত্ত খাবার তৈরি থাকে।">{tx("☀️ দুপুর ৩টা (লাঞ্চের উদ্বৃত্ত খাবার প্রস্তুত থাকে)")}</option>
+                  <option value="রাত ১০টায় মেজবানি ও ডিনারের তাজা খাবার প্রস্তুত থাকে।">{tx("🌙 রাত ১০টা (ডিনার ও মেজবানি উদ্বৃত্ত খাবার প্রস্তুত থাকে)")}</option>
+                  <option value="সন্ধ্যা ৬টা ও মধ্যরাত ১২টায় দিনে ২ বার খাবার হস্তান্তর সম্ভব।">{tx("⚡ দিনে ২ বার (বিকাল ও মধ্যরাতে হস্তান্তরের সুযোগ)")}</option>
+                  <option value="জরুরি যে কোনো ইভেন্ট শেষে কল দিয়ে অবগত করা হবে।">{tx("📞 জরুরি ইভেন্ট (খাবার তৈরি হলে তাৎক্ষণিক কল দেওয়া হবে)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য সময় ও নির্দেশিকা (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>খাদ্য হ্যান্ডওভার নির্দেশিকা ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("খাদ্য হ্যান্ডওভার নির্দেশিকা ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("notes", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="notes"
                     value={data.notes}
                     onChange={updateField}
-                    placeholder="যেমন: কিচেন ম্যানেজারের সাথে সরাসরি যোগাযোগ করুন বা সার্ভিসের সময় লিখুন।"
+                    placeholder={tx("যেমন: কিচেন ম্যানেজারের সাথে সরাসরি যোগাযোগ করুন বা সার্ভিসের সময় লিখুন।")}
                     autoFocus
                   />
                 </div>
@@ -759,7 +725,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.organizationName ? (
                 <Select
-                  label="সংস্থার প্রাতিষ্ঠানিক নাম (তালিকা থেকে বেছে নিন)"
+                  label={tx("সংস্থার প্রাতিষ্ঠানিক নাম (তালিকা থেকে বেছে নিন)")}
                   name="organizationName"
                   value={data.organizationName}
                   onChange={(e) => {
@@ -791,35 +757,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.organizationName}
+                  error={tx(errors.organizationName)}
                 >
-                  <option value="">-- চ্যারিটি সংস্থা বেছে নিন --</option>
-                  <option value="মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)">🏢 মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)</option>
-                  <option value="বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)">🏢 বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)</option>
-                  <option value="আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)">🏢 আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)</option>
-                  <option value="এক টাকায় আহার প্রকল্প (মিরপুর শাখা)">🏢 এক টাকায় আহার প্রকল্প (মিরপুর শাখা)</option>
-                  <option value="__custom__">✏️ অন্যান্য নিবন্ধিত চ্যারিটি (নিজে লিখব)</option>
+                  <option value="">{tx("-- চ্যারিটি সংস্থা বেছে নিন --")}</option>
+                  <option value="মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)">{tx("🏢 মাস্তুল ফাউন্ডেশন (বাড্ডা শাখা)")}</option>
+                  <option value="বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)">{tx("🏢 বিদ্যানন্দ ফাউন্ডেশন (ঢাকা জোন)")}</option>
+                  <option value="আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)">{tx("🏢 আস-সুন্নাহ ফাউন্ডেশন (উত্তরা হেডকোয়ার্টার)")}</option>
+                  <option value="এক টাকায় আহার প্রকল্প (মিরপুর শাখা)">{tx("🏢 এক টাকায় আহার প্রকল্প (মিরপুর শাখা)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য নিবন্ধিত চ্যারিটি (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>সংস্থার প্রাতিষ্ঠানিক নাম ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("সংস্থার প্রাতিষ্ঠানিক নাম ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("organizationName", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="organizationName"
                     value={data.organizationName}
                     onChange={updateField}
-                    placeholder="যেমন: আলোকবর্তিকা মানবকল্যাণ সংস্থা"
+                    placeholder={tx("যেমন: আলোকবর্তিকা মানবকল্যাণ সংস্থা")}
                     autoFocus
                     required
-                    error={errors.organizationName}
+                    error={tx(errors.organizationName)}
                     leftIcon={<Building2 className="size-5" />}
                   />
                 </div>
@@ -829,7 +794,7 @@ export function RegisterForm() {
             <div>
               {!customFields.registrationNumber ? (
                 <Select
-                  label="সরকারি নিবন্ধন বা লাইসেন্স নম্বর (নম্বর বেছে নিন)"
+                  label={tx("সরকারি নিবন্ধন বা লাইসেন্স নম্বর (নম্বর বেছে নিন)")}
                   name="registrationNumber"
                   value={data.registrationNumber}
                   onChange={(e) => {
@@ -841,35 +806,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.registrationNumber}
+                  error={tx(errors.registrationNumber)}
                 >
-                  <option value="">-- নিবন্ধন নম্বর নির্বাচন করুন --</option>
-                  <option value="NGO-GOV-2026-912">📜 NGO-GOV-2026-912 (সমাজসেবা অধিদপ্তর)</option>
-                  <option value="DSW-DHAKA-4820">📜 DSW-DHAKA-4820 (এনজিও বিষয়ক ব্যুরো)</option>
-                  <option value="BFSA-TEST-REG-09">📜 BFSA-TEST-REG-09 (খাদ্য নিরাপত্তা সনদ)</option>
-                  <option value="RJSC-SOC-5521">📜 RJSC-SOC-5521 (যৌথ মূলধনি কোম্পানি)</option>
-                  <option value="__custom__">✏️ অন্যান্য নিবন্ধন নম্বর (নিজে লিখব)</option>
+                  <option value="">{tx("-- নিবন্ধন নম্বর নির্বাচন করুন --")}</option>
+                  <option value="NGO-GOV-2026-912">{tx("📜 NGO-GOV-2026-912 (সমাজসেবা অধিদপ্তর)")}</option>
+                  <option value="DSW-DHAKA-4820">{tx("📜 DSW-DHAKA-4820 (এনজিও বিষয়ক ব্যুরো)")}</option>
+                  <option value="BFSA-TEST-REG-09">{tx("📜 BFSA-TEST-REG-09 (খাদ্য নিরাপত্তা সনদ)")}</option>
+                  <option value="RJSC-SOC-5521">{tx("📜 RJSC-SOC-5521 (যৌথ মূলধনি কোম্পানি)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য নিবন্ধন নম্বর (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>নিবন্ধন বা লাইসেন্স নম্বর লিখুন:</span>
+                    <span>{tx("নিবন্ধন বা লাইসেন্স নম্বর লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("registrationNumber", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="registrationNumber"
                     value={data.registrationNumber}
                     onChange={updateField}
-                    placeholder="যেমন: DSW-REG-9876 বা NGO-2026-10"
+                    placeholder={tx("যেমন: DSW-REG-9876 বা NGO-2026-10")}
                     autoFocus
                     required
-                    error={errors.registrationNumber}
+                    error={tx(errors.registrationNumber)}
                   />
                 </div>
               )}
@@ -878,7 +842,7 @@ export function RegisterForm() {
             <div>
               {!customFields.beneficiaryType ? (
                 <Select
-                  label="প্রধান সুবিধাভোগী শ্রেণি (সুবিধাভোগী বেছে নিন)"
+                  label={tx("প্রধান সুবিধাভোগী শ্রেণি (সুবিধাভোগী বেছে নিন)")}
                   name="beneficiaryType"
                   value={data.beneficiaryType}
                   onChange={(e) => {
@@ -890,35 +854,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.beneficiaryType}
+                  error={tx(errors.beneficiaryType)}
                 >
-                  <option value="">-- সুবিধাভোগী শ্রেণি বেছে নিন --</option>
-                  <option value="shelter">পথশিশু ও বস্তিবাসী পরিবার (Shelter)</option>
-                  <option value="community">দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ (Daily Wage)</option>
-                  <option value="elderly">বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি (Elderly)</option>
-                  <option value="women">সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন (Women & Child)</option>
-                  <option value="__custom__">✏️ অন্যান্য সুবিধাভোগী শ্রেণি (নিজে লিখব)</option>
+                  <option value="">{tx("-- সুবিধাভোগী শ্রেণি বেছে নিন --")}</option>
+                  <option value="shelter">{tx("পথশিশু ও বস্তিবাসী পরিবার (Shelter)")}</option>
+                  <option value="community">{tx("দিনমজুর ও নিম্নআয়ের শ্রমজীবী মানুষ (Daily Wage)")}</option>
+                  <option value="elderly">{tx("বৃদ্ধাশ্রম ও বিশেষ চাহিদাসম্পন্ন ব্যক্তি (Elderly)")}</option>
+                  <option value="women">{tx("সুবিধাবঞ্চিত নারী ও শিশু পুনর্বাসন (Women & Child)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য সুবিধাভোগী শ্রেণি (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>সুবিধাভোগী শ্রেণি ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("সুবিধাভোগী শ্রেণি ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("beneficiaryType", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="beneficiaryType"
                     value={data.beneficiaryType}
                     onChange={updateField}
-                    placeholder="যেমন: এতিমখানা ও মাদ্রাসার শিক্ষার্থী"
+                    placeholder={tx("যেমন: এতিমখানা ও মাদ্রাসার শিক্ষার্থী")}
                     autoFocus
                     required
-                    error={errors.beneficiaryType}
+                    error={tx(errors.beneficiaryType)}
                   />
                 </div>
               )}
@@ -927,7 +890,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.city ? (
                 <Select
-                  label="কার্যনির্বাহী শহর ও অঞ্চল (শহর বেছে নিন)"
+                  label={tx("কার্যনির্বাহী শহর ও অঞ্চল (শহর বেছে নিন)")}
                   name="city"
                   value={data.city}
                   onChange={(e) => {
@@ -939,35 +902,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.city}
+                  error={tx(errors.city)}
                 >
-                  <option value="">-- শহর নির্বাচন করুন --</option>
-                  <option value="ঢাকা উত্তর সিটি কর্পোরেশন">ঢাকা উত্তর সিটি কর্পোরেশন (বাড্ডা, উত্তরা, গুলশান, মিরপুর)</option>
-                  <option value="ঢাকা দক্ষিণ সিটি কর্পোরেশন">ঢাকা দক্ষিণ সিটি কর্পোরেশন (ধানমন্ডি, মতিঝিল, পুরান ঢাকা)</option>
-                  <option value="চট্টগ্রাম সিটি কর্পোরেশন">চট্টগ্রাম সিটি কর্পোরেশন (জিইসি, আগ্রাবাদ, হালিশহর)</option>
-                  <option value="সিলেট ও পার্শ্ববর্তী অঞ্চল">সিলেট ও পার্শ্ববর্তী অঞ্চল (জিন্দাবাজার, আম্বরখানা)</option>
-                  <option value="__custom__">✏️ অন্যান্য শহর / জেলা (নিজে লিখব)</option>
+                  <option value="">{tx("-- শহর নির্বাচন করুন --")}</option>
+                  <option value="ঢাকা উত্তর সিটি কর্পোরেশন">{tx("ঢাকা উত্তর সিটি কর্পোরেশন (বাড্ডা, উত্তরা, গুলশান, মিরপুর)")}</option>
+                  <option value="ঢাকা দক্ষিণ সিটি কর্পোরেশন">{tx("ঢাকা দক্ষিণ সিটি কর্পোরেশন (ধানমন্ডি, মতিঝিল, পুরান ঢাকা)")}</option>
+                  <option value="চট্টগ্রাম সিটি কর্পোরেশন">{tx("চট্টগ্রাম সিটি কর্পোরেশন (জিইসি, আগ্রাবাদ, হালিশহর)")}</option>
+                  <option value="সিলেট ও পার্শ্ববর্তী অঞ্চল">{tx("সিলেট ও পার্শ্ববর্তী অঞ্চল (জিন্দাবাজার, আম্বরখানা)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য শহর / জেলা (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>শহর বা অঞ্চলের নাম লিখুন:</span>
+                    <span>{tx("শহর বা অঞ্চলের নাম লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("city", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="city"
                     value={data.city}
                     onChange={updateField}
-                    placeholder="যেমন: খুলনা সিটি কর্পোরেশন বা রাজশাহী"
+                    placeholder={tx("যেমন: খুলনা সিটি কর্পোরেশন বা রাজশাহী")}
                     autoFocus
                     required
-                    error={errors.city}
+                    error={tx(errors.city)}
                   />
                 </div>
               )}
@@ -976,7 +938,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.address ? (
                 <Select
-                  label="সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা (ঠিকানা বেছে নিন)"
+                  label={tx("সংস্থার কেন্দ্রীয় কার্যালয়ের ঠিকানা (ঠিকানা বেছে নিন)")}
                   name="address"
                   value={data.address}
                   onChange={(e) => {
@@ -988,35 +950,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.address}
+                  error={tx(errors.address)}
                 >
-                  <option value="">-- কার্যালয়ের ঠিকানা নির্বাচন করুন --</option>
-                  <option value="বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২">📍 বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২</option>
-                  <option value="বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬">📍 বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬</option>
-                  <option value="সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০">📍 সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০</option>
-                  <option value="বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯">📍 বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯</option>
-                  <option value="__custom__">✏️ অন্যান্য কার্যালয় ঠিকানা (নিজে লিখব)</option>
+                  <option value="">{tx("-- কার্যালয়ের ঠিকানা নির্বাচন করুন --")}</option>
+                  <option value="বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২">{tx("📍 বাড়ি #১৪, রোড #৭, ব্লক #সি, বাড্ডা, ঢাকা-১২১২")}</option>
+                  <option value="বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬">{tx("📍 বাড়ি #২২, রোড #৪, মিরপুর ১২, ঢাকা-১২১৬")}</option>
+                  <option value="সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০">{tx("📍 সেক্টর #৩, রোড #৭, উত্তরা, ঢাকা-১২৩০")}</option>
+                  <option value="বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯">{tx("📍 বাড়ি #৫২, রোড #৮/এ, ধানমন্ডি, ঢাকা-১২০৯")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য কার্যালয় ঠিকানা (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>সংস্থার কার্যালয়ের বিস্তারিত ঠিকানা লিখুন:</span>
+                    <span>{tx("সংস্থার কার্যালয়ের বিস্তারিত ঠিকানা লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("address", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="address"
                     value={data.address}
                     onChange={updateField}
-                    placeholder="যেমন: বাড়ি #৯, রোড #২, সেক্টর #১০, উত্তরা, ঢাকা"
+                    placeholder={tx("যেমন: বাড়ি #৯, রোড #২, সেক্টর #১০, উত্তরা, ঢাকা")}
                     autoFocus
                     required
-                    error={errors.address}
+                    error={tx(errors.address)}
                   />
                 </div>
               )}
@@ -1025,7 +986,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.notes ? (
                 <Select
-                  label="খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ (সক্ষমতা বেছে নিন)"
+                  label={tx("খাদ্য বণ্টন সক্ষমতা ও সংক্ষিপ্ত বিবরণ (সক্ষমতা বেছে নিন)")}
                   name="notes"
                   value={data.notes}
                   onChange={(e) => {
@@ -1037,35 +998,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.notes}
+                  error={tx(errors.notes)}
                 >
-                  <option value="">-- খাদ্য বণ্টন সক্ষমতা বেছে নিন --</option>
-                  <option value="দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ২৫০-৪০০ প্যাকেট (নিজস্ব ভ্যানে বিতরণ সক্ষমতা)</option>
-                  <option value="দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।">📦 দৈনিক ৫০০+ প্যাকেট (তাৎক্ষণিক বিতরণকারী স্বেচ্ছাসেবক দল)</option>
-                  <option value="দৈনিক ১০০-১৫০ প্যাকেট পথশিশু ও বৃদ্ধাশ্রমে বিতরণের সক্ষমতা রয়েছে।">📦 দৈনিক ১০০-১৫০ প্যাকেট (পথশিশু ও আশ্রমে বিতরণ)</option>
-                  <option value="জরুরি রাতে মেজবানি উদ্বৃত্ত খাবার আশ্রমে বিতরণের ব্যবস্থা রয়েছে।">🌙 নাইট স্কোয়াড (জরুরি রাতে উদ্বৃত্ত খাবার আশ্রমে বিতরণ)</option>
-                  <option value="__custom__">✏️ অন্যান্য সক্ষমতা বিবরণ (নিজে লিখব)</option>
+                  <option value="">{tx("-- খাদ্য বণ্টন সক্ষমতা বেছে নিন --")}</option>
+                  <option value="দৈনিক ২৫০-৪০০ প্যাকেট তাজা খাবার সংগ্রহ ও নিজস্ব ভ্যান যোগে বিতরণের সক্ষমতা রয়েছে।">{tx("📦 দৈনিক ২৫০-৪০০ প্যাকেট (নিজস্ব ভ্যানে বিতরণ সক্ষমতা)")}</option>
+                  <option value="দৈনিক ৫০০+ প্যাকেট খাবার তাৎক্ষণিক বিতরণ করার স্বেচ্ছাসেবক দল প্রস্তুত রয়েছে।">{tx("📦 দৈনিক ৫০০+ প্যাকেট (তাৎক্ষণিক বিতরণকারী স্বেচ্ছাসেবক দল)")}</option>
+                  <option value="দৈনিক ১০০-১৫০ প্যাকেট পথশিশু ও বৃদ্ধাশ্রমে বিতরণের সক্ষমতা রয়েছে।">{tx("📦 দৈনিক ১০০-১৫০ প্যাকেট (পথশিশু ও আশ্রমে বিতরণ)")}</option>
+                  <option value="জরুরি রাতে মেজবানি উদ্বৃত্ত খাবার আশ্রমে বিতরণের ব্যবস্থা রয়েছে।">{tx("🌙 নাইট স্কোয়াড (জরুরি রাতে উদ্বৃত্ত খাবার আশ্রমে বিতরণ)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য সক্ষমতা বিবরণ (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>খাদ্য বণ্টন সক্ষমতার বিবরণ লিখুন:</span>
+                    <span>{tx("খাদ্য বণ্টন সক্ষমতার বিবরণ লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("notes", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="notes"
                     value={data.notes}
                     onChange={updateField}
-                    placeholder="যেমন: আমাদের খাদ্য সংরক্ষণ ফ্রিজার রয়েছে এবং নিজস্ব পরিবহনে ২০০+ প্যাকেট খাবার বিতরণ করতে পারব।"
+                    placeholder={tx("যেমন: আমাদের খাদ্য সংরক্ষণ ফ্রিজার রয়েছে এবং নিজস্ব পরিবহনে ২০০+ প্যাকেট খাবার বিতরণ করতে পারব।")}
                     autoFocus
                     required
-                    error={errors.notes}
+                    error={tx(errors.notes)}
                   />
                 </div>
               )}
@@ -1079,7 +1039,7 @@ export function RegisterForm() {
             <div>
               {!customFields.city ? (
                 <Select
-                  label="বসবাসরত শহর ও অঞ্চল (শহর বেছে নিন)"
+                  label={tx("বসবাসরত শহর ও অঞ্চল (শহর বেছে নিন)")}
                   name="city"
                   value={data.city}
                   onChange={(e) => {
@@ -1091,36 +1051,35 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.city}
+                  error={tx(errors.city)}
                 >
-                  <option value="">-- শহর নির্বাচন করুন --</option>
-                  <option value="ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)">ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)</option>
-                  <option value="ঢাকা (ধানমন্ডি ও জিগাতলা জোন)">ঢাকা (ধানমন্ডি ও জিগাতলা জোন)</option>
-                  <option value="ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)">ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)</option>
-                  <option value="ঢাকা (উত্তরা ও বিমানবন্দর জোন)">ঢাকা (উত্তরা ও বিমানবন্দর জোন)</option>
-                  <option value="চট্টগ্রাম মেট্রো">চট্টগ্রাম মেট্রো</option>
-                  <option value="__custom__">✏️ অন্যান্য শহর / জোন (নিজে লিখব)</option>
+                  <option value="">{tx("-- শহর নির্বাচন করুন --")}</option>
+                  <option value="ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)">{tx("ঢাকা (বাড্ডা ও মাদানী এভিনিউ জোন)")}</option>
+                  <option value="ঢাকা (ধানমন্ডি ও জিগাতলা জোন)">{tx("ঢাকা (ধানমন্ডি ও জিগাতলা জোন)")}</option>
+                  <option value="ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)">{tx("ঢাকা (মিরপুর ও শেওড়াপাড়া জোন)")}</option>
+                  <option value="ঢাকা (উত্তরা ও বিমানবন্দর জোন)">{tx("ঢাকা (উত্তরা ও বিমানবন্দর জোন)")}</option>
+                  <option value="চট্টগ্রাম মেট্রো">{tx("চট্টগ্রাম মেট্রো")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য শহর / জোন (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>শহর বা জোনের নাম ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("শহর বা জোনের নাম ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("city", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="city"
                     value={data.city}
                     onChange={updateField}
-                    placeholder="যেমন: সিলেট সদর বা রাজশাহী"
+                    placeholder={tx("যেমন: সিলেট সদর বা রাজশাহী")}
                     autoFocus
                     required
-                    error={errors.city}
+                    error={tx(errors.city)}
                   />
                 </div>
               )}
@@ -1129,7 +1088,7 @@ export function RegisterForm() {
             <div>
               {!customFields.transport ? (
                 <Select
-                  label="ব্যবহৃত পরিবহন মাধ্যম (বাহন বেছে নিন)"
+                  label={tx("ব্যবহৃত পরিবহন মাধ্যম (বাহন বেছে নিন)")}
                   name="transport"
                   value={data.transport}
                   onChange={(e) => {
@@ -1141,35 +1100,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.transport}
+                  error={tx(errors.transport)}
                 >
-                  <option value="">-- বাহন নির্বাচন করুন --</option>
-                  <option value="bicycle">🚴 বাইসাইকেল (শহুরে শর্ট রুট ও দ্রুত ডেলিভারি)</option>
-                  <option value="motorcycle">🏍️ মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)</option>
-                  <option value="walking">🚶 গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি</option>
-                  <option value="car">🚗 প্রাইভেট কার / ভ্যান (বড় ব্যাচ খাবার)</option>
-                  <option value="__custom__">✏️ অন্যান্য বাহন (নিজে লিখব)</option>
+                  <option value="">{tx("-- বাহন নির্বাচন করুন --")}</option>
+                  <option value="bicycle">{tx("🚴 বাইসাইকেল (শহুরে শর্ট রুট ও দ্রুত ডেলিভারি)")}</option>
+                  <option value="motorcycle">{tx("🏍️ মোটরসাইকেল (দ্রুততম রেসপন্স ও জরুরি উদ্ধার)")}</option>
+                  <option value="walking">{tx("🚶 গণপরিবহন / পায়ে হেঁটে নিকটস্থ ডেলিভারি")}</option>
+                  <option value="car">{tx("🚗 প্রাইভেট কার / ভ্যান (বড় ব্যাচ খাবার)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য বাহন (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>পরিবহন মাধ্যম ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("পরিবহন মাধ্যম ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("transport", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="transport"
                     value={data.transport}
                     onChange={updateField}
-                    placeholder="যেমন: ইলেকট্রিক স্কুটার / সিএনজি"
+                    placeholder={tx("যেমন: ইলেকট্রিক স্কুটার / সিএনজি")}
                     autoFocus
                     required
-                    error={errors.transport}
+                    error={tx(errors.transport)}
                   />
                 </div>
               )}
@@ -1178,7 +1136,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.availability ? (
                 <Select
-                  label="সক্রিয় থাকার সুবিধাজনক সময় (সময় বেছে নিন)"
+                  label={tx("সক্রিয় থাকার সুবিধাজনক সময় (সময় বেছে নিন)")}
                   name="availability"
                   value={data.availability}
                   onChange={(e) => {
@@ -1190,35 +1148,34 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.availability}
+                  error={tx(errors.availability)}
                 >
-                  <option value="">-- সক্রিয় সময় নির্বাচন করুন --</option>
-                  <option value="flexible">⚡ ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময় সক্রিয়)</option>
-                  <option value="evenings">🌙 সন্ধ্যা ও মধ্যরাত (মেজবানি ও অনুষ্ঠানের উদ্বৃত্ত খাবার উদ্ধার)</option>
-                  <option value="weekends">📅 ছুটির দিন (শুক্রবার ও শনিবার সারাদিন)</option>
-                  <option value="daytime">☀️ দিনের বেলা (বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও লাঞ্চ খাবার)</option>
-                  <option value="__custom__">✏️ অন্যান্য সুবিধাজনক সময় (নিজে লিখব)</option>
+                  <option value="">{tx("-- সক্রিয় সময় নির্বাচন করুন --")}</option>
+                  <option value="flexible">{tx("⚡ ফ্লেক্সিবল (জরুরি অ্যালার্টে যেকোনো সময় সক্রিয়)")}</option>
+                  <option value="evenings">{tx("🌙 সন্ধ্যা ও মধ্যরাত (মেজবানি ও অনুষ্ঠানের উদ্বৃত্ত খাবার উদ্ধার)")}</option>
+                  <option value="weekends">{tx("📅 ছুটির দিন (শুক্রবার ও শনিবার সারাদিন)")}</option>
+                  <option value="daytime">{tx("☀️ দিনের বেলা (বিশ্ববিদ্যালয় ক্যাফেটেরিয়া ও লাঞ্চ খাবার)")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য সুবিধাজনক সময় (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>সক্রিয় থাকার সময় ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("সক্রিয় থাকার সময় ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("availability", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="availability"
                     value={data.availability}
                     onChange={updateField}
-                    placeholder="যেমন: প্রতিদিন রাত ৯টা থেকে ১১টা"
+                    placeholder={tx("যেমন: প্রতিদিন রাত ৯টা থেকে ১১টা")}
                     autoFocus
                     required
-                    error={errors.availability}
+                    error={tx(errors.availability)}
                   />
                 </div>
               )}
@@ -1227,7 +1184,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.address ? (
                 <Select
-                  label="পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন (এলাকা বেছে নিন)"
+                  label={tx("পছন্দনীয় সার্ভিস এলাকা / লোকাল জোন (এলাকা বেছে নিন)")}
                   name="address"
                   value={data.address}
                   onChange={(e) => {
@@ -1239,36 +1196,35 @@ export function RegisterForm() {
                     }
                   }}
                   required
-                  error={errors.address}
+                  error={tx(errors.address)}
                 >
-                  <option value="">-- পছন্দের এলাকা নির্বাচন করুন --</option>
-                  <option value="ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন">📍 ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন</option>
-                  <option value="ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন">📍 ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন</option>
-                  <option value="মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন">📍 মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন</option>
-                  <option value="উত্তরা সেক্টর ১ থেকে ৯ জোন">📍 উত্তরা সেক্টর ১ থেকে ৯ জোন</option>
-                  <option value="খিলগাঁও, মালিবাগ ও রামপুরা জোন">📍 খিলগাঁও, মালিবাগ ও রামপুরা জোন</option>
-                  <option value="__custom__">✏️ অন্যান্য নির্দিষ্ট এলাকা (নিজে লিখব)</option>
+                  <option value="">{tx("-- পছন্দের এলাকা নির্বাচন করুন --")}</option>
+                  <option value="ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন">{tx("📍 ইউআইইউ ক্যাম্পাস, মাদানী এভিনিউ ও বাড্ডা জোন")}</option>
+                  <option value="ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন">{tx("📍 ধানমন্ডি, শুক্রাবাদ ও জিগাতলা জোন")}</option>
+                  <option value="মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন">{tx("📍 মিরপুর ১ থেকে ১০ নম্বর গোলচত্বর জোন")}</option>
+                  <option value="উত্তরা সেক্টর ১ থেকে ৯ জোন">{tx("📍 উত্তরা সেক্টর ১ থেকে ৯ জোন")}</option>
+                  <option value="খিলগাঁও, মালিবাগ ও রামপুরা জোন">{tx("📍 খিলগাঁও, মালিবাগ ও রামপুরা জোন")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য নির্দিষ্ট এলাকা (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>পছন্দের এলাকা ম্যানুয়ালি লিখুন:</span>
+                    <span>{tx("পছন্দের এলাকা ম্যানুয়ালি লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("address", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="address"
                     value={data.address}
                     onChange={updateField}
-                    placeholder="যেমন: বনশ্রী, রামপুরা ও হাতিরঝিল সংলগ্ন এলাকা"
+                    placeholder={tx("যেমন: বনশ্রী, রামপুরা ও হাতিরঝিল সংলগ্ন এলাকা")}
                     autoFocus
                     required
-                    error={errors.address}
+                    error={tx(errors.address)}
                   />
                 </div>
               )}
@@ -1277,7 +1233,7 @@ export function RegisterForm() {
             <div className="sm:col-span-2">
               {!customFields.notes ? (
                 <Select
-                  label="খাদ্য উদ্ধারে আগ্রহ ও অভিজ্ঞতা (অভিজ্ঞতা বেছে নিন)"
+                  label={tx("খাদ্য উদ্ধারে আগ্রহ ও অভিজ্ঞতা (অভিজ্ঞতা বেছে নিন)")}
                   name="notes"
                   value={data.notes}
                   onChange={(e) => {
@@ -1289,29 +1245,28 @@ export function RegisterForm() {
                     }
                   }}
                 >
-                  <option value="">-- অভিজ্ঞতা ও প্রেরণা বেছে নিন --</option>
-                  <option value="উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।">উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।</option>
-                  <option value="বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।">বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।</option>
-                  <option value="জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।">জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।</option>
-                  <option value="__custom__">✏️ অন্যান্য প্রেরণা বা অভিজ্ঞতা (নিজে লিখব)</option>
+                  <option value="">{tx("-- অভিজ্ঞতা ও প্রেরণা বেছে নিন --")}</option>
+                  <option value="উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।">{tx("উদ্বৃত্ত খাবার নষ্ট হওয়া রোধে সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে চাই।")}</option>
+                  <option value="বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।">{tx("বিশ্ববিদ্যালয় ক্যাম্পাস ও এলাকায় স্বেচ্ছাসেবী কার্যক্রমে যুক্ত থাকার পূর্ব অভিজ্ঞতা রয়েছে।")}</option>
+                  <option value="জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।">{tx("জরুরি ফুড রেসকিউ অ্যালার্টে বাইসাইকেল নিয়ে ৩০ মিনিটের মধ্যে খাবার পৌঁছে দিতে পারব।")}</option>
+                  <option value="__custom__">{tx("✏️ অন্যান্য প্রেরণা বা অভিজ্ঞতা (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>আপনার অভিজ্ঞতা ও প্রেরণা সংক্ষেপে লিখুন:</span>
+                    <span>{tx("আপনার অভিজ্ঞতা ও প্রেরণা সংক্ষেপে লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("notes", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Textarea
                     name="notes"
                     value={data.notes}
                     onChange={updateField}
-                    placeholder="যেমন: স্কাউটিং এবং রেড ক্রিসেন্টে ২ বছরের সেবামূলক কাজের অভিজ্ঞতা রয়েছে।"
+                    placeholder={tx("যেমন: স্কাউটিং এবং রেড ক্রিসেন্টে ২ বছরের সেবামূলক কাজের অভিজ্ঞতা রয়েছে।")}
                     autoFocus
                   />
                 </div>
@@ -1327,7 +1282,7 @@ export function RegisterForm() {
             <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4">
               {!customFields.documentSelector ? (
                 <Select
-                  label="যাচাইকরণ সনদের ধরন বেছে নিন (Select Verification Document)"
+                  label={tx("যাচাইকরণ সনদের ধরন বেছে নিন (Select Verification Document)")}
                   name="documentSelector"
                   value={documentName}
                   onChange={(e) => {
@@ -1342,26 +1297,25 @@ export function RegisterForm() {
                     }
                   }}
                   required={role !== "donor"}
-                  error={errors.document}
+                  error={tx(errors.document)}
                 >
-                  <option value="">-- ড্রপডাউন থেকে সনদ নির্বাচন করুন --</option>
-                  <option value="Govt_NGO_Bureau_License_2026.pdf">📄 সরকারি এনজিও বিষয়ক ব্যুরো সনদ (Govt_NGO_Bureau_License_2026.pdf)</option>
-                  <option value="BFSA_Food_Safety_Cert_2026.pdf">📄 বাংলাদেশ খাদ্য নিরাপত্তা কর্তৃপক্ষ (BFSA) নিবন্ধন সনদ</option>
-                  <option value="UIU_Student_ID_Verified.jpg">📄 জাতীয় পরিচয়পত্র / বিশ্ববিদ্যালয় স্টুডেন্ট আইডি কার্ড (NID_ID_Scan.jpg)</option>
-                  <option value="Trade_License_Food_2026.pdf">📄 প্রাতিষ্ঠানিক ট্রেড লাইসেন্স ও ক্যাটারিং পারমিট</option>
-                  <option value="__custom__">✏️ অন্য কোনো সনদের নাম (নিজে লিখব)</option>
+                  <option value="">{tx("-- ড্রপডাউন থেকে সনদ নির্বাচন করুন --")}</option>
+                  <option value="Govt_NGO_Bureau_License_2026.pdf">{tx("📄 সরকারি এনজিও বিষয়ক ব্যুরো সনদ (Govt_NGO_Bureau_License_2026.pdf)")}</option>
+                  <option value="BFSA_Food_Safety_Cert_2026.pdf">{tx("📄 বাংলাদেশ খাদ্য নিরাপত্তা কর্তৃপক্ষ (BFSA) নিবন্ধন সনদ")}</option>
+                  <option value="UIU_Student_ID_Verified.jpg">{tx("📄 জাতীয় পরিচয়পত্র / বিশ্ববিদ্যালয় স্টুডেন্ট আইডি কার্ড (NID_ID_Scan.jpg)")}</option>
+                  <option value="Trade_License_Food_2026.pdf">{tx("📄 প্রাতিষ্ঠানিক ট্রেড লাইসেন্স ও ক্যাটারিং পারমিট")}</option>
+                  <option value="__custom__">{tx("✏️ অন্য কোনো সনদের নাম (নিজে লিখব)")}</option>
                 </Select>
               ) : (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                    <span>সনদ বা ডকুমেন্টের নাম লিখুন:</span>
+                    <span>{tx("সনদ বা ডকুমেন্টের নাম লিখুন:")}</span>
                     <button
                       type="button"
                       onClick={() => toggleCustomField("documentSelector", false)}
                       className="text-emerald-700 hover:text-emerald-800 underline font-bold cursor-pointer text-[11px]"
                     >
-                      ← ড্রপডাউন তালিকা দেখুন
-                    </button>
+                      {tx("← ড্রপডাউন তালিকা দেখুন")}</button>
                   </div>
                   <Input
                     name="documentSelector"
@@ -1370,38 +1324,38 @@ export function RegisterForm() {
                       setDocumentName(e.target.value);
                       clearError("document");
                     }}
-                    placeholder="যেমন: Bangladesh_Red_Crescent_ID.pdf বা NID_Card_Copy.pdf"
+                    placeholder={tx("যেমন: Bangladesh_Red_Crescent_ID.pdf বা NID_Card_Copy.pdf")}
                     autoFocus
                     required={role !== "donor"}
-                    error={errors.document}
+                    error={tx(errors.document)}
                   />
                 </div>
               )}
               {documentName && (
                 <div className="mt-2.5 flex items-center gap-2 text-xs font-bold text-emerald-800">
                   <BadgeCheck className="size-4 text-emerald-600" />
-                  <span>সনদ সংযুক্ত হয়েছে: {documentName}</span>
+                  <span>{tx("সনদ সংযুক্ত হয়েছে:")}{" "}{documentName}</span>
                 </div>
               )}
             </div>
 
             <FileUpload
-              label="অথবা আপনার ডিভাইস থেকে নতুন ফাইল আপলোড করুন (ঐচ্ছিক)"
+              label={tx("অথবা আপনার ডিভাইস থেকে নতুন ফাইল আপলোড করুন (ঐচ্ছিক)")}
               name="verificationDocument"
               accept=".pdf,.jpg,.jpeg,.png"
-              error={errors.document}
+              error={tx(errors.document)}
               fileNames={documentName ? [documentName] : []}
               onFilesChange={(files) => {
                 setDocumentName(files[0]?.name ?? "");
                 clearError("document");
               }}
               buttonText="ফাইল নির্বাচন করুন বা ড্রপ করুন"
-              hint="পিডিএফ, জেপিজি বা পিএনজি ফরম্যাট। সর্বোচ্চ সাইজ ৫ মেগাবাইট।"
+              hint={tx("পিডিএফ, জেপিজি বা পিএনজি ফরম্যাট। সর্বোচ্চ সাইজ ৫ মেগাবাইট।")}
             />
 
             <Alert
               tone="warning"
-              title="যাচাইকরণ নীতিমালা"
+              title={tx("যাচাইকরণ নীতিমালা")}
               description={verificationNotice}
             />
 
@@ -1425,9 +1379,9 @@ export function RegisterForm() {
                   clearError("terms");
                 }}
                 required
-                error={errors.terms}
-                label="আমি ShareBite খাদ্য নিরাপত্তা নীতিমালা (BFSA স্ট্যান্ডার্ড), প্ল্যাটফর্মের শর্তাবলী ও সত্যতা ঘোষণা মেনে নিচ্ছি।"
-                description="আমি নিশ্চিত করছি যে খাবার হস্তান্তর ও বিতরণের সময় স্বাস্থ্যবিধি সম্পূর্ণ মানা হবে এবং ভুল বা অসত্য তথ্যের জন্য যেকোনো আইনি দায়ভার বর্তাবে।"
+                error={tx(errors.terms)}
+                label={tx("আমি ShareBite খাদ্য নিরাপত্তা নীতিমালা (BFSA স্ট্যান্ডার্ড), প্ল্যাটফর্মের শর্তাবলী ও সত্যতা ঘোষণা মেনে নিচ্ছি।")}
+                description={tx("আমি নিশ্চিত করছি যে খাবার হস্তান্তর ও বিতরণের সময় স্বাস্থ্যবিধি সম্পূর্ণ মানা হবে এবং ভুল বা অসত্য তথ্যের জন্য যেকোনো আইনি দায়ভার বর্তাবে।")}
               />
             </div>
           </div>
@@ -1443,8 +1397,7 @@ export function RegisterForm() {
               leftIcon={<ArrowLeft className="size-4" />}
               onClick={goBack}
             >
-              পূর্ববর্তী ধাপ
-            </Button>
+              {tx("পূর্ববর্তী ধাপ")}</Button>
           ) : (
             <ButtonLink
               href={ROUTES.auth.login}
@@ -1452,8 +1405,7 @@ export function RegisterForm() {
               variant="ghost"
               leftIcon={<ArrowLeft className="size-4" />}
             >
-              লগইন পেজে যান
-            </ButtonLink>
+              {tx("লগইন পেজে যান")}</ButtonLink>
           )}
 
           {currentStep < 3 ? (
@@ -1463,7 +1415,7 @@ export function RegisterForm() {
               rightIcon={<ArrowRight className="size-4" />}
               onClick={goNext}
             >
-              পরবর্তী ধাপ ({currentStep === 1 ? "বিবরণ" : "ভেরিফিকেশন"})
+              {tx("পরবর্তী ধাপ (")}{currentStep === 1 ? tx("বিবরণ") : tx("ভেরিফিকেশন")})
             </Button>
           ) : (
             <Button
@@ -1473,7 +1425,7 @@ export function RegisterForm() {
               className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-700/20"
               rightIcon={<CheckCircle2 className="size-4" />}
             >
-              {isSubmitting ? "নিবন্ধন সম্পন্ন হচ্ছে..." : "আবেদন সম্পূর্ণ করুন (সাবমিট)"}
+              {isSubmitting ? tx("নিবন্ধন সম্পন্ন হচ্ছে...") : tx("আবেদন সম্পূর্ণ করুন (সাবমিট)")}
             </Button>
           )}
         </div>

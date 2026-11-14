@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import type { LucideIcon } from "lucide-react";
 import {
@@ -40,6 +41,7 @@ export function RoleCard({
   tone = "donor",
   disabled = false,
 }: RoleCardProps) {
+  const tx = useUiText();
   const Icon = customIcon ?? DEFAULT_ICONS[tone];
 
   const toneConfig = {
@@ -111,7 +113,7 @@ export function RoleCard({
             )}
           </h3>
           <p className="mt-1 text-xs leading-relaxed text-slate-600 font-normal">
-            {description}
+            {tx(description)}
           </p>
         </div>
       </div>
@@ -124,7 +126,7 @@ export function RoleCard({
             disabled ? "text-slate-400" : current.linkText,
           )}
         >
-          {disabled ? "সংরক্ষিত পোর্টাল" : "রেজিস্ট্রেশন করুন"}
+          {disabled ? tx("সংরক্ষিত পোর্টাল") : tx("রেজিস্ট্রেশন করুন")}
         </span>
 
         <div

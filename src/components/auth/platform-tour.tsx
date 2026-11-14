@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -32,6 +33,7 @@ import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export function PlatformTour() {
+  const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
 
@@ -131,20 +133,14 @@ export function PlatformTour() {
         <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1 text-xs font-black text-brand-800 shadow-2xs">
           <Sparkles className="size-3.5 text-accent-600" />
           <span>
-            {isBn
-              ? "বাংলাদেশের প্রথম প্রযুক্তিভিত্তিক উদ্বৃত্ত খাদ্য পুনরুদ্ধার নেটওয়ার্ক"
-              : "Bangladesh's Premier Tech-Enabled Surplus Food Rescue Grid"}
+            {isBn ? tx("বাংলাদেশের প্রথম প্রযুক্তিভিত্তিক উদ্বৃত্ত খাদ্য পুনরুদ্ধার নেটওয়ার্ক") : tx("Bangladesh's Premier Tech-Enabled Surplus Food Rescue Grid")}
           </span>
         </div>
         <h1 className="font-heading text-3xl font-black tracking-tight text-ink-900 sm:text-5xl">
-          {isBn
-            ? "খাবার অপচয় বন্ধ করুন, প্রতিটি প্লেটে হাসি ফোটান"
-            : "Rescue Safe Surplus Food. Zero Waste, Zero Hunger."}
+          {isBn ? tx("খাবার অপচয় বন্ধ করুন, প্রতিটি প্লেটে হাসি ফোটান") : tx("Rescue Safe Surplus Food. Zero Waste, Zero Hunger.")}
         </h1>
         <p className="text-sm font-medium leading-relaxed text-muted-600 sm:text-base">
-          {isBn
-            ? "শেয়ারবাইট বিডি ঢাকা শহরের খাবার দাতা, স্বেচ্ছাসেবক রাইডার এবং নিবন্ধিত এনজিওদের একটি নিরাপদ ডিজিটাল প্ল্যাটফর্মে সংযুক্ত করে।"
-            : "ShareBite BD bridges corporate kitchens, rapid bike couriers, and verified shelters to deliver hot meals before safe deadlines elapse."}
+          {isBn ? tx("শেয়ারবাইট বিডি ঢাকা শহরের খাবার দাতা, স্বেচ্ছাসেবক রাইডার এবং নিবন্ধিত এনজিওদের একটি নিরাপদ ডিজিটাল প্ল্যাটফর্মে সংযুক্ত করে।") : tx("ShareBite BD bridges corporate kitchens, rapid bike couriers, and verified shelters to deliver hot meals before safe deadlines elapse.")}
         </p>
       </div>
 
@@ -153,12 +149,10 @@ export function PlatformTour() {
         <div className="border-b border-line bg-slate-50/80 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-heading text-sm font-black uppercase tracking-wider text-ink-900 sm:text-base">
-              {isBn ? "লাইভ রেসকিউ সিমুলেটর (ইন্টারেক্টিভ)" : "Interactive Live Rescue Simulator"}
+              {isBn ? tx("লাইভ রেসকিউ সিমুলেটর (ইন্টারেক্টিভ)") : tx("Interactive Live Rescue Simulator")}
             </h3>
             <p className="text-xs text-muted-600">
-              {isBn
-                ? "বাটনগুলোতে ক্লিক করে দেখুন কীভাবে শেয়ারবাইট বিডিতে খাদ্য উদ্ধার সম্পন্ন হয়"
-                : "Click through the steps below to experience the end-to-end food rescue workflow"}
+              {isBn ? tx("বাটনগুলোতে ক্লিক করে দেখুন কীভাবে শেয়ারবাইট বিডিতে খাদ্য উদ্ধার সম্পন্ন হয়") : tx("Click through the steps below to experience the end-to-end food rescue workflow")}
             </p>
           </div>
           <div className="flex items-center gap-1.5 rounded-xl bg-canvas p-1 border border-line">
@@ -174,7 +168,7 @@ export function PlatformTour() {
                     : "text-muted-600 hover:text-ink-900"
                 )}
               >
-                {isBn ? `ধাপ ০${s}` : `Step 0${s}`}
+                {isBn ? tx("ধাপ ০{0}", s) : tx("Step 0{0}", s)}
               </button>
             ))}
           </div>
@@ -209,13 +203,7 @@ export function PlatformTour() {
                 }
                 rightIcon={<ChevronRight className="size-4" />}
               >
-                {simStep === 3
-                  ? isBn
-                    ? "পুনরায় শুরু করুন"
-                    : "Restart Demo"
-                  : isBn
-                  ? "পরবর্তী ধাপ দেখুন"
-                  : "Next Step"}
+                {simStep === 3 ? isBn ? tx("পুনরায় শুরু করুন") : tx("Restart Demo") : isBn ? tx("পরবর্তী ধাপ দেখুন") : tx("Next Step")}
               </Button>
             </div>
           </div>
@@ -223,7 +211,7 @@ export function PlatformTour() {
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-line bg-slate-900 lg:col-span-5">
             <Image
               src="/images/surplus-food-containers.jpg"
-              alt="Bangladesh Surplus Food Packaging"
+              alt={tx("Bangladesh Surplus Food Packaging")}
               fill
               className="object-cover opacity-90 transition-all duration-300"
               sizes="(max-width: 1024px) 100vw, 450px"
@@ -232,9 +220,9 @@ export function PlatformTour() {
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
               <div className="flex items-center gap-1.5 font-bold">
                 <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>BFSA Tamper-Proof</span>
+                <span>{tx("BFSA Tamper-Proof")}</span>
               </div>
-              <span className="font-mono text-amber-300 font-bold">OTP: 7429</span>
+              <span className="font-mono text-amber-300 font-bold">{tx("OTP: 7429")}</span>
             </div>
           </div>
         </div>
@@ -269,12 +257,12 @@ export function PlatformTour() {
                     {pillar.role}
                   </h3>
                   <p className="mt-1 text-xs font-semibold text-brand-700">
-                    {pillar.subtitle}
+                    {tx(pillar.subtitle)}
                   </p>
                 </div>
 
                 <p className="text-xs font-medium leading-relaxed text-muted-600 sm:text-sm">
-                  {pillar.description}
+                  {tx(pillar.description)}
                 </p>
               </div>
 
@@ -296,30 +284,28 @@ export function PlatformTour() {
       {/* Verified Partner NGOs & Ecosystem Strip */}
       <section className="rounded-2xl border border-line bg-canvas p-6 sm:p-8">
         <p className="text-center font-heading text-xs font-black uppercase tracking-widest text-muted-500">
-          {isBn
-            ? "বিশ্বস্ত কমিউনিটি পার্টনার ও খাদ্য উদ্ধার নেটওয়ার্ক"
-            : "Trusted by Leading NGOs & University Caterers across Bangladesh"}
+          {isBn ? tx("বিশ্বস্ত কমিউনিটি পার্টনার ও খাদ্য উদ্ধার নেটওয়ার্ক") : tx("Trusted by Leading NGOs & University Caterers across Bangladesh")}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs font-bold text-ink-700">
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-emerald-500" />
-            <span>Mastul Foundation</span>
+            <span>{tx("Mastul Foundation")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-emerald-500" />
-            <span>Bidyanondo Foundation</span>
+            <span>{tx("Bidyanondo Foundation")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-emerald-500" />
-            <span>JAAGO Foundation</span>
+            <span>{tx("JAAGO Foundation")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-emerald-500" />
-            <span>UIU Cafeteria & Food Court</span>
+            <span>{tx("UIU Cafeteria & Food Court")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-emerald-500" />
-            <span>BRAC University Food Club</span>
+            <span>{tx("BRAC University Food Club")}</span>
           </div>
         </div>
       </section>
@@ -329,37 +315,33 @@ export function PlatformTour() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
           <div className="space-y-4 lg:col-span-7">
             <Badge tone="warning">
-              {isBn ? "নিরাপত্তা ও হাইজিন নিশ্চয়তা" : "BFSA Certified Food Safety"}
+              {isBn ? tx("নিরাপত্তা ও হাইজিন নিশ্চয়তা") : tx("BFSA Certified Food Safety")}
             </Badge>
             <h2 className="font-heading text-2xl font-black text-white sm:text-3xl">
-              {isBn
-                ? "খাদ্যের গুণগত মান ও নিরাপদ হ্যান্ডওভার"
-                : "Tamper-Proof Packaging & Thermal Assurance"}
+              {isBn ? tx("খাদ্যের গুণগত মান ও নিরাপদ হ্যান্ডওভার") : tx("Tamper-Proof Packaging & Thermal Assurance")}
             </h2>
             <p className="text-xs leading-relaxed text-slate-300 sm:text-sm">
-              {isBn
-                ? "আমাদের প্ল্যাটফর্মের মাধ্যমে উদ্ধারকৃত প্রতিটি খাবার স্বাস্থ্যসম্মত ফয়েল প্যাকেজিং এবং থার্মাল ব্যাগে পরিবাহিত হয়। দাতা ও গ্রহীতা উভয় পক্ষের ডিজিটাল ওটিপি নিশ্চিতের মাধ্যমে স্বচ্ছতা বজায় থাকে।"
-                : "Every meal rescued on ShareBite BD complies with Bangladesh Food Safety Authority (BFSA) temperature controls, tamper-evident seals, and instant 4-digit OTP handover verification."}
+              {isBn ? tx("আমাদের প্ল্যাটফর্মের মাধ্যমে উদ্ধারকৃত প্রতিটি খাবার স্বাস্থ্যসম্মত ফয়েল প্যাকেজিং এবং থার্মাল ব্যাগে পরিবাহিত হয়। দাতা ও গ্রহীতা উভয় পক্ষের ডিজিটাল ওটিপি নিশ্চিতের মাধ্যমে স্বচ্ছতা বজায় থাকে।") : tx("Every meal rescued on ShareBite BD complies with Bangladesh Food Safety Authority (BFSA) temperature controls, tamper-evident seals, and instant 4-digit OTP handover verification.")}
             </p>
 
             <div className="grid grid-cols-2 gap-3 pt-3 sm:grid-cols-3">
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <p className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
-                  {isBn ? "থার্মাল ধারণ" : "Thermal Retention"}
+                  {isBn ? tx("থার্মাল ধারণ") : tx("Thermal Retention")}
                 </p>
-                <p className="font-heading mt-1 text-lg font-black text-white">&gt; 60°C Hot</p>
+                <p className="font-heading mt-1 text-lg font-black text-white">{tx("> 60°C Hot")}</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <p className="text-[10px] font-black uppercase tracking-wider text-amber-400">
-                  {isBn ? "গড় ডেলিভারি সময়" : "Avg Dispatch Time"}
+                  {isBn ? tx("গড় ডেলিভারি সময়") : tx("Avg Dispatch Time")}
                 </p>
-                <p className="font-heading mt-1 text-lg font-black text-white">28 mins</p>
+                <p className="font-heading mt-1 text-lg font-black text-white">{tx("28 mins")}</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-3">
                 <p className="text-[10px] font-black uppercase tracking-wider text-indigo-400">
-                  {isBn ? "ডিজিটাল ভেরিফিকেশন" : "Verification"}
+                  {isBn ? tx("ডিজিটাল ভেরিফিকেশন") : tx("Verification")}
                 </p>
-                <p className="font-heading mt-1 text-lg font-black text-white">100% OTP</p>
+                <p className="font-heading mt-1 text-lg font-black text-white">{tx("100% OTP")}</p>
               </div>
             </div>
           </div>
@@ -367,15 +349,15 @@ export function PlatformTour() {
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/20 shadow-2xl lg:col-span-5">
             <Image
               src="/images/bangladesh-food-rescue-hero.jpg"
-              alt="Bangladesh Food Rescue Volunteers"
+              alt={tx("Bangladesh Food Rescue Volunteers")}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 450px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <div className="absolute bottom-3 left-3 right-3 text-xs text-white">
-              <p className="font-bold">Community Kitchen Packaging</p>
-              <p className="text-[11px] text-slate-300">Volunteers preparing hot meal distributions</p>
+              <p className="font-bold">{tx("Community Kitchen Packaging")}</p>
+              <p className="text-[11px] text-slate-300">{tx("Volunteers preparing hot meal distributions")}</p>
             </div>
           </div>
         </div>
@@ -384,12 +366,10 @@ export function PlatformTour() {
       {/* Role Selection & Get Started Buttons */}
       <div className="rounded-2xl border border-line bg-surface p-6 text-center sm:p-8 space-y-4">
         <h3 className="font-heading text-xl font-black text-ink-900 sm:text-2xl">
-          {isBn ? "আপনি কীভাবে অংশগ্রহণ করতে চান?" : "Ready to join the rescue mission?"}
+          {isBn ? tx("আপনি কীভাবে অংশগ্রহণ করতে চান?") : tx("Ready to join the rescue mission?")}
         </h3>
         <p className="text-xs text-muted-600 max-w-xl mx-auto sm:text-sm">
-          {isBn
-            ? "আপনার প্রতিষ্ঠানের ভূমিকা অনুযায়ী সাইন আপ করুন অথবা আমাদের ডেমো পোর্টাল সরাসরি পরীক্ষা করুন।"
-            : "Select your role below to explore the dedicated desktop workspace or preview live operations."}
+          {isBn ? tx("আপনার প্রতিষ্ঠানের ভূমিকা অনুযায়ী সাইন আপ করুন অথবা আমাদের ডেমো পোর্টাল সরাসরি পরীক্ষা করুন।") : tx("Select your role below to explore the dedicated desktop workspace or preview live operations.")}
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -399,14 +379,14 @@ export function PlatformTour() {
             size="lg"
             rightIcon={<ArrowRight className="size-4" />}
           >
-            {isBn ? "রোল নির্বাচন করুন ও শুরু করুন" : "Choose Your Role & Get Started"}
+            {isBn ? tx("রোল নির্বাচন করুন ও শুরু করুন") : tx("Choose Your Role & Get Started")}
           </ButtonLink>
           <ButtonLink
             href={ROUTES.auth.login}
             variant="outline"
             size="lg"
           >
-            {isBn ? "সরাসরি ডেমো লগইন করুন" : "Sign in with Demo Account"}
+            {isBn ? tx("সরাসরি ডেমো লগইন করুন") : tx("Sign in with Demo Account")}
           </ButtonLink>
         </div>
       </div>

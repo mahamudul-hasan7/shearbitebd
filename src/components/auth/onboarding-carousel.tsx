@@ -1,4 +1,5 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { ArrowRight, BarChart3, Check, Clock3, PackagePlus, ScanLine, Search, UsersRound } from "lucide-react";
 import Link from "next/link";
@@ -44,6 +45,7 @@ const slides = [
 ] as const;
 
 export function OnboardingCarousel() {
+  const tx = useUiText();
   const [index, setIndex] = useState(0);
   const slide = slides[index];
   const HeroIcon = slide.icon;
@@ -60,7 +62,7 @@ export function OnboardingCarousel() {
           </span>
           <div className="mt-8 flex items-center gap-2">
             {slide.points.map(([Icon, label]) => (
-              <span key={label} className="grid size-12 place-items-center rounded-2xl border border-line bg-white text-brand-700 shadow-sm" title={label}>
+              <span key={label} className="grid size-12 place-items-center rounded-2xl border border-line bg-white text-brand-700 shadow-sm" title={tx(label)}>
                 <Icon className="size-6" />
               </span>
             ))}
@@ -73,44 +75,42 @@ export function OnboardingCarousel() {
 
       <div>
         <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-accent-600">{slide.eyebrow}</p>
-          <Link href={ROUTES.auth.roleSelection} className="text-sm font-bold text-brand-700 hover:text-brand-800">Skip</Link>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-accent-600">{tx(slide.eyebrow)}</p>
+          <Link href={ROUTES.auth.roleSelection} className="text-sm font-bold text-brand-700 hover:text-brand-800">{tx("Skip")}</Link>
         </div>
-        <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight text-brand-900 sm:text-5xl">{slide.title}</h1>
-        <p className="mt-5 max-w-xl text-base leading-7 text-muted-600 sm:text-lg">{slide.description}</p>
+        <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight text-brand-900 sm:text-5xl">{tx(slide.title)}</h1>
+        <p className="mt-5 max-w-xl text-base leading-7 text-muted-600 sm:text-lg">{tx(slide.description)}</p>
 
         <div className="mt-7 grid gap-3 sm:grid-cols-3">
           {slide.points.map(([Icon, label]) => (
             <div key={label} className="flex items-center gap-3 rounded-2xl border border-line bg-white p-3 shadow-sm">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-700"><Icon className="size-5" /></span>
-              <span className="text-sm font-bold text-ink-700">{label}</span>
+              <span className="text-sm font-bold text-ink-700">{tx(label)}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           {last ? (
-            <ButtonLink href={ROUTES.auth.roleSelection} size="lg" fullWidth rightIcon={<ArrowRight className="size-5" />} className="flex-1 sm:flex-none">Get started</ButtonLink>
+            <ButtonLink href={ROUTES.auth.roleSelection} size="lg" fullWidth rightIcon={<ArrowRight className="size-5" />} className="flex-1 sm:flex-none">{tx("Get started")}</ButtonLink>
           ) : (
             <Button size="lg" rightIcon={<ArrowRight className="size-5" />} onClick={() => setIndex((value) => value + 1)}>
-              Continue
-            </Button>
+              {tx("Continue")}</Button>
           )}
           {index > 0 && (
             <Button size="lg" variant="ghost" onClick={() => setIndex((value) => value - 1)}>
-              Back
-            </Button>
+              {tx("Back")}</Button>
           )}
         </div>
 
-        <div className="mt-8 flex gap-2" aria-label="Onboarding pages">
+        <div className="mt-8 flex gap-2" aria-label={tx("Onboarding pages")}>
           {slides.map((item, slideIndex) => (
             <button
               key={item.title}
               type="button"
               onClick={() => setIndex(slideIndex)}
               className={cn("h-2 rounded-full transition-all", slideIndex === index ? "w-10 bg-accent-500" : "w-2 bg-brand-200")}
-              aria-label={`Show onboarding page ${slideIndex + 1}`}
+              aria-label={tx("Show onboarding page {0}", slideIndex + 1)}
             />
           ))}
         </div>

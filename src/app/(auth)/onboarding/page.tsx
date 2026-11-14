@@ -1,3 +1,4 @@
+import { UiText } from "@/lib/i18n/ui-text-node";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { PlatformTour } from "@/components/auth/platform-tour";
@@ -18,15 +19,13 @@ export default function OnboardingPage() {
           <BrandLogo href={ROUTES.home} />
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-800">
-              Dhaka Metro Food Network
-            </span>
+              <UiText source={"Dhaka Metro Food Network"} /></span>
             <LanguageSwitch />
             <Link
               href={ROUTES.auth.login}
               className="text-xs font-bold text-brand-700 hover:text-brand-800 sm:text-sm"
             >
-              Sign In
-            </Link>
+              <UiText source={"Sign In"} /></Link>
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+import { UiText } from "@/lib/i18n/ui-text-node";
 import { Suspense } from "react";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
@@ -20,9 +21,7 @@ export default function RegisterPage() {
         fallback={
           <div className="flex h-96 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-500 font-heading">
-              <span className="size-4 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" />
-              রেজিস্ট্রেশন ফর্ম প্রস্তুত হচ্ছে...
-            </div>
+              <span className="size-4 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" /><UiText source={"রেজিস্ট্রেশন ফর্ম প্রস্তুত হচ্ছে..."} /></div>
           </div>
         }
       >

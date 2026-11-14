@@ -1,8 +1,9 @@
 "use client";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   Mail,
@@ -10,7 +11,6 @@ import {
 } from "lucide-react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
-import { DEMO_ACCOUNTS, findDemoAccount, type DemoAccount } from "@/features/auth/demo-accounts";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { validateLogin } from "@/features/auth/validation";
 import { UserRole } from "@/lib/constants/roles";
@@ -27,7 +27,7 @@ function getSafeDestination(requestedPath: string | null, account: { role: UserR
 }
 
 export function LoginForm() {
-  const router = useRouter();
+  const tx = useUiText();
   const searchParams = useSearchParams();
   const { signIn } = useMockAuth();
 
@@ -38,48 +38,17 @@ export function LoginForm() {
   const [redirecting, setRedirecting] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
 
-  // Prefetch dashboard routes for instant client-side transitions
-  useEffect(() => {
-    try {
-      router.prefetch(ROUTES.donor.dashboard);
-      router.prefetch(ROUTES.ngo.dashboard);
-      router.prefetch(ROUTES.volunteer.dashboard);
-    } catch {
-      // Ignored if prefetch not supported in current environment
-    }
-  }, [router]);
-
   function navigateToDestination(targetRoute: string) {
     setRedirecting(true);
     setLoading(false);
 
-    // Instant client-side router transition
-    router.replace(targetRoute);
-
-    // Fallback in case client routing is delayed
-    const timer = setTimeout(() => {
-      if (typeof window !== "undefined" && window.location.pathname !== targetRoute) {
-        window.location.assign(targetRoute);
-      }
-    }, 900);
-
-    return () => clearTimeout(timer);
-  }
-
-  function completeDemoLogin(account: DemoAccount, shouldRemember = remember) {
-    signIn({
-      email: account.email,
-      displayName: account.displayName,
-      role: account.role,
-      remember: shouldRemember,
-    });
-    const targetRoute = getSafeDestination(searchParams.get("next"), account);
-    navigateToDestination(targetRoute);
+    // Reload account-scoped stores and cached portal layouts after switching users.
+    window.location.replace(targetRoute);
   }
 
   async function executeLogin(targetEmail: string, targetPass: string) {
     const cleanEmail = targetEmail.trim();
-    const cleanPass = targetPass.trim();
+    const cleanPass = targetPass;
 
     const validationErrors = validateLogin({ email: cleanEmail, password: cleanPass });
     if (validationErrors.email || validationErrors.password) {
@@ -91,76 +60,14 @@ export function LoginForm() {
     setErrors({});
 
     try {
-      // 1. Authenticate with real database API with a 4-second timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
-        signal: controller.signal,
-      }).catch((err) => {
-        // If fetch aborted or failed
-        return null;
-      });
-
-      clearTimeout(timeoutId);
-
-      let resData: { user?: { email: string; displayName: string; role: UserRole | string }; error?: string } | null = null;
-      if (res) {
-        resData = await res.json().catch(() => null);
-      }
-
-      if (res && res.ok && resData?.user) {
-        signIn({
-          email: resData.user.email,
-          displayName: resData.user.displayName,
-          role: resData.user.role as UserRole,
-          remember,
-        });
-
-        const targetRoute = getSafeDestination(searchParams.get("next"), {
-          role: resData.user.role,
-        });
-        navigateToDestination(targetRoute);
-        return;
-      }
-
-      // Fallback check for static demo accounts
-      const account = findDemoAccount(cleanEmail);
-      if (account) {
-        completeDemoLogin(account);
-        return;
-      }
-
-      setErrors({
-        form: resData?.error || "লগইন ব্যর্থ হয়েছে। প্রদত্ত ইমেইল ও পাসওয়ার্ড সঠিক কিনা যাচাই করুন।",
-      });
-      setLoading(false);
-      setRedirecting(false);
-    } catch {
-      const account = findDemoAccount(cleanEmail);
-      if (account) {
-        completeDemoLogin(account);
-        return;
-      }
-      setErrors({ form: "সার্ভারে যোগাযোগ করা যায়নি। অনুগ্রহ করে আপনার নেটওয়ার্ক সংযোগ যাচাই করুন।" });
+      const account = await signIn({ email: cleanEmail, password: cleanPass, remember });
+      navigateToDestination(getSafeDestination(searchParams.get("next"), account));
+    } catch (error) {
+      setErrors({ form: error instanceof Error ? error.message : "সার্ভারে যোগাযোগ করা যায়নি।" });
       setLoading(false);
       setRedirecting(false);
     }
   }
-
-  // Handle URL query parameters if browser performed a fallback GET
-  useEffect(() => {
-    const qEmail = searchParams.get("email");
-    const qPass = searchParams.get("password");
-    if (qEmail && qPass) {
-      setEmail(qEmail);
-      setPassword(qPass);
-      executeLogin(qEmail, qPass);
-    }
-  }, [searchParams]);
 
   function handleSubmit(event?: FormEvent) {
     if (event) {
@@ -185,8 +92,8 @@ export function LoginForm() {
       {errors.form && (
         <Alert
           tone="danger"
-          title="লগইন ব্যর্থ হয়েছে"
-          description={errors.form}
+          title={tx("লগইন ব্যর্থ হয়েছে")}
+          description={tx(errors.form)}
         />
       )}
 
@@ -194,7 +101,7 @@ export function LoginForm() {
       <div className="space-y-4">
         {/* Quick 1-Tap Demo Switcher Pills */}
         <div className="flex items-center justify-between pb-1 text-xs">
-          <span className="font-bold text-slate-500 font-heading text-[11px]">ডেমো অ্যাকাউন্ট:</span>
+          <span className="font-bold text-slate-500 font-heading text-[11px]">{tx("ডেমো অ্যাকাউন্ট:")}</span>
           <div className="inline-flex items-center gap-1.5">
             <button
               type="button"
@@ -210,8 +117,7 @@ export function LoginForm() {
                   : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
               )}
             >
-              👨‍🍳 ডোনার
-            </button>
+              {tx("👨‍🍳 ডোনার")}</button>
             <button
               type="button"
               onClick={() => {
@@ -226,8 +132,7 @@ export function LoginForm() {
                   : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
               )}
             >
-              🏢 এনজিও
-            </button>
+              {tx("🏢 এনজিও")}</button>
             <button
               type="button"
               onClick={() => {
@@ -242,15 +147,13 @@ export function LoginForm() {
                   : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
               )}
             >
-              🚴 ভলান্টিয়ার
-            </button>
+              {tx("🚴 ভলান্টিয়ার")}</button>
           </div>
         </div>
 
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
-            ইমেইল অথবা মোবাইল নম্বর (Email or Phone)
-          </label>
+            {tx("ইমেইল অথবা মোবাইল নম্বর (Email or Phone)")}</label>
           <div className="relative flex items-center">
             <Mail className="pointer-events-none absolute left-3.5 size-4.5 text-slate-400" />
             <input
@@ -274,22 +177,21 @@ export function LoginForm() {
             />
           </div>
           {errors.email && (
-            <p className="mt-1 text-xs text-red-600 font-medium">{errors.email}</p>
+            <p className="mt-1 text-xs text-red-600 font-medium">{tx(errors.email)}</p>
           )}
         </div>
 
         <div>
           <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
-            পাসওয়ার্ড (Password)
-          </label>
+            {tx("পাসওয়ার্ড (Password)")}</label>
           <PasswordInput
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
               setErrors((prev) => ({ ...prev, password: undefined, form: undefined }));
             }}
-            placeholder="পাসওয়ার্ড দিন (Demo1234)"
-            error={errors.password}
+            placeholder={tx("পাসওয়ার্ড দিন (Demo1234)")}
+            error={tx(errors.password)}
           />
         </div>
       </div>
@@ -303,15 +205,14 @@ export function LoginForm() {
             onChange={(e) => setRemember(e.target.checked)}
             className="size-4 rounded-md border-slate-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer"
           />
-          <span>আমাকে মনে রাখুন (Remember session)</span>
+          <span>{tx("আমাকে মনে রাখুন (Remember session)")}</span>
         </label>
 
         <Link
           href={ROUTES.auth.forgotPassword}
           className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors font-heading"
         >
-          পাসওয়ার্ড ভুলে গেছেন?
-        </Link>
+          {tx("পাসওয়ার্ড ভুলে গেছেন?")}</Link>
       </div>
 
       {/* 4. Submit Button */}
@@ -323,16 +224,14 @@ export function LoginForm() {
         {redirecting ? (
           <span className="flex items-center gap-2">
             <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-            ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...
-          </span>
+            {tx("ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...")}</span>
         ) : loading ? (
           <span className="flex items-center gap-2">
             <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-            যাচাই করা হচ্ছে...
-          </span>
+            {tx("যাচাই করা হচ্ছে...")}</span>
         ) : (
           <>
-            <span>ড্যাশবোর্ডে প্রবেশ করুন</span>
+            <span>{tx("ড্যাশবোর্ডে প্রবেশ করুন")}</span>
             <ArrowRight className="size-4" />
           </>
         )}
@@ -344,15 +243,14 @@ export function LoginForm() {
           <span className="w-full border-t border-slate-200/80" />
         </span>
         <span className="relative bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 font-heading">
-          অথবা
-        </span>
+          {tx("অথবা")}</span>
       </div>
 
       {/* 6. Google Login Button */}
       <button
         type="button"
         disabled
-        title="গুগল অথেন্টিকেশন শিঘ্রই ব্যাকএন্ডের সাথে যুক্ত হবে"
+        title={tx("গুগল অথেন্টিকেশন শিঘ্রই ব্যাকএন্ডের সাথে যুক্ত হবে")}
         className="inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200/90 bg-white px-4 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors font-heading disabled:opacity-60 cursor-not-allowed"
       >
         <svg className="size-4" viewBox="0 0 24 24">
@@ -373,24 +271,23 @@ export function LoginForm() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
           />
         </svg>
-        <span>Google দিয়ে প্রবেশ করুন</span>
+        <span>{tx("Google দিয়ে প্রবেশ করুন")}</span>
       </button>
 
       {/* 7. Sign-up prompt */}
       <p className="text-center text-xs text-slate-600 font-medium">
-        নতুন যুক্ত হতে চান?{" "}
+        {tx("নতুন যুক্ত হতে চান?")}{" "}
         <Link
           href={ROUTES.auth.roleSelection}
           className="font-extrabold text-emerald-700 hover:text-emerald-800 transition-colors font-heading"
         >
-          অ্যাকাউন্ট রেজিস্টার করুন →
-        </Link>
+          {tx("অ্যাকাউন্ট রেজিস্টার করুন →")}</Link>
       </p>
 
       {/* 8. Security Badge Footer */}
       <div className="flex items-center justify-center gap-1.5 pt-2 text-[11px] text-slate-400 font-medium border-t border-slate-100">
         <ShieldCheck className="size-3.5 text-emerald-600" />
-        <span>সুরক্ষিত ওটিপি ভেরিফিকেশন ও BFSA খাদ্য নিরাপত্তা নিশ্চিত</span>
+        <span>{tx("সুরক্ষিত ওটিপি ভেরিফিকেশন ও BFSA খাদ্য নিরাপত্তা নিশ্চিত")}</span>
       </div>
     </form>
   );

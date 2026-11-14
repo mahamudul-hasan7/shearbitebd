@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,8 +11,9 @@ export interface AuthProgressStep {
 }
 
 export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; current: number }) {
+  const tx = useUiText();
   return (
-    <ol className="grid grid-cols-4 gap-2 mb-7" aria-label="Registration progress">
+    <ol className="grid grid-cols-4 gap-2 mb-7" aria-label={tx("Registration progress")}>
       {steps.map((step, index) => {
         const stepNumber = index + 1;
         const complete = stepNumber < current;
@@ -42,7 +46,7 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
                 active ? "font-black text-slate-900" : complete ? "font-bold text-emerald-700" : "font-medium text-slate-400",
               )}
             >
-              {step.shortLabel ?? step.label}
+              {tx(step.shortLabel ?? step.label)}
             </span>
           </li>
         );
