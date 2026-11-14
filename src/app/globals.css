@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "./fonts.css";
 @import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 
@@ -175,6 +175,14 @@ select {
   font: inherit;
 }
 
+@media (max-width: 1023px) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
 ::selection {
   background: var(--brand-200);
   color: var(--brand-900);
@@ -190,8 +198,8 @@ select {
   transition: transform 180ms ease, color 180ms ease, opacity 180ms ease;
 }
 
-.icon-interactive:hover svg,
-.icon-interactive:focus-visible svg {
+.icon-interactive:hover svg:not([data-live-icon]),
+.icon-interactive:focus-visible svg:not([data-live-icon]) {
   transform: translateY(-1px) scale(1.06);
 }
 

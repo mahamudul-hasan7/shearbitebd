@@ -1,3 +1,5 @@
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { UiText } from "@/lib/i18n/ui-text-node";
 import {
   ArrowRight,
   Bell,
@@ -33,7 +35,7 @@ import { RadioGroup } from "@/components/ui/radio-group";
 import { SearchInput } from "@/components/ui/search-input";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Select } from "@/components/ui/select";
-import { Skeleton, SkeletonGroup } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/ui/stat-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Stepper } from "@/components/ui/stepper";
@@ -76,14 +78,14 @@ export default function DesignSystemPage() {
           <div className="flex flex-wrap items-center justify-between gap-5">
             <BrandLogo />
             <div className="flex flex-wrap gap-2">
-              <ButtonLink href={ROUTES.preview.donor} variant="outline" rightIcon={<ArrowRight className="size-4" />}>Donor preview</ButtonLink>
-              <ButtonLink href={ROUTES.preview.ngo} rightIcon={<ArrowRight className="size-4" />}>NGO preview</ButtonLink>
+              <ButtonLink href={ROUTES.preview.donor} variant="outline" rightIcon={<ArrowRight className="size-4" />}><UiText source={"Donor preview"} /></ButtonLink>
+              <ButtonLink href={ROUTES.preview.ngo} rightIcon={<ArrowRight className="size-4" />}><UiText source={"NGO preview"} /></ButtonLink>
             </div>
           </div>
           <div className="mt-12 max-w-3xl">
-            <Badge tone="accent"><Sparkles className="size-3" /> Phase 1 foundation</Badge>
-            <h1 className="mt-5 text-4xl font-black tracking-tight text-ink-900 sm:text-6xl">One accessible system for every ShareBite BD screen.</h1>
-            <p className="mt-5 text-base leading-7 text-muted-600 sm:text-lg">Centralized tokens, reusable controls, lifecycle badges, feedback patterns, and responsive layouts keep donor and NGO experiences consistent.</p>
+            <Badge tone="accent"><Sparkles className="size-3" /> {" "}<UiText source={"Phase 1 foundation"} /></Badge>
+            <h1 className="mt-5 text-4xl font-black tracking-tight text-ink-900 sm:text-6xl"><UiText source={"One accessible system for every ShareBite BD screen."} /></h1>
+            <p className="mt-5 text-base leading-7 text-muted-600 sm:text-lg"><UiText source={"Centralized tokens, reusable controls, lifecycle badges, feedback patterns, and responsive layouts keep donor and NGO experiences consistent."} /></p>
           </div>
         </header>
 
@@ -103,12 +105,12 @@ export default function DesignSystemPage() {
           <section>
             <SectionHeader title="Typography and surfaces" description="Strong headings, readable body copy, 16px controls, shared radii, and tokenized shadows." />
             <Card className="mt-5 p-6 sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Display</p>
-              <p className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Rescue food before time runs out.</p>
-              <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Heading</p>
-              <p className="mt-3 text-2xl font-black">Recommended donations near you</p>
-              <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-brand-600">Body</p>
-              <p className="mt-3 max-w-3xl leading-7 text-muted-600">ShareBite BD connects verified donors, recipient organizations, and volunteers through a clear, accountable rescue workflow.</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600"><UiText source={"Display"} /></p>
+              <p className="mt-3 text-4xl font-black tracking-tight sm:text-5xl"><UiText source={"Rescue food before time runs out."} /></p>
+              <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-brand-600"><UiText source={"Heading"} /></p>
+              <p className="mt-3 text-2xl font-black"><UiText source={"Recommended donations near you"} /></p>
+              <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-brand-600"><UiText source={"Body"} /></p>
+              <p className="mt-3 max-w-3xl leading-7 text-muted-600"><UiText source={"ShareBite BD connects verified donors, recipient organizations, and volunteers through a clear, accountable rescue workflow."} /></p>
             </Card>
           </section>
 
@@ -116,11 +118,11 @@ export default function DesignSystemPage() {
             <SectionHeader title="Buttons, icon actions, and dropdown" description="All actions retain visible focus, semantic elements, and minimum touch targets." />
             <Card className="mt-5 p-6">
               <div className="flex flex-wrap gap-3">
-                <Button>Primary action</Button>
-                <Button variant="secondary">Urgent action</Button>
-                <Button variant="outline">Secondary action</Button>
-                <Button variant="ghost">Ghost action</Button>
-                <Button variant="danger">Destructive action</Button>
+                <Button><UiText source={"Primary action"} /></Button>
+                <Button variant="secondary"><UiText source={"Urgent action"} /></Button>
+                <Button variant="outline"><UiText source={"Secondary action"} /></Button>
+                <Button variant="ghost"><UiText source={"Ghost action"} /></Button>
+                <Button variant="danger"><UiText source={"Destructive action"} /></Button>
                 <IconButton label="Notifications"><Bell className="size-5" /></IconButton>
                 <Dropdown label="Quick links" items={[
                   { label: "Design system", href: ROUTES.designSystem, icon: HeartHandshake },
@@ -135,9 +137,9 @@ export default function DesignSystemPage() {
             <SectionHeader title="Badges and lifecycle statuses" description="Friendly labels are rendered from centralized domain status values." />
             <Card className="mt-5 p-6">
               <div className="flex flex-wrap gap-2">
-                <Badge>Verified NGO</Badge>
-                <Badge tone="accent">92% Match</Badge>
-                <Badge tone="danger">Critical priority</Badge>
+                <Badge><UiText source={"Verified NGO"} /></Badge>
+                <Badge tone="accent"><UiText source={"92% Match"} /></Badge>
+                <Badge tone="danger"><UiText source={"Critical priority"} /></Badge>
               </div>
               <div className="mt-5 flex flex-wrap gap-2">
                 {statusSamples.map((status) => <StatusBadge key={status} status={status} />)}
@@ -153,9 +155,9 @@ export default function DesignSystemPage() {
                 <Input label="Pickup area" name="demo-area" placeholder="Select an approximate area" leftIcon={<MapPin className="size-5" />} />
                 <SearchInput name="demo-search" label="Search donations" placeholder="Food, donor, or area" />
                 <Select label="Storage condition" name="demo-storage" defaultValue="refrigerated">
-                  <option value="refrigerated">Refrigerated</option>
-                  <option value="frozen">Frozen</option>
-                  <option value="room-temperature">Room temperature</option>
+                  <option value="refrigerated"><UiText source={"Refrigerated"} /></option>
+                  <option value="frozen"><UiText source={"Frozen"} /></option>
+                  <option value="room-temperature"><UiText source={"Room temperature"} /></option>
                 </Select>
                 <Textarea label="Pickup directions" name="demo-directions" placeholder="Add a landmark without exposing private contact details." containerClassName="sm:col-span-2" />
                 <Input label="Invalid example" name="demo-invalid" defaultValue="Pickup after deadline" error="Pickup must be before the safe pickup deadline." containerClassName="sm:col-span-2" />
@@ -197,13 +199,9 @@ export default function DesignSystemPage() {
             <Card className="mt-5 p-6">
               <div className="flex flex-wrap items-center gap-3">
                 <Toast title="Draft saved" description="Your current frontend form state is preserved." />
-                <span className="text-sm text-muted-600">Toast uses a polite live region and remains keyboard dismissible.</span>
+                <span className="text-sm text-muted-600"><UiText source={"Toast uses a polite live region and remains keyboard dismissible."} /></span>
               </div>
-              <SkeletonGroup label="Loading donation preview" className="mt-7 grid gap-3">
-                <Skeleton className="h-5 w-1/3" />
-                <Skeleton className="h-28 w-full" />
-                <div className="grid grid-cols-3 gap-3"><Skeleton className="h-10" /><Skeleton className="h-10" /><Skeleton className="h-10" /></div>
-              </SkeletonGroup>
+              <LoadingSpinner label="Loading donation preview" />
             </Card>
           </section>
 
@@ -257,17 +255,17 @@ export default function DesignSystemPage() {
             <SectionHeader title="Card composition and empty state" />
             <ResponsiveGrid columns={2} className="mt-5">
               <Card>
-                <CardHeader title="Veg Meal Pack" description="UIU Cafeteria · 40 meal packs" action={<Badge tone="danger">High priority</Badge>} />
+                <CardHeader title="Veg Meal Pack" description="UIU Cafeteria · 40 meal packs" action={<Badge tone="danger"><UiText source={"High priority"} /></Badge>} />
                 <CardContent>
                   <div className="grid gap-4 sm:grid-cols-3">
-                    <div><p className="text-xs text-muted-600">Distance</p><p className="mt-1 font-extrabold">1.2 km</p></div>
-                    <div><p className="text-xs text-muted-600">Rescue time</p><p className="mt-1 font-extrabold text-danger">01:45:32</p></div>
-                    <div><p className="text-xs text-muted-600">Match score</p><p className="mt-1 font-extrabold text-brand-700">92%</p></div>
+                    <div><p className="text-xs text-muted-600"><UiText source={"Distance"} /></p><p className="mt-1 font-extrabold"><UiText source={"1.2 km"} /></p></div>
+                    <div><p className="text-xs text-muted-600"><UiText source={"Rescue time"} /></p><p className="mt-1 font-extrabold text-danger">01:45:32</p></div>
+                    <div><p className="text-xs text-muted-600"><UiText source={"Match score"} /></p><p className="mt-1 font-extrabold text-brand-700">92%</p></div>
                   </div>
-                  <Button fullWidth className="mt-6" rightIcon={<ArrowRight className="size-4" />}>View details</Button>
+                  <Button fullWidth className="mt-6" rightIcon={<ArrowRight className="size-4" />}><UiText source={"View details"} /></Button>
                 </CardContent>
               </Card>
-              <EmptyState icon={HeartHandshake} title="No suitable donations found" description="Adjust filters, view all available food, or create a food request." action={<Button variant="outline">Adjust filters</Button>} />
+              <EmptyState icon={HeartHandshake} title="No suitable donations found" description="Adjust filters, view all available food, or create a food request." action={<Button variant="outline"><UiText source={"Adjust filters"} /></Button>} />
             </ResponsiveGrid>
           </section>
 
@@ -276,8 +274,8 @@ export default function DesignSystemPage() {
             <Card className="mt-5 p-6">
               <div className="flex flex-wrap items-center gap-5">
                 <Avatar initials="HF" size="lg" />
-                <div><div className="flex items-center gap-2"><p className="text-xl font-black">Hope Foundation</p><ShieldCheck className="size-5 text-brand-600" /></div><p className="mt-1 text-sm text-muted-600">Verified NGO · Dhanmondi, Dhaka</p></div>
-                <div className="ml-auto flex gap-2"><IconButton label="Calendar"><CalendarDays className="size-5" /></IconButton><Button variant="outline">View profile</Button></div>
+                <div><div className="flex items-center gap-2"><p className="text-xl font-black"><UiText source={"Hope Foundation"} /></p><ShieldCheck className="size-5 text-brand-600" /></div><p className="mt-1 text-sm text-muted-600"><UiText source={"Verified NGO · Dhanmondi, Dhaka"} /></p></div>
+                <div className="ml-auto flex gap-2"><IconButton label="Calendar"><CalendarDays className="size-5" /></IconButton><Button variant="outline"><UiText source={"View profile"} /></Button></div>
               </div>
             </Card>
           </section>
@@ -287,12 +285,12 @@ export default function DesignSystemPage() {
             <Card className="mt-5 overflow-hidden">
               <div className="surface-grid p-6 sm:p-8">
                 <div className="mx-auto max-w-3xl rounded-panel border border-line bg-white p-5 shadow-card">
-                  <div className="flex items-center justify-between gap-4 border-b border-line pb-4"><BrandLogo compact /><Badge>PageContainer</Badge></div>
+                  <div className="flex items-center justify-between gap-4 border-b border-line pb-4"><BrandLogo compact /><Badge><UiText source={"PageContainer"} /></Badge></div>
                   <ResponsiveGrid columns={3} className="mt-5"><Skeleton className="h-20" /><Skeleton className="h-20" /><Skeleton className="h-20" /></ResponsiveGrid>
-                  <StickyActionBar className="mt-6"><Button variant="outline">Save draft</Button><Button>Continue</Button></StickyActionBar>
+                  <StickyActionBar className="mt-6"><Button variant="outline"><UiText source={"Save draft"} /></Button><Button><UiText source={"Continue"} /></Button></StickyActionBar>
                 </div>
               </div>
-              <CardContent><p className="text-sm leading-6 text-muted-600">Open the donor and NGO previews to verify the desktop sidebar and five-column mobile navigation using the same route configuration.</p></CardContent>
+              <CardContent><p className="text-sm leading-6 text-muted-600"><UiText source={"Open the donor and NGO previews to verify the desktop sidebar and five-column mobile navigation using the same route configuration."} /></p></CardContent>
             </Card>
           </section>
         </div>

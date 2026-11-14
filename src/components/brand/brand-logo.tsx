@@ -1,3 +1,8 @@
+"use client";
+
+import type { MouseEventHandler } from "react";
+import { UiText } from "@/lib/i18n/ui-text-node";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { HeartHandshake, Leaf } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -8,17 +13,21 @@ export function BrandLogo({
   className,
   href = ROUTES.home,
   inverse = false,
+  onClick,
 }: {
   compact?: boolean;
   className?: string;
   href?: string;
   inverse?: boolean;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }) {
+  const tx = useUiText();
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn("group inline-flex items-center gap-2 sm:gap-3 transition-opacity hover:opacity-95 select-none shrink-0", className)}
-      aria-label="ShareBite BD home"
+      aria-label={tx("ShareBite BD home")}
     >
       <span
         className={cn(
@@ -42,11 +51,8 @@ export function BrandLogo({
               inverse ? "text-white" : "text-slate-900"
             )}
           >
-            ShareBite
-          </span>
-          <span className="rounded-md bg-gradient-to-r from-amber-400 to-amber-500 px-1 sm:px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-2xs font-heading leading-none">
-            BD
-          </span>
+            {tx("ShareBite")}</span>
+          <span className="rounded-md bg-gradient-to-r from-amber-400 to-amber-500 px-1 sm:px-1.5 py-0.5 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-950 shadow-2xs font-heading leading-none"><UiText source={"BD"} /></span>
         </span>
       )}
     </Link>

@@ -1,0 +1,81 @@
+.part { animation-duration:6.4s; animation-iteration-count:infinite; animation-timing-function:cubic-bezier(.4,0,.2,1); animation-play-state:paused; }
+.motion[data-motion="running"] .icon[data-live-motion="ambient"] .part { animation-play-state:running; }
+.motion[data-motion="paused"] .icon[data-live-motion="ambient"] .part { animation-play-state:paused; }
+.icon[data-live-motion="interaction"] .part,.icon[data-live-motion="still"] .part { animation:none; }
+.icon[data-live-motion="once"] .part { animation-duration:900ms; animation-iteration-count:1; animation-delay:0s; animation-play-state:running; }
+.lid { transform-origin:4px 11px; animation-name:openLid; }
+.food { animation-name:revealFood; }
+.check { stroke-dasharray:1; stroke-dashoffset:0; animation-name:writeCheck; }
+.check1 { animation-delay:-.8s; }
+.check2 { animation-delay:-.35s; }
+.check3 { animation-delay:.1s; }
+.bowl { animation-name:passBowl; animation-delay:-1.5s; }
+.hand { transform-origin:6px 18px; animation-name:offerMeal; animation-delay:-1.5s; }
+.wave { transform-origin:18px 15px; animation-name:greet; animation-delay:-2.8s; }
+.rearWheel { transform-origin:5.5px 17px; animation-name:wheelTurn; animation-duration:2.8s; animation-timing-function:linear; }
+.frontWheel { transform-origin:18.5px 17px; animation-name:wheelTurn; animation-duration:2.8s; animation-timing-function:linear; }
+.pedal { transform-origin:10px 12px; animation-name:pedal; animation-duration:1.4s; }
+.bell { transform-origin:12px 2px; animation-name:ringBell; }
+.clapper { transform-origin:12px 2px; animation-name:ringClapper; }
+.draw { stroke-dasharray:1; stroke-dashoffset:0; animation-name:drawLine; }
+.pinCenter { transform-origin:12px 10px; animation-name:locate; }
+.search { animation-name:searchArea; }
+.door { transform-origin:8px 20px; animation-name:openDoor; }
+.tile,.tileLast { transform-box:fill-box; transform-origin:center; animation-name:arrangeTile; }
+.tileLast { animation-delay:.12s; }
+.add { transform-origin:12px 12px; animation-name:unfold; }
+.needle { transform-origin:12px 12px; animation-name:findNorth; }
+.clock { transform-origin:12px 12px; animation-name:clockTurn; }
+.nod { transform-origin:12px 11px; animation-name:nod; }
+.slider { animation-name:adjust; }
+.lens { transform-origin:12px 13px; animation-name:shutter; }
+.upload { animation-name:upload; }
+.scan { animation-name:scanCode; }
+.icon[data-live-motion="once"] .check { animation-name:drawLine; }
+.successPanel { animation:successEnter 220ms cubic-bezier(.2,.7,.3,1) both; }
+
+@keyframes openLid {
+  0%,12%,65%,100% { transform:translateY(0) rotate(0); }
+  28%,45% { transform:translateY(-2px) rotate(-16deg); }
+}
+@keyframes revealFood {
+  0%,12%,65%,100% { transform:translateY(1px); }
+  28%,45% { transform:translateY(-1px); }
+}
+@keyframes writeCheck {
+  0%,12% { stroke-dashoffset:1; }
+  28%,88% { stroke-dashoffset:0; }
+  100% { stroke-dashoffset:1; }
+}
+@keyframes passBowl {
+  0%,12%,70%,100% { transform:translate(0,0); }
+  30%,46% { transform:translate(1px,-1.5px); }
+}
+@keyframes offerMeal {
+  0%,12%,70%,100% { transform:rotate(0); }
+  30%,46% { transform:rotate(-5deg); }
+}
+@keyframes greet {
+  0%,15%,65%,100% { transform:rotate(0); }
+  28%,48% { transform:rotate(13deg); }
+  38%,58% { transform:rotate(-8deg); }
+}
+@keyframes wheelTurn { to { transform:rotate(360deg); } }
+@keyframes pedal { 0%,100% { transform:rotate(-6deg); } 50% { transform:rotate(9deg); } }
+@keyframes ringBell { 0%,70%,100% { transform:rotate(0); } 18%,42% { transform:rotate(10deg); } 30%,54% { transform:rotate(-8deg); } }
+@keyframes ringClapper { 0%,70%,100% { transform:rotate(0); } 18%,42% { transform:rotate(-5deg); } 30%,54% { transform:rotate(4deg); } }
+@keyframes drawLine { 0%,12% { stroke-dashoffset:1; } 65%,100% { stroke-dashoffset:0; } }
+@keyframes locate { 0%,100% { transform:scale(1); } 40% { transform:scale(.6); } 65% { transform:scale(1.08); } }
+@keyframes searchArea { 0%,100% { transform:translate(0,0); } 30% { transform:translate(-1px,1px); } 65% { transform:translate(1px,-1px); } }
+@keyframes openDoor { 0%,100% { transform:scaleX(1); } 35%,65% { transform:scaleX(.25); } }
+@keyframes arrangeTile { 0%,100% { transform:scale(1); } 40% { transform:scale(.75); } }
+@keyframes unfold { 0% { transform:scaleY(.25); } 60% { transform:scaleY(1.08); } 100% { transform:scaleY(1); } }
+@keyframes findNorth { 0%,100% { transform:rotate(0); } 30% { transform:rotate(25deg); } 65% { transform:rotate(-10deg); } }
+@keyframes clockTurn { 0% { transform:rotate(-40deg); } 100% { transform:rotate(0); } }
+@keyframes nod { 0%,100% { transform:rotate(0); } 40% { transform:rotate(7deg); } }
+@keyframes adjust { 0%,100% { transform:translateX(0); } 40%,60% { transform:translateX(5px); } }
+@keyframes shutter { 0%,100% { transform:scale(1); } 35% { transform:scale(.55); } 65% { transform:scale(1.05); } }
+@keyframes upload { 0%,100% { transform:translateY(0); } 40%,65% { transform:translateY(-3px); } }
+@keyframes scanCode { 0%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } 65% { transform:translateY(5px); } }
+@keyframes successEnter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@media(prefers-reduced-motion:reduce) { .part,.successPanel { animation:none!important; } }
