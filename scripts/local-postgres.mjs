@@ -1,30 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import net from "node:net";
 import { parseEnv } from "node:util";
 import { PrismaClient } from "@prisma/client";
+import { runPostgresCommand as run } from "./postgres-command.mjs";
 
 const root = path.resolve(".local-postgres");
 const cluster = path.join(root, "cluster");
 const credentialsFile = path.join(root, "credentials.json");
 const logFile = path.join(root, "postgres.log");
 const command = process.argv[2] || "start";
-
-function run(file, args) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(file, args, { windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
-    let output = "";
-    child.stdout.on("data", (chunk) => { output += chunk; });
-    child.stderr.on("data", (chunk) => { output += chunk; });
-    child.on("error", reject);
-    child.on("close", (code) => {
-      if (code === 0) resolve(output);
-      else reject(new Error(output || `PostgreSQL command failed (${code}).`));
-    });
-  });
-}
 
 function availablePort(preferredPort) {
   return new Promise((resolve, reject) => {
