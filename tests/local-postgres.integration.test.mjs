@@ -36,7 +36,7 @@ test("local PostgreSQL handles occupied ports, restarts with saved data and repo
     await fs.mkdir(databaseDir);
     await fs.mkdir(path.join(workspace, "scripts"));
     await fs.symlink(await fs.realpath(path.join(project, "node_modules")), path.join(workspace, "node_modules"), "junction");
-    for (const name of ["local-postgres.mjs", "ensure-database.mjs", "database-env.mjs", "ensure-secrets.mjs"]) {
+    for (const name of ["local-postgres.mjs", "postgres-command.mjs", "ensure-database.mjs", "database-env.mjs", "ensure-secrets.mjs"]) {
       await fs.copyFile(path.join(project, "scripts", name), path.join(workspace, "scripts", name));
     }
     blocker.listen({ host: "127.0.0.1", port: 0 });
