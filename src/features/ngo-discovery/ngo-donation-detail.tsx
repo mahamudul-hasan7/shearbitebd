@@ -10,7 +10,6 @@ import { DonationPhoto } from "@/components/donation/donation-photo";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import {
   AlertTriangle,
-  ArrowLeft,
   Bookmark,
   CheckCircle2,
   Clock3,

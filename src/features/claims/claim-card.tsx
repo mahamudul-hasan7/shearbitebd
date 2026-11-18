@@ -12,11 +12,9 @@ import {
   PackageOpen,
   ShieldCheck,
   Sparkles,
-  UserCheck2,
   UserRoundCheck,
 } from "lucide-react";
 import { RescueClock } from "@/components/donor/rescue-clock";
-import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -36,7 +34,6 @@ import {
 import { ClaimStatus } from "@/lib/constants/statuses";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ROUTES } from "@/lib/routes";
-import { cn } from "@/lib/utils";
 import type { ClaimCoordinationDetails } from "@/services";
 
 export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {

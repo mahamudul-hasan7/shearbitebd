@@ -6,27 +6,18 @@ import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  ArrowLeft,
-  Award,
   Bookmark,
   CalendarDays,
   CheckCircle2,
-  Clock3,
-  ExternalLink,
   HeartHandshake,
   Mail,
-  MapPin,
   Phone,
-  Plus,
   RefreshCw,
-  Scale,
   ShieldCheck,
   Sparkles,
   Star,
   Target,
-  UsersRound,
   Utensils,
-  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

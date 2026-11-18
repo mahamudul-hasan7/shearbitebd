@@ -4,15 +4,12 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  Activity,
   Box,
-  CheckCircle2,
   Clock3,
   Compass,
   HeartHandshake,
   PackageCheck,
   RefreshCw,
-  Sparkles,
   Truck,
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
@@ -32,13 +29,11 @@ function ClaimSection({
   subtitle,
   count,
   items,
-  badgeTone = "brand",
 }: {
   title: string;
   subtitle?: string;
   count: number;
   items: ClaimCoordinationDetails[];
-  badgeTone?: "brand" | "success" | "accent";
 }) {
   if (items.length === 0) return null;
 
@@ -193,7 +188,6 @@ export function NGOClaimsList() {
               }
               count={activeItems.length}
               items={activeItems}
-              badgeTone="brand"
             />
             <ClaimSection
               title={isBn ? tx("সম্পন্ন ও পূর্ববর্তী রেসকিউ হিস্ট্রি") : tx("Claim history")}
@@ -204,7 +198,6 @@ export function NGOClaimsList() {
               }
               count={historyItems.length}
               items={historyItems}
-              badgeTone="success"
             />
           </div>
         )}

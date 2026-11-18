@@ -5,15 +5,12 @@ import { UiText } from "@/lib/i18n/ui-text-node";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  ArrowLeft,
   Building2,
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
   Copy,
-  ExternalLink,
   Flame,
-  Info,
   MapPin,
   Navigation,
   Phone,
@@ -22,7 +19,6 @@ import {
   ShieldCheck,
   Star,
   Timer,
-  Truck,
   Utensils,
   Sparkles,
 } from "lucide-react";
@@ -50,7 +46,7 @@ import {
   formatDonationQuantityBn,
 } from "@/features/donations/donation-presentation";
 import { useDonationTracking } from "@/features/donations/use-donation-tracking";
-import { ClaimStatus, DonationStatus } from "@/lib/constants/statuses";
+import { DonationStatus } from "@/lib/constants/statuses";
 import { IncidentPanel } from "@/features/incidents/incident-panel";
 import { ROUTES } from "@/lib/routes";
 import { donationService, type UpdateDonationInput } from "@/services/donation.service";

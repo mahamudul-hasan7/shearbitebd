@@ -46,7 +46,7 @@ for (const step of steps) {
   try {
     run(`git add ${step.files.join(" ")}`);
     run(`git commit -m "${step.msg}"`);
-  } catch (err) {
+  } catch {
     console.warn(`⚠️ Skipped or already committed: ${step.files.join(", ")}`);
   }
 }

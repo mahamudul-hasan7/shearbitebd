@@ -4,42 +4,28 @@ import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
   Activity,
-  ArrowLeft,
-  Award,
-  Bike,
   Building2,
-  Calendar,
   CheckCircle2,
-  Clock,
   Coins,
-  Download,
   FileCheck2,
   FileText,
-  Filter,
   MapPin,
   Printer,
-  QrCode,
   Search,
-  ShieldAlert,
-  ShieldCheck,
   Star,
-  Thermometer,
   Truck,
   Utensils,
   X,
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
-import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import type { CompletedMissionRecord } from "@/features/volunteer-dashboard/volunteer-types";
 import { ROUTES } from "@/lib/routes";
-import { cn } from "@/lib/utils";
 
 export function VolunteerHistoryView() {
   const tx = useUiText();
