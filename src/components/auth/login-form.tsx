@@ -1,28 +1,31 @@
 "use client";
-import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  ArrowRight,
-  Mail,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
+import { DEMO_ACCOUNTS } from "@/features/auth/demo-accounts";
 import { validateLogin } from "@/features/auth/validation";
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { UserRole } from "@/lib/constants/roles";
 import { ROUTES } from "@/lib/routes";
-import { cn } from "@/lib/utils";
+import styles from "./auth-pages.module.css";
 
 type LoginErrors = Partial<Record<"email" | "password" | "form", string>>;
 
-function getSafeDestination(requestedPath: string | null, account: { role: UserRole | string }) {
+function getSafeDestination(
+  requestedPath: string | null,
+  account: { role: UserRole | string },
+) {
   const landingRoute = getRoleLandingRoute(account.role as UserRole);
   const roleBase = landingRoute.slice(0, landingRoute.lastIndexOf("/") + 1);
-  if (requestedPath?.startsWith(roleBase) && !requestedPath.startsWith("//")) return requestedPath;
+  if (requestedPath?.startsWith(roleBase) && !requestedPath.startsWith("//"))
+    return requestedPath;
   return landingRoute;
 }
 
@@ -30,64 +33,53 @@ export function LoginForm() {
   const tx = useUiText();
   const searchParams = useSearchParams();
   const { signIn } = useMockAuth();
-
-  const [email, setEmail] = useState("donor@sharebite.demo");
-  const [password, setPassword] = useState("Demo1234");
+  const form = useRef<HTMLFormElement>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
 
-  function navigateToDestination(targetRoute: string) {
-    setRedirecting(true);
-    setLoading(false);
-
-    // Reload account-scoped stores and cached portal layouts after switching users.
-    window.location.replace(targetRoute);
-  }
-
-  async function executeLogin(targetEmail: string, targetPass: string) {
-    const cleanEmail = targetEmail.trim();
-    const cleanPass = targetPass;
-
-    const validationErrors = validateLogin({ email: cleanEmail, password: cleanPass });
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (loading || redirecting) return;
+    const validationErrors = validateLogin({ email, password });
     if (validationErrors.email || validationErrors.password) {
       setErrors(validationErrors);
+      window.requestAnimationFrame(() =>
+        form.current
+          ?.querySelector<HTMLElement>('[aria-invalid="true"]')
+          ?.focus(),
+      );
       return;
     }
-
     setLoading(true);
     setErrors({});
-
     try {
-      const account = await signIn({ email: cleanEmail, password: cleanPass, remember });
-      navigateToDestination(getSafeDestination(searchParams.get("next"), account));
+      const account = await signIn({ email: email.trim(), password, remember });
+      setRedirecting(true);
+      window.location.replace(
+        getSafeDestination(searchParams.get("next"), account),
+      );
     } catch (error) {
-      setErrors({ form: error instanceof Error ? error.message : "সার্ভারে যোগাযোগ করা যায়নি।" });
+      setErrors({
+        form:
+          error instanceof Error
+            ? error.message
+            : tx("Could not sign in. Please try again."),
+      });
       setLoading(false);
-      setRedirecting(false);
     }
-  }
-
-  function handleSubmit(event?: FormEvent) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    executeLogin(email, password);
   }
 
   return (
     <form
-      action="#"
-      method="POST"
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleSubmit();
-      }}
+      ref={form}
+      onSubmit={handleSubmit}
       noValidate
-      className="space-y-6"
+      className={styles.form}
+      aria-busy={loading || redirecting}
     >
       {errors.form && (
         <Alert
@@ -96,199 +88,105 @@ export function LoginForm() {
           description={tx(errors.form)}
         />
       )}
-
-      {/* Credentials Form */}
-      <div className="space-y-4">
-        {/* Quick 1-Tap Demo Switcher Pills */}
-        <div className="flex items-center justify-between pb-1 text-xs">
-          <span className="font-bold text-slate-500 font-heading text-[11px]">{tx("ডেমো অ্যাকাউন্ট:")}</span>
-          <div className="inline-flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("donor@sharebite.demo");
-                setPassword("Demo1234");
-                setErrors({});
-              }}
-              className={cn(
-                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
-                email.toLowerCase().includes("donor")
-                  ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-black"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-              )}
-            >
-              {tx("👨‍🍳 ডোনার")}</button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("ngo@sharebite.demo");
-                setPassword("Demo1234");
-                setErrors({});
-              }}
-              className={cn(
-                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
-                email.toLowerCase().includes("ngo")
-                  ? "bg-teal-600 text-white border-teal-600 shadow-2xs font-black"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-              )}
-            >
-              {tx("🏢 এনজিও")}</button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("volunteer@sharebite.demo");
-                setPassword("Demo1234");
-                setErrors({});
-              }}
-              className={cn(
-                "rounded-lg px-2.5 py-1 text-[11px] font-bold border transition-all cursor-pointer touch-manipulation active:scale-95",
-                email.toLowerCase().includes("volunteer")
-                  ? "bg-amber-600 text-white border-amber-600 shadow-2xs font-black"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-              )}
-            >
-              {tx("🚴 ভলান্টিয়ার")}</button>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
-            {tx("ইমেইল অথবা মোবাইল নম্বর (Email or Phone)")}</label>
-          <div className="relative flex items-center">
-            <Mail className="pointer-events-none absolute left-3.5 size-4.5 text-slate-400" />
+      <fieldset disabled={loading || redirecting}>
+        <Input
+          label={tx("Email or mobile number")}
+          id="login-email"
+          name="email"
+          autoComplete="username"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          maxLength={254}
+          value={email}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setErrors((previous) => ({
+              ...previous,
+              email: undefined,
+              form: undefined,
+            }));
+          }}
+          placeholder="name@example.com"
+          error={errors.email}
+          required
+          leftIcon={<Mail size={20} />}
+        />
+        <PasswordInput
+          id="login-password"
+          value={password}
+          maxLength={256}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setErrors((previous) => ({
+              ...previous,
+              password: undefined,
+              form: undefined,
+            }));
+          }}
+          error={errors.password}
+        />
+        <div className={styles.formOptions}>
+          <label>
             <input
-              type="text"
-              name="email"
-              inputMode="email"
-              autoCapitalize="none"
-              autoCorrect="off"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
-              }}
-              placeholder="donor@sharebite.demo অথবা 01711000001"
-              className={cn(
-                "h-12 w-full rounded-xl border bg-slate-50/50 pl-11 pr-4 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden transition-all",
-                errors.email
-                  ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                  : "border-slate-200/90 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"
-              )}
+              type="checkbox"
+              checked={remember}
+              onChange={(event) => setRemember(event.target.checked)}
+              className="size-4 accent-emerald-600"
             />
-          </div>
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-600 font-medium">{tx(errors.email)}</p>
-          )}
+            {tx("Keep me signed in")}
+          </label>
+          <Link href={ROUTES.auth.forgotPassword}>
+            {tx("পাসওয়ার্ড ভুলে গেছেন?")}
+          </Link>
         </div>
-
-        <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1.5 font-heading">
-            {tx("পাসওয়ার্ড (Password)")}</label>
-          <PasswordInput
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setErrors((prev) => ({ ...prev, password: undefined, form: undefined }));
-            }}
-            placeholder={tx("পাসওয়ার্ড দিন (Demo1234)")}
-            error={tx(errors.password)}
-          />
-        </div>
-      </div>
-
-      {/* 3. Remember Me & Forgot Password */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-        <label className="flex cursor-pointer items-center gap-2 text-slate-600 font-medium select-none">
-          <input
-            type="checkbox"
-            checked={remember}
-            onChange={(e) => setRemember(e.target.checked)}
-            className="size-4 rounded-md border-slate-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 cursor-pointer"
-          />
-          <span>{tx("আমাকে মনে রাখুন (Remember session)")}</span>
-        </label>
-
-        <Link
-          href={ROUTES.auth.forgotPassword}
-          className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors font-heading"
-        >
-          {tx("পাসওয়ার্ড ভুলে গেছেন?")}</Link>
-      </div>
-
-      {/* 4. Submit Button */}
-      <button
+      </fieldset>
+      <Button
         type="submit"
+        size="lg"
+        fullWidth
         disabled={loading || redirecting}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-6 text-sm font-black uppercase tracking-wider text-white shadow-md shadow-emerald-700/25 hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none font-heading cursor-pointer touch-manipulation"
       >
-        {redirecting ? (
-          <span className="flex items-center gap-2">
-            <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-            {tx("ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...")}</span>
-        ) : loading ? (
-          <span className="flex items-center gap-2">
-            <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-            {tx("যাচাই করা হচ্ছে...")}</span>
-        ) : (
-          <>
-            <span>{tx("ড্যাশবোর্ডে প্রবেশ করুন")}</span>
-            <ArrowRight className="size-4" />
-          </>
+        {redirecting
+          ? tx("ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...")
+          : loading
+            ? tx("যাচাই করা হচ্ছে...")
+            : tx("Sign in")}
+        {!loading && !redirecting && (
+          <ArrowRight size={18} aria-hidden="true" />
         )}
-      </button>
-
-      {/* 5. Alternative Login Divider */}
-      <div className="relative flex items-center justify-center">
-        <span className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-slate-200/80" />
-        </span>
-        <span className="relative bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 font-heading">
-          {tx("অথবা")}</span>
-      </div>
-
-      {/* 6. Google Login Button */}
-      <button
-        type="button"
-        disabled
-        title={tx("গুগল অথেন্টিকেশন শিঘ্রই ব্যাকএন্ডের সাথে যুক্ত হবে")}
-        className="inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200/90 bg-white px-4 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors font-heading disabled:opacity-60 cursor-not-allowed"
-      >
-        <svg className="size-4" viewBox="0 0 24 24">
-          <path
-            fill="#4285F4"
-            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-          />
-          <path
-            fill="#34A853"
-            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-          />
-          <path
-            fill="#FBBC05"
-            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-          />
-          <path
-            fill="#EA4335"
-            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-          />
-        </svg>
-        <span>{tx("Google দিয়ে প্রবেশ করুন")}</span>
-      </button>
-
-      {/* 7. Sign-up prompt */}
-      <p className="text-center text-xs text-slate-600 font-medium">
-        {tx("নতুন যুক্ত হতে চান?")}{" "}
-        <Link
-          href={ROUTES.auth.roleSelection}
-          className="font-extrabold text-emerald-700 hover:text-emerald-800 transition-colors font-heading"
-        >
-          {tx("অ্যাকাউন্ট রেজিস্টার করুন →")}</Link>
+      </Button>
+      <p className={styles.signup}>
+        {tx("Need an account?")}{" "}
+        <Link href={ROUTES.auth.roleSelection}>{tx("Create an account")}</Link>
       </p>
-
-      {/* 8. Security Badge Footer */}
-      <div className="flex items-center justify-center gap-1.5 pt-2 text-[11px] text-slate-400 font-medium border-t border-slate-100">
-        <ShieldCheck className="size-3.5 text-emerald-600" />
-        <span>{tx("সুরক্ষিত ওটিপি ভেরিফিকেশন ও BFSA খাদ্য নিরাপত্তা নিশ্চিত")}</span>
-      </div>
+      <details className={styles.demo}>
+        <summary>{tx("Try a demo account")}</summary>
+        <p>{tx("Choose a demo account to fill the form, then sign in.")}</p>
+        <div className={styles.demoOptions}>
+          {DEMO_ACCOUNTS.map((account) => (
+            <button
+              key={account.role}
+              type="button"
+              disabled={loading || redirecting}
+              aria-pressed={email === account.email}
+              onClick={() => {
+                setEmail(account.email);
+                setPassword(account.password);
+                setErrors({});
+              }}
+            >
+              {tx(
+                account.role === UserRole.DONOR
+                  ? "Food donor"
+                  : account.role === UserRole.NGO
+                    ? "NGO"
+                    : "Volunteer",
+              )}
+            </button>
+          ))}
+        </div>
+      </details>
     </form>
   );
 }

@@ -3100,3 +3100,8 @@ test("browser sample image selection publish labels reload and real-photo switch
 
 
 
+
+test("browser auth pages support responsive sign-in and complete role registrations", { skip: process.env.RUN_AUTH_PAGES_BROWSER !== "1" }, async () => {
+  const { runAuthPageBrowserChecks } = await import("./auth-pages-browser.mjs");
+  await runAuthPageBrowserChecks({ base, prisma });
+});

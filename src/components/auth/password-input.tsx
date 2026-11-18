@@ -1,13 +1,14 @@
 "use client";
-import { useUiText } from "@/lib/i18n/use-ui-text";
 
+import { useUiText } from "@/lib/i18n/use-ui-text";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { useState } from "react";
 import { Input, type InputProps } from "@/components/ui/input";
 
-export interface PasswordInputProps extends Omit<InputProps, "type" | "leftIcon"> {
-  label?: string;
-}
+export type PasswordInputProps = Omit<
+  InputProps,
+  "type" | "leftIcon" | "rightElement"
+>;
 
 export function PasswordInput({
   label = "Password",
@@ -19,29 +20,29 @@ export function PasswordInput({
 }: PasswordInputProps) {
   const tx = useUiText();
   const [visible, setVisible] = useState(false);
-
   return (
-    <div className="relative">
-      <Input
-        label={label}
-        name={name}
-        type={visible ? "text" : "password"}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        required={required}
-        minLength={8}
-        leftIcon={<LockKeyhole className="size-5" />}
-        className="pr-12"
-        {...props}
-      />
-      <button
-        type="button"
-        onClick={() => setVisible((value) => !value)}
-        className="absolute right-2 top-8 grid size-8 place-items-center rounded-lg text-muted-600 transition hover:bg-brand-50 hover:text-brand-700"
-        aria-label={visible ? tx("Hide password") : tx("Show password")}
-      >
-        {visible ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-      </button>
-    </div>
+    <Input
+      label={label}
+      name={name}
+      type={visible ? "text" : "password"}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
+      required={required}
+      minLength={8}
+      leftIcon={<LockKeyhole className="size-5" />}
+      rightElement={
+        <button
+          type="button"
+          onClick={() => setVisible((value) => !value)}
+          className="grid size-11 place-items-center rounded-lg text-muted-600 transition hover:bg-brand-50 hover:text-brand-700"
+          aria-label={visible ? tx("Hide password") : tx("Show password")}
+          aria-pressed={visible}
+          aria-controls={props.id ?? name}
+        >
+          {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
+      }
+      {...props}
+    />
   );
 }
