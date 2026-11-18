@@ -3,27 +3,20 @@ import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  ArrowRight,
   CalendarClock,
   CheckCircle2,
-  Clock,
-  ExternalLink,
   Eye,
   FileCheck2,
   KeyRound,
   MapPin,
   Navigation,
-  PackageCheck,
   ShieldCheck,
-  Truck,
-  Users,
   Utensils,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { RescueClock } from "@/components/donor/rescue-clock";
-import { donationLifecycleProgress, isClosedDonation } from "@/features/donations/donation-management";
 import { donationImageUrl, formatDonationDateTime, formatDonationQuantity } from "@/features/donations/donation-presentation";
 import { FOOD_CATEGORY_LABELS } from "@/lib/constants/domain";
 import { DonationStatus } from "@/lib/constants/statuses";

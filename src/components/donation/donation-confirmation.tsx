@@ -2,10 +2,8 @@
 import { LiveIcon } from "@/components/motion/live-icon";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { ArrowRight, BadgeCheck, CheckCircle2, Navigation, Plus, Share2, Sparkles } from "lucide-react";
+import { BadgeCheck, CheckCircle2, Navigation, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { DonationWizardResult } from "@/features/donations/types";
 import { ROUTES } from "@/lib/routes";

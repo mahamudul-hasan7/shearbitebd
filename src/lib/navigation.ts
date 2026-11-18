@@ -2,23 +2,19 @@ import {
   Bell,
   Bike,
   Building2,
-  CheckCircle2,
   ClipboardList,
   Compass,
   FileQuestion,
   HeartHandshake,
   History,
-  Home,
   LayoutDashboard,
   MapPin,
   Navigation,
   PackageSearch,
   Plus,
-  QrCode,
   Search,
   Settings,
   ShieldCheck,
-  UserRound,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { PortalRole } from "@/types/navigation";

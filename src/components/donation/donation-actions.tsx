@@ -1,7 +1,7 @@
 "use client";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { AlertTriangle, Ban, Check, Info, Pencil, Send, X, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Ban, Pencil, Send, X } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button, ButtonLink } from "@/components/ui/button";

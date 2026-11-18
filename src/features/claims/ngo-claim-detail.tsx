@@ -8,8 +8,6 @@ import { DonationPhoto } from "@/components/donation/donation-photo";
 import { IncidentPanel } from "@/features/incidents/incident-panel";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import {
-  ArrowLeft,
-  Bike,
   Building2,
   CheckCircle2,
   Clock3,

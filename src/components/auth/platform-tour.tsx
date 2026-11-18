@@ -3,27 +3,14 @@ import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
-  Activity,
   ArrowRight,
-  Award,
-  BarChart3,
   Bike,
-  Building2,
-  CheckCircle2,
   ChevronRight,
-  Clock,
   HeartHandshake,
   MapPin,
-  PackageCheck,
-  QrCode,
-  ShieldCheck,
   Sparkles,
-  Thermometer,
-  UsersRound,
   Utensils,
-  Zap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";

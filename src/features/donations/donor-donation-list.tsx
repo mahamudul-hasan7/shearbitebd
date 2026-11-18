@@ -5,21 +5,14 @@ import { UiText } from "@/lib/i18n/ui-text-node";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import {
-  AlertTriangle,
-  ArrowRight,
   CheckCircle2,
   Clock3,
-  Filter,
   PackageOpen,
   Plus,
   RefreshCw,
   RotateCcw,
   Search,
   ShieldCheck,
-  Sparkles,
-  TrendingUp,
-  Utensils,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";

@@ -2,7 +2,7 @@
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useMemo, useState } from "react";
-import { BellRing, Plus, RotateCcw, SearchX, SlidersHorizontal } from "lucide-react";
+import { Plus, RotateCcw, SearchX } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";

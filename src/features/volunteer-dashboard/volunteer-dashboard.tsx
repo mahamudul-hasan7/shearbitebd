@@ -8,39 +8,20 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Activity,
-  AlertCircle,
   AlertTriangle,
   ArrowRight,
   Bike,
-  Building2,
-  Calendar,
   CheckCircle2,
-  Clock,
-  ExternalLink,
-  Flame,
-  HelpCircle,
   History,
-  MapPin,
   Navigation,
   PackageCheck,
-  PhoneCall,
   QrCode,
-  Radio,
-  ShieldAlert,
   ShieldCheck,
-  Sparkles,
-  Timer,
-  TrendingUp,
-  Trophy,
-  Truck,
-  UserCheck,
-  Zap,
 } from "lucide-react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { DhakaRouteHud } from "@/features/volunteer-dashboard/dhaka-route-hud";
 import { SosModal } from "@/features/volunteer-dashboard/sos-modal";
 import { VolunteerBadges } from "@/features/volunteer-dashboard/volunteer-badges";

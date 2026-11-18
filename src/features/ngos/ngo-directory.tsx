@@ -6,12 +6,9 @@ import { useUiText } from "@/lib/i18n/use-ui-text";
 import { getUiLocale } from "@/lib/i18n/locale";
 
 import {
-  Award,
   Bookmark,
   Building2,
-  Calendar,
   CheckCircle2,
-  Clock,
   ExternalLink,
   HeartHandshake,
   MapPin,
@@ -20,11 +17,9 @@ import {
   RotateCcw,
   Search,
   ShieldCheck,
-  Sparkles,
   Star,
   UsersRound,
   Utensils,
-  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
