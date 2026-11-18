@@ -1,1 +1,95 @@
-@media(max-width:1023px) { .desktop { display:none; } }
+@media (max-width: 1023px) {
+  .desktop {
+    display: none;
+  }
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
+  transition: background 150ms, color 150ms;
+}
+
+.primaryAction {
+  background: #fffcef;
+  color: #164b35;
+  box-shadow: 0 4px 16px #001c1926;
+}
+
+.primaryAction:hover {
+  background: #e6f0d9;
+}
+
+.secondaryAction {
+  border: 1px solid #ffffff66;
+  color: #fff;
+}
+
+.secondaryAction:hover {
+  background: #ffffff14;
+}
+
+.foodSearch {
+  max-width: 688px;
+}
+
+.foodSearch > summary {
+  display: flex;
+  width: fit-content;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  color: #e2f2e9;
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+  list-style: none;
+}
+
+.foodSearch > summary::-webkit-details-marker {
+  display: none;
+}
+
+.foodSearch > summary > svg:last-child {
+  transition: transform 150ms;
+}
+
+.foodSearch[open] > summary > svg:last-child {
+  transform: rotate(180deg);
+}
+
+.foodSearch > form {
+  margin-top: 8px;
+}
+
+.primaryAction:focus-visible,
+.secondaryAction:focus-visible,
+.foodSearch > summary:focus-visible {
+  outline: 3px solid #f1e2a0;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryAction,
+  .secondaryAction,
+  .foodSearch > summary > svg {
+    transition: none;
+  }
+}

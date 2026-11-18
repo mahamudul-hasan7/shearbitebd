@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Building2,
   ChevronDown,
   Clock,
   HelpCircle,
@@ -29,7 +30,7 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { ReviewTrainMarquee } from "@/components/home/review-train-marquee";
-import { useMockAuth } from "@/features/auth/mock-auth";
+import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { UserRole } from "@/lib/constants/roles";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -311,6 +312,7 @@ export function HomeView() {
   const tx = useUiText();
   const router = useRouter();
   const { session } = useMockAuth();
+  const primaryHref = session ? getRoleLandingRoute(session.role) : ROUTES.auth.roleSelection;
   const { language: lang, setLanguage: setLang } = useLanguage();
   const [activeNav, setActiveNav] = useState<string>("hero");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -659,75 +661,75 @@ export function HomeView() {
                 {t.hero.subtitle}
               </p>
 
-              {/* Direct Access CTA Bar for Mobile & Desktop - Compact & Balanced */}
-              <div className={cn("flex flex-wrap items-center gap-2 pt-0.5", mobile.actions)}>
-                <Link
-                  href={ROUTES.auth.login}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/25 border border-emerald-400/40 px-3.5 py-1.5 text-xs font-bold text-emerald-200 hover:bg-emerald-500/35 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
-                >
-                  <span>{tx("🔑 ড্যাশবোর্ড লগইন")}</span>
-                  <ArrowRight className="size-3.5" />
+              <div className={responsive.heroActions}>
+                <Link href={primaryHref} className={responsive.primaryAction}>
+                  {tx(session ? "Continue to dashboard" : "Join ShareBite")}
+                  <ArrowRight className="size-5" aria-hidden="true" />
                 </Link>
-                <Link
-                  href={ROUTES.auth.roleSelection}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/20 transition-all active:scale-95 touch-manipulation cursor-pointer font-heading"
-                >
-                  <span>{tx("📋 নতুন একাউন্ট")}</span>
-                </Link>
+                {!session && <Link href={ROUTES.auth.login} className={responsive.secondaryAction}>
+                  {t.nav.login}
+                </Link>}
               </div>
 
-              {/* Integrated Search & Action Box (Floating Glass Style) */}
-              <form onSubmit={handleHeroSearchSubmit} className={cn("rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left", mobile.search)}>
-                <div className={cn("grid gap-2 sm:grid-cols-12", mobile.searchRow)}>
-                  <div className={cn("relative flex items-center sm:col-span-7", mobile.inputWrap)}>
-                    <MapPin className="pointer-events-none absolute left-3.5 size-5 text-emerald-600" />
-                    <input
-                      type="text"
-                      aria-label={tx("Search by area")}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={t.hero.searchPlaceholder}
-                      className="h-12 w-full rounded-xl border-none bg-slate-100/80 pl-11 pr-3 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden"
-                    />
+              <details className={responsive.foodSearch}>
+                <summary>
+                  <Building2 className="size-5" aria-hidden="true" />
+                  {tx("Find food for your NGO")}
+                  <ChevronDown className="size-4" aria-hidden="true" />
+                </summary>
+                {/* Integrated Search & Action Box (Floating Glass Style) */}
+                <form onSubmit={handleHeroSearchSubmit} className={cn("rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left", mobile.search)}>
+                  <div className={cn("grid gap-2 sm:grid-cols-12", mobile.searchRow)}>
+                    <div className={cn("relative flex items-center sm:col-span-7", mobile.inputWrap)}>
+                      <MapPin className="pointer-events-none absolute left-3.5 size-5 text-emerald-600" />
+                      <input
+                        type="text"
+                        aria-label={tx("Search by area")}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={t.hero.searchPlaceholder}
+                        className="h-12 w-full rounded-xl border-none bg-slate-100/80 pl-11 pr-3 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden"
+                      />
+                    </div>
+                    <div className={cn("sm:col-span-5 flex items-center", mobile.searchAction)}>
+                      <button
+                        type="submit"
+                        className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-emerald-900/40 hover:from-emerald-500 hover:to-teal-600 transition-all font-heading cursor-pointer active:scale-98", mobile.searchButton)}
+                      >
+                        <Search className="size-4" />
+                        <span>{t.hero.searchBtn}</span>
+                      </button>
+                    </div>
                   </div>
-                  <div className={cn("sm:col-span-5 flex items-center", mobile.searchAction)}>
-                    <button
-                      type="submit"
-                      className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-emerald-900/40 hover:from-emerald-500 hover:to-teal-600 transition-all font-heading cursor-pointer active:scale-98", mobile.searchButton)}
-                    >
-                      <Search className="size-4" />
-                      <span>{t.hero.searchBtn}</span>
-                    </button>
-                  </div>
-                </div>
 
-                <div className={cn("mt-2.5 flex flex-wrap items-center justify-between px-2 pt-1.5 text-[11px] text-slate-600 font-medium border-t border-slate-200/60", mobile.searchMeta)}>
-                  <span className="flex items-center gap-1.5 flex-wrap">
-                    <strong className="text-slate-800">{t.hero.popularLabel}</strong>
-                    <button
-                      type="button"
-                      onClick={() => handleZoneSelect("gulshan")}
-                      className="hover:text-emerald-700 hover:underline cursor-pointer"
-                    >
-                      {tx("গুলশান ১ ও ২")}</button>
-                    <span>·</span>
-                    <button
-                      type="button"
-                      onClick={() => handleZoneSelect("dhanmondi")}
-                      className="hover:text-emerald-700 hover:underline cursor-pointer"
-                    >
-                      {tx("ধানমন্ডি ২৭")}</button>
-                    <span>·</span>
-                    <button
-                      type="button"
-                      onClick={() => handleZoneSelect("badda")}
-                      className="hover:text-emerald-700 hover:underline cursor-pointer font-bold text-emerald-800"
-                    >
-                      {tx("বাড্ডা UIU ক্যাম্পাস")}</button>
-                  </span>
-                  <span className="text-emerald-700 font-extrabold">{t.hero.urgentTag}</span>
-                </div>
-              </form>
+                  <div className={cn("mt-2.5 flex flex-wrap items-center justify-between px-2 pt-1.5 text-[11px] text-slate-600 font-medium border-t border-slate-200/60", mobile.searchMeta)}>
+                    <span className="flex items-center gap-1.5 flex-wrap">
+                      <strong className="text-slate-800">{t.hero.popularLabel}</strong>
+                      <button
+                        type="button"
+                        onClick={() => handleZoneSelect("gulshan")}
+                        className="hover:text-emerald-700 hover:underline cursor-pointer"
+                      >
+                        {tx("গুলশান ১ ও ২")}</button>
+                      <span>·</span>
+                      <button
+                        type="button"
+                        onClick={() => handleZoneSelect("dhanmondi")}
+                        className="hover:text-emerald-700 hover:underline cursor-pointer"
+                      >
+                        {tx("ধানমন্ডি ২৭")}</button>
+                      <span>·</span>
+                      <button
+                        type="button"
+                        onClick={() => handleZoneSelect("badda")}
+                        className="hover:text-emerald-700 hover:underline cursor-pointer font-bold text-emerald-800"
+                      >
+                        {tx("বাড্ডা UIU ক্যাম্পাস")}</button>
+                    </span>
+                    <span className="text-emerald-700 font-extrabold">{t.hero.urgentTag}</span>
+                  </div>
+                </form>
+              </details>
 
             </div>
 
@@ -738,7 +740,7 @@ export function HomeView() {
       </section>
 
       {/* 3. Bento Grid: Civic Infrastructure in Action (উদ্ধার প্রক্রিয়া) */}
-      <section id="how-it-works" className="py-20 sm:py-24 bg-white border-b border-slate-200/90">
+      <section id="how-it-works" className="py-14 sm:py-16 bg-white border-b border-slate-200/90">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
@@ -761,7 +763,7 @@ export function HomeView() {
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card1Title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-7 text-slate-600">
                 {t.bento.card1Desc}
               </p>
             </div>
@@ -774,7 +776,7 @@ export function HomeView() {
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card2Title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-7 text-slate-600">
                 {t.bento.card2Desc}
               </p>
             </div>
@@ -787,7 +789,7 @@ export function HomeView() {
               <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
                 {t.bento.card3Title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-7 text-slate-600">
                 {t.bento.card3Desc}
               </p>
             </div>
@@ -796,7 +798,7 @@ export function HomeView() {
       </section>
 
       {/* 5. Food Safety & Packaging Standards */}
-      <section id="standards" className="border-t border-slate-200/90 bg-white py-20 sm:py-24">
+      <section id="standards" className="border-t border-slate-200/90 bg-white py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
@@ -831,7 +833,7 @@ export function HomeView() {
                 <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
                   {t.standards.card1Title}
                 </h4>
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                <p className="mt-1.5 text-sm leading-7 text-slate-600">
                   {t.standards.card1Desc}
                 </p>
               </div>
@@ -843,7 +845,7 @@ export function HomeView() {
                 <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
                   {t.standards.card2Title}
                 </h4>
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                <p className="mt-1.5 text-sm leading-7 text-slate-600">
                   {t.standards.card2Desc}
                 </p>
               </div>
@@ -855,7 +857,7 @@ export function HomeView() {
                 <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
                   {t.standards.card3Title}
                 </h4>
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                <p className="mt-1.5 text-sm leading-7 text-slate-600">
                   {t.standards.card3Desc}
                 </p>
               </div>
@@ -865,29 +867,26 @@ export function HomeView() {
       </section>
 
       {/* 7. Clearly labelled fictional demo reviews */}
-      <section id="impact" className="py-20 sm:py-24 bg-gradient-to-b from-[#01140e] to-[#021f17] text-white">
+      <section id="impact" className="py-12 sm:py-14 bg-gradient-to-b from-[#01140e] to-[#021f17] text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-300 font-heading border border-emerald-400/30">
               {t.stories.badge}
             </span>
-            <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl font-heading">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl font-heading">
               {t.stories.title}
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed">
-              {t.stories.subtitle}
-            </p>
           </div>
 
           {/* Continuous Infinite Review Train Animation */}
-          <div className="mt-10 sm:mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
-            <ReviewTrainMarquee lang={lang} />
+          <div className="mt-6 -mx-4 sm:-mx-6 lg:-mx-8">
+            <ReviewTrainMarquee lang={lang} compact />
           </div>
         </div>
       </section>
 
       {/* 8. NEW: Frequently Asked Questions (FAQ Accordion) */}
-      <section id="faq" className="py-20 sm:py-24 bg-white border-t border-slate-200/90">
+      <section id="faq" className="py-14 sm:py-16 bg-white border-t border-slate-200/90">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
@@ -913,6 +912,8 @@ export function HomeView() {
                   <button
                     type="button"
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={isOpen ? `landing-faq-answer-${idx}` : undefined}
                     className="flex w-full items-center justify-between p-5 text-left font-heading text-sm sm:text-base font-bold text-slate-900 hover:text-emerald-700 transition-colors cursor-pointer"
                   >
                     <span>{item.q}</span>
@@ -926,7 +927,7 @@ export function HomeView() {
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm leading-relaxed text-slate-600 font-normal border-t border-slate-200/60 bg-white">
+                    <div id={`landing-faq-answer-${idx}`} className="px-5 pb-5 pt-3 text-sm leading-7 text-slate-600 font-normal border-t border-slate-200/60 bg-white">
                       {item.a}
                     </div>
                   )}
@@ -940,14 +941,14 @@ export function HomeView() {
       {/* 9. Partner Logos Strip */}
       <section id="partners" className="border-y border-slate-200/90 bg-[#f8faf9] py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-extrabold uppercase tracking-widest text-slate-400 font-heading">
+          <p className="text-center text-sm font-semibold text-slate-600 font-heading">
             {t.partnersTitle}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6 text-center">
             {t.partnersList.map((partner) => (
               <div
                 key={partner}
-                className="flex h-14 items-center justify-center rounded-xl border border-slate-200/80 bg-white px-3 text-xs font-extrabold text-slate-700 shadow-2xs font-heading"
+                className="flex h-14 items-center justify-center rounded-xl border border-slate-200/80 bg-white px-3 text-sm font-extrabold text-slate-700 shadow-2xs font-heading"
               >
                 {partner}
               </div>
@@ -989,7 +990,7 @@ export function HomeView() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <BrandLogo />
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-700 font-heading">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-slate-700 font-heading">
               <Link href={ROUTES.donor.dashboard} className="hover:text-emerald-700">{t.nav.donorPortal}</Link>
               <Link href={ROUTES.ngo.dashboard} className="hover:text-emerald-700">{t.nav.ngoPortal}</Link>
               <Link href={ROUTES.volunteer.dashboard} className="hover:text-emerald-700">{t.nav.volunteerPortal}</Link>
@@ -997,7 +998,7 @@ export function HomeView() {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 text-center sm:text-left">
+          <div className="border-t border-slate-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-600 text-center sm:text-left">
             <p>{t.footer.copyright}</p>
             <p className="font-semibold text-emerald-800 font-heading">{t.footer.helpline}</p>
           </div>

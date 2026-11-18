@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bike, Building2, MapPin, Pause, Play, Quote, Star, Utensils } from "lucide-react";
+import { Bike, Building2, MapPin, Pause, Play, Quote, Utensils } from "lucide-react";
 import { translateUiText } from "@/lib/i18n/ui-text";
 import styles from "./review-train-marquee.module.css";
 
@@ -39,10 +39,6 @@ function ReviewCard({ item, lang, duplicate }: { item: Review; lang: "bn" | "en"
       <span className={`${styles.roleBadge} ${tones[item.tone]}`}><Icon size={13} aria-hidden="true" />{tx(item.role)}</span>
       <span className={styles.demoBadge}>{tx("Demo review")}</span>
     </div>
-    <div className={styles.rating}>
-      <span aria-hidden="true" className={styles.stars}>{[0, 1, 2, 3, 4].map((star) => <Star size={14} key={star} fill="currentColor" />)}</span>
-      <span>{lang === "bn" ? "৫.০" : "5.0"}</span><span className={styles.ratingNote}>{tx("Sample rating")}</span>
-    </div>
     <blockquote className={styles.quote}><Quote size={19} aria-hidden="true" /><p>{lang === "bn" ? item.quoteBn : item.quoteEn}</p></blockquote>
     <div className={styles.profile}>
       <span className={`${styles.avatar} ${tones[item.tone]}`} aria-hidden="true">{name.charAt(0)}</span>
@@ -59,8 +55,8 @@ export function ReviewTrainMarquee({ lang = "bn", compact = false }: { lang?: "b
   return <div className={`${styles.root} ${compact ? styles.compact : ""}`} data-paused={paused} data-testid="demo-reviews">
     <div className={styles.controls}>
       <p>{tx("Fictional profiles and comments for the demo.")}</p>
-      <button className={styles.pauseButton} type="button" aria-pressed={paused} onClick={() => setPaused((value) => !value)}>
-        {paused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}{paused ? tx("Resume reviews") : tx("Pause reviews")}
+      <button className={styles.pauseButton} type="button" aria-label={paused ? tx("Resume reviews") : tx("Pause reviews")} aria-pressed={paused} onClick={() => setPaused((value) => !value)}>
+        {paused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}<span>{paused ? tx("Resume reviews") : tx("Pause reviews")}</span>
       </button>
     </div>
     <div className={styles.window}>
@@ -70,6 +66,6 @@ export function ReviewTrainMarquee({ lang = "bn", compact = false }: { lang?: "b
         </div>)}
       </div>)}
     </div>
-    <p className={styles.hint}>{tx("Pause the reviews to read, or hover over a card.")}</p>
+    {!compact && <p className={styles.hint}>{tx("Pause the reviews to read, or hover over a card.")}</p>}
   </div>;
 }

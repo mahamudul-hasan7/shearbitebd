@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowUpRight, Bike, Building2, ChevronDown, HeartHandshake, KeyRound, Leaf, Menu, Utensils, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bike, Building2, ChevronDown, KeyRound, Leaf, Menu, Utensils, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { LanguageSwitch } from "@/components/ui/language-switch";
 import { ReviewTrainMarquee } from "./review-train-marquee";
@@ -151,7 +151,6 @@ export function MobileHomeView() {
           <p className={styles.intro}>{tx("Extra food can go further. Donors, NGOs and riders make it happen together.")}</p>
           <Link className={styles.heroAction} href={primaryHref}>{tx(primaryLabel)}<ArrowUpRight size={20} aria-hidden="true" /></Link>
         </div>
-        <span className={styles.photoCredit}><HeartHandshake size={14} aria-hidden="true" />{tx("A little sharing goes a long way")}</span>
       </section>
 
       <section id="mobile-roles" className={`${styles.section} ${styles.rolesSection}`} aria-labelledby="mobile-roles-title">
