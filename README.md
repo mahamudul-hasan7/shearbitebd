@@ -159,23 +159,6 @@ sharebite-bd-frontend/
 └── package.json                 # Project scripts and dependencies
 ```
 
----
-
-## 👥 University SE Lab Project Team
-
-**Department of Computer Science & Engineering (CSE)**  
-**United International University (UIU)**  
-*Course: Software Engineering Lab*
-
-| Name | Student ID | Project Role |
-|---|---|---|
-| **Md Mahamudul Hasan** | **0112330182** | Team Lead & Frontend Architect |
-| **Jabid Hasan** | **0112410383** | Problem Research & UI/UX Specialist |
-| **Md. Asifur Rahman Shihab** | **0112330664** | Core Feature & Spoilage Logic Engineer |
-| **Md Tarik Hasan Emon** | **0112330388** | Technical Architecture & Database Engineer |
-| **SM Abdullah** | **0112330729** | QA, Agile Timeline & Deployment Engineer |
-
----
 
 ## 📄 License & Ethical Compliance
 
