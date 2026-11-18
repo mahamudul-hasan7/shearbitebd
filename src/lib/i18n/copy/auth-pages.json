@@ -1,0 +1,156 @@
+[
+  [
+    "Share extra food. Help it reach people.",
+    "বাড়তি খাবার ভাগ করো, মানুষের কাছে পৌঁছে দাও।"
+  ],
+  [
+    "Donors, NGOs and riders coordinate food collection and delivery through ShareBite BD.",
+    "ShareBite BD-তে খাবার দাতা, এনজিও ও রাইডার একসঙ্গে খাবার সংগ্রহ ও পৌঁছানোর ব্যবস্থা করে।"
+  ],
+  ["Back to home", "মূল পেজে ফিরো"],
+  ["Could not sign in. Please try again.", "লগইন করা যায়নি। আবার চেষ্টা করো।"],
+  ["Email or mobile number", "ইমেইল বা মোবাইল নম্বর"],
+  ["Sign in", "লগইন করো"],
+  ["Need an account?", "অ্যাকাউন্ট নেই?"],
+  ["Create an account", "অ্যাকাউন্ট খোলো"],
+  ["Try a demo account", "ডেমো অ্যাকাউন্ট ব্যবহার করো"],
+  [
+    "Choose a demo account to fill the form, then sign in.",
+    "ডেমো অ্যাকাউন্ট বেছে নিয়ে ফর্ম পূরণ করো, তারপর লগইন করো।"
+  ],
+  ["Account details", "অ্যাকাউন্টের তথ্য"],
+  ["Account", "অ্যাকাউন্ট"],
+  ["Profile details", "প্রোফাইলের তথ্য"],
+  ["Details", "বিবরণ"],
+  ["Review and consent", "তথ্য যাচাই ও সম্মতি"],
+  ["Review", "যাচাই"],
+  ["Account created", "অ্যাকাউন্ট তৈরি হয়েছে"],
+  ["Complete", "সম্পন্ন"],
+  [
+    "Could not create the account. Please try again.",
+    "অ্যাকাউন্ট তৈরি করা যায়নি। আবার চেষ্টা করো।"
+  ],
+  [
+    "Could not reach the server. Check your connection and try again.",
+    "সার্ভারে যোগাযোগ করা যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করো।"
+  ],
+  ["Your account is ready", "তোমার অ্যাকাউন্ট তৈরি হয়েছে"],
+  [
+    "Your account has been created successfully.",
+    "তোমার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে।"
+  ],
+  ["Account review pending", "অ্যাকাউন্ট যাচাই বাকি"],
+  [
+    "The project operator will review your account before you can claim or deliver food.",
+    "খাবার দাবি করা বা পৌঁছানোর কাজ শুরুর আগে প্রজেক্ট পরিচালনাকারী তোমার অ্যাকাউন্ট যাচাই করবেন।"
+  ],
+  ["Sign in to continue", "চালিয়ে যেতে লগইন করো"],
+  [
+    "Your account was created. Sign in with the details you just entered.",
+    "তোমার অ্যাকাউন্ট তৈরি হয়েছে। এইমাত্র দেওয়া ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করো।"
+  ],
+  ["Account ID", "অ্যাকাউন্ট আইডি"],
+  ["Create your account", "তোমার অ্যাকাউন্ট খোলো"],
+  ["Tell us how you will help", "কীভাবে সাহায্য করবে জানাও"],
+  ["Review your details", "তোমার তথ্য মিলিয়ে নাও"],
+  [
+    "Start with your contact details and a password.",
+    "যোগাযোগের তথ্য ও একটি পাসওয়ার্ড দিয়ে শুরু করো।"
+  ],
+  [
+    "These details help coordinate food collection and delivery.",
+    "এই তথ্য খাবার সংগ্রহ ও পৌঁছানোর ব্যবস্থা করতে কাজে লাগবে।"
+  ],
+  [
+    "Check your details before creating the account.",
+    "অ্যাকাউন্ট তৈরির আগে তথ্যগুলো ঠিক আছে কি না দেখে নাও।"
+  ],
+  ["Please check your details", "তোমার তথ্য আবার দেখে নাও"],
+  ["Choose your role", "তোমার ভূমিকা বেছে নাও"],
+  ["Email address", "ইমেইল ঠিকানা"],
+  ["Mobile number", "মোবাইল নম্বর"],
+  ["Create a password", "পাসওয়ার্ড তৈরি করো"],
+  ["Confirm password", "পাসওয়ার্ড আবার লিখো"],
+  [
+    "Use at least 8 characters, including a letter and a number.",
+    "অন্তত ৮ অক্ষরের পাসওয়ার্ড দাও। একটি ইংরেজি বর্ণ ও একটি সংখ্যা রাখো।"
+  ],
+  ["Donor type", "দাতার ধরন"],
+  ["Individual", "ব্যক্তি"],
+  ["Cafeteria", "ক্যাফেটেরিয়া"],
+  ["Restaurant", "রেস্তোরাঁ"],
+  ["Bakery", "বেকারি"],
+  ["Event organizer", "অনুষ্ঠানের আয়োজক"],
+  ["Organization name", "প্রতিষ্ঠানের নাম"],
+  ["Organization name (optional)", "প্রতিষ্ঠানের নাম (ইচ্ছা হলে)"],
+  ["Registration or licence number", "নিবন্ধন বা লাইসেন্স নম্বর"],
+  ["Who do you support?", "কাদের সহায়তা করো?"],
+  ["Shelters and orphanages", "আশ্রয়কেন্দ্র ও এতিমখানা"],
+  ["Local communities", "স্থানীয় মানুষ"],
+  ["Students", "শিক্ষার্থী"],
+  ["Other", "অন্যান্য"],
+  ["Transport method", "যাতায়াতের মাধ্যম"],
+  ["Walking", "হেঁটে"],
+  ["Bicycle", "সাইকেল"],
+  ["Motorcycle", "মোটরসাইকেল"],
+  ["Van", "ভ্যান"],
+  ["Car", "গাড়ি"],
+  ["Availability", "কখন সময় দিতে পারবে"],
+  ["Weekends", "সাপ্তাহিক ছুটির দিন"],
+  ["Weekdays", "কর্মদিবস"],
+  ["Evenings", "সন্ধ্যায়"],
+  ["Flexible", "সুবিধামতো সময়ে"],
+  ["City or district", "শহর বা জেলা"],
+  ["Pickup address", "খাবার সংগ্রহের ঠিকানা"],
+  ["Organization address", "প্রতিষ্ঠানের ঠিকানা"],
+  ["Preferred service area", "যে এলাকায় কাজ করতে চাও"],
+  ["Food distribution capacity", "খাবার বিতরণের সক্ষমতা"],
+  ["Additional details (optional)", "আরও কিছু জানাতে চাইলে"],
+  ["Role", "ভূমিকা"],
+  ["Name", "নাম"],
+  ["Address", "ঠিকানা"],
+  ["Account review", "অ্যাকাউন্ট যাচাই"],
+  [
+    "I confirm my details and accept the food-sharing terms.",
+    "দেওয়া তথ্য সঠিক এবং খাবার ভাগ করার শর্তে সম্মতি দিচ্ছি।"
+  ],
+  [
+    "Provide accurate food information and coordinate safe handovers with the other participants.",
+    "খাবারের সঠিক তথ্য দাও এবং অন্যদের সঙ্গে যোগাযোগ করে নিরাপদে খাবার হস্তান্তর করো।"
+  ],
+  ["Back", "আগের ধাপ"],
+  ["Continue", "পরের ধাপ"],
+  ["Sign in instead", "লগইন পেজে যাও"],
+  ["Creating your account...", "অ্যাকাউন্ট তৈরি হচ্ছে..."],
+  ["Create account", "অ্যাকাউন্ট তৈরি করো"],
+  ["Try sample registration details", "উদাহরণ তথ্য দিয়ে চেষ্টা করো"],
+  [
+    "Fill sample details for a demonstration. Review them before submitting.",
+    "ডেমোর জন্য উদাহরণ তথ্য বসাও। জমা দেওয়ার আগে তথ্যগুলো মিলিয়ে নাও।"
+  ],
+  ["Fill sample details", "উদাহরণ তথ্য বসাও"],
+  ["Enter your password", "পাসওয়ার্ড লিখো"],
+  ["Welcome back", "আবার স্বাগতম"],
+  [
+    "Use your registered email or mobile number and password.",
+    "তোমার নিবন্ধিত ইমেইল বা মোবাইল নম্বর ও পাসওয়ার্ড দাও।"
+  ],
+  ["Keep me signed in", "লগইন অবস্থায় রাখো"],
+  ["Share food as a donor", "দাতা হয়ে বাড়তি খাবার দাও"],
+  ["Collect meals for your NGO", "এনজিও হয়ে খাবার সংগ্রহ করো"],
+  ["Deliver meals as a rider", "রাইডার হয়ে খাবার পৌঁছে দাও"],
+  [
+    "Choose how you want to help, then create your account.",
+    "কীভাবে সাহায্য করতে চাও বেছে নিয়ে অ্যাকাউন্ট খোলো।"
+  ],
+  [
+    "List extra meals for collection.",
+    "সংগ্রহের জন্য বাড়তি খাবারের পোস্ট দাও।"
+  ],
+  [
+    "Claim food for your organization.",
+    "তোমার প্রতিষ্ঠানের জন্য খাবার দাবি করো।"
+  ],
+  ["Collect and deliver food.", "খাবার সংগ্রহ করে পৌঁছে দাও।"],
+  ["Already have an account?", "আগে থেকেই অ্যাকাউন্ট আছে?"]
+]

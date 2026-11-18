@@ -19,7 +19,7 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
         const complete = stepNumber < current;
         const active = stepNumber === current;
         return (
-          <li key={step.label} className="relative flex min-w-0 flex-col items-center text-center">
+          <li key={step.label} aria-current={active ? "step" : undefined} className="relative flex min-w-0 flex-col items-center text-center">
             {index > 0 && (
               <span
                 className={cn(
@@ -42,8 +42,8 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
             </span>
             <span
               className={cn(
-                "mt-2 text-center text-[11px] leading-tight font-heading transition-colors sm:text-xs",
-                active ? "font-black text-slate-900" : complete ? "font-bold text-emerald-700" : "font-medium text-slate-400",
+                "mt-2 text-center text-xs leading-relaxed font-heading transition-colors sm:text-xs",
+                active ? "font-black text-slate-900" : complete ? "font-bold text-emerald-700" : "font-medium text-slate-500",
               )}
             >
               {tx(step.shortLabel ?? step.label)}

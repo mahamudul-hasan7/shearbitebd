@@ -112,7 +112,7 @@ export function RoleCard({
               </span>
             )}
           </h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-600 font-normal">
+          <p className="mt-1 text-sm leading-7 text-slate-600 font-normal">
             {tx(description)}
           </p>
         </div>
@@ -126,7 +126,7 @@ export function RoleCard({
             disabled ? "text-slate-400" : current.linkText,
           )}
         >
-          {disabled ? tx("সংরক্ষিত পোর্টাল") : tx("রেজিস্ট্রেশন করুন")}
+          {disabled ? tx("সংরক্ষিত পোর্টাল") : tx("Create an account")}
         </span>
 
         <div

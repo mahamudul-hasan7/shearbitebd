@@ -53,13 +53,11 @@ export function validateRegistrationStep({
   role,
   data,
   termsAccepted,
-  documentName,
 }: {
   step: number;
   role: RegistrationRole;
   data: RegistrationData;
   termsAccepted: boolean;
-  documentName: string;
 }): RegistrationErrors {
   const errors: RegistrationErrors = {};
 
@@ -101,12 +99,6 @@ export function validateRegistrationStep({
   if (step === 3) {
     if (!termsAccepted) {
       errors.terms = "খাদ্য সুরক্ষা ও সত্যতা স্বীকারোক্তি শর্তাবলী গ্রহণ করতে হবে।";
-    }
-    if ((role === "ngo" || role === "volunteer") && !documentName) {
-      errors.document =
-        role === "ngo"
-          ? "সংস্থার সরকারি নিবন্ধন কপি বা সনদ আপলোড করুন।"
-          : "জাতীয় পরিচয়পত্র বা স্টুডেন্ট আইডি আপলোড করুন।";
     }
   }
 

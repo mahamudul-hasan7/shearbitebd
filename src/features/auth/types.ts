@@ -36,7 +36,7 @@ export const INITIAL_REGISTRATION_DATA: RegistrationData = {
   notes: "",
 };
 
-export type RegistrationErrorKey = keyof RegistrationData | "terms" | "document";
+export type RegistrationErrorKey = keyof RegistrationData | "terms" | "document" | "form";
 export type RegistrationErrors = Partial<Record<RegistrationErrorKey, string>>;
 
 export interface MockAuthSession {
