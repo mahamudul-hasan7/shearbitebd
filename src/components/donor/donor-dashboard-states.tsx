@@ -5,8 +5,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { UiText } from "@/lib/i18n/ui-text-node";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { AlertTriangle, PackageOpen } from "lucide-react";
-import { Alert } from "@/components/ui/alert";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { DashboardFeedback } from "@/components/dashboard/dashboard-ui";
+import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ROUTES } from "@/lib/routes";
 
@@ -19,16 +19,7 @@ export function DonorDashboardLoading() {
 
 export function DonorDashboardError({ message, onRetry }: { message: string; onRetry: () => void }) {
   const tx = useUiText();
-  return (
-    <div className="grid gap-5" data-testid="donor-dashboard-error">
-      <Alert tone="danger" title={tx("ড্যাশবোর্ডের তথ্য লোড করা যায়নি")} description={message} />
-      <div className="flex flex-wrap gap-3">
-        <Button onClick={onRetry}>{tx("পুনরায় চেষ্টা করুন")}</Button>
-        <ButtonLink href={ROUTES.auth.login} variant="outline">
-          {tx("লগইনে ফিরুন")}</ButtonLink>
-      </div>
-    </div>
-  );
+  return <DashboardFeedback message={tx(message)} onRetry={onRetry} data-testid="donor-dashboard-error" />;
 }
 
 export function NoActiveDonation() {

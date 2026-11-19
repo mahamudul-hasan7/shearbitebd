@@ -18,6 +18,7 @@ export function PortalShell({
   title,
   description,
   actions,
+  actionsClassName,
   backHref,
   backLabel = "ফিরে যান",
   hideMobileNav = false,
@@ -36,6 +37,7 @@ export function PortalShell({
   title: string;
   description?: string;
   actions?: ReactNode;
+  actionsClassName?: string;
   backHref?: string;
   backLabel?: string;
   hideMobileNav?: boolean;
@@ -113,7 +115,7 @@ export function PortalShell({
                   </p>
                 )}
               </div>
-              {actions && <div className="min-w-0 max-w-full shrink-0 self-start sm:self-center">{actions}</div>}
+              {actions && <div className={cn("min-w-0 max-w-full shrink-0 self-start sm:self-center", actionsClassName)}>{actions}</div>}
             </div>
             {showDutyPanel && role === "volunteer" && !activeHref.includes("/missions/") && <VolunteerDutyPanel />}
             {children}
