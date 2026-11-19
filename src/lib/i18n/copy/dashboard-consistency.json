@@ -1,0 +1,27 @@
+[
+  ["Updates are temporarily unavailable", "নতুন তথ্য আপাতত পাওয়া যাচ্ছে না"],
+  ["Dashboard could not load", "ড্যাশবোর্ডের তথ্য লোড করা যায়নি"],
+  ["Please try again.", "আবার চেষ্টা করুন।"],
+  [
+    "NGOs with recorded distributions.",
+    "যেসব এনজিও বিতরণের তথ্য সংরক্ষণ করেছে।"
+  ],
+  [
+    "No donor activity has been recorded yet.",
+    "এখনও কোনো দাতার কার্যক্রম সংরক্ষিত হয়নি।"
+  ],
+  [
+    "The rider has collected this food. Follow the delivery progress.",
+    "স্বেচ্ছাসেবক খাবার সংগ্রহ করেছেন। ডেলিভারির অগ্রগতি দেখুন।"
+  ],
+  [
+    "The NGO received this food. Distribution will be recorded next.",
+    "এনজিও খাবার গ্রহণ করেছে। এরপর বিতরণের তথ্য সংরক্ষণ হবে।"
+  ],
+  [
+    "This rescue is on hold while the report is reviewed.",
+    "অভিযোগ পর্যালোচনার সময় এই উদ্ধার কার্যক্রম স্থগিত আছে।"
+  ],
+  ["Food posts", "খাবারের পোস্ট"],
+  ["All your saved food posts.", "আপনার সংরক্ষিত সব খাবারের পোস্ট।"]
+]

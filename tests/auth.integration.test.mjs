@@ -955,7 +955,7 @@ test("browser donor mobile arrangement keeps posting tracking and optional infor
       assert.equal(await guide.locator("ol").isVisible(), false, "The guide closes with the keyboard");
       assert.equal(await page.getByTestId("donor-contribution").count(), 0, "New donors see guidance instead of three zero counters");
       assert.equal(await page.getByRole("group", { name: t("Donation list filters"), exact: true }).count(), 0, "Do not show empty list filters");
-      assert.equal(await page.getByTestId("donor-mobile-dashboard").locator('a[href="/donor/donations/new"]').filter({ visible: true }).count(), width < 1024 ? 0 : 1);
+      assert.equal(await page.locator("main").locator('a[href="/donor/donations/new"]').filter({ visible: true }).count(), width < 1024 ? 0 : 1);
       if (width < 1024) {
         const banner = page.getByRole("region", { name: t("Share extra food"), exact: true });
         assert.equal(await banner.isVisible(), false, "Mobile home focuses on food posts");
@@ -3119,4 +3119,9 @@ test("browser admin dashboard responsive layouts and review workflows", { skip: 
 test("local admin bootstrap creates private credentials once without replacing accounts", async () => {
   const { runLocalAdminChecks } = await import("./local-admin.integration.mjs");
   await runLocalAdminChecks({ prisma });
+});
+
+test("browser donor and NGO dashboards share accessible responsive styling", { skip: process.env.RUN_PORTAL_CONSISTENCY_BROWSER !== "1" }, async () => {
+  const { runPortalConsistencyChecks } = await import("./portal-consistency-browser.mjs");
+  await runPortalConsistencyChecks({ prisma, base, login, request, newDonation, assignedRescue, deliveredRescue, saveReceipt, distribute, distributionInput, handover, issue });
 });

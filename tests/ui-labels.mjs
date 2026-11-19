@@ -1,7 +1,12 @@
 import fs from "node:fs";
 const catalogue = JSON.parse(fs.readFileSync(new URL("../src/lib/i18n/ui-copy.json", import.meta.url), "utf8"));
 const normalize = (text) => text.replace(/\s+/g, " ").trim();
-for (const file of fs.readdirSync(new URL("../src/lib/i18n/copy/", import.meta.url)).filter((file) => file.endsWith(".json")).sort()) {
+// Follow the application's catalogue precedence, including later overrides.
+const source = fs.readFileSync(new URL("../src/lib/i18n/catalogue.ts", import.meta.url), "utf8");
+const imports = new Map([...source.matchAll(/import (\w+) from "\.\/copy\/([^"\n]+)"/g)].map(([, name, file]) => [name, file]));
+const order = source.match(/for \(const entries of \[([^\]]+)\]/)?.[1].split(",").map(name => name.trim());
+if (!order?.length || order.some(name => !imports.has(name))) throw new Error("Browser copy catalogue order could not be resolved");
+for (const file of order.map(name => imports.get(name))) {
   for (const [en, bn, ...aliases] of JSON.parse(fs.readFileSync(new URL("../src/lib/i18n/copy/" + file, import.meta.url), "utf8"))) {
     for (const alias of [en, bn, ...aliases]) catalogue[normalize(alias)] = { en, bn };
   }

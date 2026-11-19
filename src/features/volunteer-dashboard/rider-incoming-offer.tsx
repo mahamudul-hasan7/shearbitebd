@@ -29,6 +29,13 @@ export function RiderIncomingOffer() {
   const owner = session?.role === "VOLUNTEER" ? session.id : undefined;
   const eligible = Boolean(owner && dutyReady && dutyStatus === "online" && canGoOnDuty && !dutySaving && !dutyHasActiveMission && (!activeMission || activeMission.currentStage === "completed"));
   const [offer, setOffer] = useState<Offer>();
+  const [offerScope, setOfferScope] = useState({ owner, eligible });
+  // Discard the old offer in the same render when duty or identity changes.
+  // This keeps an earlier job from reappearing when the rider goes online again.
+  if (offerScope.owner !== owner || offerScope.eligible !== eligible) {
+    setOfferScope({ owner, eligible });
+    setOffer(undefined);
+  }
   const [accepting, setAccepting] = useState(false);
   const [acceptError, setAcceptError] = useState("");
   const [refreshError, setRefreshError] = useState("");
@@ -96,7 +103,8 @@ export function RiderIncomingOffer() {
 
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useEffect(() => {
-    if (!owner || !eligible) { updateOffer(undefined); return; }
+    currentOffer.current = undefined;
+    if (!owner || !eligible) return;
     const userId = owner;
     const controller = new AbortController();
     let inFlight = false;
