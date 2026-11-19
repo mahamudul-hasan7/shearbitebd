@@ -96,6 +96,6 @@ export function getRoleLandingRoute(role: UserRole | string) {
   const norm = String(role || "").toUpperCase();
   if (norm === "NGO") return ROUTES.ngo.dashboard;
   if (norm === "VOLUNTEER") return ROUTES.volunteer.dashboard;
-  if (norm === "ADMIN") return ROUTES.auth.unauthorized;
+  if (norm === "ADMIN") return ROUTES.admin.dashboard;
   return ROUTES.donor.dashboard;
 }

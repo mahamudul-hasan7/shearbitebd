@@ -23,15 +23,10 @@ Admin dashboard পরের ধাপে; verification-এর জন্য loca
    একই browser-এর সাধারণ tab-গুলো একই login cookie ব্যবহার করে।
 3. নিজের তিনটি account register করুন বা বিদ্যমান account ব্যবহার করুন। Guide কোনো
    account-এর password প্রকাশ করে না। Owner-এর নির্দেশে password hashing এখনও স্থগিত।
-4. নতুন NGO ও volunteer-কে operator terminal থেকে যাচাই করুন:
-
-   ```powershell
-   npm run db:verify -- ngo-account@example.com
-   npm run db:verify -- volunteer-account@example.com
-   ```
-
-   নিজের ব্যবহৃত email দিন। এই command project account approval দেয়; সরকারি food
-   safety certificate বা independent food inspection দেয় না।
+4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Accounts** পাতায় নতুন account যাচাই করুন।
+   Local admin-এর প্রবেশের তথ্য `.local-postgres/admin-access.json`-এ পাবেন।
+   বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। মূল নথি আলাদাভাবে যাচাই করুন।
+   Account approval কোনো food safety certificate নয়।
 
 ## ২. Location ও খাবার প্রকাশ — donor
 
@@ -109,7 +104,7 @@ receipt/distribution এবং actual meal records কাজ করে।
 
 Food safety testing, temperature sensors, live volunteer GPS, measured road ETA,
 government certificates, university credits, SMS/push/email delivery, team invitations,
-support ticket inbox, password reset ও পূর্ণ admin dashboard এখনও যুক্ত হয়নি। Public
+support ticket inbox ও password reset এখনও যুক্ত হয়নি। Public
 planning calculator উদাহরণভিত্তিক; account-এর actual impact নয়।
 
 ## Automatic checks

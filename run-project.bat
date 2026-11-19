@@ -31,17 +31,15 @@ if not exist "node_modules\.package-lock.json" (
     if errorlevel 1 goto fail
 )
 
-if not exist ".local-postgres\launcher-setup-complete" goto setup
-if not exist ".local-postgres\cluster\PG_VERSION" goto setup
-if not exist ".env.local" goto setup
-if not exist "node_modules\.prisma\client\schema.prisma" goto setup
+node scripts/database-setup-state.mjs check
+if errorlevel 1 goto setup
 goto launch
 
 :setup
 echo [*] Setting up the local database...
 call npm run db:setup
 if errorlevel 1 goto fail
-type nul > ".local-postgres\launcher-setup-complete"
+node scripts/database-setup-state.mjs mark
 if errorlevel 1 goto fail
 
 :launch

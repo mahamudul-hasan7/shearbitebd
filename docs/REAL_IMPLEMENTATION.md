@@ -281,8 +281,9 @@ browser profile share the same authentication cookie. Use synthetic demo data.
   or served-meal record is silently erased.
 - Phone/email preferences are recorded only; notifications remain in-app. There is
   no automated SMS/email response or external support-team escalation.
-- The admin review dashboard remains a later increment. The local CLI is available
-  now, so demo reports do not have to be edited directly in database tables.
+- ADMIN accounts can review reports at `/admin/reports`. The local CLI remains
+  available. Account verification, rescue oversight and recorded decisions are
+  available in the responsive admin workspace. See [Admin guide](ADMIN_GUIDE_BN.md).
 
 Local operator commands (copy the report ID from the portal):
 
@@ -464,8 +465,7 @@ Run npm run test:cleanup:browser. Full human acceptance remains separate.
 
 ## Remaining increments
 
-1. Connect verification administration, team, settings, support,
-   password reset and the full admin dashboard, which remain pending.
+1. Connect team invitations, support tickets and password reset.
 2. Connect real volunteer GPS/telemetry, road routing/ETA, scoring and certification displays
    with measured data or explicit unavailable states. SMS/push and SOS delivery are pending.
 3. Review remaining lint warnings and dependency audit findings, then perform the
