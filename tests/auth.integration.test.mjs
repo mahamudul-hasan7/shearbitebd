@@ -3105,3 +3105,18 @@ test("browser auth pages support responsive sign-in and complete role registrati
   const { runAuthPageBrowserChecks } = await import("./auth-pages-browser.mjs");
   await runAuthPageBrowserChecks({ base, prisma });
 });
+
+test("admin dashboard API authorization, verification transactions and operational data", async () => {
+  const { runAdminChecks } = await import("./admin.integration.mjs");
+  await runAdminChecks({ prisma, request, login, seedUser, newDonation, fixturePassword });
+});
+
+test("browser admin dashboard responsive layouts and review workflows", { skip: process.env.RUN_ADMIN_BROWSER !== "1" }, async () => {
+  const { runAdminBrowserChecks } = await import("./admin-browser.mjs");
+  await runAdminBrowserChecks({ prisma, request, login, seedUser, newDonation, fixturePassword, base });
+});
+
+test("local admin bootstrap creates private credentials once without replacing accounts", async () => {
+  const { runLocalAdminChecks } = await import("./local-admin.integration.mjs");
+  await runLocalAdminChecks({ prisma });
+});

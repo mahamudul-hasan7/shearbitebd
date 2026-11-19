@@ -1,4 +1,6 @@
 import {
+  CircleAlert,
+  Users,
   Bell,
   Bike,
   Building2,
@@ -96,4 +98,11 @@ export const productLinks = [
   { label: "ডিজাইন সিস্টেম", href: ROUTES.designSystem, icon: HeartHandshake },
   { label: "ডোনার প্রিভিউ", href: ROUTES.preview.donor, icon: PackageSearch },
   { label: "এনজিও প্রিভিউ", href: ROUTES.preview.ngo, icon: Building2 },
+];
+
+export const adminNavigation: DesktopNavItem[] = [
+  { label: "Overview", href: ROUTES.admin.dashboard, icon: LayoutDashboard },
+  { label: "Accounts", href: ROUTES.admin.accounts, icon: Users },
+  { label: "Rescues", href: ROUTES.admin.rescues, icon: HeartHandshake },
+  { label: "Reports", href: ROUTES.admin.reports, icon: CircleAlert },
 ];

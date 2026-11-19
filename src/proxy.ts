@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
     const requiredRole = path.startsWith("/donor") ? UserRole.DONOR
       : path.startsWith("/ngo") ? UserRole.NGO
       : path.startsWith("/volunteer") ? UserRole.VOLUNTEER
-      : path === "/api/auth/users" ? UserRole.ADMIN : undefined;
+      : path.startsWith("/admin") || path.startsWith("/api/admin/") || path === "/api/auth/users" ? UserRole.ADMIN : undefined;
     if (requiredRole && auth.user.role !== requiredRole) {
       if (isApi) return NextResponse.json({ error: "Access denied." }, { status: 403 });
       return NextResponse.redirect(new URL("/unauthorized", request.url));
@@ -51,5 +51,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/donor/:path*", "/ngo/:path*", "/volunteer/:path*", "/api/:path*"],
+  matcher: ["/admin/:path*", "/donor/:path*", "/ngo/:path*", "/volunteer/:path*", "/api/:path*"],
 };

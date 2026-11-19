@@ -228,7 +228,10 @@ model User {
   photos           PhotoAsset[]
   incidentReviews  IncidentReview[]
   addresses        Address[]
+  accountReviewsReceived AccountReview[] @relation("ReviewedAccount")
+  accountReviewsAuthored AccountReview[] @relation("AccountReviewer")
 
+  @@index([role, isActive, createdAt])
   @@map("users")
 }
 
@@ -288,6 +291,7 @@ model DonorProfile {
   impactRecords      ImpactRecord[]
 
   @@map("donor_profiles")
+  @@index([verificationStatus])
 }
 
 model NGOProfile {
@@ -325,6 +329,7 @@ model NGOProfile {
   impactRecords           ImpactRecord[]
 
   @@map("ngo_profiles")
+  @@index([verificationStatus])
 }
 
 model NGOTeamMember {
@@ -363,6 +368,7 @@ model VolunteerProfile {
   claims               Claim[]
 
   @@map("volunteer_profiles")
+  @@index([verificationStatus])
 }
 
 model Donation {
@@ -460,6 +466,7 @@ model Claim {
   photos                    PhotoAsset[]
 
   @@map("claims")
+  @@index([status, createdAt])
   // Active claim uniqueness is enforced by the partial index in migration 002.
   @@index([donationId])
   @@index([foodRequestId])
@@ -645,6 +652,25 @@ model IncidentReport {
   @@unique([reportedByUserId, submissionKey])
   @@index([claimId, status])
   @@map("incident_reports")
+  @@index([status, createdAt])
+}
+
+model AccountReview {
+  id String @id @default(cuid())
+  targetUserId String
+  actorUserId String
+  actorLabel String
+  previousStatus VerificationStatus
+  status VerificationStatus
+  note String
+  submissionKey String @unique
+  previousUpdatedAt DateTime
+  createdAt DateTime @default(now())
+  target User @relation("ReviewedAccount", fields: [targetUserId], references: [id], onDelete: Restrict)
+  actor User @relation("AccountReviewer", fields: [actorUserId], references: [id], onDelete: Restrict)
+  @@index([targetUserId, createdAt])
+  @@index([createdAt])
+  @@map("account_reviews")
 }
 
 model IncidentReview {

@@ -1,0 +1,250 @@
+[
+  ["Overview", "ওভারভিউ"],
+  ["Accounts", "অ্যাকাউন্ট"],
+  ["Rescues", "উদ্ধার কার্যক্রম"],
+  ["Reports", "অভিযোগ"],
+  ["Admin workspace", "অ্যাডমিন কর্মক্ষেত্র"],
+  ["Admin navigation", "অ্যাডমিন নেভিগেশন"],
+  ["Mobile admin navigation", "মোবাইল অ্যাডমিন নেভিগেশন"],
+  ["MANAGE", "পরিচালনা"],
+  ["Administrator access", "অ্যাডমিন প্রবেশাধিকার"],
+  ["Decisions with accountability", "প্রতিটি সিদ্ধান্তের হিসাব থাকুক"],
+  ["Administrator", "অ্যাডমিন"],
+  ["Admin", "অ্যাডমিন"],
+  ["Operations workspace", "পরিচালনা কেন্দ্র"],
+  ["Skip to content", "মূল অংশে যান"],
+  ["Refresh workspace", "তথ্য হালনাগাদ করুন"],
+  ["Refresh", "হালনাগাদ"],
+  [
+    "Review the people behind every rescue.",
+    "প্রতিটি উদ্ধার কার্যক্রমের সদস্যদের তথ্য যাচাই করুন।"
+  ],
+  [
+    "Follow each rescue from pickup to distribution.",
+    "খাবার সংগ্রহ থেকে বিতরণ পর্যন্ত অগ্রগতি দেখুন।"
+  ],
+  [
+    "Resolve concerns. Keep food safety first.",
+    "অভিযোগ পর্যালোচনা করুন। খাবারের নিরাপত্তাকে গুরুত্ব দিন।"
+  ],
+  [
+    "A clear view of what needs your attention.",
+    "জরুরি কাজগুলো এক নজরে দেখে নিন।"
+  ],
+  ["Awaiting review", "যাচাইয়ের অপেক্ষায়"],
+  ["Verified", "যাচাইকৃত"],
+  ["Rejected", "অনুমোদিত নয়"],
+  ["Donor", "দাতা"],
+  ["NGO", "এনজিও"],
+  ["Volunteer", "স্বেচ্ছাসেবক"],
+  ["Reserved", "সংরক্ষিত"],
+  ["Assigned", "দায়িত্ব দেওয়া হয়েছে"],
+  ["Picked up", "সংগ্রহ করা হয়েছে"],
+  ["Delivered", "পৌঁছে দেওয়া হয়েছে"],
+  ["Distributed", "বিতরণ সম্পন্ন"],
+  ["On hold", "স্থগিত"],
+  ["Cancelled", "বাতিল"],
+  ["Expired", "মেয়াদ শেষ"],
+  ["Submitted", "জমা হয়েছে"],
+  ["Under review", "পর্যালোচনাধীন"],
+  ["Resolved", "সমাধান হয়েছে"],
+  ["Closed", "বন্ধ করা হয়েছে"],
+  ["Rescue resumed", "উদ্ধার আবার চালু"],
+  ["Food rejected", "খাবার বাতিল"],
+  ["Low", "কম"],
+  ["Medium", "মাঝারি"],
+  ["High", "বেশি"],
+  ["Urgent", "জরুরি"],
+  ["Damaged food", "নষ্ট খাবার"],
+  ["Wrong quantity", "পরিমাণে অমিল"],
+  ["Late delivery", "ডেলিভারিতে দেরি"],
+  ["Wrong item", "ভিন্ন খাবার"],
+  ["Safety concern", "নিরাপত্তা নিয়ে উদ্বেগ"],
+  ["Other", "অন্যান্য"],
+  ["Walking", "হেঁটে"],
+  ["Bicycle", "সাইকেল"],
+  ["Motorcycle", "মোটরসাইকেল"],
+  ["Van", "ভ্যান"],
+  ["Car", "গাড়ি"],
+  ["Going to pickup", "সংগ্রহস্থলে যাচ্ছেন"],
+  ["At pickup", "সংগ্রহস্থলে আছেন"],
+  ["Food collected", "খাবার সংগ্রহ হয়েছে"],
+  ["Going to delivery", "ডেলিভারির পথে"],
+  ["Completed", "সম্পন্ন"],
+  ["Could not load the admin workspace.", "অ্যাডমিনের তথ্য লোড করা যায়নি।"],
+  ["Loading workspace…", "তথ্য লোড হচ্ছে…"],
+  ["Try again", "আবার চেষ্টা করুন"],
+  ["{0} results · Page {1} of {2}", "{0}টি ফলাফল · পৃষ্ঠা {1} / {2}"],
+  ["Previous page", "আগের পৃষ্ঠা"],
+  ["Next page", "পরের পৃষ্ঠা"],
+  ["Admin review", "অ্যাডমিন পর্যালোচনা"],
+  ["Close", "বন্ধ করুন"],
+  ["Not provided", "দেওয়া হয়নি"],
+  ["Account verification", "অ্যাকাউন্ট যাচাই"],
+  ["Organization", "প্রতিষ্ঠান"],
+  ["Email", "ইমেইল"],
+  ["Phone", "ফোন"],
+  ["Registration / certificate number", "নিবন্ধন / সনদ নম্বর"],
+  ["Address", "ঠিকানা"],
+  ["Joined", "যোগদানের সময়"],
+  ["About the organization", "প্রতিষ্ঠান সম্পর্কে"],
+  ["Service areas", "সেবার এলাকা"],
+  ["Transport", "যাতায়াতের মাধ্যম"],
+  ["Declared document name", "উল্লেখিত নথির নাম"],
+  [
+    "A document name is provided. Check the original document separately before approval.",
+    "নথির নাম দেওয়া আছে। অনুমোদনের আগে মূল নথি আলাদাভাবে যাচাই করুন।"
+  ],
+  ["This account is inactive.", "এই অ্যাকাউন্টটি নিষ্ক্রিয়।"],
+  ["Your decision", "আপনার সিদ্ধান্ত"],
+  ["Approve account", "অনুমোদন দিন"],
+  ["Reject account", "প্রত্যাখ্যান করুন"],
+  ["Review note", "পর্যালোচনার নোট"],
+  [
+    "Explain the checks and your decision…",
+    "যাচাইয়ের বিবরণ ও সিদ্ধান্তের কারণ লিখুন…"
+  ],
+  [
+    "At least 12 characters. Your note is recorded and sent to the account owner.",
+    "কমপক্ষে ১২ অক্ষর। নোটটি সংরক্ষিত হবে এবং অ্যাকাউন্টের মালিককে পাঠানো হবে।"
+  ],
+  ["Reload details", "তথ্য আবার লোড করুন"],
+  ["Saving…", "সংরক্ষণ হচ্ছে…"],
+  ["Save review", "সিদ্ধান্ত সংরক্ষণ"],
+  ["This account is verified.", "এই অ্যাকাউন্টটি যাচাইকৃত।"],
+  ["Review history", "পর্যালোচনার ইতিহাস"],
+  ["No reviews recorded yet.", "এখনও কোনো পর্যালোচনা হয়নি।"],
+  [
+    "Could not save the review. Try again.",
+    "সিদ্ধান্ত সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  ["Report review", "অভিযোগ পর্যালোচনা"],
+  ["Start review", "পর্যালোচনা শুরু করুন"],
+  ["Resolve and resume", "সমাধান করে চালু করুন"],
+  ["Reject food", "খাবার বাতিল করুন"],
+  ["Close report", "অভিযোগ বন্ধ করুন"],
+  ["Reported by", "অভিযোগকারী"],
+  ["Rescue reference", "উদ্ধার কার্যক্রমের নম্বর"],
+  ["Decision", "সিদ্ধান্ত"],
+  ["Evidence", "প্রমাণ"],
+  ["View evidence {0}", "প্রমাণ {0} দেখুন"],
+  ["Review action", "পর্যালোচনার পদক্ষেপ"],
+  [
+    "Rejecting food cancels a rescue that is on hold. Review the evidence before saving.",
+    "খাবার বাতিল করলে স্থগিত উদ্ধার কার্যক্রমটি বাতিল হবে। সংরক্ষণের আগে প্রমাণ যাচাই করুন।"
+  ],
+  [
+    "A rescue resumes only when all blocking reports are resolved and its safety deadline is valid.",
+    "বাধা সৃষ্টিকারী সব অভিযোগের সমাধান হলে এবং খাবারের নিরাপদ সময় থাকলে উদ্ধার আবার চালু হবে।"
+  ],
+  [
+    "At least 12 characters. Your note is recorded and shared with rescue participants.",
+    "কমপক্ষে ১২ অক্ষর। নোটটি সংরক্ষিত হবে এবং সংশ্লিষ্ট সদস্যদের জানানো হবে।"
+  ],
+  ["Rescue details", "উদ্ধারের বিস্তারিত"],
+  ["{0} estimated meals", "আনুমানিক {0}টি খাবার"],
+  ["Created", "তৈরির সময়"],
+  ["Safe pickup deadline", "নিরাপদ সংগ্রহের শেষ সময়"],
+  ["Route progress", "যাত্রার অগ্রগতি"],
+  ["Pickup address", "সংগ্রহের ঠিকানা"],
+  ["Pickup contact", "সংগ্রহস্থলের যোগাযোগ"],
+  ["Pickup phone", "সংগ্রহস্থলের ফোন"],
+  ["NGO phone", "এনজিওর ফোন"],
+  ["Saved delivery address", "সংরক্ষিত ডেলিভারির ঠিকানা"],
+  ["Volunteer phone", "স্বেচ্ছাসেবকের ফোন"],
+  [
+    "Meal quantities are donor estimates. Completed distribution totals come from NGO records.",
+    "খাবারের পরিমাণ দাতার আনুমানিক হিসাব। সম্পন্ন বিতরণের মোট সংখ্যা এনজিওর নথি থেকে নেওয়া হয়।"
+  ],
+  ["View all", "সব দেখুন"],
+  ["Pending accounts", "যাচাই বাকি"],
+  [
+    "Active accounts awaiting verification",
+    "সক্রিয় অ্যাকাউন্ট, যাচাইয়ের অপেক্ষায়"
+  ],
+  ["Active rescues", "চলমান উদ্ধার"],
+  ["From reservation to distribution", "সংরক্ষণ থেকে বিতরণ পর্যন্ত"],
+  ["Open reports", "অমীমাংসিত অভিযোগ"],
+  ["Submitted or under review", "জমা হয়েছে বা পর্যালোচনাধীন"],
+  ["Meals distributed", "বিতরণকৃত খাবার"],
+  ["Total recorded by NGOs", "এনজিওর নথিতে মোট বিতরণ"],
+  ["Review saved successfully.", "সিদ্ধান্ত সংরক্ষণ করা হয়েছে।"],
+  ["{0}", "{0}"],
+  [
+    "Every decision helps a rescue move forward.",
+    "আপনার সিদ্ধান্তে এগিয়ে যায় উদ্ধার কার্যক্রম।"
+  ],
+  [
+    "Start with pending accounts and open safety reports.",
+    "যাচাই বাকি থাকা অ্যাকাউন্ট ও অমীমাংসিত অভিযোগ দিয়ে শুরু করুন।"
+  ],
+  ["Review accounts", "অ্যাকাউন্ট যাচাই করুন"],
+  ["Oldest pending accounts first", "পুরোনো আবেদন আগে দেখানো হচ্ছে"],
+  [
+    "All accounts are reviewed. You’re up to date.",
+    "সব অ্যাকাউন্টের পর্যালোচনা শেষ। নতুন কাজ বাকি নেই।"
+  ],
+  ["Recent rescue activity", "সাম্প্রতিক উদ্ধার কার্যক্রম"],
+  [
+    "No active rescues at the moment.",
+    "এই মুহূর্তে কোনো উদ্ধার কার্যক্রম চলমান নেই।"
+  ],
+  ["Reports requiring attention", "পর্যালোচনা প্রয়োজন এমন অভিযোগ"],
+  ["Oldest unresolved reports first", "পুরোনো অমীমাংসিত অভিযোগ আগে"],
+  [
+    "No open reports. All concerns are addressed.",
+    "কোনো অভিযোগ বাকি নেই। সব অভিযোগের পর্যালোচনা হয়েছে।"
+  ],
+  ["Recent decisions", "সাম্প্রতিক সিদ্ধান্ত"],
+  [
+    "Recorded account and report reviews",
+    "অ্যাকাউন্ট ও অভিযোগের সংরক্ষিত পর্যালোচনা"
+  ],
+  [
+    "Decisions will appear here after your first review.",
+    "প্রথম পর্যালোচনার পর সিদ্ধান্তগুলো এখানে দেখা যাবে।"
+  ],
+  ["All statuses", "সব অবস্থা"],
+  ["All roles", "সব ভূমিকা"],
+  ["Search", "খুঁজুন"],
+  ["Name, organization or email", "নাম, প্রতিষ্ঠান বা ইমেইল"],
+  ["Food title or NGO", "খাবারের নাম বা এনজিও"],
+  ["Food title or report details", "খাবারের নাম বা অভিযোগের বিবরণ"],
+  ["Status", "অবস্থা"],
+  ["Role", "ভূমিকা"],
+  ["Account verification queue", "অ্যাকাউন্ট যাচাইয়ের তালিকা"],
+  ["Rescue records", "উদ্ধার কার্যক্রমের তালিকা"],
+  ["Incident reports", "অভিযোগের তালিকা"],
+  ["Account", "অ্যাকাউন্ট"],
+  ["Rescue", "উদ্ধার"],
+  ["Report", "অভিযোগ"],
+  ["Destination", "গন্তব্য"],
+  ["Severity", "গুরুত্ব"],
+  ["Action", "পদক্ষেপ"],
+  ["Inactive account", "নিষ্ক্রিয় অ্যাকাউন্ট"],
+  ["Review {0}", "{0} পর্যালোচনা করুন"],
+  ["Review", "পর্যালোচনা"],
+  ["Details", "বিস্তারিত"],
+  ["No records match these filters.", "এই ফিল্টারে কোনো তথ্য পাওয়া যায়নি।"],
+  ["Check the search filters.", "খোঁজার ফিল্টারগুলো যাচাই করুন।"],
+  ["Account not found.", "অ্যাকাউন্ট পাওয়া যায়নি।"],
+  ["Active account not found.", "সক্রিয় অ্যাকাউন্ট পাওয়া যায়নি।"],
+  [
+    "This account has no verification profile.",
+    "এই অ্যাকাউন্টের যাচাইয়ের প্রোফাইল নেই।"
+  ],
+  ["Check the review details.", "পর্যালোচনার তথ্য যাচাই করুন।"],
+  ["Choose a review decision.", "পর্যালোচনার সিদ্ধান্ত বেছে নিন।"],
+  [
+    "This account changed. Reload its details before reviewing.",
+    "অ্যাকাউন্টের তথ্য বদলেছে। সিদ্ধান্ত নেওয়ার আগে তথ্য আবার লোড করুন।"
+  ],
+  [
+    "This submission key was already used for different review details.",
+    "এই জমার নম্বরটি অন্য পর্যালোচনার জন্য ব্যবহার হয়েছে। তথ্য আবার লোড করুন।"
+  ],
+  [
+    "An administrator reviews your account details. Original documents must be checked separately. Account verification does not certify the safety of an individual food batch.",
+    "অ্যাডমিন আপনার অ্যাকাউন্টের তথ্য পর্যালোচনা করেন। মূল নথি আলাদাভাবে যাচাই করতে হয়। অ্যাকাউন্ট যাচাই কোনো নির্দিষ্ট খাবারের নিরাপত্তার সনদ নয়।"
+  ]
+]

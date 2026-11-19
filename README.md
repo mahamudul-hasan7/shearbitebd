@@ -163,3 +163,11 @@ sharebite-bd-frontend/
 ## 📄 License & Ethical Compliance
 
 Developed for educational and humanitarian purposes under the **MIT License**. Complies with Bangladesh Food Safety Authority (BFSA) temperature control standards and UN Sustainable Development Goals (SDG 2: Zero Hunger & SDG 12: Responsible Consumption).
+
+## Admin workspace
+
+Run `npm run db:setup` or `run-project.bat`. Local setup creates a private admin
+account once and saves its credentials in `.local-postgres/admin-access.json`.
+Sign in through `/login` to open `/admin/dashboard`. Account reviews, rescue
+oversight and incident decisions use real PostgreSQL records.
+See the [Bangla admin guide](docs/ADMIN_GUIDE_BN.md) for setup and workflows.
