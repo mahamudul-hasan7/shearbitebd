@@ -1,5 +1,3 @@
-import { AdminListView } from "@/features/admin/admin-lists";
-export const metadata = { title: "Admin accounts" };
-export default function Page() {
-  return <AdminListView kind="accounts" />;
-}
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
+export default function Page() { redirect(ROUTES.admin.verifications); }

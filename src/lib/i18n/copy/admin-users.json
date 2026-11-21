@@ -1,0 +1,129 @@
+[
+  ["User control", "ইউজার নিয়ন্ত্রণ"],
+  ["Verification", "ভেরিফিকেশন"],
+  ["Verification Requests", "ভেরিফিকেশন অনুরোধ"],
+  ["Review new account documents", "নতুন অ্যাকাউন্টের নথি যাচাই"],
+  ["All Users", "সব ইউজার"],
+  ["Manage account access", "অ্যাকাউন্টের প্রবেশাধিকার নিয়ন্ত্রণ"],
+  [
+    "Search every donor, NGO and volunteer. Verification and account access are managed separately.",
+    "সব দাতা, এনজিও ও স্বেচ্ছাসেবক খুঁজুন। ভেরিফিকেশন ও প্রবেশাধিকার আলাদাভাবে নিয়ন্ত্রণ করুন।"
+  ],
+  [
+    "Approve or reject new accounts here. Use All Users to ban, unblock or delete an account.",
+    "এখানে নতুন অ্যাকাউন্ট অনুমোদন বা প্রত্যাখ্যান করুন। ব্যান, আনব্লক বা ডিলিট করতে সব ইউজার অংশে যান।"
+  ],
+  [
+    "Review new accounts and their verification documents.",
+    "নতুন অ্যাকাউন্ট ও তাদের ভেরিফিকেশনের নথি যাচাই করুন।"
+  ],
+  [
+    "Find users. Manage access with clear, recorded decisions.",
+    "ইউজার খুঁজুন। কারণসহ সিদ্ধান্ত সংরক্ষণ করে প্রবেশাধিকার নিয়ন্ত্রণ করুন।"
+  ],
+  ["Name, organization, email or phone", "নাম, প্রতিষ্ঠান, ইমেইল বা ফোন"],
+  ["Account access", "অ্যাকাউন্টের প্রবেশাধিকার"],
+  ["All current users", "বর্তমান সব ইউজার"],
+  ["Active", "সক্রিয়"],
+  ["Banned", "ব্যান করা"],
+  ["Unbanned", "ব্যান সরানো হয়েছে"],
+  ["Deleted accounts", "ডিলিট করা অ্যাকাউন্ট"],
+  ["Deleted account", "ডিলিট করা অ্যাকাউন্ট"],
+  ["Account access updated.", "অ্যাকাউন্টের প্রবেশাধিকার আপডেট হয়েছে।"],
+  ["User", "ইউজার"],
+  ["Actions", "করণীয়"],
+  ["Manage {0}", "{0}-এর অ্যাকাউন্ট পরিচালনা"],
+  ["Manage", "পরিচালনা"],
+  ["History", "ইতিহাস"],
+  ["No users match these filters.", "এই ফিল্টারে কোনো ইউজার পাওয়া যায়নি।"],
+  ["Manage user", "ইউজার পরিচালনা"],
+  ["Open donations", "উন্মুক্ত ডোনেশন"],
+  ["Open food requests", "উন্মুক্ত খাবারের অনুরোধ"],
+  [
+    "This account was permanently removed. Its rescue and review history is retained.",
+    "এই অ্যাকাউন্ট স্থায়ীভাবে সরানো হয়েছে। এর রেসকিউ ও রিভিউয়ের ইতিহাস সংরক্ষিত আছে।"
+  ],
+  ["Review verification separately", "ভেরিফিকেশন আলাদাভাবে যাচাই করুন"],
+  ["Choose an account action", "অ্যাকাউন্টের জন্য করণীয় বেছে নিন"],
+  ["Ban / Block", "ব্যান / ব্লক"],
+  ["Unban", "ব্যান সরান"],
+  ["Stop login and revoke all sessions", "লগইন বন্ধ করুন ও সব সেশন বাতিল করুন"],
+  ["Allow the user to sign in again", "ইউজারকে আবার লগইন করার সুযোগ দিন"],
+  ["Delete account", "অ্যাকাউন্ট ডিলিট"],
+  ["Permanently remove account access", "স্থায়ীভাবে প্রবেশাধিকার বন্ধ করুন"],
+  ["Confirm account deletion", "অ্যাকাউন্ট ডিলিট নিশ্চিত করুন"],
+  ["Confirm ban", "ব্যান নিশ্চিত করুন"],
+  ["Confirm unban", "ব্যান সরানো নিশ্চিত করুন"],
+  [
+    "Login will be permanently removed. Open donations and food requests will be cancelled. Rescue records, contact details and review history are retained; this cannot be undone.",
+    "লগইনের সুযোগ স্থায়ীভাবে বন্ধ হবে। উন্মুক্ত ডোনেশন ও খাবারের অনুরোধ বাতিল হবে। রেসকিউ রেকর্ড, যোগাযোগের তথ্য ও রিভিউয়ের ইতিহাস থাকবে; এই সিদ্ধান্ত ফেরানো যাবে না।"
+  ],
+  [
+    "All sessions will end immediately. Verification and rescue records stay unchanged. Active rescues may need your attention.",
+    "সব সেশন সঙ্গে সঙ্গে বন্ধ হবে। ভেরিফিকেশন ও রেসকিউ রেকর্ড অপরিবর্তিত থাকবে। চলমান রেসকিউতে আপনার নজর দেওয়ার প্রয়োজন হতে পারে।"
+  ],
+  [
+    "The user can sign in again. Previous sessions stay revoked and verification status is unchanged.",
+    "ইউজার আবার লগইন করতে পারবেন। আগের সেশন বাতিল থাকবে এবং ভেরিফিকেশন স্ট্যাটাস অপরিবর্তিত থাকবে।"
+  ],
+  [
+    "Resolve {0} active rescues before deleting this account.",
+    "এই অ্যাকাউন্ট ডিলিট করার আগে {0}টি চলমান রেসকিউ নিষ্পত্তি করুন।"
+  ],
+  ["Reason", "কারণ"],
+  ["Explain the reason in at least 12 characters", "অন্তত ১২ অক্ষরে কারণ লিখুন"],
+  ["Type DELETE to confirm", "নিশ্চিত করতে DELETE লিখুন"],
+  ["Delete permanently", "স্থায়ীভাবে ডিলিট করুন"],
+  ["Reload details", "বিস্তারিত আবার লোড করুন"],
+  ["Account access history", "প্রবেশাধিকার পরিবর্তনের ইতিহাস"],
+  ["No account access changes yet.", "এখনও প্রবেশাধিকার পরিবর্তন করা হয়নি।"],
+  [
+    "Could not update account access.",
+    "অ্যাকাউন্টের প্রবেশাধিকার আপডেট করা যায়নি।"
+  ],
+  [
+    "Check the account action details.",
+    "অ্যাকাউন্টের করণীয় সম্পর্কিত তথ্য যাচাই করুন।"
+  ],
+  ["Add a reason of at least 12 characters.", "অন্তত ১২ অক্ষরে কারণ লিখুন।"],
+  [
+    "Type DELETE to confirm permanent account removal.",
+    "অ্যাকাউন্ট স্থায়ীভাবে সরাতে DELETE লিখে নিশ্চিত করুন।"
+  ],
+  [
+    "Admin accounts cannot be changed here.",
+    "এখান থেকে অ্যাডমিন অ্যাকাউন্ট পরিবর্তন করা যায় না।"
+  ],
+  [
+    "This submission key was already used for different account details.",
+    "এই সাবমিশন কী অন্য অ্যাকাউন্টের তথ্যের জন্য ব্যবহার করা হয়েছে।"
+  ],
+  [
+    "This account was permanently deleted.",
+    "এই অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করা হয়েছে।"
+  ],
+  [
+    "This account changed. Reload its details before continuing.",
+    "এই অ্যাকাউন্টে পরিবর্তন হয়েছে। এগোনোর আগে বিস্তারিত আবার লোড করুন।"
+  ],
+  [
+    "This account already has the requested access status.",
+    "অ্যাকাউন্টের প্রবেশাধিকার ইতিমধ্যে এই অবস্থায় আছে।"
+  ],
+  [
+    "Resolve active rescues before deleting this account.",
+    "এই অ্যাকাউন্ট ডিলিট করার আগে চলমান রেসকিউ নিষ্পত্তি করুন।"
+  ],
+  [
+    "This account no longer has access. Sign in with an active account.",
+    "এই অ্যাকাউন্টের প্রবেশাধিকার নেই। সক্রিয় অ্যাকাউন্ট দিয়ে লগইন করুন।"
+  ],
+  [
+    "This donor account is unavailable.",
+    "এই দাতার অ্যাকাউন্ট বর্তমানে ব্যবহারযোগ্য নয়।"
+  ],
+  [
+    "A rescue participant account is unavailable.",
+    "রেসকিউতে অংশগ্রহণকারী একটি অ্যাকাউন্ট বর্তমানে ব্যবহারযোগ্য নয়।"
+  ]
+]

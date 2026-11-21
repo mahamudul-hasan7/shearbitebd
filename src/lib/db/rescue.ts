@@ -1,3 +1,4 @@
+import { lockActiveAccount } from "@/lib/db/account-access";
 import { sampleDonationImage } from "@/lib/sample-donation-images";
 import { requestAddress } from "@/lib/db/locations";
 import { coordinates } from "@/lib/locations";
@@ -64,7 +65,7 @@ export async function expireOpenDonations() {
 export function visibleDonations(user: AuthAccount): Prisma.DonationWhereInput {
   if (user.role === "ADMIN") return {};
   if (user.role === "DONOR") return { donorProfileId: user.donorProfileId ?? "__none__" };
-  if (user.role === "NGO") return { OR: [{ status: { in: ["AVAILABLE", "PUBLISHED"] }, safePickupDeadline: { gt: new Date() } }, { claims: { some: { ngoProfileId: user.ngoProfileId ?? "__none__" } } }] };
+  if (user.role === "NGO") return { OR: [{ status: { in: ["AVAILABLE", "PUBLISHED"] }, donor: {user: {isActive:true,deletedAt:null}}, safePickupDeadline: { gt: new Date() } }, { claims: { some: { ngoProfileId: user.ngoProfileId ?? "__none__" } } }] };
   return { claims: { some: { volunteerProfileId: user.volunteerProfileId ?? "__none__" } } };
 }
 
@@ -98,8 +99,9 @@ export async function publishDonation(body: Record<string, unknown>, user: AuthA
   if (!dietaryTypes.length) throw new ApiError(422, "Choose a dietary type.");
   const allergens = Array.isArray(body.allergens) ? body.allergens.map((v) => textField(v, "allergens", 100)).slice(0, 30) : [];
   const preferredNgoProfileId = textField(body.preferredNgoProfileId, "preferredNgoProfileId", 160, true) || null;
-  if (preferredNgoProfileId && !await prisma.nGOProfile.findFirst({ where: { id: preferredNgoProfileId, verificationStatus: "VERIFIED" } })) throw new ApiError(422, "Select an available verified NGO.");
+  if (preferredNgoProfileId && !await prisma.nGOProfile.findFirst({ where: { id: preferredNgoProfileId, verificationStatus: "VERIFIED", user: {isActive:true,deletedAt:null} } })) throw new ApiError(422, "Select an available verified NGO.");
   return prisma.$transaction(async (tx) => {
+    await lockActiveAccount(tx, user.id);
     const donation = await tx.donation.create({ data: {
       donorProfileId: user.donorProfileId!, pickupAddressId: addressId, preferredNgoProfileId,
       pickupLatitude: pickupAddress.latitude, pickupLongitude: pickupAddress.longitude,
@@ -131,9 +133,11 @@ export { claimVisibility } from "@/lib/db/rescue-access";
 export async function reserveDonation(donationId: string, user: AuthAccount, foodRequestId?: string, allergenReviewAcknowledged?: boolean) {
   if (!user.ngoProfileId) throw new ApiError(403, "An NGO profile is required.");
   return prisma.$transaction(async (tx) => {
+    await lockActiveAccount(tx, user.id);
     await tx.$queryRaw`SELECT id FROM donations WHERE id = ${donationId} FOR UPDATE`;
     const donation = await tx.donation.findUnique({ where: { id: donationId }, include: { pickupAddress: true } });
     if (!donation) throw new ApiError(404, "Donation not found.");
+    if (!await tx.donorProfile.findFirst({where:{id:donation.donorProfileId,user:{isActive:true,deletedAt:null}}})) throw new ApiError(409, "This donor account is unavailable.");
     if (donation.status !== "AVAILABLE" || donation.safePickupDeadline.getTime() <= Date.now()) throw new ApiError(409, "This food is already claimed, expired or unavailable.");
     if (donation.windowEnd.getTime() <= Date.now()) throw new ApiError(409, "The collection window has closed. Choose another donation.");
     const ngo = await tx.nGOProfile.findUniqueOrThrow({ where: { id: user.ngoProfileId } });

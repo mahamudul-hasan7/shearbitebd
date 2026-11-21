@@ -1,3 +1,4 @@
+import { lockActiveAccount } from "@/lib/db/account-access";
 import { createHash } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -122,7 +123,7 @@ export async function submitVerification(
   const prepared = await prepareVerificationFile(file);
   return prisma.$transaction(async (tx) => {
     // Use the same lock order as account reviews so uploads and approvals serialize.
-    await tx.$queryRaw`SELECT id FROM users WHERE id = ${user.id} FOR UPDATE`;
+    await lockActiveAccount(tx, user.id);
     const profile =
       role === "NGO"
         ? await tx.nGOProfile.findUnique({ where: { userId: user.id } })

@@ -32,6 +32,11 @@ export async function proxy(request: NextRequest) {
       if (isApi) return NextResponse.json({ error: "Access denied." }, { status: 403 });
       return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
+    if (path === "/admin/accounts") {
+      const target = request.nextUrl.clone();
+      target.pathname = "/admin/verifications";
+      return NextResponse.redirect(target);
+    }
     const operationRole = request.method === "POST" ? {
       "/api/donations": UserRole.DONOR,
       "/api/claims": UserRole.NGO,

@@ -132,3 +132,6 @@ npm run test:samples:browser
 Browser commands Windows-এ installed Microsoft Edge ব্যবহার করে। Test data আলাদা
 random PostgreSQL schema-তে থাকে; মূল account/donation record পরিবর্তন করে না।
 Screenshots gitignored `.local-postgres/`-এর সংশ্লিষ্ট `*-browser` directory-তে পাওয়া যাবে।
+
+Admin-এর নতুন **Verification Requests** এবং **All Users** দিয়ে আলাদা কাজ করুন।
+Ban/Unban/Delete ও history সংরক্ষণের নিয়ম: [ইউজার নিয়ন্ত্রণ](ADMIN_USER_CONTROLS_BN.md)।

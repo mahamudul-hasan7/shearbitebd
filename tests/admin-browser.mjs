@@ -34,7 +34,7 @@ export async function runAdminBrowserChecks(helpers) {
       page.on("pageerror", (error) => runtime.push(error.message));
       for (const width of [320, 390, 768, 1024, 1440]) {
         await page.setViewportSize({ width, height: width < 768 ? 844 : 1000 });
-        for (const route of ["dashboard", "accounts", "rescues", "reports"]) {
+        for (const route of ["dashboard", "verifications", "users", "rescues", "reports"]) {
           await page.goto("/admin/" + route, { waitUntil: "networkidle" });
           await page.locator("main h1").waitFor();
           assert.equal(await page.locator("main [role=alert]").count(), 0);
@@ -227,7 +227,7 @@ export async function runAdminBrowserChecks(helpers) {
     await page.goto("/admin/dashboard", { waitUntil: "networkidle" });
     assert.equal(
       await page
-        .locator('main a[href="/admin/accounts"]')
+        .locator('main a[href="/admin/verifications"]')
         .first()
         .evaluate((el) => getComputedStyle(el).animationName),
       "none",

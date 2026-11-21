@@ -11,6 +11,7 @@ import type {
   AdminReport,
   AdminRescue,
 } from "@/lib/db/admin";
+import { UserControlLinks } from "./admin-users";
 import { AccountDialog, ReportDialog, RescueDialog } from "./admin-dialogs";
 import {
   Empty,
@@ -24,7 +25,7 @@ import {
 import s from "./admin.module.css";
 
 const statusOptions = {
-  accounts: ["PENDING", "VERIFIED", "REJECTED", "ALL"],
+  accounts: ["PENDING", "REJECTED"],
   rescues: [
     "ACTIVE",
     "RESERVED",
@@ -76,6 +77,7 @@ export function AdminListView({
   const rows = query.data?.items || [];
   return (
     <>
+      {kind === "accounts" && <><UserControlLinks current="verifications"/><p className={s.userIntro}>{tx("Approve or reject new accounts here. Use All Users to ban, unblock or delete an account.")}</p></>}
       <section className={s.panel}>
         <form
           className={s.filters}

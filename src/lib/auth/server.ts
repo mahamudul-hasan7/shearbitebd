@@ -19,7 +19,8 @@ export async function requirePortalRole(role: UserRole) {
 export async function authenticatedResponse(user: AuthAccount, remember: boolean, status = 200) {
   const jar = await cookies();
   const created = await createSession(user.id, remember, jar.get(SESSION_COOKIE)?.value);
-  const auth = (await resolveSession(created.token))!;
+  const auth = created ? await resolveSession(created.token) : undefined;
+  if (!created || !auth) return NextResponse.json({ error: "This account no longer has access. Sign in with an active account." }, { status: 401 });
   const response = NextResponse.json({ success: true, user: { ...auth.session, phone: user.phone, profile: user.profile }, session: auth.session }, { status });
   response.headers.set("Cache-Control", "no-store");
   response.cookies.set(SESSION_COOKIE, created.token, {

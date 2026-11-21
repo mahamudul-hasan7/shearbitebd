@@ -20,6 +20,12 @@ import { useLanguage } from "@/lib/i18n/language-context";
 import s from "./admin.module.css";
 
 export const labels: Record<string, string> = {
+  ACTIVE: "Active",
+  BANNED: "Banned",
+  DELETED: "Deleted account",
+  BAN: "Banned",
+  UNBAN: "Unbanned",
+  DELETE: "Deleted account",
   PENDING: "Awaiting review",
   NOT_SUBMITTED: "Awaiting review",
   VERIFIED: "Verified",
@@ -66,6 +72,8 @@ export const labels: Record<string, string> = {
 export function Status({ value }: { value: string }) {
   const tx = useUiText();
   const tone = [
+    "ACTIVE",
+    "UNBAN",
     "VERIFIED",
     "DISTRIBUTED",
     "DELIVERED",
@@ -74,7 +82,7 @@ export function Status({ value }: { value: string }) {
     "RESUME",
   ].includes(value)
     ? "success"
-    : ["REJECTED", "DISPUTED", "REJECT_FOOD", "URGENT", "HIGH"].includes(value)
+    : ["BANNED", "DELETED", "BAN", "DELETE", "REJECTED", "DISPUTED", "REJECT_FOOD", "URGENT", "HIGH"].includes(value)
       ? "danger"
       : [
             "PENDING",
