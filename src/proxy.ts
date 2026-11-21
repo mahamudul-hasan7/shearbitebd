@@ -41,7 +41,7 @@ export async function proxy(request: NextRequest) {
       return NextResponse.json({ error: "Your account role cannot perform this action." }, { status: 403 });
     }
     const response = NextResponse.next();
-    response.headers.set("Cache-Control", path.startsWith("/api/photos/") ? "private, no-store" : "no-store");
+    response.headers.set("Cache-Control", (path.startsWith("/api/photos/") || path.startsWith("/api/verification")) ? "private, no-store" : "no-store");
     return response;
   } catch {
     return isApi

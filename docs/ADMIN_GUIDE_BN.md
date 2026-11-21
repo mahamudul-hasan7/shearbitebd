@@ -37,8 +37,17 @@ script নিজে থেকে admin তৈরি বা password reset কর
   সমাধানকৃত অভিযোগ close করুন। স্থগিত উদ্ধার চালু করার আগেও বিদ্যমান deadline,
   ক্ষতিগ্রস্ত খাবার এবং অন্য unresolved report-এর বাধা পরীক্ষা হয়।
 
-নথির নাম দেখানো মানে মূল নথি upload করা আছে এমন নয়। মূল নথি আলাদাভাবে যাচাই
-করতে হবে। Account approval কোনো খাবারের safety certificate নয়।
+NGO ও volunteer-এর জমা দেওয়া নথি **Preview document** দিয়ে খুলুন। PDF বা ছবি দেখে
+প্রয়োজনে download করুন। নতুন account-এর নথি না থাকলে approve করা যায় না। Reject করলে
+মালিক আপনার কারণ দেখবেন এবং নতুন ফাইল জমা দিতে পারবেন। Review history-তে যে সংস্করণ
+দেখে সিদ্ধান্ত নেওয়া হয়েছিল সেটির preview থাকবে। আগে থেকেই verified account-এর অবস্থা
+বদলানো হয় না।
+
+বিশ্ববিদ্যালয়ের demo-তে **DEMO / SAMPLE** লেখা PDF বা JPG/PNG দিন। অ্যাপ নথির
+সত্যতা স্বয়ংক্রিয়ভাবে প্রমাণ করে না; সিদ্ধান্ত অ্যাডমিনের। Account approval কোনো খাবারের
+safety certificate নয়। নথি শুধু মালিক ও অ্যাডমিন দেখতে পারেন।
+
+[নথি জমা ও review-এর নির্দেশনা](VERIFICATION_DOCUMENTS_BN.md) দেখুন।
 
 একই account-এর verification profile অন্য admin বা account owner বদলে ফেললে পুরোনো তথ্য দিয়ে সিদ্ধান্ত
 সংরক্ষণ করা যাবে না। **Reload details** দিয়ে নতুন তথ্য দেখুন। **Refresh** বর্তমান

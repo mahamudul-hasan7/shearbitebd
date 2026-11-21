@@ -1,7 +1,7 @@
 # ShareBite BD — বিশ্ববিদ্যালয়ের project demonstration
 
 এই guide-এ সংরক্ষিত database record দিয়ে তিন account-এর পুরো flow দেখানো হবে।
-Admin dashboard পরের ধাপে; verification-এর জন্য local operator command আছে।
+Admin dashboard থেকে account verification এবং operational report review করা যায়।
 
 ## ভাষা বেছে নেওয়া
 
@@ -25,7 +25,8 @@ Admin dashboard পরের ধাপে; verification-এর জন্য loca
    account-এর password প্রকাশ করে না। Owner-এর নির্দেশে password hashing এখনও স্থগিত।
 4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Accounts** পাতায় নতুন account যাচাই করুন।
    Local admin-এর username `admin` এবং password `admin123`।
-   বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। মূল নথি আলাদাভাবে যাচাই করুন।
+   বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। NGO ও volunteer register করার পর DEMO / SAMPLE লেখা PDF বা ছবি জমা দিন।
+   Admin-এর Accounts থেকে ফাইল preview করে approve/reject করুন।
    Account approval কোনো food safety certificate নয়।
 
 ## ২. Location ও খাবার প্রকাশ — donor

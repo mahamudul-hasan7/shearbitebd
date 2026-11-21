@@ -15,12 +15,14 @@ export function VolunteerDutySync() {
     refresh();
     const timer = window.setInterval(refresh, 15_000);
     window.addEventListener("focus", refresh);
+    window.addEventListener("sharebite:verification-changed", refresh);
     document.addEventListener("visibilitychange", refresh);
     const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("sharebite-volunteer-duty") : undefined;
     if (channel) channel.onmessage = (event) => { if (event.data?.userId === userId) refresh(); };
     return () => {
       window.clearInterval(timer);
       window.removeEventListener("focus", refresh);
+      window.removeEventListener("sharebite:verification-changed", refresh);
       document.removeEventListener("visibilitychange", refresh);
       channel?.close();
       resetForUser(undefined);

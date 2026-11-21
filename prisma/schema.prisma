@@ -231,6 +231,7 @@ model User {
   addresses        Address[]
   accountReviewsReceived AccountReview[] @relation("ReviewedAccount")
   accountReviewsAuthored AccountReview[] @relation("AccountReviewer")
+  verificationDocuments VerificationDocument[]
 
   @@index([role, isActive, createdAt])
   @@map("users")
@@ -296,6 +297,8 @@ model DonorProfile {
 }
 
 model NGOProfile {
+  verificationDocumentId String? @unique
+  verificationDocument VerificationDocument? @relation("NGOCurrentDocument", fields: [verificationDocumentId], references: [id], onDelete: SetNull)
   id                      String             @id @default(cuid())
   userId                  String             @unique
   organizationName        String
@@ -349,6 +352,8 @@ model NGOTeamMember {
 }
 
 model VolunteerProfile {
+  verificationDocumentId String? @unique
+  verificationDocument VerificationDocument? @relation("VolunteerCurrentDocument", fields: [verificationDocumentId], references: [id], onDelete: SetNull)
   id                   String             @id @default(cuid())
   userId               String             @unique
   addressId            String?
@@ -657,6 +662,8 @@ model IncidentReport {
 }
 
 model AccountReview {
+  verificationDocumentId String?
+  verificationDocument VerificationDocument? @relation(fields: [verificationDocumentId], references: [id], onDelete: Restrict)
   id String @id @default(cuid())
   targetUserId String
   actorUserId String
@@ -672,6 +679,29 @@ model AccountReview {
   @@index([targetUserId, createdAt])
   @@index([createdAt])
   @@map("account_reviews")
+}
+
+model VerificationDocument {
+  id String @id @default(uuid())
+  ownerId String
+  kind String
+  originalName String
+  mimeType String
+  byteSize Int
+  width Int?
+  height Int?
+  pages Int?
+  data Bytes
+  uploadKey String
+  sourceHash String
+  createdAt DateTime @default(now())
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ngoProfile NGOProfile? @relation("NGOCurrentDocument")
+  volunteerProfile VolunteerProfile? @relation("VolunteerCurrentDocument")
+  reviews AccountReview[]
+  @@unique([ownerId, uploadKey])
+  @@index([ownerId, createdAt])
+  @@map("verification_documents")
 }
 
 model IncidentReview {

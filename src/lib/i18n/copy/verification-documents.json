@@ -1,0 +1,338 @@
+[
+  [
+    "Your identity document",
+    "আপনার পরিচয়পত্র"
+  ],
+  [
+    "Your registration document",
+    "আপনার নিবন্ধন নথি"
+  ],
+  [
+    "Document needed",
+    "নথি প্রয়োজন"
+  ],
+  [
+    "Changes requested",
+    "সংশোধন প্রয়োজন"
+  ],
+  [
+    "Loading verification details…",
+    "যাচাইয়ের তথ্য লোড হচ্ছে…"
+  ],
+  [
+    "Document verification progress",
+    "নথি যাচাইয়ের অগ্রগতি"
+  ],
+  [
+    "Upload document",
+    "নথি জমা"
+  ],
+  [
+    "Admin review",
+    "অ্যাডমিন পর্যালোচনা"
+  ],
+  [
+    "Upload your NGO registration certificate for an administrator to review.",
+    "অ্যাডমিনের পর্যালোচনার জন্য এনজিওর নিবন্ধন সনদ জমা দিন।"
+  ],
+  [
+    "Upload an identity document for an administrator to review your volunteer account.",
+    "স্বেচ্ছাসেবক অ্যাকাউন্ট যাচাইয়ের জন্য একটি পরিচয়পত্র জমা দিন।"
+  ],
+  [
+    "Your account is verified. Your approved document is saved with the review.",
+    "আপনার অ্যাকাউন্ট যাচাইকৃত। অনুমোদিত নথিটি পর্যালোচনার সঙ্গে সংরক্ষিত আছে।"
+  ],
+  [
+    "This account was verified before document uploads were available.",
+    "নথি আপলোড চালু হওয়ার আগেই এই অ্যাকাউন্ট যাচাই করা হয়েছিল।"
+  ],
+  [
+    "Submit an updated document",
+    "সংশোধিত নথি জমা দিন"
+  ],
+  [
+    "Add your verification document",
+    "যাচাইয়ের নথি যোগ করুন"
+  ],
+  [
+    "Choose a file or drag it here.",
+    "ফাইল বেছে নিন অথবা এখানে টেনে আনুন।"
+  ],
+  [
+    "Choose verification document",
+    "যাচাইয়ের নথি বেছে নিন"
+  ],
+  [
+    "Choose document",
+    "নথি বেছে নিন"
+  ],
+  [
+    "PDF, JPG or PNG · Up to 5 MB · PDF up to 10 pages",
+    "PDF, JPG বা PNG · সর্বোচ্চ ৫ MB · PDF-এ সর্বোচ্চ ১০ পৃষ্ঠা"
+  ],
+  [
+    "Selected document preview",
+    "নির্বাচিত নথির প্রিভিউ"
+  ],
+  [
+    "{0} KB · Ready to upload",
+    "{0} KB · জমা দেওয়ার জন্য প্রস্তুত"
+  ],
+  [
+    "Remove selected document",
+    "নির্বাচিত নথি সরান"
+  ],
+  [
+    "Submitting a document sends this account back to review. Approval is a manual admin decision.",
+    "নতুন নথি জমা দিলে অ্যাকাউন্ট আবার পর্যালোচনায় যাবে। অ্যাডমিন নিজে দেখে অনুমোদনের সিদ্ধান্ত নেবেন।"
+  ],
+  [
+    "Checking and saving your document…",
+    "নথি পরীক্ষা ও সংরক্ষণ হচ্ছে…"
+  ],
+  [
+    "Uploading document…",
+    "নথি আপলোড হচ্ছে…"
+  ],
+  [
+    "Document upload progress",
+    "নথি আপলোডের অগ্রগতি"
+  ],
+  [
+    "Cancel upload",
+    "আপলোড বাতিল করুন"
+  ],
+  [
+    "Document submitted. An administrator will review it.",
+    "নথি জমা হয়েছে। অ্যাডমিন সেটি পর্যালোচনা করবেন।"
+  ],
+  [
+    "Only you and administrators can view these files.",
+    "শুধু আপনি ও অ্যাডমিন এই নথি দেখতে পারবেন।"
+  ],
+  [
+    "Submitting…",
+    "জমা হচ্ছে…"
+  ],
+  [
+    "Submit updated document",
+    "সংশোধিত নথি জমা দিন"
+  ],
+  [
+    "Submit document",
+    "নথি জমা দিন"
+  ],
+  [
+    "For a project demo, use a PDF or image marked DEMO / SAMPLE. The app does not certify document authenticity.",
+    "প্রজেক্ট ডেমোর জন্য DEMO / SAMPLE লেখা PDF বা ছবি ব্যবহার করুন। অ্যাপ নথির আসলত্বের সনদ দেয় না।"
+  ],
+  [
+    "Review feedback",
+    "পর্যালোচনার মতামত"
+  ],
+  [
+    "Reviewed document: {0}",
+    "পর্যালোচিত নথি: {0}"
+  ],
+  [
+    "Refresh verification status",
+    "যাচাইয়ের অবস্থা হালনাগাদ করুন"
+  ],
+  [
+    "Private document preview",
+    "ব্যক্তিগত নথির প্রিভিউ"
+  ],
+  [
+    "Close document preview",
+    "নথির প্রিভিউ বন্ধ করুন"
+  ],
+  [
+    "Opening document…",
+    "নথি খোলা হচ্ছে…"
+  ],
+  [
+    "Verification PDF preview",
+    "যাচাইয়ের PDF প্রিভিউ"
+  ],
+  [
+    "Uploaded verification document",
+    "আপলোড করা যাচাইয়ের নথি"
+  ],
+  [
+    "Visible only to the account owner and administrators.",
+    "শুধু অ্যাকাউন্টের মালিক ও অ্যাডমিন দেখতে পারবেন।"
+  ],
+  [
+    "Download document",
+    "নথি ডাউনলোড করুন"
+  ],
+  [
+    "Preview document",
+    "নথির প্রিভিউ"
+  ],
+  [
+    "{0} pages",
+    "{0} পৃষ্ঠা"
+  ],
+  [
+    "This previously verified account has no uploaded document.",
+    "আগে থেকে যাচাইকৃত এই অ্যাকাউন্টে কোনো নথি আপলোড করা নেই।"
+  ],
+  [
+    "A document must be uploaded before this account can be approved.",
+    "এই অ্যাকাউন্ট অনুমোদনের আগে নথি জমা দিতে হবে।"
+  ],
+  [
+    "A verification document is required before approving this account.",
+    "এই অ্যাকাউন্ট অনুমোদনের আগে যাচাইয়ের নথি প্রয়োজন।"
+  ],
+  [
+    "The document changed. Reload the account before reviewing.",
+    "নথি বদলে গেছে। পর্যালোচনার আগে অ্যাকাউন্টের তথ্য আবার লোড করুন।"
+  ],
+  [
+    "Choose a PDF, JPG or PNG document.",
+    "PDF, JPG বা PNG নথি বেছে নিন।"
+  ],
+  [
+    "This file is empty. Choose another document.",
+    "এই ফাইলটি খালি। অন্য একটি নথি বেছে নিন।"
+  ],
+  [
+    "Choose a document no larger than 5 MB.",
+    "সর্বোচ্চ ৫ MB আকারের নথি বেছে নিন।"
+  ],
+  [
+    "Choose a document with a valid filename.",
+    "সঠিক নামের একটি নথি বেছে নিন।"
+  ],
+  [
+    "Choose a PDF with 1 to 10 pages.",
+    "১ থেকে ১০ পৃষ্ঠার PDF বেছে নিন।"
+  ],
+  [
+    "This PDF is too complex. Upload a simpler PDF or an image.",
+    "এই PDF অতিরিক্ত জটিল। সহজ PDF বা একটি ছবি জমা দিন।"
+  ],
+  [
+    "Use a PDF without scripts, forms or embedded files.",
+    "স্ক্রিপ্ট, ইন্টারঅ্যাকটিভ ফর্ম বা সংযুক্ত ফাইল ছাড়া সাধারণ PDF ব্যবহার করুন।"
+  ],
+  [
+    "The processed document is too large. Choose a smaller file.",
+    "প্রক্রিয়াকরণের পর নথিটি অতিরিক্ত বড় হয়েছে। ছোট ফাইল বেছে নিন।"
+  ],
+  [
+    "This document could not be read. Choose a valid PDF, JPG or PNG.",
+    "নথিটি পড়া যায়নি। সঠিক PDF, JPG বা PNG বেছে নিন।"
+  ],
+  [
+    "Only NGO and volunteer accounts can submit verification documents.",
+    "শুধু এনজিও ও স্বেচ্ছাসেবক অ্যাকাউন্ট যাচাইয়ের নথি জমা দিতে পারে।"
+  ],
+  [
+    "Verification profile not found.",
+    "যাচাইয়ের প্রোফাইল পাওয়া যায়নি।"
+  ],
+  [
+    "Use a valid document submission key.",
+    "সঠিক নথি জমার নম্বর ব্যবহার করুন।"
+  ],
+  [
+    "This submission key was used for a different document.",
+    "এই জমার নম্বর অন্য নথির জন্য ব্যবহার হয়েছে।"
+  ],
+  [
+    "A newer document is already submitted. Refresh your verification details.",
+    "নতুন নথি ইতোমধ্যে জমা হয়েছে। যাচাইয়ের তথ্য হালনাগাদ করুন।"
+  ],
+  [
+    "Your account is already verified. Contact an administrator to change its document.",
+    "আপনার অ্যাকাউন্ট ইতোমধ্যে যাচাইকৃত। নথি বদলাতে অ্যাডমিনের সঙ্গে যোগাযোগ করুন।"
+  ],
+  [
+    "Your saved verification documents reached the storage limit. Contact an administrator.",
+    "সংরক্ষিত যাচাইয়ের নথির জায়গা পূর্ণ হয়েছে। অ্যাডমিনের সঙ্গে যোগাযোগ করুন।"
+  ],
+  [
+    "Document not found for your account.",
+    "আপনার অ্যাকাউন্টের জন্য নথিটি পাওয়া যায়নি।"
+  ],
+  [
+    "The document upload could not be read. Try again.",
+    "আপলোডটি পড়া যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Choose one verification document.",
+    "একটি যাচাইয়ের নথি বেছে নিন।"
+  ],
+  [
+    "The document could not be uploaded. Try again.",
+    "নথি আপলোড করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "The document could not be uploaded. Check your connection and try again.",
+    "নথি আপলোড করা যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
+  ],
+  [
+    "The upload took too long. Try again.",
+    "আপলোডে অতিরিক্ত সময় লেগেছে। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Upload cancelled. You can try again.",
+    "আপলোড বাতিল হয়েছে। আবার চেষ্টা করতে পারেন।"
+  ],
+  [
+    "Verification details could not load. Try again.",
+    "যাচাইয়ের তথ্য লোড করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Verification details could not load. Check your connection.",
+    "যাচাইয়ের তথ্য লোড করা যায়নি। সংযোগ পরীক্ষা করুন।"
+  ],
+  [
+    "This document could not be opened. Close the preview and refresh your details.",
+    "নথিটি খোলা যায়নি। প্রিভিউ বন্ধ করে তথ্য হালনাগাদ করুন।"
+  ],
+  [
+    "This document format cannot be previewed.",
+    "এই ধরনের নথির প্রিভিউ দেখানো যাচ্ছে না।"
+  ],
+  [
+    "This document could not be opened.",
+    "নথিটি খোলা যায়নি।"
+  ],
+  [
+    "Upload your document below. An administrator will review your account before you can claim or deliver food.",
+    "নিচে আপনার নথি জমা দিন। খাবার ক্লেইম বা ডেলিভারির আগে অ্যাডমিন আপনার অ্যাকাউন্ট পর্যালোচনা করবেন।"
+  ],
+  [
+    "Submit your document, read feedback and follow the review.",
+    "নথি জমা দিন, মতামত পড়ুন ও পর্যালোচনার অগ্রগতি দেখুন।"
+  ],
+  [
+    "Image",
+    "ছবি"
+  ],
+  [
+    "This PDF could not be displayed. Download the document to view it.",
+    "পিডিএফ দেখানো যায়নি। দেখতে নথিটি ডাউনলোড করুন।"
+  ],
+  [
+    "Previous document page",
+    "নথির আগের পৃষ্ঠা"
+  ],
+  [
+    "Next document page",
+    "নথির পরের পৃষ্ঠা"
+  ],
+  [
+    "Page {0} of {1}",
+    "{1} পৃষ্ঠার মধ্যে {0}"
+  ],
+  [
+    "Verification document page {0}",
+    "যাচাই নথির {0} নম্বর পৃষ্ঠা"
+  ]
+]
