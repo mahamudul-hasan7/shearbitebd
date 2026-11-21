@@ -1378,3 +1378,13 @@
     margin: 0;
   }
 }
+
+.reviewFile {
+  display: block;
+  min-height: 44px;
+  color: var(--brand-800);
+  font-size: 11px;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  text-align: left;
+}

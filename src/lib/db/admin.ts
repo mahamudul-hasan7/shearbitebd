@@ -2,6 +2,10 @@ import { Prisma, type VerificationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { ApiError, textField } from "@/lib/api";
 import type { AuthAccount } from "@/lib/db/accounts";
+import {
+  verificationFileSelect,
+  verificationFileDto,
+} from "@/lib/db/verification-documents";
 import { savedDeliveryAddress } from "@/lib/db/locations";
 
 const roles = ["DONOR", "NGO", "VOLUNTEER"] as const;
@@ -35,6 +39,7 @@ const accountSelect = {
       registrationNumber: true,
       summary: true,
       verificationDocName: true,
+      verificationDocument: { select: verificationFileSelect },
       verificationStatus: true,
       updatedAt: true,
     },
@@ -44,6 +49,7 @@ const accountSelect = {
       transportMethod: true,
       serviceAreas: true,
       identityDocumentName: true,
+      verificationDocument: { select: verificationFileSelect },
       verificationStatus: true,
       updatedAt: true,
     },
@@ -58,7 +64,11 @@ function accountDto(
   row: Prisma.UserGetPayload<{ select: typeof accountSelect }>,
 ) {
   const profile = row.donorProfile || row.ngoProfile || row.volunteerProfile;
+  const document =
+    row.ngoProfile?.verificationDocument ||
+    row.volunteerProfile?.verificationDocument;
   return {
+    document: document ? verificationFileDto(document) : null,
     id: row.id,
     email: row.email,
     displayName: row.displayName,
@@ -77,6 +87,7 @@ function accountDto(
       row.donorProfile?.bfsaCertNumber ||
       "",
     documentName:
+      document?.originalName ||
       row.ngoProfile?.verificationDocName ||
       row.volunteerProfile?.identityDocumentName ||
       "",
@@ -287,14 +298,18 @@ export async function adminAccount(id: string) {
       status: true,
       note: true,
       createdAt: true,
+      verificationDocument: { select: verificationFileSelect },
     },
     orderBy: { createdAt: "desc" },
     take: 20,
   });
   return {
     account: accountDto(row),
-    reviews: reviews.map((r) => ({
+    reviews: reviews.map(({ verificationDocument, ...r }) => ({
       ...r,
+      document: verificationDocument
+        ? verificationFileDto(verificationDocument)
+        : null,
       createdAt: r.createdAt.toISOString(),
     })),
   };
@@ -329,7 +344,9 @@ export async function reviewAccount(
         previous.actorUserId !== actor.id ||
         previous.note !== note ||
         previous.status !== status ||
-        previous.previousUpdatedAt.toISOString() !== version
+        previous.previousUpdatedAt.toISOString() !== version ||
+        (input.documentId !== undefined &&
+          previous.verificationDocumentId !== input.documentId)
       )
         throw new ApiError(
           409,
@@ -359,6 +376,26 @@ export async function reviewAccount(
         409,
         "This account changed. Reload its details before reviewing.",
       );
+    const document =
+      row.ngoProfile?.verificationDocument ||
+      row.volunteerProfile?.verificationDocument;
+    if (
+      status === "VERIFIED" &&
+      (row.role === "NGO" || row.role === "VOLUNTEER") &&
+      !document
+    )
+      throw new ApiError(
+        422,
+        "A verification document is required before approving this account.",
+      );
+    if (
+      (input.documentId !== undefined && input.documentId !== document?.id) ||
+      (status === "VERIFIED" && document && input.documentId !== document.id)
+    )
+      throw new ApiError(
+        409,
+        "The document changed. Reload the account before reviewing.",
+      );
     const where = {
       userId: id,
       updatedAt: new Date(version),
@@ -379,6 +416,7 @@ export async function reviewAccount(
     await tx.accountReview.create({
       data: {
         targetUserId: id,
+        verificationDocumentId: document?.id,
         actorUserId: actor.id,
         actorLabel: actor.displayName,
         previousStatus: profile.verificationStatus,

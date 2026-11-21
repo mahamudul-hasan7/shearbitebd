@@ -36,3 +36,6 @@ pnpm-debug.log*
 /data/*.tmp
 /.local-postgres/
 /data/migration-reports/
+
+# Generated from the installed PDF.js dependency
+/public/pdf.worker.min.mjs

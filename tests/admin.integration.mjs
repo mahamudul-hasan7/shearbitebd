@@ -1,3 +1,4 @@
+import { seedVerificationDocument } from "./verification-fixtures.mjs";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 
@@ -31,6 +32,7 @@ export async function adminFixtures(
       where: { userId: id },
       data: { verificationStatus: "PENDING" },
     });
+    if (role !== "DONOR") await seedVerificationDocument(prisma, id, role);
     pending.push(id);
   }
   const { cookie } = await login("DONOR");
@@ -113,6 +115,9 @@ export async function runAdminChecks(helpers) {
       note: "Identity and registration checked by the operator.",
       submissionKey: randomUUID(),
       expectedUpdatedAt: detail.account.version,
+      ...(detail.account.document
+        ? { documentId: detail.account.document.id }
+        : {}),
       ...changes,
     };
     const response = await request("/api/admin/accounts", {

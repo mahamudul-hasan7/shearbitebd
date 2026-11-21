@@ -1,6 +1,11 @@
 "use client";
 import { useRef, useState } from "react";
 import { Check, ExternalLink, ShieldCheck } from "lucide-react";
+import {
+  DocumentFileCard,
+  DocumentPreview,
+} from "@/features/verification/document-preview";
+import type { VerificationFile } from "@/features/verification/types";
 import { Button } from "@/components/ui/button";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import type {
@@ -40,6 +45,10 @@ export function AccountDialog({
   const [error, setError] = useState("");
   const lock = useRef(false);
   const account = query.data?.account;
+  const [preview, setPreview] = useState<VerificationFile>();
+  const documentRequired =
+    account?.role === "NGO" || account?.role === "VOLUNTEER";
+  const missingDocument = documentRequired && !account?.document;
   const detailItems: [string, string | null | undefined][] = account
     ? [
         ["Email", account.email],
@@ -61,7 +70,7 @@ export function AccountDialog({
         ["Service areas", account.serviceAreas.join(", ")],
         ["Transport", account.transport ? tx(labels[account.transport]) : ""],
       );
-    if (account.documentName)
+    if (account.documentName && !account.document)
       detailItems.push(["Declared document name", account.documentName]);
   }
   const editable =
@@ -85,6 +94,7 @@ export function AccountDialog({
           note,
           submissionKey: key,
           expectedUpdatedAt: account.version,
+          documentId: account.document?.id,
         }),
       });
       const data = await response.json();
@@ -119,13 +129,20 @@ export function AccountDialog({
             <Status value={account.status} />
           </div>
           <Details items={detailItems} />
-          {account.documentName && (
+          {account.document ? (
+            <DocumentFileCard
+              document={account.document}
+              onPreview={() => setPreview(account.document!)}
+            />
+          ) : documentRequired ? (
             <p className={s.note}>
               {tx(
-                "A document name is provided. Check the original document separately before approval.",
+                account.status === "VERIFIED"
+                  ? "This previously verified account has no uploaded document."
+                  : "A document must be uploaded before this account can be approved.",
               )}
             </p>
-          )}
+          ) : null}
           {!account.isActive && (
             <p className={s.note}>{tx("This account is inactive.")}</p>
           )}
@@ -142,7 +159,7 @@ export function AccountDialog({
                     name="account-decision"
                     value="APPROVE"
                     checked={action === "APPROVE"}
-                    disabled={busy}
+                    disabled={busy || missingDocument}
                     onChange={(e) => {
                       setAction(e.target.value);
                       setKey(crypto.randomUUID());
@@ -205,7 +222,11 @@ export function AccountDialog({
                 <Button
                   type="submit"
                   variant={action === "REJECT" ? "danger" : "primary"}
-                  disabled={busy || note.trim().length < 12}
+                  disabled={
+                    busy ||
+                    note.trim().length < 12 ||
+                    (action === "APPROVE" && missingDocument)
+                  }
                   leftIcon={<Check size={16} />}
                 >
                   {tx(busy ? "Saving…" : "Save review")}
@@ -215,14 +236,21 @@ export function AccountDialog({
           ) : account.status === "VERIFIED" ? (
             <p className={s.success}>{tx("This account is verified.")}</p>
           ) : null}
-          <History items={query.data?.reviews || []} />
+          <History items={query.data?.reviews || []} onPreview={setPreview} />
         </>
+      )}
+      {preview && (
+        <DocumentPreview
+          document={preview}
+          onClose={() => setPreview(undefined)}
+        />
       )}
     </Dialog>
   );
 }
 function History({
   items,
+  onPreview,
 }: {
   items: {
     id: string;
@@ -230,7 +258,9 @@ function History({
     status: string;
     note: string;
     createdAt: string;
+    document?: VerificationFile | null;
   }[];
+  onPreview?: (document: VerificationFile) => void;
 }) {
   const tx = useUiText();
   const date = useAdminDate();
@@ -247,6 +277,15 @@ function History({
               </div>
               <p>{item.note}</p>
               <time dateTime={item.createdAt}>{date(item.createdAt)}</time>
+              {item.document && onPreview && (
+                <button
+                  type="button"
+                  className={s.reviewFile}
+                  onClick={() => onPreview(item.document!)}
+                >
+                  {tx("Reviewed document: {0}", item.document.name)}
+                </button>
+              )}
             </li>
           ))}
         </ol>

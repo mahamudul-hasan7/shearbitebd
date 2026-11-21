@@ -3150,3 +3150,13 @@ test("browser admin username login works in both languages and screen sizes", { 
   const { runAdminUsernameBrowserChecks } = await import("./admin-username-browser.mjs");
   await runAdminUsernameBrowserChecks({ prisma, base });
 });
+
+test("verification documents enforce private uploads, versioned reviews and safe resubmission", async () => {
+  const { runVerificationChecks } = await import("./verification.integration.mjs");
+  await runVerificationChecks({ prisma, request, login, seedUser, fixturePassword, base });
+});
+
+test("browser verification documents support registration, preview and review on mobile and desktop", { skip: process.env.RUN_VERIFICATION_BROWSER !== "1" }, async () => {
+  const { runVerificationBrowserChecks } = await import("./verification-browser.mjs");
+  await runVerificationBrowserChecks({ prisma, request, login, base });
+});

@@ -222,6 +222,7 @@ export function Dialog({
       className={s.dialog}
       aria-labelledby={titleId}
       onCancel={(e) => {
+        if (e.target !== e.currentTarget) return;
         e.preventDefault();
         if (!busy) onClose();
       }}

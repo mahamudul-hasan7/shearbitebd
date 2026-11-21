@@ -11,6 +11,7 @@ import {
   Phone,
   UserRound,
 } from "lucide-react";
+import { VerificationDocumentPanel } from "@/features/verification/document-panel";
 import { AuthProgress } from "@/components/auth/auth-progress";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
@@ -234,7 +235,7 @@ export function RegisterForm() {
             tone="info"
             title={tx("Account review pending")}
             description={tx(
-              "The project operator will review your account before you can claim or deliver food.",
+              "Upload your document below. An administrator will review your account before you can claim or deliver food.",
             )}
           />
         )}
@@ -248,6 +249,7 @@ export function RegisterForm() {
           />
         )}
         <p className="break-all text-sm text-muted-600">{data.email}</p>
+        {role !== "donor" && sessionReady && <VerificationDocumentPanel />}
         <ButtonLink
           href={
             sessionReady ? getRoleLandingRoute(userRole) : ROUTES.auth.login
@@ -544,7 +546,7 @@ export function RegisterForm() {
                   tone="info"
                   title={tx("Account review")}
                   description={tx(
-                    "The project operator will review your account before you can claim or deliver food.",
+                    "Upload your document below. An administrator will review your account before you can claim or deliver food.",
                   )}
                 />
               )}

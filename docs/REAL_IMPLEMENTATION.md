@@ -1,6 +1,23 @@
 # Real implementation roadmap
 
-Updated: 14 November 2026 (Asia/Dhaka)
+Updated: 21 November 2026 (Asia/Dhaka)
+
+## Private account verification documents
+
+- NGO and volunteer registration completion includes authenticated document upload;
+  existing pending accounts use NGO Verification or Volunteer ID card. PDF/JPG/PNG
+  files are validated on the server (5 MB; PDFs 1–10 pages). Images are re-encoded
+  without metadata; PDFs are rebuilt without source annotations and reject scripts,
+  forms and embedded files. Files remain private database records with owner/admin ACL.
+- Admin account reviews preview/download the actual file. Approvals require the
+  current document ID and profile version. Uploads and reviews lock the same account
+  row; retries are idempotent. Rejected accounts can resubmit and return to PENDING.
+- Reviews retain the exact document version, author, note and time; earlier files
+  remain private and immutable. Per-account stored document quota: 20 MB. Existing
+  verified accounts remain verified. Sample documents are for a manual project demo;
+  there is no automatic certification of document authenticity.
+- See [Bangla verification guide](VERIFICATION_DOCUMENTS_BN.md) and run
+  `npm run test:verification:browser` for the end-to-end registration/review workflow.
 
 ## Saved rider duty and assignment rules
 
@@ -71,8 +88,8 @@ Updated: 14 November 2026 (Asia/Dhaka)
   distributed food before that record is saved.
 - Donor/NGO settings retain working browser language, profile/address navigation and
   in-app notifications. SMS/push/email preferences, support tickets, team invitations
-  and verification-document replacement show explicit unavailable states. NGO
-  verification remains read-only, and full administration stays deferred.
+  show explicit unavailable states. NGO and volunteer verification documents now
+  support private uploads, preview, review and resubmission through the admin dashboard.
 - The volunteer ID route shows the actual project account profile. It does not
   issue government credentials, QR credentials or university credit.
 - Public landing-page counters no longer simulate live activity; invented food
