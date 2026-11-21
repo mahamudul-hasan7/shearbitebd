@@ -102,7 +102,8 @@ export const productLinks = [
 
 export const adminNavigation: DesktopNavItem[] = [
   { label: "Overview", href: ROUTES.admin.dashboard, icon: LayoutDashboard },
-  { label: "Accounts", href: ROUTES.admin.accounts, icon: Users },
+  { label: "Verification", href: ROUTES.admin.verifications, icon: ShieldCheck },
+  { label: "All Users", href: ROUTES.admin.users, icon: Users },
   { label: "Rescues", href: ROUTES.admin.rescues, icon: HeartHandshake },
   { label: "Reports", href: ROUTES.admin.reports, icon: CircleAlert },
 ];

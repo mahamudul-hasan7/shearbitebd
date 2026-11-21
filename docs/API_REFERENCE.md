@@ -43,3 +43,25 @@ All service methods throw standardized `MockApiError` containing:
 File processing and per-owner 20 MB quota run on the server. Upload and review
 transactions share an account lock. These endpoints support manual review, not
 automatic document-authenticity certification.
+
+## Admin account access
+
+Separate from verification (`/api/admin/accounts`), ADMIN-only, no-store reads:
+
+- `GET /api/admin/users?q=&role=ALL&access=ALL&page=1`: regular Donor/NGO/Volunteer
+  accounts, 20 per page. Roles: ALL/DONOR/NGO/VOLUNTEER. Access: ALL (current),
+  ACTIVE, BANNED, DELETED (archive). `q` searches name, organization, email or phone.
+- `GET /api/admin/users?id=...`: safe account fields, integer `version`, separate
+  `verification` and `access`, actual open-work counts and latest 20 access audits.
+- `PATCH /api/admin/users`: `{id, action: "BAN"|"UNBAN"|"DELETE", note,
+  expectedVersion, submissionKey, confirmation?}`. Reason: 12–1000 characters;
+  submission key: 16–100 alphanumeric/underscore/hyphen; DELETE requires exact
+  `confirmation: "DELETE"`. Admin/self targets are forbidden. Stale states or
+  active rescues on deletion return 409; invalid confirmation returns 422.
+
+Ban revokes every session. Unban requires fresh login. Delete is a permanent
+account tombstone preserving relational records and contact history, releases
+unique login identifiers and cancels open, unclaimed donations/food requests.
+It is not full personal-data erasure. Deleted accounts cannot be restored here.
+Writes are transactional, audited, replay-safe and protected against cross-site
+requests. See [admin user guide](ADMIN_USER_CONTROLS_BN.md).

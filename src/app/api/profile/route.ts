@@ -1,3 +1,4 @@
+import { lockActiveAccount } from "@/lib/db/account-access";
 import { isCoordinates } from "@/lib/locations";
 import { NextResponse } from "next/server";
 import { DonorType, Prisma } from "@prisma/client";
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
     }
     await prisma.$transaction(async (tx) => {
       // Serialize primary-address changes for this owner, including first-address creation.
-      await tx.$queryRaw`SELECT id FROM users WHERE id = ${user.id} FOR UPDATE`;
+      await lockActiveAccount(tx, user.id);
       if (body.action === "addAddress") {
         addressData.isPrimary = await tx.address.count({ where: { ownerId: user.id } }) === 0;
         await tx.address.create({ data: addressData });

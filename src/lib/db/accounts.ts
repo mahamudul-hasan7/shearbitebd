@@ -32,7 +32,7 @@ export async function findAccount(identifier: string) {
     ? { username: "admin", role: "ADMIN" }
     : { OR: [{ email: login }, ...(/^01[3-9]\d{8}$/.test(normalized) ? [{ normalizedPhone: normalized }] : [])] };
   const row = await prisma.user.findFirst({
-    where: { isActive: true, ...lookup },
+    where: { isActive: true, deletedAt: null, ...lookup },
     include: accountInclude,
   });
   return row ? toAuthAccount(row) : undefined;

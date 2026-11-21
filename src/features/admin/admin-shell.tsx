@@ -123,8 +123,10 @@ export function AdminShell({
               <h1>{tx(current.label)}</h1>
               <p>
                 {tx(
-                  pathname.includes("accounts")
-                    ? "Review the people behind every rescue."
+                  pathname.includes("verifications")
+                    ? "Review new accounts and their verification documents."
+                    : pathname.includes("users")
+                      ? "Find users. Manage access with clear, recorded decisions."
                     : pathname.includes("rescues")
                       ? "Follow each rescue from pickup to distribution."
                       : pathname.includes("reports")

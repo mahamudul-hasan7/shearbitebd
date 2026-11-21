@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     await requireAuth();
     const id = new URL(request.url).searchParams.get("id");
-    const rows = await prisma.nGOProfile.findMany({ where: { verificationStatus: "VERIFIED", user: { isActive: true }, ...(id ? { id } : {}) }, include: { user: { include: accountInclude }, impactRecords: true } });
+    const rows = await prisma.nGOProfile.findMany({ where: { verificationStatus: "VERIFIED", user: { isActive: true, deletedAt: null }, ...(id ? { id } : {}) }, include: { user: { include: accountInclude }, impactRecords: true } });
     const ngos = rows.map((row) => {
       const profile = profileDto(row.user);
       return { profile: profile.ngoProfile, addresses: profile.addresses, impact: { peopleHelped: row.peopleHelped, completedRescues: row.completedRescues,

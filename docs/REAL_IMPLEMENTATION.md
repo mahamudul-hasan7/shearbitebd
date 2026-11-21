@@ -516,6 +516,16 @@ checks real account identity, missing-photo behavior, browser language persisten
 notification read/load failures, owner isolation and unavailable secondary modules.
 Run npm run test:cleanup:browser. Full human acceptance remains separate.
 
+## Admin verification and account access (22 November 2026)
+
+Admin now has distinct Verification Requests and All Users pages. Access management
+provides audited Ban/Unban and permanent account closure with typed confirmation,
+revoked sessions, optimistic version checks and replay protection. Active rescues
+prevent deletion; open donations and requests are cancelled and relational history
+is retained. This uses an additive migration, not a database reset. See
+[the user-control guide](ADMIN_USER_CONTROLS_BN.md) for the exact deletion behavior
+and responsive browser tests.
+
 ## Remaining increments
 
 1. Connect team invitations, support tickets and password reset.

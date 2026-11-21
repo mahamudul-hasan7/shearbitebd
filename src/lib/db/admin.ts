@@ -24,6 +24,7 @@ const accountSelect = {
   phone: true,
   role: true,
   isActive: true,
+  deletedAt: true,
   createdAt: true,
   donorProfile: {
     select: {
@@ -113,6 +114,7 @@ function statusWhere(status: string): Prisma.UserWhereInput {
 const pendingWhere: Prisma.UserWhereInput = {
   role: { in: [...roles] },
   isActive: true,
+  deletedAt: null,
   ...statusWhere("PENDING"),
 };
 const rescueSelect = {
@@ -245,6 +247,7 @@ export async function adminAccounts(params: URLSearchParams) {
     role: {
       in: role === "ALL" ? [...roles] : [role as (typeof roles)[number]],
     },
+    deletedAt: null,
     ...(status !== "ALL" ? { isActive: true, ...statusWhere(status) } : {}),
     ...(q
       ? {
@@ -360,7 +363,7 @@ export async function reviewAccount(
     });
     if (
       !row ||
-      !row.isActive ||
+      !row.isActive || row.deletedAt ||
       !(roles as readonly string[]).includes(row.role)
     )
       throw new ApiError(404, "Active account not found.");
