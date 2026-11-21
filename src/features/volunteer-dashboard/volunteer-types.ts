@@ -36,6 +36,9 @@ export interface AvailableDispatch {
 }
 
 export interface VolunteerMission {
+  volunteerProfileId?: string;
+  pickupWindowStart?: string;
+  pickupWindowEnd?: string;
   updatedAt?: string;
   pickedUpAt?: string;
   deliveredAt?: string;

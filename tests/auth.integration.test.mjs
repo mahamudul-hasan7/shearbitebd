@@ -1044,7 +1044,7 @@ test("browser animated rescue progress follows real handovers across donor NGO a
   const { mkdir } = await import("node:fs/promises");
   const artifacts = ".local-postgres/progress-browser";
   await mkdir(artifacts, { recursive: true });
-  const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
+  const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH ? {executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH} : {channel:process.env.PLAYWRIGHT_CHANNEL || undefined}) });
   const errors = [];
   async function pageFor(cookie, width = 390) {
     const context = await englishBrowserContext(browser, { baseURL: base, viewport: { width, height: 900 }, timezoneId: "Asia/Dhaka", serviceWorkers: "block" });
@@ -1075,16 +1075,16 @@ test("browser animated rescue progress follows real handovers across donor NGO a
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
     // Use the real rider action. Other devices must update without reload.
-    await rider.getByRole("button", { name: uiName("Travelling to pickup"), exact: true }).click();
+    await rider.getByRole("button", { name: uiName("Start pickup trip"), exact: true }).click();
     await phase(rider, "en_route_pickup");
     await Promise.all([donor, ngo].map((page) => panel(page).getByRole("heading", { name: uiName("Travelling to pickup"), exact: true }).waitFor({ timeout: 15_000 })));
-    await rider.getByRole("button", { name: uiName("At donor location"), exact: true }).click();
+    await rider.getByRole("button", { name: uiName("I have arrived at pickup"), exact: true }).click();
     await phase(rider, "at_pickup");
     const pickupCode = await issue(r, "PICKUP");
     await rider.getByLabel(uiName("Six-digit handover code"), { exact: true }).fill(pickupCode);
     await rider.getByRole("button", { name: uiName("Confirm pickup"), exact: true }).click();
     await Promise.all([phase(rider, "cargo_loaded"), phase(donor, "pickup"), phase(ngo, "pickup")]);
-    await rider.getByRole("button", { name: uiName("Travelling to NGO"), exact: true }).click();
+    await rider.getByRole("button", { name: uiName("Start delivery trip"), exact: true }).click();
     await phase(rider, "en_route_dropoff");
     await Promise.all([donor, ngo].map((page) => panel(page).getByRole("heading", { name: uiName("Travelling to NGO"), exact: true }).waitFor({ timeout: 15_000 })));
 
@@ -3176,4 +3176,22 @@ test("closed collection windows cannot be published or claimed even before the f
 test("browser NGO discovery preserves filters, explains matches and confirms claims across screen sizes", {skip:process.env.RUN_DISCOVERY_BROWSER!=="1"}, async () => {
   const {runDiscoveryBrowserChecks}=await import("./discovery-browser.mjs");
   await runDiscoveryBrowserChecks({prisma,request,login,newDonation,mapAddress,mapDonation,seedUser,fixturePassword,base});
+});
+
+test("claim coordination reports saved receipt and distribution metadata without exposing handover secrets", async () => {
+  const rescue=await deliveredRescue();
+  async function details(){return (await jsonResult('/api/claims?id='+rescue.claim.id,{cookie:rescue.ngo})).details;}
+  assert.equal((await details()).receiptRecorded,false);
+  await saveReceipt(rescue);assert.equal((await details()).receiptRecorded,true);assert.equal((await details()).distributionRecorded,false);
+  assert.equal((await distribute(rescue,await distributionInput(rescue))).status,201);
+  assert.equal((await details()).distributionRecorded,true);
+  const mission=await jsonResult('/api/missions?claimId='+rescue.claim.id,{cookie:rescue.volunteer});
+  assert.equal(mission.mission.volunteerProfileId,(await prisma.volunteerProfile.findUniqueOrThrow({where:{userId:rescue.volunteerUser.id}})).id);
+  assert.equal(mission.mission.pickupWindowEnd,rescue.donation.pickup.windowEnd);
+  assert.equal(mission.mission.pickupOtp,'');assert.equal(mission.mission.dropoffOtp,'');
+});
+
+test("browser rescue coordination supports responsive guidance, code safety and the complete handover journey", {skip:process.env.RUN_COORDINATION_BROWSER!=="1",timeout:180_000}, async () => {
+  const {runCoordinationBrowserChecks}=await import('./coordination-browser.mjs');
+  await runCoordinationBrowserChecks({base,prisma,request,login,assignedRescue,issue,handover,saveReceipt,distribute,distributionInput,reportIncident});
 });

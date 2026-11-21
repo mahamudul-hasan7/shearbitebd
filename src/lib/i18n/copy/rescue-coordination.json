@@ -1,0 +1,338 @@
+[
+  [
+    "Next in this rescue",
+    "এই উদ্ধারকাজে পরের ধাপ"
+  ],
+  [
+    "Saved workflow",
+    "সংরক্ষিত অগ্রগতি"
+  ],
+  [
+    "Updates are paused. Refresh before continuing.",
+    "নতুন তথ্য আসা বন্ধ আছে। এগোনোর আগে রিফ্রেশ করুন।"
+  ],
+  [
+    "Rescue on hold",
+    "উদ্ধারকাজ স্থগিত আছে"
+  ],
+  [
+    "An administrator must review the incident before this rescue can continue.",
+    "আবার কাজ শুরুর আগে অ্যাডমিনকে সমস্যাটি পর্যালোচনা করতে হবে।"
+  ],
+  [
+    "Rescue closed",
+    "এই উদ্ধারকাজ বন্ধ হয়েছে"
+  ],
+  [
+    "This rescue cannot continue. Its saved checkpoints remain available.",
+    "এই উদ্ধারকাজ আর এগোনো যাবে না। আগের সংরক্ষিত ধাপগুলো দেখা যাবে।"
+  ],
+  [
+    "Distribution recorded",
+    "বিতরণের তথ্য সংরক্ষিত হয়েছে"
+  ],
+  [
+    "The NGO has saved the distribution record. This food journey is complete.",
+    "এনজিও বিতরণের তথ্য সংরক্ষণ করেছে। এই খাবারের উদ্ধারযাত্রা শেষ হয়েছে।"
+  ],
+  [
+    "The handover is complete. The NGO records receipt and distribution next; delivery alone does not count as meals served.",
+    "হস্তান্তর শেষ হয়েছে। এবার এনজিও খাবার গ্রহণ ও বিতরণের তথ্য দেবে; শুধু পৌঁছে দিলেই খাবার পরিবেশনের হিসাবে যোগ হয় না।"
+  ],
+  [
+    "Record the distribution",
+    "বিতরণের তথ্য দিন"
+  ],
+  [
+    "The delivery receipt is saved. Record the actual meals and recipients when food is distributed.",
+    "খাবার গ্রহণের তথ্য সংরক্ষিত আছে। বিতরণ হলে প্রকৃত খাবারের পরিমাণ ও প্রাপকের তথ্য দিন।"
+  ],
+  [
+    "Check the delivery",
+    "পৌঁছে দেওয়া খাবার যাচাই করুন"
+  ],
+  [
+    "Record the received quantity and condition before recording distribution.",
+    "বিতরণের তথ্য দেওয়ার আগে কত খাবার পেয়েছেন ও তার অবস্থা লিখুন।"
+  ],
+  [
+    "Complete the delivery handover",
+    "খাবার পৌঁছে দেওয়ার হস্তান্তর শেষ করুন"
+  ],
+  [
+    "At the NGO, enter its six-digit delivery code after handing over the food.",
+    "এনজিওকে খাবার বুঝিয়ে দিয়ে তাদের ছয় সংখ্যার ডেলিভারি কোড দিন।"
+  ],
+  [
+    "Continue to the receiving NGO",
+    "খাবার গ্রহণকারী এনজিওর দিকে রওনা দিন"
+  ],
+  [
+    "Pickup is verified. Keep the food in its declared storage conditions during transport.",
+    "সংগ্রহ যাচাই হয়েছে। পরিবহনের সময় ঘোষিত সংরক্ষণের শর্ত মেনে চলুন।"
+  ],
+  [
+    "Complete the pickup handover",
+    "খাবার সংগ্রহের হস্তান্তর শেষ করুন"
+  ],
+  [
+    "Check the food with the donor, then enter the donor's six-digit pickup code.",
+    "দাতার সঙ্গে খাবার দেখে নিন, তারপর তাঁর ছয় সংখ্যার সংগ্রহের কোড দিন।"
+  ],
+  [
+    "Confirm arrival at the donor",
+    "দাতার কাছে পৌঁছানো নিশ্চিত করুন"
+  ],
+  [
+    "Use the saved pickup address and contact the donor if you need directions.",
+    "সংরক্ষিত সংগ্রহের ঠিকানা ব্যবহার করুন। পথ জানতে প্রয়োজনে দাতাকে ফোন করুন।"
+  ],
+  [
+    "Start your pickup trip",
+    "খাবার সংগ্রহের জন্য রওনা দিন"
+  ],
+  [
+    "Review the collection address, deadline and food storage before leaving.",
+    "রওনা দেওয়ার আগে সংগ্রহের ঠিকানা, শেষ সময় ও সংরক্ষণের শর্ত দেখে নিন।"
+  ],
+  [
+    "Prepare for the delivery",
+    "খাবার গ্রহণের প্রস্তুতি নিন"
+  ],
+  [
+    "The volunteer has collected the food. Generate the delivery code when the food arrives.",
+    "ভলান্টিয়ার খাবার সংগ্রহ করেছেন। খাবার পৌঁছালে ডেলিভারি কোড তৈরি করুন।"
+  ],
+  [
+    "The food is with the volunteer. The receiving NGO verifies the delivery next.",
+    "খাবার এখন ভলান্টিয়ারের কাছে। পৌঁছালে গ্রহণকারী এনজিও হস্তান্তর যাচাই করবে।"
+  ],
+  [
+    "Prepare the pickup handover",
+    "খাবার বুঝিয়ে দেওয়ার প্রস্তুতি নিন"
+  ],
+  [
+    "Check the food with the assigned volunteer. Generate the pickup code when handing it over.",
+    "নির্ধারিত ভলান্টিয়ারের সঙ্গে খাবার দেখে নিন। বুঝিয়ে দেওয়ার সময় সংগ্রহের কোড তৈরি করুন।"
+  ],
+  [
+    "Coordinate with the volunteer",
+    "ভলান্টিয়ারের সঙ্গে সমন্বয় করুন"
+  ],
+  [
+    "The donor provides the pickup code. You will provide a separate code at delivery.",
+    "সংগ্রহের কোড দাতা দেবেন। পৌঁছে দেওয়ার সময় আপনি আলাদা একটি কোড দেবেন।"
+  ],
+  [
+    "Waiting for a volunteer",
+    "ভলান্টিয়ারের অপেক্ষায়"
+  ],
+  [
+    "A verified volunteer must accept this rescue from the dispatch list.",
+    "যাচাই করা ভলান্টিয়ারকে ডেলিভারির তালিকা থেকে এই উদ্ধারকাজ নিতে হবে।"
+  ],
+  [
+    "Waiting for an NGO claim",
+    "এনজিওর ক্লেইমের অপেক্ষায়"
+  ],
+  [
+    "Your published food can be reserved by an eligible NGO before collection closes.",
+    "সংগ্রহের সময় শেষ হওয়ার আগে উপযুক্ত এনজিও প্রকাশিত খাবারটি বরাদ্দ নিতে পারবে।"
+  ],
+  [
+    "Publish the donation when its food and collection details are ready.",
+    "খাবার ও সংগ্রহের তথ্য প্রস্তুত হলে অনুদানটি প্রকাশ করুন।"
+  ],
+  [
+    "Address not available. Coordinate by phone.",
+    "ঠিকানা পাওয়া যাচ্ছে না। ফোনে যোগাযোগ করে জেনে নিন।"
+  ],
+  [
+    "Phone contact is not available for this account.",
+    "এই অ্যাকাউন্টের ফোন নম্বর পাওয়া যাচ্ছে না।"
+  ],
+  [
+    "Claim coordination",
+    "ক্লেইম সমন্বয়"
+  ],
+  [
+    "Follow the saved rescue progress and arrange the next handover.",
+    "সংরক্ষিত অগ্রগতি দেখে পরের হস্তান্তরের ব্যবস্থা করুন।"
+  ],
+  [
+    "Showing saved claim details. Refresh to reconnect before taking action.",
+    "আগের সংরক্ষিত তথ্য দেখানো হচ্ছে। কাজ করার আগে রিফ্রেশ করে নতুন তথ্য নিন।"
+  ],
+  [
+    "Claim details could not load. Try again.",
+    "ক্লেইমের তথ্য লোড হয়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Claim reference",
+    "ক্লেইম নম্বর"
+  ],
+  [
+    "Open delivery code",
+    "ডেলিভারি কোড খুলুন"
+  ],
+  [
+    "Delivery destination",
+    "খাবার পৌঁছে দেওয়ার ঠিকানা"
+  ],
+  [
+    "Rescue essentials",
+    "উদ্ধারকাজের প্রয়োজনীয় তথ্য"
+  ],
+  [
+    "Collection closes",
+    "সংগ্রহের শেষ সময়"
+  ],
+  [
+    "Route checkpoints are reported by the volunteer. Live GPS and arrival estimates are not measured.",
+    "পথের ধাপগুলো ভলান্টিয়ার নিজে জানান। সরাসরি GPS বা পৌঁছানোর আনুমানিক সময় মাপা হচ্ছে না।"
+  ],
+  [
+    "Volunteer assignment",
+    "ভলান্টিয়ার নিয়োগ"
+  ],
+  [
+    "Map & saved handover locations",
+    "ম্যাপ ও হস্তান্তরের সংরক্ষিত ঠিকানা"
+  ],
+  [
+    "Issues & rescue history",
+    "সমস্যা ও উদ্ধারকাজের ইতিহাস"
+  ],
+  [
+    "Release this reservation",
+    "এই খাবারের বরাদ্দ ছেড়ে দিন"
+  ],
+  [
+    "Releasing closes this claim and lets another NGO reserve food while its collection window remains open.",
+    "ছেড়ে দিলে এই ক্লেইম বন্ধ হবে। সংগ্রহের সময় বাকি থাকলে অন্য এনজিও খাবারটি বরাদ্দ নিতে পারবে।"
+  ],
+  [
+    "The claim was released. Food can be reserved again while collection remains open.",
+    "ক্লেইম ছেড়ে দেওয়া হয়েছে। সংগ্রহের সময় বাকি থাকলে খাবার আবার বরাদ্দ নেওয়া যাবে।"
+  ],
+  [
+    "Share this code only when handing over the food to the assigned volunteer.",
+    "নির্ধারিত ভলান্টিয়ারকে খাবার বুঝিয়ে দেওয়ার সময়ই এই কোড দিন।"
+  ],
+  [
+    "Checking handover status…",
+    "হস্তান্তরের অবস্থা দেখা হচ্ছে…"
+  ],
+  [
+    "Refresh code status",
+    "কোডের নতুন অবস্থা দেখুন"
+  ],
+  [
+    "Code valid for {0}:{1}",
+    "কোডের সময় বাকি {0}:{1}"
+  ],
+  [
+    "The code is not currently usable. Refresh its status or generate a replacement when available.",
+    "কোডটি এখন ব্যবহারযোগ্য নয়। নতুন অবস্থা দেখুন বা সুযোগ হলে নতুন কোড তৈরি করুন।"
+  ],
+  [
+    "This handover is not ready. Check the rescue stage and collection deadline.",
+    "এই হস্তান্তর এখন প্রস্তুত নয়। উদ্ধারকাজের ধাপ ও সংগ্রহের শেষ সময় দেখুন।"
+  ],
+  [
+    "Replacement available in {0} seconds",
+    "আর {0} সেকেন্ড পর নতুন কোড তৈরি করা যাবে"
+  ],
+  [
+    "{0} verification attempts remain",
+    "আর {0} বার কোড যাচাই করা যাবে"
+  ],
+  [
+    "Codes are single use and valid for up to 10 minutes, within the donor's handover deadline.",
+    "কোড একবার ব্যবহার করা যায়। দাতার হস্তান্তরের সময়সীমার মধ্যে সর্বোচ্চ ১০ মিনিট কার্যকর থাকে।"
+  ],
+  [
+    "Rescue tracking",
+    "উদ্ধারকাজের অগ্রগতি"
+  ],
+  [
+    "Saved checkpoints show the same food journey across donor, NGO and volunteer accounts.",
+    "দাতা, এনজিও ও ভলান্টিয়ারের অ্যাকাউন্টে সংরক্ষিত ধাপগুলো একই খাবারের অগ্রগতি দেখায়।"
+  ],
+  [
+    "Loading rescue tracking…",
+    "উদ্ধারকাজের তথ্য লোড হচ্ছে…"
+  ],
+  [
+    "Showing saved tracking details. Refresh to reconnect.",
+    "আগের সংরক্ষিত অগ্রগতি দেখানো হচ্ছে। নতুন তথ্যের জন্য রিফ্রেশ করুন।"
+  ],
+  [
+    "Rescue tracking could not load. Try again.",
+    "উদ্ধারকাজের তথ্য লোড হয়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Donation reference",
+    "অনুদান নম্বর"
+  ],
+  [
+    "{0} estimated meals",
+    "আনুমানিক {0} জনের খাবার"
+  ],
+  [
+    "Receiving NGO",
+    "খাবার গ্রহণকারী এনজিও"
+  ],
+  [
+    "Start pickup trip",
+    "সংগ্রহের জন্য রওনা দিন"
+  ],
+  [
+    "I have arrived at pickup",
+    "সংগ্রহের ঠিকানায় পৌঁছেছি"
+  ],
+  [
+    "Start delivery trip",
+    "খাবার পৌঁছে দিতে রওনা দিন"
+  ],
+  [
+    "One clear next step, with server-verified pickup and delivery handovers.",
+    "পরের কাজ সহজে দেখুন। সংগ্রহ ও পৌঁছে দেওয়ার হস্তান্তর সার্ভারে যাচাই হয়।"
+  ],
+  [
+    "Mission updates could not load. Refresh to reconnect before continuing.",
+    "উদ্ধারকাজের নতুন তথ্য আসেনি। এগোনোর আগে রিফ্রেশ করুন।"
+  ],
+  [
+    "No assigned mission is available for this account.",
+    "এই অ্যাকাউন্টে কোনো নির্ধারিত উদ্ধারকাজ পাওয়া যায়নি।"
+  ],
+  [
+    "Navigate to NGO",
+    "এনজিওতে যাওয়ার পথ দেখুন"
+  ],
+  [
+    "Navigate to pickup",
+    "সংগ্রহের ঠিকানায় যাওয়ার পথ দেখুন"
+  ],
+  [
+    "Ask the donor for the code when you receive the food.",
+    "খাবার হাতে নেওয়ার সময় দাতার কাছ থেকে কোড নিন।"
+  ],
+  [
+    "Ask the NGO for its delivery code when you hand over the food.",
+    "খাবার বুঝিয়ে দেওয়ার সময় এনজিওর কাছ থেকে ডেলিভারি কোড নিন।"
+  ],
+  [
+    "A code is single use. For an expired or locked code, ask its owner for a replacement.",
+    "একটি কোড একবার ব্যবহার করা যায়। মেয়াদ শেষ হলে বা লক হয়ে গেলে যিনি তৈরি করেছেন তাঁর কাছে নতুন কোড চান।"
+  ],
+  [
+    "Delivery destination pending",
+    "পৌঁছে দেওয়ার ঠিকানা এখনও পাওয়া যায়নি"
+  ],
+  [
+    "Call",
+    "ফোন করুন"
+  ]
+]

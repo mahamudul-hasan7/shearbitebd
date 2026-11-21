@@ -2,6 +2,26 @@
 
 Updated: 21 November 2026 (Asia/Dhaka)
 
+## Rescue coordination across donor, NGO and volunteer
+
+- The three operational screens share next-step guidance, responsive contact cards
+  and saved checkpoint presentation. Volunteer route actions precede phase-specific
+  OTP entry; mission navigation highlights the current mission and keeps duty controls
+  off the handover workspace. Maps and issue history open on demand.
+- NGO claim responses include recorded receipt/distribution flags. Receipt comes
+  before actual distribution, while volunteer completion means verified delivery.
+  No GPS/ETA, safety verification or beneficiary impact is fabricated.
+- Owner code panels poll abortable status requests, serialize issuance, count down
+  server expiry and hide a replaced/used/blocked code. Replacement identity compares
+  the server reissue timestamp, including codes clipped to the same deadline.
+- Claim snapshots are bound to the account and claim. Donor tracking selects a
+  relevant current claim and reads donation/claim state from its coordination detail,
+  excluding cancelled history from relisted food. Existing server authorization,
+  handover limits, locks and incident gates are unchanged.
+- [Bangla coordination guide](RESCUE_COORDINATION_BN.md) describes the full demo;
+  `npm run test:coordination:browser` covers 24 bilingual layouts plus real handovers,
+  receipt, distribution, replacement codes, stale recovery and incident holds.
+
 ## NGO discovery and explainable recommendations
 
 - List/map share responsive controls and URL-backed filters. Recommendations use

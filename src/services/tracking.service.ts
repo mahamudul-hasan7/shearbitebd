@@ -1,3 +1,4 @@
+import { selectTrackingClaim } from "@/lib/rescue-next-step";
 import { incidentService } from "@/services/incident.service";
 import type { TransportMethod } from "@/lib/constants/domain";
 import type { MockServiceOptions } from "@/services/shared";
@@ -15,9 +16,10 @@ export const trackingService = {
       apiRequest<{ claims: Claim[] }>(`/api/claims?donationId=${encodeURIComponent(id)}`, { signal: options?.signal }),
       incidentService.listForDonation(id, viewer, options),
     ]);
-    const claim = claims.claims[0];
+    let claim = selectTrackingClaim(claims.claims, data.donation.status);
     let details: (ClaimCoordinationDetails & { receiverNgo?: TrackingNGOSummary }) | undefined;
     if (claim) details = (await apiRequest<{ details: ClaimCoordinationDetails & { receiverNgo?: TrackingNGOSummary } }>(`/api/claims?id=${encodeURIComponent(claim.id)}`, { signal: options?.signal })).details;
-    return { donation: data.donation, claim, deliveryAddress: details?.deliveryAddress, receiverNgo: details?.receiverNgo, incidents, volunteer: details?.volunteer ? { id: details.volunteer.id, name: details.volunteer.displayName, phone: details.volunteer.phone, transportMethod: details.volunteer.transportMethod, completedRescues: details.volunteer.completedRescues } : undefined };
+    if (details) claim = details.claim;
+    return { donation: details?.donation || data.donation, claim, deliveryAddress: details?.deliveryAddress, receiverNgo: details?.receiverNgo, incidents, volunteer: details?.volunteer ? { id: details.volunteer.id, name: details.volunteer.displayName, phone: details.volunteer.phone, transportMethod: details.volunteer.transportMethod, completedRescues: details.volunteer.completedRescues } : undefined };
   },
 };
