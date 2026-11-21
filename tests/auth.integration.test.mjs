@@ -3160,3 +3160,20 @@ test("browser verification documents support registration, preview and review on
   const { runVerificationBrowserChecks } = await import("./verification-browser.mjs");
   await runVerificationBrowserChecks({ prisma, request, login, base });
 });
+
+test("closed collection windows cannot be published or claimed even before the food deadline", async () => {
+  const donor = (await login()).cookie, ngo = (await login("NGO")).cookie;
+  const valid = await newDonation(donor);
+  assert.equal(valid.response.status, 201);
+  const invalid = await newDonation(donor, { pickup: { ...valid.payload.pickup, windowStart: new Date(Date.now()-120000).toISOString(), windowEnd: new Date(Date.now()-60000).toISOString() }, preparationTime: new Date(Date.now()-180000).toISOString() });
+  assert.equal(invalid.response.status, 422);
+  await prisma.donation.update({where:{id:valid.body.donation.id},data:{windowEnd:new Date(Date.now()-1000)}});
+  const response = await request("/api/claims", {cookie:ngo,method:"POST",body:{donationId:valid.body.donation.id}});
+  assert.equal(response.status,409);
+  assert.equal(await prisma.claim.count({where:{donationId:valid.body.donation.id}}),0);
+});
+
+test("browser NGO discovery preserves filters, explains matches and confirms claims across screen sizes", {skip:process.env.RUN_DISCOVERY_BROWSER!=="1"}, async () => {
+  const {runDiscoveryBrowserChecks}=await import("./discovery-browser.mjs");
+  await runDiscoveryBrowserChecks({prisma,request,login,newDonation,mapAddress,mapDonation,seedUser,fixturePassword,base});
+});

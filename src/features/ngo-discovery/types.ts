@@ -1,6 +1,12 @@
-import type { DietaryType, FoodCategory, PriorityLevel, StorageCondition } from "@/lib/constants/domain";
+import type {
+  DietaryType,
+  FoodCategory,
+  PriorityLevel,
+  StorageCondition,
+} from "@/lib/constants/domain";
 
-export type DiscoverySort = "RECOMMENDED" | "NEAREST" | "DEADLINE" | "QUANTITY";
+export type DiscoverySort =
+  "RECOMMENDED" | "NEAREST" | "DEADLINE" | "QUANTITY" | "RECENT";
 export type DiscoveryMode = "list" | "map";
 
 export interface DiscoveryFilters {

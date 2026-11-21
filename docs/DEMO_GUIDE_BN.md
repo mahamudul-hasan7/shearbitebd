@@ -29,6 +29,9 @@ Admin dashboard থেকে account verification এবং operational report r
    Admin-এর Accounts থেকে ফাইল preview করে approve/reject করুন।
    Account approval কোনো food safety certificate নয়।
 
+খাবার খোঁজা, filter, map ও claim confirmation দেখানোর জন্য
+[NGO discovery নির্দেশনা](NGO_DISCOVERY_BN.md) অনুসরণ করুন।
+
 ## ২. Location ও খাবার প্রকাশ — donor
 
 1. `/donor/addresses` থেকে ঠিকানার `Set location pin` খুলুন। Map-এ click/drag,

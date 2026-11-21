@@ -2,6 +2,22 @@
 
 Updated: 21 November 2026 (Asia/Dhaka)
 
+## NGO discovery and explainable recommendations
+
+- List/map share responsive controls and URL-backed filters. Recommendations use
+  accepted categories, actual collection deadlines and measured straight-line distance;
+  unknown distance is never guessed. Cards explain verification/category/window checks
+  without invented match percentages or rewriting donor-authored food descriptions.
+- Collection time uses the earlier of pickup-window end and food safe deadline.
+  Closed windows disappear locally without reload, cannot be newly published and
+  cannot be reserved through the claim API. Listing refresh failures preserve the
+  last good results with an explicit retry notice.
+- A compact claim confirmation shows quantity, timing, storage and allergens. Client
+  locking prevents duplicate submissions; a lost response reconciles with owned
+  active claims. Existing server transaction locks retain competition and privacy rules.
+- See [Bangla discovery guide](NGO_DISCOVERY_BN.md); `npm run test:discovery:browser`
+  covers the bilingual list/map layout and operational flow.
+
 ## Private account verification documents
 
 - NGO and volunteer registration completion includes authenticated document upload;

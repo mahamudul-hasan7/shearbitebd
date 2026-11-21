@@ -135,6 +135,7 @@ export async function reserveDonation(donationId: string, user: AuthAccount, foo
     const donation = await tx.donation.findUnique({ where: { id: donationId }, include: { pickupAddress: true } });
     if (!donation) throw new ApiError(404, "Donation not found.");
     if (donation.status !== "AVAILABLE" || donation.safePickupDeadline.getTime() <= Date.now()) throw new ApiError(409, "This food is already claimed, expired or unavailable.");
+    if (donation.windowEnd.getTime() <= Date.now()) throw new ApiError(409, "The collection window has closed. Choose another donation.");
     const ngo = await tx.nGOProfile.findUniqueOrThrow({ where: { id: user.ngoProfileId } });
     if (ngo.verificationStatus !== "VERIFIED") throw new ApiError(403, "NGO verification is pending. Contact the project administrator.");
     if (!ngo.acceptedFoodCategories.includes(donation.category)) throw new ApiError(422, "This category is not accepted by your NGO.");

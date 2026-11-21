@@ -5,7 +5,17 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { UiText } from "@/lib/i18n/ui-text-node";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import { ClaimConfirmation } from "./claim-confirmation";
+import {
+  availableForDiscovery,
+  pickupDeadline,
+  parseDiscoveryFilters,
+  discoveryQuery,
+} from "./discovery-model";
+import { useDiscoveryClock } from "./use-discovery-clock";
 import { DonationPhoto } from "@/components/donation/donation-photo";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import {
@@ -39,78 +49,60 @@ import {
   formatDonationDateTimeBn,
 } from "@/features/donations/donation-presentation";
 import { useSavedDonations } from "@/features/ngo-discovery/use-saved-donations";
-import { NGO_PROFILE_ID, NGO_VIEWER } from "@/features/ngo-dashboard/use-ngo-dashboard";
-import { DIETARY_TYPE_LABELS, FOOD_CATEGORY_LABELS, STORAGE_CONDITION_LABELS } from "@/lib/constants/domain";
-import { DonationStatus } from "@/lib/constants/statuses";
+import {
+  NGO_PROFILE_ID,
+  NGO_VIEWER,
+} from "@/features/ngo-dashboard/use-ngo-dashboard";
+import {
+  DIETARY_TYPE_LABELS,
+  FOOD_CATEGORY_LABELS,
+  STORAGE_CONDITION_LABELS,
+} from "@/lib/constants/domain";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ROUTES } from "@/lib/routes";
-import { asyncState, claimService, discoveryService, toServiceError, type AsyncState, type NGODiscoveryItem } from "@/services";
-
-const TITLE_TRANSLATIONS: Record<string, string> = {
-  "Rice, chicken curry, and vegetables": "ভাত, মুরগির মাংসের তরকারি ও তাজা সবজি",
-  "Packaged bread and snack boxes": "প্যাকেটজাত রুটি ও নিরামিষ স্ন্যাক্স বক্স",
-  "Seasonal fruit and vegetables": "তাজা মৌসুমি ফলমূল ও কাঁচা শাকসবজি",
-  "Warm vegetable biryani with egg": "গরম ভেজিটেবল বিরিয়ানি ও সিদ্ধ ডিম",
-  "Fresh bakery buns and rolls": "তাজা বেকারি বান ও সুস্বাদু রোলস",
-  "Sealed pantry rescue packs": "সিল্ড খাদ্যশস্য, চাল, মসুর ডাল ও তেল প্যাক",
-  "Fresh fruit and vegetable crates": "তাজা ফলমূল ও মৌসুমী শাকসবজির ক্র্যাট",
-  "Chilled yoghurt cups": "হিমায়িত মিষ্টি ও টক দইয়ের কাপ",
-  "Fresh buffet meal boxes": "বুফে লাঞ্চ মিল বক্স (চিকেন, রাইস ও ডাল)",
-  "Mutton kacchi biryani and chicken roast portions": "খাসির ঐতিহ্যবাহী কাচ্চি বিরিয়ানি ও চিকেন রোস্ট",
-  "Bhuna khichuri, boiled eggs, and vegetable curry": "গরম ভুনা খিচুড়ি, ডিম ভুনা ও মিক্সড সবজি",
-  "Fresh chicken patties, vegetable rolls, and sweet buns": "তাজা চিকেন প্যাটিস, ভেজিটেবল রোল ও মিষ্টি বান",
-  "Farm fresh carrots, potatoes, tomatoes, and ripe bananas": "তাজা গাজর, আলু, টমেটো ও পাকা কলার ক্র্যাট",
-  "Steamed aromatic rice, lentils, and fresh fish curry": "সুগন্ধি ভাত, ঘন মসুর ডাল ও তাজা রুই মাছের ঝোল",
-};
-
-const DESCRIPTION_TRANSLATIONS: Record<string, string> = {
-  "Freshly prepared lunch portions remaining after the campus service window.":
-    "ক্যাম্পাস সার্ভিসের পর স্বাস্থ্যসম্মত হট-বক্সে সংরক্ষিত তাজা দুপুরের খাবার। শতভাগ পুষ্টিকর ও হালাল।",
-  "Individually packed buns, sliced bread, and vegetarian snack boxes from a campus event.":
-    "ক্যাম্পাস ইভেন্ট শেষে উদ্বৃত্ত অক্ষত প্যাকেটজাত রুটি ও নিরামিষ স্ন্যাক্স। দ্রুত পিকআপের জন্য প্রস্তুত।",
-  "Uncut produce sorted into reusable crates for community distribution.":
-    "রি-ইউজেবল ক্র্যাটে সংরক্ষিত তাজা শাকসবজি ও ফল, যা সুবিধাবঞ্চিতদের মাঝে বিতরণের জন্য আদর্শ।",
-  "Sealed rice, lentils, cooking oil, and spice packs prepared for community meal programs.":
-    "কমিউনিটি মিলের জন্য প্রস্তুতকৃত অক্ষত চাল, ডাল, ভোজ্যতেল ও মশলার সিল্ড খাদ্যপ্যাক।",
-  "Sorted uncut seasonal produce in reusable crates for same-day community distribution.":
-    "একই দিনে বিতরণের জন্য পুনঃব্যবহারযোগ্য ক্র্যাটে সংরক্ষিত তাজা মৌসুমি ফলমূল ও শাকসবজি।",
-  "Factory-sealed yoghurt cups held under refrigeration and ready for quick collection.":
-    "রেফ্রিজারেশনে সংরক্ষিত ফ্যাক্টরি-সিল্ড তাজা দইয়ের কাপ, কোল্ড ক্যারিয়ারে দ্রুত সংগ্রহের জন্য প্রস্তুত।",
-  "Covered rice, grilled chicken, lentils, and mixed vegetables packed after a corporate lunch service.":
-    "করপোরেট লাঞ্চ সার্ভিসের পর হট-হোল্ডিং কন্টেইনারে সিল্ড সুস্বাদু গ্রিল্ড চিকেন, পোলাও ও সবজি।",
-  "Freshly prepared wedding reception surplus. Kept in food-grade insulated hot boxes at >65°C. Complete meals with boiled eggs.":
-    "বিবাহোত্তর সংবর্ধনা অনুষ্ঠানের পর ৬৫°C এর অধিক তাপে ইনসুলেটেড হট-বক্সে সংরক্ষিত প্রিমিয়াম কাচ্চি বিরিয়ানি ও রোস্ট।",
-  "Surplus lunch from university seminar hall. Sealed in high-grade catering trays, warm and fresh.":
-    "সেমিনার হল থেকে উদ্বৃত্ত গরম ও তাজা ভুনা খিচুড়ি ও ডিমের ক্যাটারিং ট্রে। সম্পূর্ণ স্বাস্থ্যসম্মত ও সিল্ড।",
-  "Evening batch bakery products packaged in individual food-grade wrapping from today's afternoon baking.":
-    "আজ বিকেলের বেকিং সেশন থেকে প্রস্তুত তাজা চিকেন প্যাটিস ও রোল। ফুড-গ্রেড র্যাপিংয়ে সিল করা।",
-  "Wholesale farm surplus produce crates suitable for direct distribution to orphanage meal programs.":
-    "এতিমখানা ও আশ্রয়কেন্দ্রের রান্নাঘরের জন্য সরাসরি খামার থেকে সংগৃহীত তাজা শাকসবজি ও ফলমূল।",
-  "Hygienically covered dinner meal portions remaining after cafeteria service window.":
-    "ক্যাফেটেরিয়া ডিনার সার্ভিসের পর স্বাস্থ্যসম্মত উপায়ে সংরক্ষিত গরম ভাত, ডাল ও তাজা মাছের তরকারি।",
-};
+import {
+  asyncState,
+  claimService,
+  discoveryService,
+  toServiceError,
+  type AsyncState,
+  type NGODiscoveryItem,
+} from "@/services";
 
 const SAFETY_CHECKS = [
-  { key: "freshlyPrepared", label: "তাজা প্রস্তুতকৃত ও অনুমোদিত" },
-  { key: "properlyCovered", label: "ফুড-গ্রেড ঢাকনা দিয়ে সঠিকভাবে সিল্ড" },
-  { key: "noVisibleSpoilage", label: "কোনো প্রকার নষ্ট বা গন্ধহীনতা নিশ্চিত" },
-  { key: "storedAccordingToDeclaration", label: "ঘোষিত তাপমাত্রায় সংরক্ষিত" },
-  { key: "allergensDisclosed", label: "অ্যালার্জেন ও উপাদান ডিক্লেয়ার করা" },
-  { key: "pickupDeadlineConfirmed", label: "নিরাপদ পিকআপ সময়সীমা নিশ্চিত" },
-  { key: "donorAccuracyConfirmed", label: "দাতা প্রতিষ্ঠানের সত্যতা যাচাইকৃত" },
+  { key: "freshlyPrepared", label: "Food declared freshly prepared" },
+  { key: "properlyCovered", label: "Covered for collection" },
+  { key: "noVisibleSpoilage", label: "No visible spoilage declared" },
+  { key: "storedAccordingToDeclaration", label: "Stored as declared" },
+  { key: "allergensDisclosed", label: "Allergens disclosed" },
+  { key: "pickupDeadlineConfirmed", label: "Collection deadline confirmed" },
+  { key: "donorAccuracyConfirmed", label: "Donor confirmed these details" },
 ] as const;
 
-function packagingLabel(condition: NGODiscoveryItem["donation"]["foodCondition"]) {
-  if (condition === "PACKAGED") return "ফ্যাক্টরি বা দাতা কর্তৃক সিল্ড প্যাকেটজাত";
-  if (condition === "SAME_DAY") return "একই দিনে প্রস্তুতকৃত ও সিল্ড কভার্ড খাবার";
-  return "তাজা রান্না করা ও ইনসুলেটেড পাত্রে রাখা";
+function packagingLabel(
+  condition: NGODiscoveryItem["donation"]["foodCondition"],
+) {
+  if (condition === "PACKAGED") return "Packaged food";
+  if (condition === "SAME_DAY") return "Prepared the same day";
+  return "Freshly prepared food";
 }
 
 export function NGODonationDetail({ donationId }: { donationId: string }) {
   const tx = useUiText();
   const { language } = useLanguage();
   const isBn = language === "bn";
-  const [state, setState] = useState<AsyncState<NGODiscoveryItem>>(() => asyncState.loading());
+  const now = useDiscoveryClock();
+  const { session } = useMockAuth();
+  const searchParams = useSearchParams();
+  const query = discoveryQuery(
+    parseDiscoveryFilters(new URLSearchParams(searchParams.toString())),
+  );
+  const backHref = ROUTES.ngo.discover + (query ? `?${query}` : "");
+  const [confirming, setConfirming] = useState(false);
+  const claimLock = useRef(false);
+  const [state, setState] = useState<AsyncState<NGODiscoveryItem>>(() =>
+    asyncState.loading(),
+  );
   const [retryKey, setRetryKey] = useState(0);
   const [claiming, setClaiming] = useState(false);
   const [claimId, setClaimId] = useState<string>();
@@ -120,28 +112,65 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
   useEffect(() => {
     const controller = new AbortController();
     discoveryService
-      .getById(donationId, NGO_PROFILE_ID, NGO_VIEWER, { signal: controller.signal })
+      .getById(donationId, NGO_PROFILE_ID, NGO_VIEWER, {
+        signal: controller.signal,
+      })
       .then((item) => setState(asyncState.success(item)))
       .catch((error: unknown) => {
-        if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error)));
+        if (!controller.signal.aborted)
+          setState(asyncState.error(toServiceError(error)));
       });
     return () => controller.abort();
   }, [donationId, retryKey]);
 
   async function claimDonation() {
     const item = state.data;
-    if (!item || !item.eligibility.eligible) return;
+    if (
+      claimLock.current ||
+      !item ||
+      !item.eligibility.eligible ||
+      !availableForDiscovery(item.donation, Date.now())
+    )
+      return;
+    claimLock.current = true;
     setClaiming(true);
     setClaimError(undefined);
     try {
       const claim = await claimService.create(
-        { donationId, ngoProfileId: NGO_PROFILE_ID, matchScore: item.matchScore },
-        NGO_VIEWER
+        {
+          donationId,
+          ngoProfileId: NGO_PROFILE_ID,
+          matchScore: item.matchScore,
+        },
+        NGO_VIEWER,
       );
       setClaimId(claim.id);
+      setConfirming(false);
     } catch (error: unknown) {
+      // The reservation may have committed before its response was lost.
+      // Reconcile with the authenticated owner's records before offering a retry.
+      try {
+        const existing = (await claimService.list({ donationId })).find(
+          (claim) =>
+            [
+              "RESERVED",
+              "ASSIGNED",
+              "PICKED_UP",
+              "DELIVERED",
+              "DISPUTED",
+            ].includes(claim.status),
+        );
+        if (existing) {
+          setClaimId(existing.id);
+          setConfirming(false);
+          return;
+        }
+      } catch {
+        /* Preserve the original claim error when recovery is unavailable. */
+      }
       setClaimError(toServiceError(error).message);
     } finally {
+      claimLock.current = false;
       setClaiming(false);
     }
   }
@@ -149,19 +178,16 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
   const item = state.data;
   const donation = item?.donation;
   const saved = savedIds.includes(donationId);
-  const canClaim = item?.eligibility.eligible && donation?.status === DonationStatus.AVAILABLE && !claimId;
+  const canClaim = !!(
+    item?.eligibility.eligible &&
+    donation &&
+    now &&
+    availableForDiscovery(donation, now) &&
+    !claimId
+  );
 
-  const title = donation
-    ? isBn
-      ? TITLE_TRANSLATIONS[donation.title] || donation.title
-      : donation.title
-    : "খাদ্য অনুদানের বিবরণ";
-
-  const description = donation
-    ? isBn
-      ? DESCRIPTION_TRANSLATIONS[donation.description] || donation.description
-      : donation.description
-    : "নিরাপত্তা ঘোষণা, খাদ্য সুরক্ষা ও পিকআপ বিবরণ পর্যালোচনা করুন।";
+  const title = donation?.title || tx("Donation details");
+  const description = donation?.description || "";
 
   return (
     <PortalShell
@@ -169,13 +195,19 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
       activeHref={ROUTES.ngo.discover}
       title={title}
       description={
-        isBn ? tx("খাদ্য সুরক্ষা ডিক্লারেশন, এনজিও claim eligibility ও পিকআপ বিবরণ পর্যালোচনা করে রেসকিউ ক্লেইম করুন।") : tx("Review safety declarations, operational fit, and privacy-protected pickup information before claiming.")
+        isBn
+          ? tx(
+              "খাদ্য সুরক্ষা ডিক্লারেশন, এনজিও claim eligibility ও পিকআপ বিবরণ পর্যালোচনা করে রেসকিউ ক্লেইম করুন।",
+            )
+          : tx(
+              "Review safety declarations, operational fit, and privacy-protected pickup information before claiming.",
+            )
       }
-      profileName="Hope Foundation"
-      profileDescription={isBn ? tx("ভেরিফায়েড এনজিও পার্টনার") : tx("Verified NGO")}
+      profileName={session?.displayName || "NGO account"}
+      profileDescription={tx("Food rescue partner")}
       avatarInitials="HF"
       notificationHref={ROUTES.ngo.notifications}
-      backHref={ROUTES.ngo.discover}
+      backHref={backHref}
       backLabel={isBn ? tx("অনুসন্ধান তালিকায় ফিরুন") : tx("Back to discovery")}
     >
       {state.status === "loading" && !item && (
@@ -185,7 +217,11 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
       {state.status === "error" && !item && (
         <EmptyState
           icon={RefreshCw}
-          title={isBn ? tx("খাবারের বিবরণ লোড করা যায়নি") : tx("Donation could not load")}
+          title={
+            isBn
+              ? tx("খাবারের বিবরণ লোড করা যায়নি")
+              : tx("Donation could not load")
+          }
           description={tx(state.error.message)}
           action={
             <div className="flex flex-wrap justify-center gap-2">
@@ -216,12 +252,20 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                 />
                 <div className="absolute inset-x-0 top-0 flex flex-wrap items-center justify-between gap-2 p-4">
                   <StatusBadge status={donation.status} />
-                  <Badge tone={item.eligibility.eligible ? "success" : "warning"}>{item.eligibility.eligible ? tx("Eligible to claim") : tx("Check eligibility")}</Badge>
+                  <Badge
+                    tone={item.eligibility.eligible ? "success" : "warning"}
+                  >
+                    {item.eligibility.eligible
+                      ? tx("Eligible to claim")
+                      : tx("Check eligibility")}
+                  </Badge>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent p-5 pt-20 text-white">
                   <p className="text-lg font-black">{item.donorOrganization}</p>
                   <p className="mt-0.5 text-xs text-white/80">
-                    {isBn ? tx("খাদ্যদাতার ঘোষিত তথ্য") : tx("Donor-declared details")}
+                    {isBn
+                      ? tx("খাদ্যদাতার ঘোষিত তথ্য")
+                      : tx("Donor-declared details")}
                   </p>
                 </div>
               </div>
@@ -229,40 +273,78 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
               <div className="p-5 sm:p-7">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-800 ring-1 ring-inset ring-emerald-600/20">
-                    {isBn ? CATEGORY_LABELS_BN[donation.category] || FOOD_CATEGORY_LABELS[donation.category] : FOOD_CATEGORY_LABELS[donation.category]}
+                    {isBn
+                      ? CATEGORY_LABELS_BN[donation.category] ||
+                        FOOD_CATEGORY_LABELS[donation.category]
+                      : FOOD_CATEGORY_LABELS[donation.category]}
                   </span>
-                  <Badge tone={item.eligibility.eligible ? "success" : "warning"}>
-                    {item.eligibility.eligible ? isBn ? tx("ক্লেইম করার জন্য উপযুক্ত") : tx("Eligible to claim") : isBn ? tx("যোগ্যতা পর্যালোচনা আবশ্যক") : tx("Review eligibility")}
+                  <Badge
+                    tone={item.eligibility.eligible ? "success" : "warning"}
+                  >
+                    {item.eligibility.eligible
+                      ? isBn
+                        ? tx("ক্লেইম করার জন্য উপযুক্ত")
+                        : tx("Eligible to claim")
+                      : isBn
+                        ? tx("যোগ্যতা পর্যালোচনা আবশ্যক")
+                        : tx("Review eligibility")}
                   </Badge>
                 </div>
 
                 <h2 className="mt-4 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
                   {title}
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {description}
+                </p>
 
                 <div className="mt-6">
-                  <RescueClock deadline={donation.safePickupDeadline} />
+                  <RescueClock
+                    deadline={new Date(pickupDeadline(donation)).toISOString()}
+                    compact
+                  />
                 </div>
 
                 <div className="mt-6 grid gap-3 xs:grid-cols-2">
                   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-                    <LiveIcon icon={MapPin} motion="interaction" className="size-5 text-emerald-700" />
+                    <LiveIcon
+                      icon={MapPin}
+                      motion="interaction"
+                      className="size-5 text-emerald-700"
+                    />
                     <p className="mt-2 text-xs font-semibold text-slate-500">
-                      {isBn ? tx("পিকআপ এলাকা ও দূরত্ব") : tx("Approximate pickup")}
+                      {isBn
+                        ? tx("পিকআপ এলাকা ও দূরত্ব")
+                        : tx("Approximate pickup")}
                     </p>
                     <p className="mt-1 font-black text-slate-900">
-                      {donation.pickup.approximateArea} · {donation.pickup.distanceKm === undefined ? tx("দূরত্ব পাওয়া যায়নি") : tx("~{0} km straight line", donation.pickup.distanceKm.toFixed(1))}
+                      {donation.pickup.approximateArea} ·{" "}
+                      {donation.pickup.distanceKm === undefined
+                        ? tx("দূরত্ব পাওয়া যায়নি")
+                        : tx(
+                            "~{0} km straight line",
+                            donation.pickup.distanceKm.toFixed(1),
+                          )}
                     </p>
                   </div>
 
                   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
-                    <LiveIcon icon={PackageOpen} motion="interaction" className="size-5 text-teal-700" />
+                    <LiveIcon
+                      icon={PackageOpen}
+                      motion="interaction"
+                      className="size-5 text-teal-700"
+                    />
                     <p className="mt-2 text-xs font-semibold text-slate-500">
                       {isBn ? tx("উদ্ধারযোগ্য পরিমাণ") : tx("Quantity")}
                     </p>
                     <p className="mt-1 font-black text-slate-900">
-                      {donation.quantity.value} {isBn ? UNIT_LABELS_BN[donation.quantity.unit] || donation.quantity.unit : donation.quantity.unit} · ~{donation.quantity.estimatedMeals} {tx("জনের আহার")}</p>
+                      {donation.quantity.value}{" "}
+                      {isBn
+                        ? UNIT_LABELS_BN[donation.quantity.unit] ||
+                          donation.quantity.unit
+                        : donation.quantity.unit}{" "}
+                      · ~{donation.quantity.estimatedMeals} {tx("জনের আহার")}
+                    </p>
                   </div>
 
                   <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
@@ -281,7 +363,10 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                       {isBn ? tx("সংরক্ষণ তাপমাত্রা") : tx("Storage")}
                     </p>
                     <p className="mt-1 font-black text-slate-900">
-                      {isBn ? STORAGE_LABELS_BN[donation.storageCondition] || donation.storageCondition : STORAGE_CONDITION_LABELS[donation.storageCondition]}
+                      {isBn
+                        ? STORAGE_LABELS_BN[donation.storageCondition] ||
+                          donation.storageCondition
+                        : STORAGE_CONDITION_LABELS[donation.storageCondition]}
                     </p>
                   </div>
                 </div>
@@ -291,19 +376,40 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
 
           <Alert
             tone="info"
-            title={isBn ? tx("দাতা ও পিকআপের গোপনীয়তা সুরক্ষিত") : tx("Pickup privacy is protected")}
+            title={
+              isBn
+                ? tx("দাতা ও পিকআপের গোপনীয়তা সুরক্ষিত")
+                : tx("Pickup privacy is protected")
+            }
             description={
-              isBn ? tx("ক্লেইম নিশ্চিত হওয়ার পূর্ব পর্যন্ত নিরাপত্তা স্বার্থে শুধুমাত্র আনুমানিক দূরত্ব ও এলাকা দেখানো হয়। অনুমোদনের পর সম্পূর্ণ ঠিকানা ও ফোকাল পারসনের নম্বর দৃশ্যমান হবে।") : tx("Only an approximate area and distance are shown before claim acceptance. Exact address, coordinates, directions, and donor contact are not displayed on this discovery page.")
+              isBn
+                ? tx(
+                    "ক্লেইম নিশ্চিত হওয়ার পূর্ব পর্যন্ত নিরাপত্তা স্বার্থে শুধুমাত্র আনুমানিক দূরত্ব ও এলাকা দেখানো হয়। অনুমোদনের পর সম্পূর্ণ ঠিকানা ও ফোকাল পারসনের নম্বর দৃশ্যমান হবে।",
+                  )
+                : tx(
+                    "Only an approximate area and distance are shown before claim acceptance. Exact address, coordinates, directions, and donor contact are not displayed on this discovery page.",
+                  )
             }
           />
 
           <div className="grid gap-6 xl:grid-cols-2">
-            <PhotoGallery urls={donation.photoUrls} label={tx("Donor food photos")} />
+            <PhotoGallery
+              urls={donation.photoUrls}
+              label={tx("Donor food photos")}
+            />
             {/* Dietary & Packaging Card */}
             <Card className="border-slate-200/90 shadow-xs">
               <CardHeader
-                title={isBn ? tx("ডায়েট ও প্যাকেজিং বিবরণ") : tx("Dietary & packaging information")}
-                description={isBn ? tx("আপনার উপকারভোগী ও পরিবহন সক্ষমতার সাথে মিলিয়ে নিন।") : tx("Review fit with your recipients and transport plan.")}
+                title={
+                  isBn
+                    ? tx("ডায়েট ও প্যাকেজিং বিবরণ")
+                    : tx("Dietary & packaging information")
+                }
+                description={
+                  isBn
+                    ? tx("আপনার উপকারভোগী ও পরিবহন সক্ষমতার সাথে মিলিয়ে নিন।")
+                    : tx("Review fit with your recipients and transport plan.")
+                }
               />
               <CardContent className="grid gap-5">
                 <div>
@@ -316,7 +422,10 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                         key={value}
                         className="inline-flex items-center rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-900 ring-1 ring-inset ring-amber-600/20"
                       >
-                        {isBn ? DIETARY_LABELS_BN[value] || DIETARY_TYPE_LABELS[value] : DIETARY_TYPE_LABELS[value]}
+                        {isBn
+                          ? DIETARY_LABELS_BN[value] ||
+                            DIETARY_TYPE_LABELS[value]
+                          : DIETARY_TYPE_LABELS[value]}
                       </span>
                     ))}
                   </div>
@@ -329,17 +438,23 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                       {packagingLabel(donation.foodCondition)}
                     </p>
                     <p className="mt-0.5 text-xs text-slate-500">
-                      {isBn ? tx("দাতা কর্তৃক ঘোষিত প্যাকেজিং মানদণ্ড।") : tx("Condition declared by the donor.")}
+                      {isBn
+                        ? tx("দাতা কর্তৃক ঘোষিত প্যাকেজিং মানদণ্ড।")
+                        : tx("Condition declared by the donor.")}
                     </p>
                   </div>
 
                   <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
                     <Refrigerator className="size-5 text-blue-700" />
                     <p className="mt-2 text-sm font-black text-slate-900">
-                      {isBn ? STORAGE_LABELS_BN[donation.storageCondition] : STORAGE_CONDITION_LABELS[donation.storageCondition]}
+                      {isBn
+                        ? STORAGE_LABELS_BN[donation.storageCondition]
+                        : STORAGE_CONDITION_LABELS[donation.storageCondition]}
                     </p>
                     <p className="mt-0.5 text-xs text-slate-500">
-                      {isBn ? tx("পরিবহনের সময় তাপমাত্রা বজায় রাখুন।") : tx("Maintain during collection and transport.")}
+                      {isBn
+                        ? tx("পরিবহনের সময় তাপমাত্রা বজায় রাখুন।")
+                        : tx("Maintain during collection and transport.")}
                     </p>
                   </div>
                 </div>
@@ -347,13 +462,16 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                 {donation.allergens.length > 0 ? (
                   <Alert
                     tone="warning"
-                    title={tx("অ্যালার্জেন ডিক্লারেশন: {0}", donation.allergens.join(", "))}
+                    title={tx(
+                      "অ্যালার্জেন ডিক্লারেশন: {0}",
+                      donation.allergens.join(", "),
+                    )}
                     description={tx("বিতরণের সময় অ্যালার্জেন লেবেল দৃশ্যমান রাখুন।")}
                   />
                 ) : (
                   <Alert
-                    tone="success"
-                    title={tx("কোনো অ্যালার্জেন নেই")}
+                    tone="info"
+                    title={tx("No allergens declared")}
                     description={tx("দাতা কোনো অ্যালার্জেন উপাদান ঘোষণা করেননি।")}
                   />
                 )}
@@ -361,7 +479,9 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                 {donation.specialInstructions && (
                   <div>
                     <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                      {isBn ? tx("বিশেষ পিকআপ নির্দেশনা") : tx("Handling instructions")}
+                      {isBn
+                        ? tx("বিশেষ পিকআপ নির্দেশনা")
+                        : tx("Handling instructions")}
                     </p>
                     <p className="mt-2 rounded-2xl bg-slate-50 p-4 text-xs leading-6 text-slate-700">
                       {donation.specialInstructions}
@@ -374,8 +494,17 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
             {/* Donor Safety Declaration Card */}
             <Card className="border-slate-200/90 shadow-xs">
               <CardHeader
-                title={isBn ? tx("দাতা প্রতিষ্ঠানের খাদ্য নিরাপত্তা ঘোষণা") : tx("Donor safety declaration")}
-                description={tx("ঘোষণার সময়: {0}। বিএফএসএ গাইডলাইন অনুযায়ী যাচাইকৃত।", formatDonationDateTimeBn(donation.safetyDeclaration.declaredAt))}
+                title={
+                  isBn
+                    ? tx("দাতা প্রতিষ্ঠানের খাদ্য নিরাপত্তা ঘোষণা")
+                    : tx("Donor safety declaration")
+                }
+                description={tx(
+                  "Declared {0}. These are donor statements, not an inspection certificate.",
+                  formatDonationDateTimeBn(
+                    donation.safetyDeclaration.declaredAt,
+                  ),
+                )}
               />
               <CardContent className="grid gap-2">
                 {SAFETY_CHECKS.map((check) => {
@@ -398,7 +527,9 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                           <XCircle className="size-4.5" />
                         )}
                       </span>
-                      <p className="text-xs font-bold text-slate-800">{tx(check.label)}</p>
+                      <p className="text-xs font-bold text-slate-800">
+                        {tx(check.label)}
+                      </p>
                     </div>
                   );
                 })}
@@ -409,10 +540,12 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
           {/* Eligibility Summary */}
           <Card className="border-slate-200/90 shadow-xs">
             <CardHeader
-              title={isBn ? tx("এনজিও যোগ্যতা পর্যালোচনা") : tx("Eligibility summary")}
-              description={
-                isBn ? tx("আপনার এনজিওর প্রোফাইল, ভৌগোলিক অবস্থান ও অনুমোদিত খাদ্য বিভাগের সাথে যাচাইকৃত।") : tx("Every check is evaluated from the verified NGO profile and the current listing.")
+              title={
+                isBn ? tx("এনজিও যোগ্যতা পর্যালোচনা") : tx("Eligibility summary")
               }
+              description={tx(
+                "Checks use your NGO verification, accepted food categories and the current collection deadline.",
+              )}
             />
             <CardContent className="grid gap-3 md:grid-cols-2">
               {item.eligibility.checks.map((check) => (
@@ -432,7 +565,9 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                     )}
                   </span>
                   <div>
-                    <p className="text-sm font-black text-slate-900">{tx(check.label)}</p>
+                    <p className="text-sm font-black text-slate-900">
+                      {tx(check.label)}
+                    </p>
                     <p className="mt-0.5 text-xs leading-5 text-slate-600">
                       {tx(check.description)}
                     </p>
@@ -454,29 +589,74 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
             <Alert
               tone="success"
               title={tx("খাদ্য লট সফলভাবে ক্লেইম করা হয়েছে!")}
-              description={tx("উদ্ধার কাজটি আপনার এনজিও প্যানেলে বরাদ্দ করা হয়েছে। ভলান্টিয়ার অ্যাসাইন করতে ক্লেইম পাতায় যান।")}
+              description={tx(
+                "উদ্ধার কাজটি আপনার এনজিও প্যানেলে বরাদ্দ করা হয়েছে। ভলান্টিয়ার অ্যাসাইন করতে ক্লেইম পাতায় যান।",
+              )}
               action={
-                <ButtonLink href={ROUTES.ngo.claim(claimId)} variant="outline" size="sm"><UiText source={"ক্লেইম পেজ খুলুন"} /></ButtonLink>
+                <ButtonLink
+                  href={ROUTES.ngo.claim(claimId)}
+                  variant="outline"
+                  size="md"
+                >
+                  <UiText source={"ক্লেইম পেজ খুলুন"} />
+                </ButtonLink>
               }
             />
           )}
 
-          <StickyActionBar>
+          <StickyActionBar className="flex flex-wrap items-center justify-end gap-3 !bottom-[calc(6rem+env(safe-area-inset-bottom))] lg:!bottom-0">
             <Button
               variant="outline"
-              leftIcon={<Bookmark className={`size-4 ${saved ? "fill-amber-500 text-amber-600" : ""}`} />}
+              leftIcon={
+                <Bookmark
+                  className={`size-4 ${saved ? "fill-amber-500 text-amber-600" : ""}`}
+                />
+              }
               onClick={() => toggleSaved(donationId)}
             >
-              {saved ? (isBn ? "সংরক্ষণ করা হয়েছে" : "Saved for later") : (isBn ? "সংরক্ষণ করুন" : "Save for later")}
+              {saved
+                ? isBn
+                  ? "সংরক্ষণ করা হয়েছে"
+                  : "Saved for later"
+                : isBn
+                  ? "সংরক্ষণ করুন"
+                  : "Save for later"}
             </Button>
             <Button
               disabled={!canClaim || claiming}
               leftIcon={<ShieldCheck className="size-4" />}
-              onClick={claimDonation}
+              onClick={() => {
+                setClaimError(undefined);
+                setConfirming(true);
+              }}
             >
-              {claiming ? isBn ? tx("ক্লেইম করা হচ্ছে…") : tx("Claiming…") : claimId ? isBn ? tx("ক্লেইম সম্পন্ন") : tx("Claimed") : item.eligibility.eligible ? isBn ? tx("খাদ্য লট ক্লেইম করুন") : tx("Claim donation") : isBn ? tx("ক্লেইমের উপযুক্ত নয়") : tx("Not eligible to claim")}
+              {claiming
+                ? isBn
+                  ? tx("ক্লেইম করা হচ্ছে…")
+                  : tx("Claiming…")
+                : claimId
+                  ? isBn
+                    ? tx("ক্লেইম সম্পন্ন")
+                    : tx("Claimed")
+                  : item.eligibility.eligible
+                    ? isBn
+                      ? tx("খাদ্য লট ক্লেইম করুন")
+                      : tx("Claim donation")
+                    : isBn
+                      ? tx("ক্লেইমের উপযুক্ত নয়")
+                      : tx("Not eligible to claim")}
             </Button>
           </StickyActionBar>
+          {confirming && (
+            <ClaimConfirmation
+              donation={donation}
+              busy={claiming}
+              error={claimError}
+              available={canClaim}
+              onClose={() => setConfirming(false)}
+              onConfirm={() => void claimDonation()}
+            />
+          )}
         </div>
       )}
     </PortalShell>

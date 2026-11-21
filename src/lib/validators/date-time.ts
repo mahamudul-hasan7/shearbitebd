@@ -31,25 +31,48 @@ export function validateDonationTimes({
   const pickupStart = toTimestamp(pickupWindowStart);
   const pickupEnd = toTimestamp(pickupWindowEnd);
 
-  if (preparedAt === undefined) errors.preparationTime = "সঠিক রান্নার তারিখ ও সময় নির্বাচন করুন।";
-  if (deadline === undefined) errors.safePickupDeadline = "নিরাপদ ব্যবহারের শেষ সময় দিন।";
-  if (pickupStart === undefined) errors.pickupWindowStart = "পিকআপ শুরুর সময় নির্ধারণ করুন।";
-  if (pickupEnd === undefined) errors.pickupWindowEnd = "পিকআপ শেষের সময় নির্ধারণ করুন।";
+  if (preparedAt === undefined)
+    errors.preparationTime = "সঠিক রান্নার তারিখ ও সময় নির্বাচন করুন।";
+  if (deadline === undefined)
+    errors.safePickupDeadline = "নিরাপদ ব্যবহারের শেষ সময় দিন।";
+  if (pickupStart === undefined)
+    errors.pickupWindowStart = "পিকআপ শুরুর সময় নির্ধারণ করুন।";
+  if (pickupEnd === undefined)
+    errors.pickupWindowEnd = "পিকআপ শেষের সময় নির্ধারণ করুন।";
 
-  if (preparedAt !== undefined && deadline !== undefined && preparedAt > deadline) {
+  if (
+    preparedAt !== undefined &&
+    deadline !== undefined &&
+    preparedAt > deadline
+  ) {
     errors.safePickupDeadline = "নিরাপদ মেয়াদ অবশ্যই রান্নার সময়ের পরে হতে হবে।";
   }
   if (deadline !== undefined && requireFutureDeadline && deadline <= now) {
     errors.safePickupDeadline = "নিরাপদ মেয়াদ অবশ্যই ভবিষ্যতের সময় হতে হবে।";
   }
-  if (pickupStart !== undefined && pickupEnd !== undefined && pickupStart > pickupEnd) {
+  if (pickupEnd !== undefined && requireFutureDeadline && pickupEnd <= now)
+    errors.pickupWindowEnd = "Pickup window must end in the future.";
+  if (
+    pickupStart !== undefined &&
+    pickupEnd !== undefined &&
+    pickupStart > pickupEnd
+  ) {
     errors.pickupWindowEnd = "পিকআপ শেষের সময় অবশ্যই শুরুর সময়ের পরে হতে হবে।";
   }
-  if (pickupStart !== undefined && preparedAt !== undefined && pickupStart < preparedAt) {
+  if (
+    pickupStart !== undefined &&
+    preparedAt !== undefined &&
+    pickupStart < preparedAt
+  ) {
     errors.pickupWindowStart = "Pickup cannot start before food preparation.";
   }
-  if (pickupEnd !== undefined && deadline !== undefined && pickupEnd > deadline) {
-    errors.pickupWindowEnd = "পিকআপের শেষ সময় অবশ্যই খাবারের নিরাপদ মেয়াদের (Safe Until) সমান বা আগে হতে হবে।";
+  if (
+    pickupEnd !== undefined &&
+    deadline !== undefined &&
+    pickupEnd > deadline
+  ) {
+    errors.pickupWindowEnd =
+      "পিকআপের শেষ সময় অবশ্যই খাবারের নিরাপদ মেয়াদের (Safe Until) সমান বা আগে হতে হবে।";
   }
 
   return errors;
@@ -58,5 +81,7 @@ export function validateDonationTimes({
 export function isValidDateRange(start: string, end: string) {
   const startTime = toTimestamp(start);
   const endTime = toTimestamp(end);
-  return startTime !== undefined && endTime !== undefined && startTime <= endTime;
+  return (
+    startTime !== undefined && endTime !== undefined && startTime <= endTime
+  );
 }

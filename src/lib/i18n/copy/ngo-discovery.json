@@ -1,0 +1,402 @@
+[
+  [
+    "Discover food",
+    "খাবার খুঁজুন"
+  ],
+  [
+    "Find a donation your community can use, then review it before claiming.",
+    "আপনার এলাকার মানুষের জন্য খাবার খুঁজুন, ক্লেইমের আগে বিস্তারিত দেখে নিন।"
+  ],
+  [
+    "Food rescue partner",
+    "খাদ্য উদ্ধার সহযোগী"
+  ],
+  [
+    "Post a food need",
+    "খাবারের চাহিদা জানান"
+  ],
+  [
+    "Matching food overview",
+    "মিলে যাওয়া খাবারের সারসংক্ষেপ"
+  ],
+  [
+    "Available donations",
+    "উপলব্ধ অনুদান"
+  ],
+  [
+    "Estimated meals",
+    "আনুমানিক খাবারের পরিমাণ"
+  ],
+  [
+    "Pickup within 2 hours",
+    "২ ঘণ্টার মধ্যে সংগ্রহ"
+  ],
+  [
+    "Find and filter food",
+    "খাবার খোঁজা ও ফিল্টার"
+  ],
+  [
+    "Search available food",
+    "উপলব্ধ খাবার খুঁজুন"
+  ],
+  [
+    "Food, donor or pickup area",
+    "খাবার, দাতা বা সংগ্রহের এলাকা"
+  ],
+  [
+    "Clear search",
+    "অনুসন্ধান মুছুন"
+  ],
+  [
+    "Sort donations",
+    "অনুদান সাজান"
+  ],
+  [
+    "Recommended",
+    "সাজেস্ট করা"
+  ],
+  [
+    "Nearest first",
+    "কাছের খাবার আগে"
+  ],
+  [
+    "Deadline soonest",
+    "যার সময় কম, সেটি আগে"
+  ],
+  [
+    "Most meals",
+    "বেশি পরিমাণ আগে"
+  ],
+  [
+    "Recently published",
+    "নতুন অনুদান আগে"
+  ],
+  [
+    "Discovery view",
+    "খাবার দেখার ধরন"
+  ],
+  [
+    "List view",
+    "তালিকা দেখুন"
+  ],
+  [
+    "Map view",
+    "ম্যাপ দেখুন"
+  ],
+  [
+    "Quick food categories",
+    "খাবারের ধরন বাছাই"
+  ],
+  [
+    "All food",
+    "সব খাবার"
+  ],
+  [
+    "Cooked meals",
+    "রান্না করা খাবার"
+  ],
+  [
+    "Bakery",
+    "বেকারির খাবার"
+  ],
+  [
+    "Fruit & vegetables",
+    "ফল ও শাকসবজি"
+  ],
+  [
+    "{0} donations found",
+    "{0}টি অনুদান পাওয়া গেছে"
+  ],
+  [
+    "{0} filters active",
+    "{0}টি ফিল্টার চালু"
+  ],
+  [
+    "Filter available food",
+    "উপলব্ধ খাবারের ফিল্টার"
+  ],
+  [
+    "Show {0} donations",
+    "{0}টি অনুদান দেখুন"
+  ],
+  [
+    "Clear filters",
+    "ফিল্টার মুছুন"
+  ],
+  [
+    "All distances",
+    "সব দূরত্ব"
+  ],
+  [
+    "km",
+    "কিমি"
+  ],
+  [
+    "Distance radius",
+    "দূরত্বের সীমা"
+  ],
+  [
+    "Distance uses saved pins and is a straight-line estimate. All distances includes unmeasured locations.",
+    "সংরক্ষিত পিন থেকে সরলরেখায় আনুমানিক দূরত্ব দেখানো হয়। সব দূরত্ব বাছলে দূরত্ব জানা নেই এমন খাবারও দেখা যাবে।"
+  ],
+  [
+    "Dietary type",
+    "খাদ্যাভ্যাসের ধরন"
+  ],
+  [
+    "Minimum meals",
+    "ন্যূনতম খাবারের পরিমাণ"
+  ],
+  [
+    "At least {0} meals",
+    "অন্তত {0} জনের খাবার"
+  ],
+  [
+    "Within {0} hours",
+    "{0} ঘণ্টার মধ্যে"
+  ],
+  [
+    "No food matches these filters",
+    "এই ফিল্টারে কোনো খাবার মেলেনি"
+  ],
+  [
+    "No food is available right now",
+    "এখন কোনো খাবার পাওয়া যাচ্ছে না"
+  ],
+  [
+    "Try a wider distance or another category. All distances also includes food without a measured location.",
+    "দূরত্বের সীমা বাড়ান বা অন্য ধরনের খাবার বাছুন। সব দূরত্ব বাছলে দূরত্ব জানা নেই এমন খাবারও দেখা যাবে।"
+  ],
+  [
+    "New donations will appear here when donors publish them. You can post a food need for your community.",
+    "দাতারা অনুদান প্রকাশ করলে এখানে দেখা যাবে। আপনার এলাকার মানুষের জন্য খাবারের চাহিদাও জানাতে পারেন।"
+  ],
+  [
+    "Donor estimate",
+    "দাতার হিসাব"
+  ],
+  [
+    "Pickup area",
+    "সংগ্রহের এলাকা"
+  ],
+  [
+    "Distance unmeasured",
+    "দূরত্ব জানা নেই"
+  ],
+  [
+    "Time to collect",
+    "সংগ্রহের সময় বাকি"
+  ],
+  [
+    "Collect before {0}",
+    "{0}-এর আগে সংগ্রহ করুন"
+  ],
+  [
+    "Your NGO accepts this food category",
+    "আপনার এনজিও এই ধরনের খাবার গ্রহণ করে"
+  ],
+  [
+    "Review this donation before claiming",
+    "ক্লেইমের আগে অনুদানের তথ্য দেখুন"
+  ],
+  [
+    "View details & claim",
+    "বিস্তারিত দেখে ক্লেইম করুন"
+  ],
+  [
+    "Why this food fits",
+    "এই খাবার কেন উপযুক্ত"
+  ],
+  [
+    "Add saved location pins to compare distance.",
+    "দূরত্ব জানতে ঠিকানায় location pin দিন।"
+  ],
+  [
+    "Distance is approximate. Check pickup timing and transport before claiming.",
+    "দূরত্ব আনুমানিক। ক্লেইমের আগে সংগ্রহের সময় ও পরিবহন দেখে নিন।"
+  ],
+  [
+    "Remove saved donation: {0}",
+    "সংরক্ষণ থেকে সরান: {0}"
+  ],
+  [
+    "Save donation: {0}",
+    "অনুদান সংরক্ষণ করুন: {0}"
+  ],
+  [
+    "Nearby search uses your primary NGO address. Exact pickup details unlock after a successful claim.",
+    "কাছের খাবার খোঁজা হয় এনজিওর মূল ঠিকানা থেকে। ক্লেইম সফল হলে সংগ্রহের সঠিক তথ্য দেখা যাবে।"
+  ],
+  [
+    "Could not refresh food. Saved results are shown; open a donation to check current availability.",
+    "নতুন তথ্য আনা যায়নি। আগের তালিকা দেখানো হচ্ছে; বর্তমান অবস্থা জানতে অনুদানের বিস্তারিত খুলুন।"
+  ],
+  [
+    "Available food could not load. Check your connection and try again.",
+    "উপলব্ধ খাবার লোড হয়নি। সংযোগ দেখে আবার চেষ্টা করুন।"
+  ],
+  [
+    "Loading available food",
+    "উপলব্ধ খাবার লোড হচ্ছে"
+  ],
+  [
+    "Desktop food filters",
+    "ডেস্কটপে খাবারের ফিল্টার"
+  ],
+  [
+    "Refine your search",
+    "খোঁজার শর্ত বাছুন"
+  ],
+  [
+    "Available food results",
+    "পাওয়া খাবারের তালিকা"
+  ],
+  [
+    "How recommendations work",
+    "কীভাবে খাবার সাজেস্ট করা হয়"
+  ],
+  [
+    "Your accepted food categories come first, followed by pickups due within 2 hours and known distance. Unmeasured distances stay visible under All distances. This is a practical shortlist; review the donor details yourself.",
+    "প্রথমে এনজিওর গ্রহণযোগ্য ধরনের খাবার, এরপর ২ ঘণ্টার মধ্যে সংগ্রহ করতে হবে এমন খাবার ও জানা দূরত্বকে গুরুত্ব দেওয়া হয়। সব দূরত্ব বাছলে দূরত্ব জানা নেই এমন খাবারও থাকে। এটি বাছাইয়ে সাহায্য করে; দাতার তথ্য নিজে দেখে নিন।"
+  ],
+  [
+    "Food locations",
+    "খাবারের অবস্থান"
+  ],
+  [
+    "Approximate pickup locations",
+    "সংগ্রহের আনুমানিক অবস্থান"
+  ],
+  [
+    "{0} mapped",
+    "ম্যাপে {0}টি"
+  ],
+  [
+    "Donor locations are approximate. Exact pins and navigation unlock only after a successful claim.",
+    "দাতার আনুমানিক অবস্থান দেখানো হচ্ছে। ক্লেইম সফল হওয়ার পর সঠিক পিন ও দিকনির্দেশনা পাওয়া যাবে।"
+  ],
+  [
+    "{0} donations have no saved pin. Select them from the list; no location has been guessed.",
+    "{0}টি অনুদানের পিন দেওয়া নেই। তালিকা থেকে বাছুন; কোনো অবস্থান অনুমান করা হয়নি।"
+  ],
+  [
+    "Choose a donation on the map",
+    "ম্যাপের তালিকা থেকে অনুদান বাছুন"
+  ],
+  [
+    "Selected donation",
+    "বাছাই করা অনুদান"
+  ],
+  [
+    "Confirm your food claim",
+    "খাবারের ক্লেইম নিশ্চিত করুন"
+  ],
+  [
+    "Keep browsing",
+    "আরও খাবার দেখুন"
+  ],
+  [
+    "Confirm claim",
+    "ক্লেইম নিশ্চিত করুন"
+  ],
+  [
+    "This reserves the whole donation for your NGO. Arrange collection from the claim page after confirmation.",
+    "এই অনুদানের পুরো খাবার আপনার এনজিওর জন্য বরাদ্দ হবে। নিশ্চিত করার পর ক্লেইম পাতা থেকে সংগ্রহের ব্যবস্থা করুন।"
+  ],
+  [
+    "Collection starts",
+    "সংগ্রহ শুরু"
+  ],
+  [
+    "Collect before",
+    "সংগ্রহের শেষ সময়"
+  ],
+  [
+    "Declared allergens",
+    "দাতার জানানো অ্যালার্জেন"
+  ],
+  [
+    "No allergens declared",
+    "কোনো অ্যালার্জেন উল্লেখ করা হয়নি"
+  ],
+  [
+    "Review food handling, allergens and collection timing for your recipients. Donor declarations are not an inspection certificate.",
+    "যাঁদের খাবার দেবেন তাঁদের কথা ভেবে সংরক্ষণ, অ্যালার্জেন ও সংগ্রহের সময় দেখে নিন। দাতার ঘোষণা কোনো পরিদর্শন সনদ নয়।"
+  ],
+  [
+    "This donation can no longer be claimed. Close this window and refresh the details.",
+    "এই অনুদান আর ক্লেইম করা যাচ্ছে না। এই উইন্ডো বন্ধ করে নতুন তথ্য দেখুন।"
+  ],
+  [
+    "Donation details",
+    "অনুদানের বিস্তারিত"
+  ],
+  [
+    "Declared {0}. These are donor statements, not an inspection certificate.",
+    "ঘোষণা দেওয়া হয়েছে {0}। এগুলো দাতার তথ্য, কোনো পরিদর্শন সনদ নয়।"
+  ],
+  [
+    "Checks use your NGO verification, accepted food categories and the current collection deadline.",
+    "এনজিওর যাচাইয়ের অবস্থা, গ্রহণযোগ্য খাবারের ধরন ও বর্তমান সংগ্রহের সময়সীমা দেখে মিল করা হয়।"
+  ],
+  [
+    "Food declared freshly prepared",
+    "দাতা খাবার তাজা প্রস্তুত বলে জানিয়েছেন"
+  ],
+  [
+    "Covered for collection",
+    "সংগ্রহের জন্য ঢাকা আছে"
+  ],
+  [
+    "No visible spoilage declared",
+    "দাতা দৃশ্যমান পচন নেই বলে জানিয়েছেন"
+  ],
+  [
+    "Stored as declared",
+    "ঘোষণা অনুযায়ী সংরক্ষণ করা হয়েছে"
+  ],
+  [
+    "Allergens disclosed",
+    "অ্যালার্জেনের তথ্য দেওয়া হয়েছে"
+  ],
+  [
+    "Collection deadline confirmed",
+    "সংগ্রহের সময়সীমা দেওয়া হয়েছে"
+  ],
+  [
+    "Donor confirmed these details",
+    "দাতা এই তথ্য নিশ্চিত করেছেন"
+  ],
+  [
+    "Packaged food",
+    "প্যাকেটজাত খাবার"
+  ],
+  [
+    "Prepared the same day",
+    "একই দিনে প্রস্তুত"
+  ],
+  [
+    "Freshly prepared food",
+    "তাজা প্রস্তুত খাবার"
+  ],
+  [
+    "The collection window has closed. Choose another donation.",
+    "সংগ্রহের সময় শেষ হয়েছে। অন্য অনুদান বেছে নিন।"
+  ],
+  [
+    "Pickup window must end in the future.",
+    "সংগ্রহ শেষের সময় ভবিষ্যতের হতে হবে।"
+  ],
+  [
+    "Sort",
+    "সাজান"
+  ],
+  [
+    "{0} meals",
+    "{0} জনের খাবার"
+  ],
+  [
+    "Location & pickup privacy",
+    "অবস্থান ও সংগ্রহের তথ্যের গোপনীয়তা"
+  ]
+]
