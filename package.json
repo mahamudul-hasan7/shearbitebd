@@ -52,7 +52,8 @@
     "test:portals:browser": "node scripts/test-portal-consistency-browser.mjs",
     "test:admin:browser": "node scripts/test-admin-browser.mjs",
     "test:auth:browser": "node scripts/test-auth-pages-browser.mjs",
-    "test:verification:browser": "node scripts/test-verification-browser.mjs"
+    "test:verification:browser": "node scripts/test-verification-browser.mjs",
+    "test:discovery:browser": "node scripts/test-discovery-browser.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

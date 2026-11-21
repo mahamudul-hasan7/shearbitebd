@@ -1,91 +1,139 @@
 "use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { DietaryType, FoodCategory, PriorityLevel, StorageCondition } from "@/lib/constants/domain";
-import { asyncState, discoveryService, toServiceError, type AsyncState, type NGODiscoveryItem } from "@/services";
-import { NGO_PROFILE_ID, NGO_VIEWER } from "@/features/ngo-dashboard/use-ngo-dashboard";
-import { DEFAULT_DISCOVERY_FILTERS, type DiscoveryFilters, type DiscoverySort } from "@/features/ngo-discovery/types";
-
-function enumValue<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
-  return value && values.includes(value as T) ? value as T : fallback;
-}
-
-function positiveNumber(value: string | null, fallback: number) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
-}
-
-function parseFilters(params: URLSearchParams): DiscoveryFilters {
-  return {
-    search: params.get("q")?.trim() ?? "",
-    radiusKm: positiveNumber(params.get("radius"), DEFAULT_DISCOVERY_FILTERS.radiusKm),
-    category: enumValue(params.get("category"), ["ALL", ...Object.values(FoodCategory)], "ALL"),
-    dietary: enumValue(params.get("dietary"), ["ALL", ...Object.values(DietaryType)], "ALL"),
-    minMeals: positiveNumber(params.get("quantity"), 0),
-    urgency: enumValue(params.get("urgency"), ["ALL", ...Object.values(PriorityLevel)], "ALL"),
-    storage: enumValue(params.get("storage"), ["ALL", ...Object.values(StorageCondition)], "ALL"),
-    deadlineHours: positiveNumber(params.get("deadline"), 0),
-    sort: enumValue(params.get("sort"), ["RECOMMENDED", "NEAREST", "DEADLINE", "QUANTITY"] as DiscoverySort[], "RECOMMENDED"),
-  };
-}
-
-function applyFilters(items: NGODiscoveryItem[], filters: DiscoveryFilters) {
-  const search = filters.search.toLowerCase();
-  return items.filter(({ donation, donorOrganization }) => {
-    if (search && !`${donation.title} ${donation.description} ${donation.pickup.approximateArea} ${donorOrganization}`.toLowerCase().includes(search)) return false;
-    if (filters.radiusKm > 0 && (donation.pickup.distanceKm === undefined || donation.pickup.distanceKm > filters.radiusKm)) return false;
-    if (filters.category !== "ALL" && donation.category !== filters.category) return false;
-    if (filters.dietary !== "ALL" && !donation.dietaryTypes.includes(filters.dietary)) return false;
-    if (donation.quantity.estimatedMeals < filters.minMeals) return false;
-    if (filters.urgency !== "ALL" && donation.priority !== filters.urgency) return false;
-    if (filters.storage !== "ALL" && donation.storageCondition !== filters.storage) return false;
-    if (filters.deadlineHours > 0 && Date.parse(donation.safePickupDeadline) - Date.now() > filters.deadlineHours * 3_600_000) return false;
-    return true;
-  }).sort((left, right) => {
-    if (filters.sort === "NEAREST") return (left.donation.pickup.distanceKm ?? 999) - (right.donation.pickup.distanceKm ?? 999);
-    if (filters.sort === "DEADLINE") return Date.parse(left.donation.safePickupDeadline) - Date.parse(right.donation.safePickupDeadline);
-    if (filters.sort === "QUANTITY") return right.donation.quantity.estimatedMeals - left.donation.quantity.estimatedMeals;
-    return Date.parse(right.donation.publishedAt || right.donation.createdAt) - Date.parse(left.donation.publishedAt || left.donation.createdAt);
-  });
-}
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useMockAuth } from "@/features/auth/mock-auth";
+import {
+  asyncState,
+  discoveryService,
+  toServiceError,
+  type AsyncState,
+  type NGODiscoveryItem,
+} from "@/services";
+import { DEFAULT_DISCOVERY_FILTERS, type DiscoveryFilters } from "./types";
+import {
+  discoveryQuery,
+  filterDiscovery,
+  parseDiscoveryFilters,
+} from "./discovery-model";
+import { useDiscoveryClock } from "./use-discovery-clock";
 
 export function useNgoDiscovery() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [state, setState] = useState<AsyncState<NGODiscoveryItem[]>>(() => asyncState.loading());
-  const [retryKey, setRetryKey] = useState(0);
-  const filters = useMemo(() => parseFilters(new URLSearchParams(searchParams.toString())), [searchParams]);
-
+  const pathname = usePathname(),
+    searchParams = useSearchParams();
+  const { session } = useMockAuth();
+  const owner = session?.role === "NGO" ? session.id : undefined;
+  const [snapshot, setSnapshot] = useState<{
+    owner: string;
+    state: AsyncState<NGODiscoveryItem[]>;
+  }>();
+  const [revision, setRevision] = useState(0);
+  const now = useDiscoveryClock();
+  const filters = useMemo(
+    () => parseDiscoveryFilters(new URLSearchParams(searchParams.toString())),
+    [searchParams],
+  );
+  const retry = useCallback(() => setRevision((value) => value + 1), []);
   useEffect(() => {
+    if (!owner) return;
     const controller = new AbortController();
-    discoveryService.listAvailable(NGO_PROFILE_ID, NGO_VIEWER, { signal: controller.signal }).then((items) => setState(asyncState.success(items))).catch((error: unknown) => { if (!controller.signal.aborted) setState(asyncState.error(toServiceError(error))); });
-    const refresh = () => setRetryKey((value) => value + 1);
+    let inFlight = false;
+    async function load() {
+      if (inFlight || controller.signal.aborted) return;
+      inFlight = true;
+      try {
+        const data = await discoveryService.listAvailable(
+          owner!,
+          {},
+          { signal: controller.signal },
+        );
+        if (!controller.signal.aborted)
+          setSnapshot({ owner: owner!, state: asyncState.success(data) });
+      } catch (error) {
+        if (!controller.signal.aborted)
+          setSnapshot((prior) => ({
+            owner: owner!,
+            state: asyncState.error(
+              toServiceError(error),
+              prior?.owner === owner ? prior?.state.data : undefined,
+            ),
+          }));
+      } finally {
+        inFlight = false;
+      }
+    }
+    const refresh = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    void load();
+    const timer = setInterval(refresh, 30_000);
+    window.addEventListener("focus", refresh);
     window.addEventListener("sharebite:auth-changed", refresh);
-    return () => { controller.abort(); window.removeEventListener("sharebite:auth-changed", refresh); };
-  }, [retryKey]);
-
-  const filteredItems = useMemo(() => applyFilters(state.data ?? [], filters), [filters, state.data]);
-  const activeFilterCount = [filters.search, filters.radiusKm !== DEFAULT_DISCOVERY_FILTERS.radiusKm, filters.category !== "ALL", filters.dietary !== "ALL", filters.minMeals > 0, filters.urgency !== "ALL", filters.storage !== "ALL", filters.deadlineHours > 0].filter(Boolean).length;
-
-  function updateFilter<K extends keyof DiscoveryFilters>(key: K, value: DiscoveryFilters[K]) {
-    const next = new URLSearchParams(searchParams.toString());
-    const keys: Record<keyof DiscoveryFilters, string> = { search: "q", radiusKm: "radius", category: "category", dietary: "dietary", minMeals: "quantity", urgency: "urgency", storage: "storage", deadlineHours: "deadline", sort: "sort" };
-    const queryKey = keys[key];
-    const defaultValue = DEFAULT_DISCOVERY_FILTERS[key];
-    if (value === defaultValue || value === "") next.delete(queryKey);
-    else next.set(queryKey, String(value));
-    router.replace(`${pathname}${next.size ? `?${next.toString()}` : ""}`, { scroll: false });
+    window.addEventListener("sharebite:verification-changed", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      controller.abort();
+      clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("sharebite:auth-changed", refresh);
+      window.removeEventListener("sharebite:verification-changed", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [owner, revision]);
+  const state =
+    snapshot?.owner === owner
+      ? snapshot?.state || asyncState.loading<NGODiscoveryItem[]>()
+      : asyncState.loading<NGODiscoveryItem[]>();
+  const filteredItems = useMemo(
+    () => (now ? filterDiscovery(state.data || [], filters, now) : []),
+    [state.data, filters, now],
+  );
+  const activeFilterCount = (
+    Object.keys(DEFAULT_DISCOVERY_FILTERS) as (keyof DiscoveryFilters)[]
+  ).filter(
+    (key) => key !== "sort" && filters[key] !== DEFAULT_DISCOVERY_FILTERS[key],
+  ).length;
+  function updateFilter<K extends keyof DiscoveryFilters>(
+    key: K,
+    value: DiscoveryFilters[K],
+  ) {
+    // Read the live URL so rapid filter changes compose before React renders again.
+    const current = parseDiscoveryFilters(
+      new URLSearchParams(window.location.search),
+    );
+    const query = discoveryQuery(
+      parseDiscoveryFilters(
+        new URLSearchParams(discoveryQuery({ ...current, [key]: value })),
+      ),
+    );
+    window.history.replaceState(
+      null,
+      "",
+      `${pathname}${query ? `?${query}` : ""}`,
+    );
   }
-
   function resetFilters() {
-    const next = new URLSearchParams();
-    if (filters.sort !== DEFAULT_DISCOVERY_FILTERS.sort) next.set("sort", filters.sort);
-    router.replace(`${pathname}${next.size ? `?${next.toString()}` : ""}`, { scroll: false });
+    const current = parseDiscoveryFilters(
+      new URLSearchParams(window.location.search),
+    );
+    const query = discoveryQuery({
+      ...DEFAULT_DISCOVERY_FILTERS,
+      sort: current.sort,
+    });
+    window.history.replaceState(
+      null,
+      "",
+      `${pathname}${query ? `?${query}` : ""}`,
+    );
   }
-
-  function retry() { setState((current) => asyncState.loading(current.data)); setRetryKey((value) => value + 1); }
-
-  return { state, filters, filteredItems, activeFilterCount, updateFilter, resetFilters, retry, queryString: searchParams.toString() };
+  return {
+    state,
+    filters,
+    filteredItems,
+    activeFilterCount,
+    updateFilter,
+    resetFilters,
+    retry,
+    now,
+    queryString: discoveryQuery(filters),
+  };
 }
