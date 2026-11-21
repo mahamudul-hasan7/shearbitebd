@@ -57,3 +57,8 @@
 - `/ngo/support` - implemented in Phase 14; NGO FAQs and validated mock support request
 
 All route strings and dynamic route builders are centralized in `src/lib/routes.ts`. Routes without an implementation note remain unreachable until their planned phase.
+
+Admin user control uses `/admin/verifications` for pending/rejected account reviews
+and `/admin/users` for searchable account access management. `/admin/accounts`
+redirects to verification requests after admin authentication. Both new routes
+share the existing admin shell and role protection.

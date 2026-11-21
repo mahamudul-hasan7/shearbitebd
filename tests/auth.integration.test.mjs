@@ -3195,3 +3195,21 @@ test("browser rescue coordination supports responsive guidance, code safety and 
   const {runCoordinationBrowserChecks}=await import('./coordination-browser.mjs');
   await runCoordinationBrowserChecks({base,prisma,request,login,assignedRescue,issue,handover,saveReceipt,distribute,distributionInput,reportIncident});
 });
+
+const userControlHelpers = () => ({prisma,request,login,seedUser,fixturePassword,newDonation,newFoodRequest,assignedRescue,base});
+for (const [name,check] of Object.entries({
+  "separates verification requests from searchable role and access filters":"listing",
+  "revokes every session and hides banned donor offers without changing verification":"sessionRevocation",
+  "permanently closes login while preserving history and cancelling open posts":"deletion",
+  "protects active rescues from deletion for all three participant roles":"activeWork",
+  "serializes competing admin actions, login and claims safely":"races",
+  "enforces admin authorization, CSRF, version and confirmation validation":"authorization",
+})) test("admin user controls "+name, async()=>{
+  const checks=await import("./admin-users.integration.mjs");
+  await checks[check](userControlHelpers());
+});
+
+test("browser admin user controls separate verification and account access on mobile and desktop",{skip:process.env.RUN_ADMIN_USERS_BROWSER!=="1",timeout:180_000},async()=>{
+ const {runAdminUsersBrowserChecks}=await import("./admin-users-browser.mjs");
+ await runAdminUsersBrowserChecks(userControlHelpers());
+});

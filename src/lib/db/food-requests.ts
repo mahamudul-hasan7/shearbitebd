@@ -1,3 +1,4 @@
+import { lockActiveAccount } from "@/lib/db/account-access";
 import { coordinates } from "@/lib/locations";
 import { createHash } from "node:crypto";
 import { Prisma, FoodCategory, DietaryType, PriorityLevel, RequestType } from "@prisma/client";
@@ -77,6 +78,7 @@ export async function createFoodRequest(input: Record<string, unknown>, user: Au
   }
   const data = await parseRequest(input, user);
   return prisma.$transaction(async (tx) => {
+    await lockActiveAccount(tx, user.id);
     await tx.$queryRaw`SELECT id FROM ngo_profiles WHERE id = ${user.ngoProfileId} FOR UPDATE`;
     const ngo = await tx.nGOProfile.findUniqueOrThrow({ where: { id: user.ngoProfileId } });
     if (ngo.verificationStatus !== "VERIFIED") throw new ApiError(403, "NGO verification is pending. A verified NGO is required to publish requests.");
@@ -93,6 +95,7 @@ export async function createFoodRequest(input: Record<string, unknown>, user: Au
 export async function changeFoodRequest(id: string, action: unknown, input: Record<string, unknown>, user: AuthAccount) {
   await ownFoodRequest(id, user);
   return prisma.$transaction(async (tx) => {
+    await lockActiveAccount(tx, user.id);
     const progress = await refreshRequestProgress(tx, id);
     if (!progress || progress.ngoProfileId !== user.ngoProfileId) throw new ApiError(404, "Request not found.");
     const active = progress.claims.some((claim) => (ACTIVE_REQUEST_CLAIMS as readonly string[]).includes(claim.status));
@@ -121,7 +124,7 @@ export async function foodRequestMatches(id: string, user: AuthAccount) {
   if (!["FINDING_MATCH", "MATCHED"].includes(row.status) || row.neededBy.getTime() <= Date.now() || !progress.remainingMeals) return { request: foodRequestDto(row), matches: [] };
   const ngo = await prisma.nGOProfile.findUniqueOrThrow({ where: { id: user.ngoProfileId } });
   if (ngo.verificationStatus !== "VERIFIED") throw new ApiError(403, "NGO verification is required to reserve food.");
-  const donations = await prisma.donation.findMany({ where: { status: "AVAILABLE", category: { in: row.categories.filter((category) => ngo.acceptedFoodCategories.includes(category)) }, safePickupDeadline: { gt: new Date() }, windowEnd: { gt: new Date() }, windowStart: { lt: row.neededBy } }, include: donationInclude, orderBy: { safePickupDeadline: "asc" }, take: 200 });
+  const donations = await prisma.donation.findMany({ where: { donor: {user:{isActive:true,deletedAt:null}}, status: "AVAILABLE", category: { in: row.categories.filter((category) => ngo.acceptedFoodCategories.includes(category)) }, safePickupDeadline: { gt: new Date() }, windowEnd: { gt: new Date() }, windowStart: { lt: row.neededBy } }, include: donationInclude, orderBy: { safePickupDeadline: "asc" }, take: 200 });
   const matches = donations.map((donation) => ({ row: donation, ...requestMatch(row, donation) })).filter((item) => item.eligible)
     .sort((a, b) => b.score - a.score || a.row.safePickupDeadline.getTime() - b.row.safePickupDeadline.getTime()).map((item) => ({ donation: donationDto(item.row, user), score: item.score,
       reasons: item.reasons, allergenReviewRequired: item.allergenReviewRequired, mealsToAllocate: Math.min(progress.remainingMeals, item.row.estimatedMeals) }));

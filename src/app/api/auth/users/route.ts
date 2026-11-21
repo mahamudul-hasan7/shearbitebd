@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const users = await prisma.user.findMany({ where: { role: filterRole }, include: accountInclude });
+  const users = await prisma.user.findMany({ where: { role: filterRole, deletedAt: null }, include: accountInclude });
   return NextResponse.json({
     success: true,
     count: users.length,

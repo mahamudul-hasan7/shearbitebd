@@ -17,7 +17,7 @@ export const ROUTES = {
     donor: "/preview/donor",
     ngo: "/preview/ngo",
   },
-  admin: { dashboard: "/admin/dashboard", accounts: "/admin/accounts", rescues: "/admin/rescues", reports: "/admin/reports" },
+  admin: { dashboard: "/admin/dashboard", accounts: "/admin/verifications", verifications: "/admin/verifications", users: "/admin/users", rescues: "/admin/rescues", reports: "/admin/reports" },
   donor: {
     dashboard: "/donor/dashboard",
     donations: "/donor/donations",

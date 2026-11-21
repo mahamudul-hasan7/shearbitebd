@@ -215,6 +215,8 @@ model User {
   avatarUrl        String?
   role             UserRole          @default(DONOR)
   isActive         Boolean           @default(true)
+  deletedAt        DateTime?
+  accessVersion    Int               @default(0)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
@@ -232,6 +234,8 @@ model User {
   accountReviewsReceived AccountReview[] @relation("ReviewedAccount")
   accountReviewsAuthored AccountReview[] @relation("AccountReviewer")
   verificationDocuments VerificationDocument[]
+  accessActionsReceived UserAccessAudit[] @relation("AccessTarget")
+  accessActionsAuthored UserAccessAudit[] @relation("AccessActor")
 
   @@index([role, isActive, createdAt])
   @@map("users")
@@ -750,4 +754,29 @@ model UserPreference {
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_preferences")
+}
+
+enum UserAccessAction {
+  BAN
+  UNBAN
+  DELETE
+}
+
+model UserAccessAudit {
+  id              String           @id @default(cuid())
+  targetUserId    String
+  actorUserId     String
+  actorLabel      String
+  action          UserAccessAction
+  note            String
+  submissionKey   String           @unique
+  previousVersion Int
+  previousActive  Boolean
+  createdAt       DateTime         @default(now())
+
+  target User @relation("AccessTarget", fields: [targetUserId], references: [id], onDelete: Restrict)
+  actor  User @relation("AccessActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([targetUserId, createdAt])
+  @@map("user_access_audits")
 }
