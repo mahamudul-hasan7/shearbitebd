@@ -24,7 +24,7 @@ Admin dashboard পরের ধাপে; verification-এর জন্য loca
 3. নিজের তিনটি account register করুন বা বিদ্যমান account ব্যবহার করুন। Guide কোনো
    account-এর password প্রকাশ করে না। Owner-এর নির্দেশে password hashing এখনও স্থগিত।
 4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Accounts** পাতায় নতুন account যাচাই করুন।
-   Local admin-এর প্রবেশের তথ্য `.local-postgres/admin-access.json`-এ পাবেন।
+   Local admin-এর username `admin` এবং password `admin123`।
    বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। মূল নথি আলাদাভাবে যাচাই করুন।
    Account approval কোনো food safety certificate নয়।
 

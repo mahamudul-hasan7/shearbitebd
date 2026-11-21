@@ -24,7 +24,7 @@ export default function LoginPage() {
           <p className="mt-1.5 text-sm leading-7 text-slate-600">
             <UiText
               source={
-                "Use your registered email or mobile number and password."
+                "Use your email, mobile number or admin username and password."
               }
             />
           </p>

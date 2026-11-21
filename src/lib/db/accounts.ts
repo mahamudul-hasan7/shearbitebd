@@ -26,9 +26,13 @@ export function toAuthAccount(row: AccountRow): AuthAccount {
 }
 
 export async function findAccount(identifier: string) {
-  const normalized = normalizePhone(identifier.trim());
+  const login = identifier.trim().toLowerCase();
+  const normalized = normalizePhone(login);
+  const lookup: Prisma.UserWhereInput = login === "admin"
+    ? { username: "admin", role: "ADMIN" }
+    : { OR: [{ email: login }, ...(/^01[3-9]\d{8}$/.test(normalized) ? [{ normalizedPhone: normalized }] : [])] };
   const row = await prisma.user.findFirst({
-    where: { isActive: true, OR: [{ email: identifier.trim().toLowerCase() }, ...(/^01[3-9]\d{8}$/.test(normalized) ? [{ normalizedPhone: normalized }] : [])] },
+    where: { isActive: true, ...lookup },
     include: accountInclude,
   });
   return row ? toAuthAccount(row) : undefined;
