@@ -90,7 +90,7 @@ export function PortalShell({
               <div className="mb-4">
                 <Link
                   href={backHref}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 transition-all group cursor-pointer active:scale-95"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 transition-all group cursor-pointer active:scale-95"
                 >
                   <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1 text-emerald-600" />
                   <span>{backLabel}</span>

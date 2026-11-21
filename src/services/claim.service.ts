@@ -7,7 +7,7 @@ import { apiRequest } from "@/services/http";
 export interface ClaimListQuery { ngoProfileId?: string; volunteerProfileId?: string; donationId?: string; statuses?: ClaimStatus[]; }
 export interface CreateClaimInput { donationId: string; ngoProfileId: string; matchScore: number; }
 export interface ClaimVolunteerSummary { id: string; displayName: string; phone?: string; verificationStatus: VerificationStatus; transportMethod: TransportMethod; completedRescues: number; }
-export interface ClaimCoordinationDetails { claim: Claim; donation: DonationView; donorOrganization: string; donorVerified: boolean; volunteer?: ClaimVolunteerSummary; deliveryAddress?: Address; }
+export interface ClaimCoordinationDetails { receiverNgo?: {name: string; contactName?: string; contactPhone?: string}; receiptRecorded?: boolean; distributionRecorded?: boolean; claim: Claim; donation: DonationView; donorOrganization: string; donorVerified: boolean; volunteer?: ClaimVolunteerSummary; deliveryAddress?: Address; }
 
 export const claimService = {
   async list(query: ClaimListQuery = {}, options?: MockServiceOptions): Promise<Claim[]> {

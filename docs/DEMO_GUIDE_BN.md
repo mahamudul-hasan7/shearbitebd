@@ -32,6 +32,9 @@ Admin dashboard থেকে account verification এবং operational report r
 খাবার খোঁজা, filter, map ও claim confirmation দেখানোর জন্য
 [NGO discovery নির্দেশনা](NGO_DISCOVERY_BN.md) অনুসরণ করুন।
 
+তিন account-এর pickup, delivery ও distribution demo-র জন্য
+[Rescue coordination নির্দেশনা](RESCUE_COORDINATION_BN.md) দেখুন।
+
 ## ২. Location ও খাবার প্রকাশ — donor
 
 1. `/donor/addresses` থেকে ঠিকানার `Set location pin` খুলুন। Map-এ click/drag,

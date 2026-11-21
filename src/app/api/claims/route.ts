@@ -6,7 +6,7 @@ import { claimDto, claimVisibility, donationDto, donationInclude, reserveDonatio
 import { legacyDeliveryAddress, requestAddress, savedDeliveryAddress } from "@/lib/db/locations";
 import { refreshRequestProgress } from "@/lib/db/request-progress";
 
-const include = { donation: { include: donationInclude }, ngo: { include: { user: { include: { addresses: true } } } }, volunteer: { include: { user: true } }, foodRequest: true } as const;
+const include = { donation: { include: donationInclude }, ngo: { include: { user: { include: { addresses: true } } } }, volunteer: { include: { user: true } }, foodRequest: true, deliveryReceipt: { select: { id: true } }, distributionRecord: { select: { id: true } } } as const;
 
 export async function GET(request: Request) {
   try {
@@ -19,6 +19,8 @@ export async function GET(request: Request) {
       if (!row) throw new ApiError(404, "Claim not found for your account.");
       const destinationVisible = user.role !== "VOLUNTEER" || !["CANCELLED", "EXPIRED"].includes(row.status);
       const details = {
+        receiptRecorded: Boolean(row.deliveryReceipt),
+        distributionRecorded: Boolean(row.distributionRecord),
         claim: claimDto(row),
         donation: donationDto(row.donation, user),
         donorOrganization: row.donation.donor.organizationName || row.donation.donor.user.displayName,
