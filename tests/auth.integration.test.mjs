@@ -3125,3 +3125,28 @@ test("browser donor and NGO dashboards share accessible responsive styling", { s
   const { runPortalConsistencyChecks } = await import("./portal-consistency-browser.mjs");
   await runPortalConsistencyChecks({ prisma, base, login, request, newDonation, assignedRescue, deliveredRescue, saveReceipt, distribute, distributionInput, handover, issue });
 });
+
+test("admin username uses stored credentials and cannot authenticate ordinary or inactive accounts", async () => {
+  const user = await prisma.user.create({ data: { email: "local-admin-login@example.test", username: "admin", password: "admin123", displayName: "Local Admin", role: "ADMIN" } });
+  try {
+    for (const [email, password] of [["admin", "wrong"], ["admin", "ADMIN123"], ["admin", "admin123 "], ["administrator", "admin123"]]) {
+      assert.equal((await request("/api/auth/login", { method: "POST", body: { email, password } })).status, 401);
+    }
+    const response = await request("/api/auth/login", { method: "POST", body: { email: " ADMIN ", password: "admin123" } });
+    assert.equal(response.status, 200);
+    const data = await response.json(); assert.equal(data.session.role, "ADMIN"); assert.equal(data.session.id, user.id); assert.equal(data.user.password, undefined);
+    const cookie = response.headers.get("set-cookie").split(";")[0];
+    assert.equal((await request("/api/admin/overview", { cookie })).status, 200);
+    assert.equal((await request("/admin/dashboard", { cookie })).status, 200);
+    assert.equal((await request("/api/auth/login", { method: "POST", body: { email: user.email, password: "admin123" } })).status, 200);
+    await prisma.user.update({ where: { id: user.id }, data: { isActive: false } });
+    assert.equal((await request("/api/auth/login", { method: "POST", body: { email: "admin", password: "admin123" } })).status, 401);
+    await prisma.user.update({ where: { id: user.id }, data: { isActive: true, role: "DONOR" } });
+    assert.equal((await request("/api/auth/login", { method: "POST", body: { email: "admin", password: "admin123" } })).status, 401);
+  } finally { await prisma.user.delete({ where: { id: user.id } }); }
+});
+
+test("browser admin username login works in both languages and screen sizes", { skip: process.env.RUN_ADMIN_USERNAME_BROWSER !== "1" }, async () => {
+  const { runAdminUsernameBrowserChecks } = await import("./admin-username-browser.mjs");
+  await runAdminUsernameBrowserChecks({ prisma, base });
+});

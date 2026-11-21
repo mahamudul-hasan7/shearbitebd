@@ -243,7 +243,7 @@ export async function runAdminBrowserChecks(helpers) {
     const signInPage = await signInContext.newPage();
     await signInPage.goto("/login", { waitUntil: "networkidle" });
     await signInPage
-      .getByLabel("Email or mobile number", { exact: true })
+      .getByLabel("Email, mobile or username", { exact: true })
       .fill("admin@example.test");
     await signInPage.locator("#login-password").fill(helpers.fixturePassword);
     await signInPage

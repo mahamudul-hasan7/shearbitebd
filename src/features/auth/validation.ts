@@ -30,7 +30,7 @@ export function validateLogin(values: { email: string; password: string }) {
 
   let emailError: string | undefined = undefined;
   if (!identifier) {
-    emailError = "আপনার ইমেইল বা মোবাইল নম্বর লিখুন।";
+    emailError = "আপনার ইমেইল, মোবাইল বা ইউজারনেম লিখুন।";
   }
 
   let passwordError: string | undefined = undefined;

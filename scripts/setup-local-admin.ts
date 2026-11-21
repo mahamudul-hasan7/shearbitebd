@@ -2,6 +2,10 @@ import { randomBytes } from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { loadDatabaseEnv } from "./database-env.mjs";
 
+const username = "admin";
+const password = "admin123";
+const accessFile = ".local-postgres/admin-access.json";
+
 async function main() {
   loadDatabaseEnv();
   let local: { user: string; password: string };
@@ -20,42 +24,77 @@ async function main() {
     url.pathname !== "/sharebite_bd"
   )
     return;
+
+  let previousEmail: string | undefined;
+  try {
+    const previous = JSON.parse(await readFile(accessFile, "utf8"));
+    if (typeof previous.email === "string") previousEmail = previous.email;
+  } catch {
+    /* Older installations may not have an access file. */
+  }
   const { prisma } = await import("../src/lib/prisma");
   try {
-    const access = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(183040218)`;
+      const named = await tx.user.findUnique({ where: { username } });
+      if (named && named.role !== "ADMIN")
+        throw new Error(
+          "The admin username belongs to another account. No account roles were changed.",
+        );
+      if (named && !process.argv.includes("--reset")) return null;
+
+      // Adopt only the previous setup's account or its canonical local email.
+      // Custom admin accounts and ordinary user accounts remain unchanged.
+      const previous =
+        !named && previousEmail
+          ? await tx.user.findFirst({
+              where: { email: previousEmail, role: "ADMIN" },
+            })
+          : null;
+      const canonical =
+        !named && !previous
+          ? await tx.user.findFirst({
+              where: { email: "admin@sharebite.local", role: "ADMIN" },
+            })
+          : null;
+      const existing = named || previous || canonical;
+      let email = existing?.email || "admin@sharebite.local";
       if (
-        await tx.user.findFirst({
-          where: { role: "ADMIN", isActive: true },
-          select: { id: true },
-        })
+        !existing &&
+        (await tx.user.findUnique({ where: { email }, select: { id: true } }))
       )
-        return null;
-      let email = "admin@sharebite.local";
-      if (await tx.user.findUnique({ where: { email }, select: { id: true } }))
         email = `admin-${randomBytes(4).toString("hex")}@sharebite.local`;
-      const password = `Admin1-${randomBytes(12).toString("hex")}`;
-      await tx.user.create({
-        data: {
-          email,
-          password,
-          displayName: "ShareBite Admin",
-          role: "ADMIN",
-        },
-      });
+      const user = existing
+        ? await tx.user.update({
+            where: { id: existing.id },
+            data: { username, password, isActive: true },
+          })
+        : await tx.user.create({
+            data: {
+              email,
+              username,
+              password,
+              displayName: "ShareBite Admin",
+              role: "ADMIN",
+            },
+          });
+      if (existing)
+        await tx.authSession.deleteMany({ where: { userId: user.id } });
+      const access = { username, email: user.email, password };
       await mkdir(".local-postgres", { recursive: true });
-      await writeFile(
-        ".local-postgres/admin-access.json",
-        JSON.stringify({ email, password }, null, 2) + "\n",
-        { mode: 0o600 },
-      );
-      return { email, password };
+      await writeFile(accessFile, JSON.stringify(access, null, 2) + "\n", {
+        mode: 0o600,
+      });
+      return { ...access, changed: Boolean(existing) };
     });
-    if (access)
+    if (result)
       console.log(
-        `Local admin created.\nEmail: ${access.email}\nPassword: ${access.password}\nSaved privately in .local-postgres/admin-access.json`,
+        `Local admin ${result.changed ? "updated" : "created"}.\nUsername: ${result.username}\nPassword: ${result.password}\nLogin: /login\nSaved in ${accessFile}`,
       );
-    else console.log("Local admin is already configured.");
+    else
+      console.log(
+        "Local admin is already configured. Username: admin. Use --reset to restore the local login password.",
+      );
   } finally {
     await prisma.$disconnect();
   }

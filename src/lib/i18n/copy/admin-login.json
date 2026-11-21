@@ -1,0 +1,26 @@
+[
+  [
+    "Email, mobile or username",
+    "ইমেইল, মোবাইল বা ইউজারনেম",
+    "Email or mobile number",
+    "ইমেইল বা মোবাইল নম্বর"
+  ],
+  [
+    "Use your email, mobile number or admin username and password.",
+    "আপনার ইমেইল, মোবাইল নম্বর বা অ্যাডমিন ইউজারনেম এবং পাসওয়ার্ড দিয়ে ঢুকুন।",
+    "Use your registered email or mobile number and password."
+  ],
+  [
+    "Enter your email, mobile number or username.",
+    "আপনার ইমেইল, মোবাইল বা ইউজারনেম লিখুন।",
+    "আপনার ইমেইল বা মোবাইল নম্বর লিখুন।"
+  ],
+  [
+    "Enter a valid email, mobile number or username and password.",
+    "সঠিক ইমেইল, মোবাইল বা ইউজারনেম এবং পাসওয়ার্ড দিন।"
+  ],
+  [
+    "Email, mobile number, username or password is incorrect.",
+    "ইমেইল/মোবাইল/ইউজারনেম অথবা পাসওয়ার্ড সঠিক নয়।"
+  ]
+]

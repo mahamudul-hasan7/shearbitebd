@@ -5,15 +5,23 @@
 
 ## প্রবেশ করুন
 
-নিজের local PostgreSQL database-এ প্রথম setup-এর সময় একটি ADMIN account তৈরি হয়।
-Email ও random password terminal-এ একবার দেখানো হয় এবং `.local-postgres/admin-access.json`
-ফাইলে রাখা হয়। এই ফাইল private এবং Git-এ যায় না। সেটি কারও সঙ্গে শেয়ার করবেন না।
-কোনো সক্রিয় admin আগে থেকেই থাকলে তার password বা account বদলানো হয় না।
+Local project-এর admin login:
 
-সাধারণ `/login` পাতা থেকে admin-এর email ও password দিয়ে ঢুকলে `/admin/dashboard`
-খুলবে। Public registration দিয়ে ADMIN account তৈরি করা যায় না। External database-এ
-এই script নিজে থেকে admin তৈরি করে না। সেখানে database owner-কে আলাদাভাবে admin
-account প্রস্তুত করতে হবে।
+- Username `admin`
+- Password `admin123`
+
+`run-project.bat` বা `npm run db:setup` চালালে নতুন account তৈরি হয় অথবা আগের setup-এর
+random-password admin একই account ID রেখে এই login-এ আপডেট হয়। পুরোনো sessions বন্ধ
+হবে। অন্য admin, donor, NGO ও volunteer account বদলানো হয় না। Login-এর তথ্য
+`.local-postgres/admin-access.json`-এও থাকে।
+
+সাধারণ `/login` পাতার username/email/mobile ঘরে `admin` এবং password ঘরে `admin123`
+দিলে `/admin/dashboard` খুলবে। Email ও mobile দিয়ে সাধারণ login-ও কাজ করবে।
+
+পরে local admin password বদলালে routine setup সেটি আবার বদলায় না। প্রয়োজন হলে
+`npm run db:admin -- --reset` দিয়ে স্থানীয় login পুনরায় `admin` / `admin123` করা যায়।
+Public registration দিয়ে ADMIN account তৈরি করা যায় না। External database-এ এই
+script নিজে থেকে admin তৈরি বা password reset করে না।
 
 ## প্রয়োজনীয় কাজ
 

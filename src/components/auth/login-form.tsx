@@ -3,7 +3,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, UserRound } from "lucide-react";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
@@ -90,7 +90,7 @@ export function LoginForm() {
       )}
       <fieldset disabled={loading || redirecting}>
         <Input
-          label={tx("Email or mobile number")}
+          label={tx("Email, mobile or username")}
           id="login-email"
           name="email"
           autoComplete="username"
@@ -107,10 +107,10 @@ export function LoginForm() {
               form: undefined,
             }));
           }}
-          placeholder="name@example.com"
+          placeholder="Email, mobile or username"
           error={errors.email}
           required
-          leftIcon={<Mail size={20} />}
+          leftIcon={<UserRound size={20} />}
         />
         <PasswordInput
           id="login-password"
