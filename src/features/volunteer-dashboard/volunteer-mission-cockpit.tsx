@@ -1,4 +1,5 @@
 "use client";
+import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ChevronDown, Navigation, RefreshCw } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -382,24 +383,18 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                 </div>
               </section>
             </div>
-            <details className={styles.disclosure}>
-              <summary>
-                {tx("Map & saved handover locations")}
-                <ChevronDown size={17} />
-              </summary>
-              <div>
-                <RescueLocationMap
-                  pickup={mission.pickupCoordinates}
-                  delivery={mission.dropoffCoordinates}
-                  pickupLabel={[mission.donorAddress, mission.donorArea]
-                    .filter(Boolean)
-                    .join(", ")}
-                  deliveryLabel={[mission.ngoAddress, mission.ngoArea]
-                    .filter(Boolean)
-                    .join(", ")}
-                />
-              </div>
-            </details>
+            <RescueMapDisclosure>
+              <RescueLocationMap
+                pickup={mission.pickupCoordinates}
+                delivery={mission.dropoffCoordinates}
+                pickupLabel={[mission.donorAddress, mission.donorArea]
+                  .filter(Boolean)
+                  .join(", ")}
+                deliveryLabel={[mission.ngoAddress, mission.ngoArea]
+                  .filter(Boolean)
+                  .join(", ")}
+              />
+            </RescueMapDisclosure>
             {mission.claimId && (
               <details className={styles.disclosure}>
                 <summary>

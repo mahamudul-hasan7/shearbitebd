@@ -1,5 +1,6 @@
 "use client";
-import { ChevronDown, RefreshCw } from "lucide-react";
+import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
+import { RefreshCw } from "lucide-react";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -135,28 +136,22 @@ export function DonationTracking({ donationId }: { donationId: string }) {
                 />
               )}
             </div>
-            <details className={styles.disclosure}>
-              <summary>
-                {tx("Map & saved handover locations")}
-                <ChevronDown size={17} />
-              </summary>
-              <div>
-                <RescueLocationMap
-                  pickup={donation.pickup.exactAddress?.coordinates}
-                  delivery={data.deliveryAddress?.coordinates}
-                  pickupLabel={
-                    donation.pickup.exactAddress
-                      ? formatAddress(donation.pickup.exactAddress)
-                      : donation.pickup.approximateArea
-                  }
-                  deliveryLabel={
-                    data.deliveryAddress
-                      ? formatAddress(data.deliveryAddress)
-                      : data.receiverNgo?.name
-                  }
-                />
-              </div>
-            </details>
+            <RescueMapDisclosure>
+              <RescueLocationMap
+                pickup={donation.pickup.exactAddress?.coordinates}
+                delivery={data.deliveryAddress?.coordinates}
+                pickupLabel={
+                  donation.pickup.exactAddress
+                    ? formatAddress(donation.pickup.exactAddress)
+                    : donation.pickup.approximateArea
+                }
+                deliveryLabel={
+                  data.deliveryAddress
+                    ? formatAddress(data.deliveryAddress)
+                    : data.receiverNgo?.name
+                }
+              />
+            </RescueMapDisclosure>
             <p className={styles.status}>
               {tx(
                 "Route checkpoints are reported by the volunteer. Live GPS and arrival estimates are not measured.",

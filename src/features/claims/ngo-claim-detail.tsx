@@ -1,4 +1,5 @@
 "use client";
+import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
 import { ChevronDown, RefreshCw, ShieldCheck } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -256,15 +257,9 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
                 )}
               </div>
             </div>
-            <details className={styles.disclosure}>
-              <summary>
-                {tx("Map & saved handover locations")}
-                <ChevronDown size={17} />
-              </summary>
-              <div>
-                <ClaimRoutePreview details={details} />
-              </div>
-            </details>
+            <RescueMapDisclosure>
+              <ClaimRoutePreview details={details} />
+            </RescueMapDisclosure>
             <details className={styles.disclosure}>
               <summary>
                 {tx("Issues & rescue history")}

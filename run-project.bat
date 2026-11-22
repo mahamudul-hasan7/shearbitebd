@@ -43,7 +43,16 @@ node scripts/database-setup-state.mjs mark
 if errorlevel 1 goto fail
 
 :launch
+if /i "%~1"=="--demo" goto demo
 node scripts/start-and-open.mjs
+if errorlevel 1 goto fail
+exit /b 0
+
+:demo
+echo [*] Building ShareBite BD for the presentation. Please wait...
+call npm run build
+if errorlevel 1 goto fail
+node scripts/start-and-open.mjs --demo
 if errorlevel 1 goto fail
 exit /b 0
 

@@ -260,8 +260,9 @@ async function runNode(args, env = {}) {
 
 async function startServer() {
   log = "";
-  server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", testHost, "--port", String(port)], {
-    cwd: process.cwd(), env: { ...process.env, DATABASE_URL: databaseUrl.href, AUTH_COOKIE_SECURE: "false" },
+  const serverArgs = process.env.TEST_DEMO_LAUNCHER === "1" ? ["scripts/start-and-open.mjs", "--demo", "--no-open"] : ["node_modules/next/dist/bin/next", "start", "--hostname", testHost, "--port", String(port)];
+  server = spawn(process.execPath, serverArgs, {
+    cwd: process.cwd(), env: { ...process.env, PORT: String(port), DATABASE_URL: databaseUrl.href, AUTH_COOKIE_SECURE: "false" },
     stdio: ["ignore", "pipe", "pipe"], windowsHide: true,
   });
   server.stdout.on("data", (chunk) => { log = (log + chunk).slice(-8000); });
@@ -282,6 +283,14 @@ async function stopServer() {
     const closed = once(server, "exit");
     server.kill();
     await closed;
+    if (process.env.TEST_DEMO_LAUNCHER === "1") {
+      await new Promise((resolve, reject) => {
+        const probe = net.createConnection({ host: testHost, port });
+        probe.once("connect", () => { probe.destroy(); reject(new Error("Demo launcher left its server running after stop")); });
+        probe.once("error", resolve);
+        probe.setTimeout(1000, () => { probe.destroy(); reject(new Error("Demo shutdown port check timed out")); });
+      });
+    }
   }
 }
 
@@ -3217,6 +3226,10 @@ test("browser admin user controls separate verification and account access on mo
 });
 
 test("browser complete rescue journey publishes, claims, assigns and distributes with recoverable errors",{skip:process.env.RUN_JOURNEY_BROWSER!=="1",timeout:360_000},async()=>{
+ if(process.env.TEST_DEMO_LAUNCHER==="1") {
+  assert.ok(log.includes("[READY] This computer:"), "Demo launcher announces a ready local URL");
+  assert.ok(log.includes(base), "Demo launcher announces the actual LAN address and selected port");
+ }
  const {startRescueThroughUi}=await import("./journey-start-browser.mjs");
  const {runCoordinationBrowserChecks}=await import("./coordination-browser.mjs");
  const helpers={base,prisma,request,login,seedUser,fixturePassword,assignedRescue,issue,reportIncident};

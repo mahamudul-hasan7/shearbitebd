@@ -3,6 +3,10 @@
 এই guide-এ সংরক্ষিত database record দিয়ে তিন account-এর পুরো flow দেখানো হবে।
 Admin dashboard থেকে account verification এবং operational report review করা যায়।
 
+প্রথম update-এর সংক্ষিপ্ত rehearsal ও slide scope:
+[৭ মিনিটের demo নির্দেশনা](FIRST_UPDATE_DEMO_BN.md)। Windows-এ `run-demo.bat` build করে
+presentation server চালায় এবং terminal-এ current LAN URL দেখায়।
+
 ## ভাষা বেছে নেওয়া
 
 হোমপেজ, লগইন বা অ্যাকাউন্টের উপরের `EN / বাংলা` থেকে ভাষা বেছে নিন। পাতা বদলালে
@@ -23,10 +27,10 @@ Admin dashboard থেকে account verification এবং operational report r
    একই browser-এর সাধারণ tab-গুলো একই login cookie ব্যবহার করে।
 3. নিজের তিনটি account register করুন বা বিদ্যমান account ব্যবহার করুন। Guide কোনো
    account-এর password প্রকাশ করে না। Owner-এর নির্দেশে password hashing এখনও স্থগিত।
-4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Accounts** পাতায় নতুন account যাচাই করুন।
+4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Verification Requests** পাতায় নতুন account যাচাই করুন।
    Local admin-এর username `admin` এবং password `admin123`।
    বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। NGO ও volunteer register করার পর DEMO / SAMPLE লেখা PDF বা ছবি জমা দিন।
-   Admin-এর Accounts থেকে ফাইল preview করে approve/reject করুন।
+   Admin-এর Verification Requests থেকে ফাইল preview করে approve/reject করুন।
    Account approval কোনো food safety certificate নয়।
 
 খাবার খোঁজা, filter, map ও claim confirmation দেখানোর জন্য
