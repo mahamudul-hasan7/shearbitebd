@@ -51,6 +51,9 @@
   border-color: rgb(255 255 255 / 12%);
 }
 .sidebarLink {
+  position: relative;
+  z-index: 1;
+  --nav-progress-color: white;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -60,8 +63,14 @@
   font-size: 13px;
   font-weight: 600;
   color: rgb(255 255 255 / 82%);
-  transition: background 180ms;
+  transition: background 180ms, color 180ms, transform 180ms;
 }
+.sidebarNav { position:relative; isolation:isolate; }
+.sidebarSelection { position:absolute; top:0; left:0; z-index:0; border-radius:12px; background-color:var(--role-accent); background-image:linear-gradient(110deg,#ffffff12,transparent); box-shadow:inset 0 0 0 1px #ffffff24,0 3px 12px #00000014; pointer-events:none; visibility:hidden; }
+.sidebarSelection[data-visible="true"] { visibility:visible; }
+.sidebarNav[data-selection-ready="true"] .sidebarLink[aria-current] { background:transparent; }
+.sidebarLink:active,.drawerLink:active { transform:translateX(1px) scale(.99); }
+.drawerLink { position:relative; transition:background 180ms,color 180ms,transform 180ms; }
 .sidebarLink:hover {
   background: rgb(255 255 255 / 9%);
 }
@@ -143,4 +152,7 @@
   .sidebarLink {
     transition: none;
   }
+  .drawerLink { transition:none; }
+  .sidebarLink:active,.drawerLink:active { transform:none; }
 }
+@media(forced-colors:active) { .sidebarSelection { background:Highlight; box-shadow:none; } .sidebarLink[aria-current] { color:HighlightText; } }

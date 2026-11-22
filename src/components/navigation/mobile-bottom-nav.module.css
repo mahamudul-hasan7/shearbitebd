@@ -14,7 +14,7 @@
 .selection[data-visible="false"] { opacity:0; }
 .tab { position:relative; z-index:1; display:grid; grid-template-rows:30px 24px; align-content:center; justify-items:center; gap:2px; min-width:0; min-height:64px; padding:2px; border-radius:23px; color:#2f4354; text-align:center; text-decoration:none; touch-action:manipulation; transition:color 180ms,transform 180ms cubic-bezier(.2,.7,.3,1); }
 .tab[aria-current="page"] { color:var(--role-ink,#07533f); }
-.tab:active { transform:translateY(1px) scale(.94); }
+.tab:active { transform:translateY(1px) scale(.98); }
 .iconWrap { position:relative; display:grid; width:30px; height:30px; place-items:center; }
 .icon { width:22px; height:22px; stroke-width:1.85; }
 .label { max-width:100%; font-size:10.5px; font-weight:600; line-height:1.35; overflow-wrap:normal; text-wrap:balance; }

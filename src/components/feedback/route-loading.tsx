@@ -1,5 +1,9 @@
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export function RouteLoading({ label }: { label: string }) {
-  return <main className="min-h-svh bg-canvas"><LoadingSpinner label={label} fullPage /></main>;
+  return (
+    <main className="min-h-[60svh] bg-canvas">
+      <LoadingSpinner label={label} className="min-h-[60svh]" />
+    </main>
+  );
 }

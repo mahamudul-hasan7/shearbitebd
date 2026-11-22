@@ -12,6 +12,11 @@ import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-stor
 import { ROUTES } from "@/lib/routes";
 import type { PortalRole } from "@/types/navigation";
 import { LiveIcon } from "@/components/motion/live-icon";
+import { useRef } from "react";
+import { usePathname } from "next/navigation";
+import { useNavigationSelection } from "./navigation-motion";
+import { missionNavigation, selectedNavigationHref } from "./navigation-state";
+import { NavigationFeedback } from "./navigation-feedback";
 
 export function DesktopSidebar({
   role,
@@ -25,19 +30,21 @@ export function DesktopSidebar({
   avatarInitials?: string;
 }) {
   const tx = useUiText();
+  const pathname = usePathname();
+  const navigation = useRef<HTMLElement>(null);
+  const selection = useRef<HTMLSpanElement>(null);
   const { session } = useMockAuth();
   const { activeMission } = useVolunteerStore();
   const feed = useNotificationFeed();
   const unread = feed.notifications.filter((item) => !item.read).length;
-  const items = (
-    getNavigation(role, activeHref.startsWith("/preview/")) as DesktopNavItem[]
-  ).map((item) =>
-    role === "volunteer" &&
-    item.href.endsWith("#active-mission") &&
-    activeMission
-      ? { ...item, href: ROUTES.volunteer.mission(activeMission.id) }
-      : item,
+  const items = missionNavigation(
+    getNavigation(role, activeHref.startsWith("/preview/")) as DesktopNavItem[],
+    role === "volunteer" && activeMission
+      ? ROUTES.volunteer.mission(activeMission.id)
+      : undefined,
   );
+  const selected = selectedNavigationHref(items, activeHref, pathname);
+  useNavigationSelection(navigation, selection, selected);
   return (
     <aside
       className={`${theme.sidebar} fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r text-white lg:flex`}
@@ -49,17 +56,28 @@ export function DesktopSidebar({
         </div>
       </div>
       <nav
+        ref={navigation}
         aria-label={tx("Account sidebar")}
-        className="grid flex-1 content-start gap-1 overflow-y-auto p-3"
+        className={`${theme.sidebarNav} grid flex-1 content-start gap-1 overflow-y-auto p-3`}
       >
+        <span
+          ref={selection}
+          className={theme.sidebarSelection}
+          aria-hidden="true"
+          data-testid="sidebar-nav-selection"
+        />
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            aria-current={activeHref === item.href ? "page" : undefined}
+            aria-current={selected === item.href ? "page" : undefined}
             className={theme.sidebarLink}
           >
-            <LiveIcon icon={item.icon} className="size-4 shrink-0" />
+            <LiveIcon
+              icon={item.icon}
+              motion={selected === item.href ? "once" : "interaction"}
+              className="size-4 shrink-0"
+            />
             <span className="flex-1">{tx(item.label)}</span>
             {item.href.endsWith("/notifications") && unread > 0 && (
               <span
@@ -69,6 +87,7 @@ export function DesktopSidebar({
                 {unread}
               </span>
             )}
+            <NavigationFeedback />
           </Link>
         ))}
       </nav>

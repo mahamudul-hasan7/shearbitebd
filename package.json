@@ -52,6 +52,7 @@
     "git:daily:remove": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/remove-daily-push.ps1",
     "postinstall": "node scripts/setup-git-hooks.mjs && node scripts/setup-pdf-worker.mjs",
     "test:role-ui:browser": "node scripts/test-role-ui-browser.mjs",
+    "test:navigation:browser": "node scripts/test-navigation-browser.mjs",
     "test:portals:browser": "node scripts/test-portal-consistency-browser.mjs",
     "test:admin-users:browser": "node scripts/test-admin-users-browser.mjs",
     "test:admin:browser": "node scripts/test-admin-browser.mjs",
