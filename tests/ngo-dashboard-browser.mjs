@@ -14,7 +14,7 @@ export async function runNgoDashboardBrowserChecks({prisma,base,login,secondLogi
   const reserved=await newDonation(donor,{title:"Awaiting food pickup"});assert.equal(reserved.response.status,201);await jsonResult("/api/claims",{cookie:ngo,method:"POST",body:{donationId:reserved.body.donation.id}},201);
   const first=await newDonation(donor,{title:"Shared vegetable lunch"});const second=await newDonation(donor,{title:"Next food collection",safePickupDeadline:new Date(Date.now()+7200_000).toISOString()});assert.equal(first.response.status,201);assert.equal(second.response.status,201);
   await prisma.donation.update({where:{id:first.body.donation.id},data:{pickupLatitude:23.781,pickupLongitude:90.422}});
-  const browser=await chromium.launch({headless:true,channel:process.env.PLAYWRIGHT_CHANNEL || undefined});const results=[];
+  const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_EXECUTABLE_PATH,channel:process.env.PLAYWRIGHT_CHANNEL || undefined});const results=[];
   try {
     for(const [width,height,language] of [[320,844,"bn"],[390,844,"en"],[768,1024,"bn"],[844,390,"en"],[1280,900,"en"],[1440,900,"bn"]]) {
       const context=await browser.newContext({baseURL:base,viewport:{width,height}});await context.addInitScript(lang=>localStorage.setItem("sharebite_preferred_lang",lang),language);
@@ -22,7 +22,7 @@ export async function runNgoDashboardBrowserChecks({prisma,base,login,secondLogi
       const page=await context.newPage();const errors=[];page.on("pageerror",error=>errors.push(error.message));
       await page.goto("/ngo/dashboard",{waitUntil:"networkidle"});const root=page.getByTestId("ngo-dashboard");await root.waitFor();
       const active=root.getByTestId("ngo-active-work");await active.locator("article").first().waitFor();assert.equal(await active.locator("article").first().getAttribute("data-claim-id"),delivered.claim.id);
-      const order=await root.evaluate(e=>[...e.children].map(child=>child.getAttribute('data-testid')));assert.equal(order[0],"ngo-stats-section");assert.equal(order[1],"ngo-active-work");
+      const order=await root.evaluate(e=>[...e.children].map(child=>child.getAttribute('data-testid')));assert.equal(order[0],"ngo-active-work");assert.equal(order[1],"ngo-stats-section");
       assert.equal(await page.getByRole("heading",{name:new RegExp("Campus Food Support")}).count(),1,"The large organization title is not repeated in a banner");
       const locale=language==="bn"?"bn-BD":"en-BD";
       const impact=await jsonResult("/api/impact",{cookie:ngo});
@@ -33,6 +33,7 @@ export async function runNgoDashboardBrowserChecks({prisma,base,login,secondLogi
       assert.equal(await active.getByText("ETA",{exact:true}).count(),0,"Do not show an invented pickup ETA");
       if(width===390){
         const stats=root.getByTestId("ngo-stats");
+        await stats.scrollIntoViewIfNeeded();
         await page.waitForFunction(()=>document.querySelector('[data-testid="ngo-stats"]')?.getAttribute('data-motion')==='running');
         const movingParts=()=>stats.evaluate(el=>el.getAnimations({subtree:true}).filter(a=>a.effect?.target instanceof SVGElement).length);
         assert.ok(await movingParts()>=8,"The icons animate their individual working parts");
@@ -43,7 +44,7 @@ export async function runNgoDashboardBrowserChecks({prisma,base,login,secondLogi
         await page.emulateMedia({reducedMotion:'no-preference'});
         await page.evaluate(()=>scrollTo({top:document.body.scrollHeight,behavior:'instant'}));
         await page.waitForFunction(()=>document.querySelector('[data-testid="ngo-stats"]')?.getAttribute('data-motion')==='paused');
-        await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+        await stats.scrollIntoViewIfNeeded();
         await page.waitForFunction(()=>document.querySelector('[data-testid="ngo-stats"]')?.getAttribute('data-motion')==='running');
       }
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

@@ -58,6 +58,19 @@ export function createInitialDonationDraft(now = new Date()): DonationDraft {
   };
 }
 
+export function createCampusLunchDraft(): DonationDraft {
+  return {
+    ...createInitialDonationDraft(),
+    title: "Campus lunch demo · Vegetable khichuri",
+    description: "Twenty individual boxes of rice, lentils and vegetables for a campus lunch pickup.",
+    dietaryType: DietaryType.VEGETARIAN,
+    quantity: "20",
+    allergenInfo: "Mustard",
+    directions: "Meet at the cafeteria collection counter at the saved pickup address.",
+    sampleImageId: "packed-meals",
+  };
+}
+
 export function restoreDonationDraft(value: unknown, fallback = createInitialDonationDraft()): DonationDraft {
   if (!value || typeof value !== "object") return fallback;
   const candidate = value as Partial<DonationDraft>;

@@ -78,6 +78,7 @@ export function VolunteerDashboard() {
     return () => { controller.abort(); window.clearInterval(timer); window.removeEventListener("focus", poll); };
   }, [session?.email, session?.displayName, syncWithUserSession, fetchDispatches]);
 
+  const hasCurrentMission = Boolean(activeMission && activeMission.currentStage !== "completed");
   const volunteerName = session?.displayName || profile.fullName;
   const volunteerInitials = volunteerName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || profile.avatarInitials;
 
@@ -125,6 +126,9 @@ export function VolunteerDashboard() {
       profileName={volunteerName}
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={volunteerInitials}
+      showDutyPanel={false}
+      compactHeader={hasCurrentMission}
+      actionsClassName={hasCurrentMission ? ui.desktopActions : undefined}
       actions={
         <div className={ui.headerActions}>
           <ButtonLink
@@ -140,13 +144,13 @@ export function VolunteerDashboard() {
             leftIcon={<ShieldCheck className="size-4 text-[var(--role-accent)]" />}
             className={ui.secondaryAction}
           ><UiText source={"ডিজিটাল আইডি"} /></ButtonLink></span>
-          <ButtonLink
+          {!hasCurrentMission && <ButtonLink
             href={ROUTES.volunteer.dispatches}
             variant="primary"
             leftIcon={<LiveIcon icon={Navigation} motion="interaction" className="size-4" />}
             className={ui.primaryAction}
           ><UiText source={"উন্মুক্ত ডিসপ্যাচ ("} />{dispatches.length})
-          </ButtonLink>
+          </ButtonLink>}
         </div>
       }
     >
