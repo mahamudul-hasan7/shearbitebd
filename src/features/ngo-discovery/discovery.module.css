@@ -23,7 +23,7 @@
   font-size: 12px;
 }
 .metric svg {
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
   flex-shrink: 0;
 }
 .metric strong {
@@ -73,7 +73,7 @@
   font-size: 13px;
 }
 .search:focus-within {
-  outline: 2px solid var(--brand-500);
+  outline: 2px solid var(--role-accent, var(--brand-500));
   outline-offset: 2px;
 }
 .iconButton,
@@ -90,10 +90,10 @@
   min-width: 44px;
   flex-shrink: 0;
   cursor: pointer;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
 }
 .iconButton:hover {
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .pageSelect {
   border: 1px solid var(--line);
@@ -127,7 +127,7 @@
   font-weight: 600;
 }
 .viewToggle a[aria-current] {
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   background: var(--surface);
   box-shadow: var(--shadow-card);
 }
@@ -152,9 +152,9 @@
   background: var(--surface);
 }
 .chip[aria-pressed="true"] {
-  background: var(--brand-50);
-  border-color: var(--brand-300);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  border-color: var(--role-border, var(--brand-300));
+  color: var(--role-ink, var(--brand-800));
 }
 .controlFooter {
   display: flex;
@@ -175,7 +175,7 @@
   min-height: 44px;
   padding: 6px 10px;
   font-size: 12px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -261,7 +261,7 @@
 .photo {
   position: relative;
   min-height: 200px;
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .photo img {
   object-fit: cover;
@@ -281,7 +281,7 @@
   gap: 6px;
   align-items: center;
   font-size: 11px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-weight: 600;
 }
 .card h3 {
@@ -298,7 +298,7 @@
   min-height: 44px;
 }
 .card h3 a:hover {
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .donor {
   margin-top: 5px;
@@ -344,7 +344,7 @@
   gap: 12px;
   justify-content: space-between;
   padding: 14px 18px;
-  background: color-mix(in srgb, var(--brand-50) 45%, var(--surface));
+  background: color-mix(in srgb, var(--role-soft, var(--brand-50)) 45%, var(--surface));
   border-top: 1px solid var(--line);
 }
 .fit {
@@ -353,7 +353,7 @@
   gap: 6px;
   font-size: 11px;
   line-height: 1.8;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
 }
 .fit svg {
   flex-shrink: 0;
@@ -419,7 +419,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -436,7 +436,7 @@
   gap: 7px;
   cursor: pointer;
   font-weight: 600;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
 }
 .recommendation p {
   padding: 0 4px 10px;
@@ -445,14 +445,14 @@
   display: grid;
   justify-items: center;
   gap: 14px;
-  border: 1px dashed var(--brand-200);
+  border: 1px dashed var(--role-border, var(--brand-200));
   border-radius: 20px;
   background: var(--surface);
   padding: 45px 24px;
   text-align: center;
 }
 .empty > svg {
-  color: var(--brand-600);
+  color: var(--role-accent, var(--brand-600));
 }
 .empty h2 {
   font-size: 21px;
@@ -613,8 +613,8 @@
   background: var(--surface);
 }
 .mapItem[aria-pressed="true"] {
-  border-color: var(--brand-400);
-  background: var(--brand-50);
+  border-color: var(--role-accent, var(--brand-400));
+  background: var(--role-soft, var(--brand-50));
 }
 .mapItem strong {
   font-size: 13px;
@@ -637,7 +637,7 @@
 .workspace summary:focus-visible,
 .workspace select:focus-visible,
 .dialog :focus-visible {
-  outline: 2px solid var(--brand-600);
+  outline: 2px solid var(--role-accent, var(--brand-600));
   outline-offset: 3px;
 }
 @keyframes discoverIn {
@@ -831,7 +831,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 4px;

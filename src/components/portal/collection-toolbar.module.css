@@ -1,0 +1,26 @@
+.toolbar {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.toolbar :is(input, select) {
+  min-height: 44px;
+  border-radius: 12px;
+}
+.toolbar button {
+  min-height: 44px;
+}
+.toolbar button[aria-pressed="true"] {
+  background: var(--role-accent, var(--brand-700));
+  color: white;
+  border-color: var(--role-accent, var(--brand-700));
+}
+.toolbar button[aria-pressed="true"] > span:last-child:not(:first-child) {
+  background: rgb(255 255 255 / 16%);
+  color: white;
+}

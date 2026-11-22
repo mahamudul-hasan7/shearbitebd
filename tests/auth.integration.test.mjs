@@ -3224,3 +3224,8 @@ test("browser complete rescue journey publishes, claims, assigns and distributes
 test("browser receipt recovery supports retries, focused errors, one save and damaged food guidance",{skip:process.env.RUN_JOURNEY_BROWSER!=="1",timeout:180_000},async()=>{
  const {receiptRecoveryChecks}=await import("./receipt-recovery-browser.mjs");await receiptRecoveryChecks({base,prisma,deliveredRescue});
 });
+
+test("browser role UI system stays consistent across portal pages with distinct accessible identities",{skip:process.env.RUN_ROLE_UI_BROWSER!=="1",timeout:600_000},async()=>{
+ const {runRoleUiChecks}=await import("./role-ui-browser.mjs");
+ await runRoleUiChecks({base,request,login,newDonation,deliveredRescue,saveReceipt,distribute,distributionInput});
+});

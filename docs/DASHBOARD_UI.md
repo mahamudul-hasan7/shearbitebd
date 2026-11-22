@@ -1,6 +1,6 @@
-# Donor and NGO dashboard UI
+# Portal dashboard UI
 
-Both dashboards use `src/components/dashboard/dashboard-ui.tsx` and its CSS module
+Donor and NGO dashboards use `src/components/dashboard/dashboard-ui.tsx` and its CSS module
 for headings, metric cards, active-work surfaces, history disclosures, activity rows
 and retry feedback. Header actions use the same button styles. Colors and borders
 come from the existing global design tokens.
@@ -39,3 +39,9 @@ verifies initial-error and failed-refresh recovery.
 
 Existing donor, NGO and rider-offer browser scenarios also cover posting,
 claiming, handovers, duty changes, competing riders and repeated acceptance.
+
+Rider now uses the same dashboard work cards, section headings, metric grid and
+header action styles. Its next mission action and recorded delivery totals replace
+the decorative hero metrics. Operational mission, OTP and safety controls remain
+available. All three roles receive distinct scoped accents and persistent identity
+badges through the [shared portal system](PORTAL_UI_SYSTEM_BN.md).

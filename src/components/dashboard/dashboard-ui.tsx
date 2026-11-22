@@ -59,7 +59,7 @@ export function DashboardMetrics({
   columns = 4,
   className,
   ...props
-}: HTMLAttributes<HTMLDivElement> & { columns?: 3 | 4 }) {
+}: HTMLAttributes<HTMLDivElement> & { columns?: 2 | 3 | 4 }) {
   return (
     <LiveIconGroup
       data-columns={columns}

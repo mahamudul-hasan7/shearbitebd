@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { DonationManagementCard } from "@/components/donation/donation-management-card";
+import { CollectionToolbar } from "@/components/portal/collection-toolbar";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -220,7 +221,7 @@ export function DonorDonationList() {
           </section>
 
           {/* 2. Streamlined Navigation Tabs & Filters Bar */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-4 shadow-2xs space-y-3.5">
+          <CollectionToolbar label={tx("Donation filters")}>
             {/* Top Row: 4 Consolidated Purposeful Tabs */}
             <div className="flex gap-1.5 overflow-x-auto pb-1 text-xs font-bold font-heading">
               {DONATION_TABS.map((item) => {
@@ -230,6 +231,7 @@ export function DonorDonationList() {
                     key={item.key}
                     type="button"
                     onClick={() => setTab(item.key)}
+                    aria-pressed={isActive}
                     className={cn(
                       "shrink-0 inline-flex items-center gap-2 rounded-xl px-4 py-2 transition-all cursor-pointer",
                       isActive
@@ -258,6 +260,7 @@ export function DonorDonationList() {
                 <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
                 <input
                   type="text"
+                  aria-label={tx("Search donations")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={tx("খাবারের নাম, রেফারেন্স কোড বা এলাকা দিয়ে খুঁজুন...")}
@@ -268,6 +271,7 @@ export function DonorDonationList() {
               {/* Category Dropdown */}
               <div className="sm:col-span-3">
                 <select
+                  aria-label={tx("Food category")}
                   value={category}
                   onChange={(e) => setCategory(e.target.value as FoodCategory | "all")}
                   className="h-9.5 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 text-xs font-semibold text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
@@ -284,6 +288,7 @@ export function DonorDonationList() {
               {/* Sort Dropdown */}
               <div className="sm:col-span-3">
                 <select
+                  aria-label={tx("Sort donations")}
                   value={sort}
                   onChange={(e) => setSort(e.target.value as DonationSort)}
                   className="h-9.5 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 text-xs font-semibold text-slate-800 focus:bg-white focus:border-emerald-500 focus:outline-hidden"
@@ -294,7 +299,7 @@ export function DonorDonationList() {
                 </select>
               </div>
             </div>
-          </div>
+          </CollectionToolbar>
 
           {/* Results Summary & Reset Filter */}
           <div className="flex flex-wrap items-center justify-between gap-3 px-1 text-xs font-heading">

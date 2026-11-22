@@ -43,3 +43,11 @@
 @media(max-width:359px) { .header { gap:9px; padding-inline:14px; } .bike { width:40px; height:44px; border-radius:13px; } .header h2 { font-size:17px; } .content { padding-inline:16px; } .food h3 { font-size:16px; } }
 @keyframes spin { to { transform:rotate(360deg); } }
 @media(prefers-reduced-motion:reduce) { .dialog * { animation:none!important; transition:none!important; } }
+
+/* The offer uses the same rider identity as the surrounding workspace. */
+.header { background:var(--role-soft); }
+.bike { color:var(--role-ink); border-color:var(--role-border); background:var(--role-soft); }
+.header h2 { color:var(--ink-900); }
+.header p { color:var(--muted-600); }
+.accept { background:var(--role-accent); color:white; }
+.accept:hover:not(:disabled) { background:var(--role-hover); }

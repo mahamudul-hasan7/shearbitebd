@@ -1,4 +1,5 @@
 "use client";
+import { CollectionToolbar } from "@/components/portal/collection-toolbar";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { Search, X } from "lucide-react";
@@ -26,20 +27,27 @@ export function ClaimFilters({
   const isBn = language === "bn";
 
   function countFor(value: ClaimFilter) {
-    return value === "ALL" ? items.length : items.filter((item) => item.claim.status === value).length;
+    return value === "ALL"
+      ? items.length
+      : items.filter((item) => item.claim.status === value).length;
   }
 
   return (
-    <div className="grid gap-3.5">
+    <CollectionToolbar label={tx("Claim filters")}>
       {/* Modern Search Input with Clear Button */}
       <div className="relative flex items-center">
         <Search className="pointer-events-none absolute left-4 size-5 text-slate-400" />
         <input
           type="text"
+          aria-label={tx("Search claims")}
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder={
-            isBn ? tx("খাদ্যের নাম, দাতা সংস্থা, এলাকা বা ক্লেইম আইডি দিয়ে খুঁজুন...") : tx("Search by food title, donor organization, area, volunteer, or claim ID...")
+            isBn
+              ? tx("খাদ্যের নাম, দাতা সংস্থা, এলাকা বা ক্লেইম আইডি দিয়ে খুঁজুন...")
+              : tx(
+                  "Search by food title, donor organization, area, volunteer, or claim ID...",
+                )
           }
           className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white pl-11 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 shadow-xs transition hover:border-slate-300 focus:border-emerald-600 focus:outline-none focus:ring-3 focus:ring-emerald-500/15"
         />
@@ -48,7 +56,7 @@ export function ClaimFilters({
             type="button"
             onClick={() => onSearchChange("")}
             title={isBn ? tx("সার্চ মুছুন") : tx("Clear search")}
-            className="absolute right-3.5 grid size-6 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800"
+            className="absolute right-1 grid size-11 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800"
           >
             <X className="size-3.5" />
           </button>
@@ -58,7 +66,11 @@ export function ClaimFilters({
       {/* Status Filter Pill Row */}
       <div
         role="group"
-        aria-label={isBn ? tx("স্ট্যাটাস অনুসারে ক্লেইম ফিল্টার করুন") : tx("Filter claims by status")}
+        aria-label={
+          isBn
+            ? tx("স্ট্যাটাস অনুসারে ক্লেইম ফিল্টার করুন")
+            : tx("Filter claims by status")
+        }
         className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
       >
         {CLAIM_FILTERS.map((item) => {
@@ -96,6 +108,6 @@ export function ClaimFilters({
           );
         })}
       </div>
-    </div>
+    </CollectionToolbar>
   );
 }

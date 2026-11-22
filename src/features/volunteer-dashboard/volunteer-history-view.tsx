@@ -5,10 +5,8 @@ import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import { useEffect, useState } from "react";
 import {
-  Activity,
   Building2,
   CheckCircle2,
-  Coins,
   FileCheck2,
   FileText,
   MapPin,
@@ -19,6 +17,9 @@ import {
   Utensils,
   X,
 } from "lucide-react";
+import { CollectionToolbar } from "@/components/portal/collection-toolbar";
+import { DashboardMetrics, DashboardMetric } from "@/components/dashboard/dashboard-ui";
+import ui from "@/components/dashboard/dashboard.module.css";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -58,14 +59,6 @@ export function VolunteerHistoryView() {
     return matchesSearch && matchesArea;
   });
 
-  const totalServings = completedHistory.reduce((sum, item) => sum + item.servings, 0);
-  const totalValueSaved = completedHistory.reduce((sum, item) => sum + item.foodValueSavedEstimated, 0);
-  const totalKm = completedHistory.reduce((sum, item) => sum + item.distanceKm, 0);
-  const avgMins =
-    completedHistory.length > 0
-      ? (completedHistory.reduce((sum, item) => sum + item.durationMins, 0) / completedHistory.length).toFixed(1)
-      : "0";
-
   function handlePrintSummary() {
     window.print();
   }
@@ -93,77 +86,34 @@ export function VolunteerHistoryView() {
         </div>
       }
     >
-      <div className="space-y-7">
+      <div className={ui.stack}>
         {loadError && <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-700">{loadError}</p>}
-        {/* Top 4 Impact KPI Bento */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Utensils className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">{tx("মোট উদ্ধারকৃত মিল")}</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-white sm:text-3xl">
-              {totalServings.toLocaleString(getUiLocale())}{tx("টি")}</p>
-            <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {completedHistory.length > 0 ? tx("{0}টি সফল মিশনে প্রত্যক্ষ সুবিধাপ্রাপ্ত", completedHistory.length) : tx("এখনো কোনো সম্পন্ন মিশন নেই")}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Coins className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">{tx("বাঁচানো খাবারের মূল্য")}</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-amber-300 sm:text-3xl">
-              {tx("৳")}{totalValueSaved.toLocaleString(getUiLocale())}
-            </p>
-            <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {tx("খাদ্য অপচয় রোধকৃত বাজারমূল্য")}</p>
-          </div>
-
-          <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Truck className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">{tx("মোট অতিক্রান্ত দূরত্ব")}</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-white sm:text-3xl">
-              {totalKm.toFixed(1)} {tx("কিমি")}</p>
-            <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {tx("সংরক্ষিত endpoints-এর সরাসরি দূরত্বের যোগফল")}</p>
-          </div>
-
-          <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#02241b] to-[#011812] p-5 text-white shadow-lg">
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Activity className="size-4" />
-              <p className="text-[11px] font-black uppercase tracking-wider">{tx("গড় রেসকিউ সময়")}</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-emerald-300 sm:text-3xl">
-              {completedHistory.length > 0 ? tx("{0} মিনিট", avgMins) : tx("নতুন রাইডার")}
-            </p>
-            <p className="mt-1 text-[11px] text-emerald-300/70 font-medium">
-              {tx("সময়নিষ্ঠতার rating মাপা হয়নি")}
-            </p>
-          </div>
-        </div>
+        {/* Impact from verified delivery and distribution records */}
+        <DashboardMetrics columns={2}>
+          <DashboardMetric label="Verified deliveries" value={completedHistory.filter(item=>item.status==="delivered_verified").length.toLocaleString(getUiLocale())} icon={Truck}/>
+          <DashboardMetric label="Meals distributed" value={completedHistory.filter(item=>item.status==="delivered_verified").reduce((n,item)=>n+item.servings,0).toLocaleString(getUiLocale())} icon={Utensils}/>
+        </DashboardMetrics>
 
         {/* Filter and Search Bar */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-line bg-canvas/60 p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
+        <CollectionToolbar label={tx("Mission history filters")}><div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-400" />
             <input
               type="text"
               placeholder={tx("খাবারের নাম, রেস্তোরাঁ, এলাকা বা এনজিও নাম দিয়ে খুঁজুন...")}
+              aria-label={tx("Search mission history")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-10 w-full rounded-xl border border-line bg-white pl-10 pr-4 text-xs font-medium text-ink-900 placeholder:text-muted-400 focus:border-emerald-600 focus:outline-hidden"
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <select
+              aria-label={tx("Pickup area")}
               value={selectedArea}
               onChange={(e) => setSelectedArea(e.target.value)}
-              className="h-10 rounded-xl border border-line bg-white px-3 text-xs font-bold text-ink-900 focus:border-emerald-600 focus:outline-hidden"
+              className="h-11 min-w-0 max-w-full rounded-xl border border-line bg-white px-3 text-xs font-bold text-ink-900 focus:border-emerald-600 focus:outline-hidden"
             >
               <option value="all">{tx("সকল এলাকা (Dhaka Metro)")}</option>
               <option value="বাড্ডা">{tx("বাড্ডা / নতুন বাজার")}</option>
@@ -177,7 +127,7 @@ export function VolunteerHistoryView() {
             <span className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-800 border border-emerald-200 shrink-0">
               {tx("রেকর্ড:")}{filteredMissions.length}{tx("টি")}</span>
           </div>
-        </div>
+        </div></CollectionToolbar>
 
         {/* Missions List */}
         {filteredMissions.length > 0 ? (
