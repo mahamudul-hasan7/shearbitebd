@@ -38,8 +38,8 @@
     color 180ms;
 }
 .filters button[aria-pressed="true"] {
-  background: var(--brand-50);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
 }
 .filters button span {
   font-size: 11px;
@@ -66,7 +66,7 @@
   transition: background 160ms;
 }
 .listRow:hover {
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .listPhoto {
   position: relative;
@@ -75,7 +75,7 @@
   width: 56px;
   height: 62px;
   border-radius: 12px;
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .listCopy {
   display: grid;
@@ -104,7 +104,7 @@
 }
 .rowArrow {
   flex-shrink: 0;
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .empty {
   display: grid;
@@ -118,7 +118,7 @@
   color: var(--muted-600);
 }
 .empty > svg {
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .empty p {
   color: var(--ink-700);
@@ -140,7 +140,7 @@
   height: 86px;
   flex-shrink: 0;
   border-radius: 13px;
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
   overflow: hidden;
 }
 .activeCopy {
@@ -190,7 +190,7 @@
 .emptyOverview > svg {
   flex-shrink: 0;
   margin-top: 3px;
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .emptyOverview h2 {
   margin: 0 0 6px;
@@ -227,8 +227,8 @@
   height: 30px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: var(--brand-50);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
   font-size: 13px;
   font-weight: 600;
 }
@@ -246,7 +246,7 @@
   line-height: 1.8;
 }
 .dashboard :is(button, a):focus-visible {
-  outline: 3px solid var(--brand-500);
+  outline: 3px solid var(--role-accent, var(--brand-500));
   outline-offset: 4px;
 }
 @media (min-width: 380px) {

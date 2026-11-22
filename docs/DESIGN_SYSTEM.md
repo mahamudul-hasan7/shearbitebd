@@ -110,7 +110,7 @@ The same page content is composed at all breakpoints. Do not maintain separate m
 ## Shared portal patterns and role identity
 
 Donor, NGO and Rider use the same page frame, neutral cards, controls and feedback
-patterns. Scoped `PortalTheme` variables provide emerald, blue and deep-orange
+patterns. Scoped `PortalTheme` variables provide forest green, slate blue and copper
 identity accents. A visible icon/text role badge remains in desktop and mobile
 headers. Semantic success/warning/danger and base brand tokens retain their meaning.
 Use `CollectionToolbar` for list filters, shared dashboard metrics/work cards for

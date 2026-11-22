@@ -48,9 +48,27 @@ export async function runRoleUiChecks(h) {
     volunteer: active.volunteer,
   };
   const palettes = {
-    donor: { accent: "#047857", rgb: "rgb(4, 120, 87)", label: "Donor" },
-    ngo: { accent: "#1d4ed8", rgb: "rgb(29, 78, 216)", label: "NGO" },
-    volunteer: { accent: "#c2410c", rgb: "rgb(194, 65, 12)", label: "Rider" },
+    donor: {
+      accent: "#176b55",
+      rgb: "rgb(23, 107, 85)",
+      soft: "rgb(237, 245, 241)",
+      ink: "rgb(18, 79, 64)",
+      label: "Donor",
+    },
+    ngo: {
+      accent: "#3d5f87",
+      rgb: "rgb(61, 95, 135)",
+      soft: "rgb(238, 243, 248)",
+      ink: "rgb(46, 72, 101)",
+      label: "NGO",
+    },
+    volunteer: {
+      accent: "#9a5b35",
+      rgb: "rgb(154, 91, 53)",
+      soft: "rgb(248, 241, 235)",
+      ink: "rgb(117, 67, 41)",
+      label: "Rider",
+    },
   };
   const routes = {
     donor: [
@@ -187,14 +205,20 @@ export async function runRoleUiChecks(h) {
       .filter({ visible: true })
       .all()) {
       const color = await button.evaluate((node) => ({
-        bg: getComputedStyle(node).backgroundImage,
+        bg: getComputedStyle(node).backgroundColor,
+        image: getComputedStyle(node).backgroundImage,
         text: getComputedStyle(node).color,
       }));
       assert.ok(
-        color.bg.includes(palettes[role].rgb),
+        color.bg === palettes[role].rgb,
         `${path} primary uses ${role}: ${color.bg}`,
       );
       assert.equal(color.text, "rgb(255, 255, 255)");
+      assert.equal(
+        color.image,
+        "none",
+        "Portal primary actions use a solid role accent",
+      );
     }
     if (path.endsWith("/dashboard")) {
       const meals = page.locator('[data-stat="meals"] > p').first();
@@ -212,8 +236,21 @@ export async function runRoleUiChecks(h) {
           .locator('[aria-current="page"]');
         assert.equal(await selected.count(), 1);
         assert.equal(
-          await page.getByTestId("sidebar-nav-selection").evaluate((el) => getComputedStyle(el).backgroundColor),
-          palettes[role].rgb,
+          await page
+            .getByTestId("sidebar-nav-selection")
+            .evaluate((el) => getComputedStyle(el).backgroundColor),
+          palettes[role].soft,
+        );
+        assert.equal(
+          await selected.evaluate((el) => getComputedStyle(el).color),
+          palettes[role].ink,
+        );
+        assert.equal(
+          await page
+            .locator("aside")
+            .first()
+            .evaluate((el) => getComputedStyle(el).backgroundColor),
+          "rgb(252, 252, 253)",
         );
       }
     }
