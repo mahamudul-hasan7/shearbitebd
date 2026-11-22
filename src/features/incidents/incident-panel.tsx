@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
@@ -51,7 +52,7 @@ export function IncidentPanel({ claimId, showForm = false, canReport = true, onS
     event.preventDefault();
     if (busy || uploading || !canReport) return;
     setBusy(true); setError(""); setMessage("");
-    submissionKey.current ||= crypto.randomUUID();
+    submissionKey.current ||= createRequestId();
     try {
       const incident = await incidentService.createForClaim(claimId, { type, severity, description, preferredContactMethod: contact, evidenceUrls, submissionKey: submissionKey.current });
       setReports((current) => [incident, ...current.filter((r) => r.id !== incident.id)]);

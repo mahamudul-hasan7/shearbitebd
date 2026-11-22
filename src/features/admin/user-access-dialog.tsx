@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 import Link from "next/link";
 import { useState } from "react";
 import { Ban, ShieldCheck, Trash2 } from "lucide-react";
@@ -53,7 +54,7 @@ export function UserAccessDialog({
     };
     const signature = JSON.stringify(payload),
       submissionKey =
-        retry?.signature === signature ? retry.key : crypto.randomUUID();
+        retry?.signature === signature ? retry.key : createRequestId();
     setRetry({ signature, key: submissionKey });
     setBusy(true);
     setError("");

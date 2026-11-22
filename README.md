@@ -121,6 +121,22 @@ ShareBite BD সম্পূর্ণ মোবাইল-ফার্স্ট �
    ```
    *(এখানে `192.168.0.103` এর জায়গায় আপনার কম্পিউটারের আইপি দিন)*
 
+   যে কম্পিউটারে project চলছে, তার **বর্তমান IPv4** ও terminal-এ দেখানো port
+   ব্যবহার করুন; ফোনের নিজের IP বা ফোনে `localhost` ব্যবহার করবেন না। যেমন port
+   3001 হলে URL হবে `http://192.168.0.103:3001`। সব device একই চলমান server-এর
+   database ব্যবহার করবে।
+
+   HTTP দিয়ে local demo চালালে `.env.local`-এ `AUTH_COOKIE_SECURE=false` রাখুন
+   এবং বদলালে server restart করুন। HTTPS hosting-এর জন্য এটি `true` থাকবে।
+   Registration, verification, document upload ও admin actions LAN HTTP-তেও চলে;
+   device GPS-এর মতো browser feature-এর জন্য HTTPS/localhost প্রয়োজন হতে পারে—
+   সেক্ষেত্রে manual map pin ব্যবহার করুন।
+
+   LAN regression check: database চালু ও production build প্রস্তুত করার পরে
+   `npm run test:lan:browser` চালান। এটি non-loopback HTTP address দিয়ে sample
+   registration, NGO/Rider document upload ও admin approval/rejection, ban/unban
+   এবং deletion পরীক্ষা করে। Browser-এর secure-context নিয়ম বন্ধ করা হয় না।
+
 ### পদ্ধতি ২: হোম স্ক্রিনে ইন্সটল করে আসল অ্যাপের মতো চালানো (PWA Standalone App)
 - **Android (Google Chrome):** ব্রাউজারের উপরে ডানদিকের তিনটি ডটে (⋮) ট্যাপ করে **"Add to Home screen"** অথবা **"Install app"** সিলেক্ট করুন।
 - **iPhone / iOS (Safari):** নিচে শেয়ার আইকনে (⎋) ট্যাপ করে স্ক্রোল করে **"Add to Home Screen"** সিলেক্ট করুন।

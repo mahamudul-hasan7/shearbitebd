@@ -236,6 +236,8 @@ let server;
 let base;
 let port;
 let log = "";
+const testHost = process.env.TEST_LAN_HOST || "127.0.0.1";
+assert.ok(net.isIPv4(testHost), "TEST_LAN_HOST must be an IPv4 address");
 
 async function seedUser(user) {
   const { role } = user;
@@ -258,7 +260,7 @@ async function runNode(args, env = {}) {
 
 async function startServer() {
   log = "";
-  server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", String(port)], {
+  server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", testHost, "--port", String(port)], {
     cwd: process.cwd(), env: { ...process.env, DATABASE_URL: databaseUrl.href, AUTH_COOKIE_SECURE: "false" },
     stdio: ["ignore", "pipe", "pipe"], windowsHide: true,
   });
@@ -305,11 +307,11 @@ async function login(role = "DONOR", remember = false, previousCookie) {
 
 before(async () => {
   const socket = net.createServer();
-  socket.listen(0, "127.0.0.1");
+  socket.listen(0, testHost);
   await once(socket, "listening");
   port = socket.address().port;
   await new Promise((resolve) => socket.close(resolve));
-  base = `http://127.0.0.1:${port}`;
+  base = `http://${testHost}:${port}`;
   await runNode(["node_modules/prisma/build/index.js", "migrate", "deploy"]);
   for (const user of users) await seedUser(user);
   await seedUser({ id: "test-ADMIN", email: "admin@example.test", password: fixturePassword, displayName: "Test administrator", role: "ADMIN", phone: null, normalizedPhone: null });
@@ -3228,4 +3230,39 @@ test("browser receipt recovery supports retries, focused errors, one save and da
 test("browser role UI system stays consistent across portal pages with distinct accessible identities",{skip:process.env.RUN_ROLE_UI_BROWSER!=="1",timeout:600_000},async()=>{
  const {runRoleUiChecks}=await import("./role-ui-browser.mjs");
  await runRoleUiChecks({base,request,login,newDonation,deliveredRescue,saveReceipt,distribute,distributionInput});
+});
+
+
+test("browser LAN HTTP supports registration verification and account controls without secure-context UUIDs", { skip: process.env.RUN_LAN_BROWSER !== "1", timeout: 360_000 }, async () => {
+  const { chromium } = await import("playwright");
+  const browser = await chromium.launch({ headless: true, args: ["--proxy-server=direct://", "--proxy-bypass-list=*"], ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH } : { channel: process.env.PLAYWRIGHT_CHANNEL || undefined }) });
+  try {
+    const page = await browser.newPage();
+    await page.addInitScript(() => localStorage.setItem("sharebite_preferred_lang", "en"));
+    const pageErrors = [];
+    page.on("pageerror", error => pageErrors.push(error.message));
+    await page.goto(base + "/login", { waitUntil: "networkidle" });
+    await page.locator('input[name="email"]').waitFor({ timeout: 5000 });
+    assert.deepEqual(await page.evaluate(() => ({ secure: window.isSecureContext, uuid: typeof crypto.randomUUID, random: typeof crypto.getRandomValues })), { secure: false, uuid: "undefined", random: "function" }, "Test must use real insecure HTTP without overriding browser crypto or security flags");
+    console.log("LAN HTTP reproduced the remote-device environment: secureContext=false, randomUUID=undefined, getRandomValues available.");
+    await page.goto(base + "/register?role=NGO", { waitUntil: "networkidle" });
+    const { mkdir, writeFile } = await import("node:fs/promises");
+    await mkdir(".local-postgres/lan-browser", { recursive: true });
+    try {
+      await page.getByText("Try sample registration details", { exact: true }).click({ timeout: 5000 });
+      await page.getByRole("button", { name: "Fill sample details", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('input[name="email"]')?.value.startsWith("demo.ngo."), undefined, { timeout: 3000 });
+      assert.deepEqual(pageErrors, []);
+    } catch (error) {
+      await page.screenshot({ path: ".local-postgres/lan-browser/failure.png", fullPage: true });
+      await writeFile(".local-postgres/lan-browser/failure.json", JSON.stringify({ errors: pageErrors, text: await page.locator("body").innerText() }, null, 2));
+      console.error("LAN registration runtime errors:", pageErrors);
+      throw error;
+    }
+  } finally { await browser.close(); }
+  assert.equal((await request("/api/auth/register", { method: "POST", headers: { Origin: "https://untrusted.example" }, body: {} })).status, 403, "LAN support must retain cross-site request rejection");
+  const { runVerificationBrowserChecks } = await import("./verification-browser.mjs");
+  await runVerificationBrowserChecks({ base, prisma, login });
+  const { runAdminUsersBrowserChecks } = await import("./admin-users-browser.mjs");
+  await runAdminUsersBrowserChecks({ base, prisma, request, login, assignedRescue, seedUser, fixturePassword });
 });

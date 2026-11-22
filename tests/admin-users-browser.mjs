@@ -27,6 +27,7 @@ export async function runAdminUsersBrowserChecks(h) {
   }
   const browser = await chromium.launch({
     headless: true,
+    args: process.env.RUN_LAN_BROWSER === "1" ? ["--proxy-server=direct://", "--proxy-bypass-list=*"] : [],
     ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
       : { channel: process.env.PLAYWRIGHT_CHANNEL || undefined }),

@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 import { useRef, useState } from "react";
 import { Check, ExternalLink, ShieldCheck } from "lucide-react";
 import {
@@ -40,7 +41,7 @@ export function AccountDialog({
   );
   const [action, setAction] = useState("APPROVE");
   const [note, setNote] = useState("");
-  const [key, setKey] = useState(() => crypto.randomUUID());
+  const [key, setKey] = useState(() => createRequestId());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const lock = useRef(false);
@@ -162,7 +163,7 @@ export function AccountDialog({
                     disabled={busy || missingDocument}
                     onChange={(e) => {
                       setAction(e.target.value);
-                      setKey(crypto.randomUUID());
+                      setKey(createRequestId());
                     }}
                   />
                   {tx("Approve account")}
@@ -176,7 +177,7 @@ export function AccountDialog({
                     disabled={busy || account.status === "REJECTED"}
                     onChange={(e) => {
                       setAction(e.target.value);
-                      setKey(crypto.randomUUID());
+                      setKey(createRequestId());
                     }}
                   />
                   {tx("Reject account")}
@@ -193,7 +194,7 @@ export function AccountDialog({
                   value={note}
                   onChange={(e) => {
                     setNote(e.target.value);
-                    setKey(crypto.randomUUID());
+                    setKey(createRequestId());
                   }}
                   placeholder={tx("Explain the checks and your decision…")}
                 />

@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 import { UiText } from "@/lib/i18n/ui-text-node";
 import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -157,7 +158,7 @@ export function FoodRequestWizard() {
 
     setSubmitting(true);
     try {
-      const submissionKey = draft.submissionKey || crypto.randomUUID();
+      const submissionKey = draft.submissionKey || createRequestId();
       setDraft((current) => ({ ...current, submissionKey }));
       const request = await requestService.create({
         submissionKey,

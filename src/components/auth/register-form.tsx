@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
@@ -125,7 +126,7 @@ export function RegisterForm() {
   }
 
   function applyDemoPreset() {
-    const suffix = crypto.randomUUID().slice(0, 8);
+    const suffix = createRequestId().slice(0, 8);
     const digits = String(Math.floor(Math.random() * 100_000_000)).padStart(
       8,
       "0",

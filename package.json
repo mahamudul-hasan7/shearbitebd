@@ -25,6 +25,7 @@
     "test:distribution:browser": "node scripts/test-distribution-browser.mjs",
     "test:cleanup:browser": "node scripts/test-cleanup-browser.mjs",
     "test:auth": "node --test tests/auth.integration.test.mjs",
+    "test:lan:browser": "node scripts/test-lan-browser.mjs",
     "test:photos:browser": "node scripts/test-photo-browser.mjs",
     "test:incidents:browser": "node scripts/test-incident-browser.mjs",
     "test:maps:browser": "node scripts/test-map-browser.mjs",

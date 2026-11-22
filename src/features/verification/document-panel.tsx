@@ -1,4 +1,5 @@
 "use client";
+import { createRequestId } from "@/lib/request-id";
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import {
@@ -60,7 +61,7 @@ export function VerificationDocumentPanel() {
   const inputId = useId();
   const hintId = useId();
   const [file, setFile] = useState<File>();
-  const [key, setKey] = useState(() => crypto.randomUUID());
+  const [key, setKey] = useState(() => createRequestId());
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -98,7 +99,7 @@ export function VerificationDocumentPanel() {
       return;
     }
     setFile(candidate);
-    setKey(crypto.randomUUID());
+    setKey(createRequestId());
     setProgress(0);
   }
   async function submit() {

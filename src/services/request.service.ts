@@ -1,3 +1,4 @@
+import { createRequestId } from "@/lib/request-id";
 import type { RequestStatus } from "@/lib/constants/statuses";
 import type { DonationView, FoodRequest, ViewerContext } from "@/types/domain";
 import type { MockServiceOptions } from "@/services/shared";
@@ -20,7 +21,7 @@ export const requestService = {
   },
   async create(input: CreateFoodRequestInput, viewer: ViewerContext, options?: MockServiceOptions): Promise<FoodRequest> {
     void viewer;
-    return (await apiRequest<{ request: FoodRequest }>("/api/requests", { method: "POST", signal: options?.signal, body: JSON.stringify({ ...input, submissionKey: input.submissionKey || crypto.randomUUID() }) })).request;
+    return (await apiRequest<{ request: FoodRequest }>("/api/requests", { method: "POST", signal: options?.signal, body: JSON.stringify({ ...input, submissionKey: input.submissionKey || createRequestId() }) })).request;
   },
   async update(id: string, input: UpdateFoodRequestInput, viewer: ViewerContext, options?: MockServiceOptions): Promise<FoodRequest> {
     void viewer; return (await apiRequest<{ request: FoodRequest }>("/api/requests", { method: "PATCH", signal: options?.signal, body: JSON.stringify({ id, action: "update", input }) })).request;
