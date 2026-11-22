@@ -1,3 +1,4 @@
+import { createRequestId } from "@/lib/request-id";
 import type { IncidentType, PriorityLevel } from "@/lib/constants/domain";
 import type { IncidentReport, ViewerContext } from "@/types/domain";
 import type { MockServiceOptions } from "@/services/shared";
@@ -20,10 +21,10 @@ export const incidentService = {
     return (await apiRequest<{ incidents: IncidentReport[] }>(`/api/incidents?donationId=${encodeURIComponent(donationId)}`, { signal: options?.signal })).incidents;
   },
   async createForClaim(claimId: string, input: CreateDonationIncidentInput): Promise<IncidentReport> {
-    return (await apiRequest<{ incident: IncidentReport }>("/api/incidents", { method: "POST", body: JSON.stringify({ claimId, input: { ...input, submissionKey: input.submissionKey || crypto.randomUUID() } }) })).incident;
+    return (await apiRequest<{ incident: IncidentReport }>("/api/incidents", { method: "POST", body: JSON.stringify({ claimId, input: { ...input, submissionKey: input.submissionKey || createRequestId() } }) })).incident;
   },
   async createForDonation(donationId: string, input: CreateDonationIncidentInput, viewer: ViewerContext, options?: MockServiceOptions): Promise<IncidentReport> {
     void viewer;
-    return (await apiRequest<{ incident: IncidentReport }>("/api/incidents", { method: "POST", signal: options?.signal, body: JSON.stringify({ donationId, input: { ...input, submissionKey: input.submissionKey || crypto.randomUUID() } }) })).incident;
+    return (await apiRequest<{ incident: IncidentReport }>("/api/incidents", { method: "POST", signal: options?.signal, body: JSON.stringify({ donationId, input: { ...input, submissionKey: input.submissionKey || createRequestId() } }) })).incident;
   },
 };
