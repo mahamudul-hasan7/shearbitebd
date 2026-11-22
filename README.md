@@ -85,7 +85,6 @@ Simply double-click the **`run-project.bat`** file in the project root directory
 For a class presentation, close the existing server and open **`run-demo.bat`**.
 It builds the current project, starts production mode and prints the actual LAN
 addresses/port for other devices. Keep the terminal open; use Ctrl+C to stop.
-See the [first-update rehearsal guide](docs/FIRST_UPDATE_DEMO_BN.md).
 * Automatically verifies Node.js installation.
 * Automatically installs missing packages safely on the first run.
 * **Smart Auto-Launch:** Opens the browser when Next.js reports ready and prints the actual local and LAN URLs, including the selected port.

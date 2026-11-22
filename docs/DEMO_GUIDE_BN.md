@@ -3,9 +3,7 @@
 এই guide-এ সংরক্ষিত database record দিয়ে তিন account-এর পুরো flow দেখানো হবে।
 Admin dashboard থেকে account verification এবং operational report review করা যায়।
 
-প্রথম update-এর সংক্ষিপ্ত rehearsal ও slide scope:
-[৭ মিনিটের demo নির্দেশনা](FIRST_UPDATE_DEMO_BN.md)। Windows-এ `run-demo.bat` build করে
-presentation server চালায় এবং terminal-এ current LAN URL দেখায়।
+Windows-এ `run-demo.bat` build করে presentation server চালায় এবং terminal-এ current LAN URL দেখায়।
 
 ## ভাষা বেছে নেওয়া
 
