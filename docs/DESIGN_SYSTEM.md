@@ -106,3 +106,13 @@ The same page content is composed at all breakpoints. Do not maintain separate m
 - Maintain adequate contrast for semantic states.
 - Respect safe-area padding on mobile navigation and sticky actions.
 - Reduced-motion preferences disable non-essential transitions and animation.
+
+## Shared portal patterns and role identity
+
+Donor, NGO and Rider use the same page frame, neutral cards, controls and feedback
+patterns. Scoped `PortalTheme` variables provide emerald, blue and deep-orange
+identity accents. A visible icon/text role badge remains in desktop and mobile
+headers. Semantic success/warning/danger and base brand tokens retain their meaning.
+Use `CollectionToolbar` for list filters, shared dashboard metrics/work cards for
+summaries, and `Button`/`ButtonLink` for contextual actions. See
+[the portal UI guide](PORTAL_UI_SYSTEM_BN.md) for palette, responsive rules and tests.

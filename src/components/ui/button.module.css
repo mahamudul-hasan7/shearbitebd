@@ -1,0 +1,65 @@
+.action.primary {
+  background: linear-gradient(
+    115deg,
+    var(--role-accent, var(--brand-600)),
+    var(--role-hover, var(--brand-800))
+  );
+  border-color: var(--role-hover, var(--brand-900));
+  color: white;
+  box-shadow: 0 3px 8px
+    color-mix(in srgb, var(--role-accent, var(--brand-700)) 20%, transparent);
+}
+.action.primary:hover {
+  background: var(--role-hover, var(--brand-800));
+}
+.action.outline:hover,
+.action.ghost:hover {
+  background: var(--role-soft, var(--brand-50));
+  border-color: var(--role-accent, var(--brand-600));
+  color: var(--role-ink, var(--brand-800));
+}
+.action:focus-visible {
+  outline: 3px solid var(--role-accent, var(--brand-600));
+  outline-offset: 3px;
+}
+@media (max-width: 767px) {
+  .action {
+    min-height: 44px;
+    height: auto;
+    padding-block: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .action * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .action:hover,
+  .action:active {
+    transform: none;
+  }
+}
+@media (forced-colors: active) {
+  .action.primary {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+}
+.action.primary svg {
+  color: inherit;
+}
+.action.outline svg,
+.action.ghost svg {
+  color: var(--role-accent, var(--brand-700));
+}
+
+.action {
+  min-width: 0;
+  max-width: 100%;
+}
+.action > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

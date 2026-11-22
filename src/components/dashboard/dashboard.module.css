@@ -7,6 +7,7 @@
 }
 .stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   gap: 24px;
 }
@@ -26,20 +27,20 @@
   letter-spacing: 0;
 }
 .primaryAction {
-  background: var(--brand-700);
-  border: 1px solid var(--brand-700);
+  background: var(--role-accent, var(--brand-700));
+  border: 1px solid var(--role-accent, var(--brand-700));
   box-shadow: 0 3px 8px rgb(2 44 34 / 10%);
 }
 .primaryAction:hover {
-  background: var(--brand-800);
+  background: var(--role-ink, var(--brand-800));
 }
 .secondaryAction {
   border: 1px solid var(--line);
   box-shadow: none;
 }
 .secondaryAction:hover {
-  background: var(--brand-50);
-  border-color: var(--brand-600);
+  background: var(--role-soft, var(--brand-50));
+  border-color: var(--role-accent, var(--brand-600));
 }
 .desktopActions {
   display: none;
@@ -74,7 +75,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: 6px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-size: 12px;
   font-weight: 600;
 }
@@ -85,8 +86,8 @@
   height: 25px;
   padding: 0 6px;
   border-radius: 8px;
-  background: var(--brand-50);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
   font: 600 12px/1.5 var(--font-sans);
 }
 .metrics {
@@ -183,7 +184,7 @@
 }
 .disclosure > summary > svg {
   flex-shrink: 0;
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .disclosure > summary > svg:last-child {
   transition: transform 180ms;
@@ -254,7 +255,7 @@
   border-radius: 10px;
 }
 .activity li > a:hover {
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .activityIcon {
   display: grid;
@@ -262,8 +263,8 @@
   width: 37px;
   height: 39px;
   border-radius: 11px;
-  background: var(--brand-50);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
   flex-shrink: 0;
 }
 .activityCopy {
@@ -296,7 +297,7 @@
 .activityArrow {
   flex-shrink: 0;
   margin-top: 8px;
-  color: var(--brand-700);
+  color: var(--role-accent, var(--brand-700));
 }
 .emptyActivity {
   padding: 22px 0;
@@ -308,7 +309,7 @@
 .sectionHeading a:focus-visible,
 .disclosure summary:focus-visible,
 .activity a:focus-visible {
-  outline: 3px solid var(--brand-500);
+  outline: 3px solid var(--role-accent, var(--brand-500));
   outline-offset: 4px;
   border-radius: 8px;
 }
@@ -376,10 +377,10 @@
   min-height: 46px;
   margin-top: auto;
   padding: 11px 13px;
-  border: 1px solid var(--brand-100);
+  border: 1px solid var(--role-soft, var(--brand-100));
   border-radius: 12px;
-  background: var(--brand-50);
-  color: var(--brand-800);
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
   font-size: 13px;
   font-weight: 600;
   line-height: 1.7;
@@ -391,17 +392,25 @@
   border-color: var(--line);
 }
 .workAction:hover {
-  background: var(--brand-100);
+  background: var(--role-soft, var(--brand-100));
 }
 .workAction svg {
   flex-shrink: 0;
 }
 .workAction:focus-visible {
-  outline: 3px solid var(--brand-500);
+  outline: 3px solid var(--role-accent, var(--brand-500));
   outline-offset: 3px;
 }
 @media (max-width: 1023px) {
   .stack {
     gap: 18px;
   }
+}
+
+.stack > * {
+  min-width: 0;
+}
+.sectionHeading > div {
+  min-width: 0;
+  max-width: 100%;
 }

@@ -1,0 +1,41 @@
+[
+  ["Rider", "রাইডার"],
+  ["{0} workspace", "{0} কাজের পাতা"],
+  ["Your next mission step", "আপনার মিশনের পরের ধাপ"],
+  ["Ready for your next rescue", "পরের উদ্ধারকাজের জন্য প্রস্তুত"],
+  [
+    "Open your saved mission to follow its current stage, contacts and verified handovers.",
+    "মিশনের বর্তমান ধাপ, যোগাযোগ ও যাচাইকৃত হস্তান্তর দেখতে সংরক্ষিত মিশন খুলুন।"
+  ],
+  [
+    "Turn duty ON and choose an available dispatch. Your assigned mission will appear here.",
+    "ডিউটি ON করে উপলব্ধ একটি ডিসপ্যাচ বেছে নিন। আপনার নির্ধারিত মিশন এখানে দেখা যাবে।"
+  ],
+  ["View dispatches", "ডিসপ্যাচ দেখুন"],
+  [
+    "Saved delivery records and currently available work.",
+    "সংরক্ষিত ডেলিভারির হিসাব ও বর্তমানে উপলব্ধ কাজ।"
+  ],
+  ["Verified deliveries", "যাচাইকৃত ডেলিভারি"],
+  [
+    "Follow your saved missions, accept a dispatch and verify each handover.",
+    "সংরক্ষিত মিশনের অগ্রগতি দেখুন, ডিসপ্যাচ গ্রহণ করুন ও প্রতিটি হস্তান্তর যাচাই করুন।"
+  ],
+  [
+    "Saved mission details may be out of date. Refresh before taking action.",
+    "সংরক্ষিত মিশনের তথ্য পুরোনো হতে পারে। পরের কাজের আগে রিফ্রেশ করুন।"
+  ],
+  ["Donation filters", "ডোনেশনের ফিল্টার"],
+  ["Search donations", "ডোনেশন খুঁজুন"],
+  ["Food category", "খাবারের ধরন"],
+  ["Sort donations", "ডোনেশন সাজান"],
+  ["Claim filters", "ক্লেইমের ফিল্টার"],
+  ["Search claims", "ক্লেইম খুঁজুন"],
+  ["Mission history filters", "মিশনের ইতিহাসের ফিল্টার"],
+  ["Search mission history", "মিশনের ইতিহাস খুঁজুন"],
+  ["Pickup area", "খাবার সংগ্রহের এলাকা"],
+  [
+    "From saved NGO distribution records for your verified deliveries.",
+    "আপনার যাচাইকৃত ডেলিভারির জন্য এনজিওর সংরক্ষিত বিতরণের তথ্য থেকে।"
+  ]
+]

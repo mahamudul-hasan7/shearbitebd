@@ -1,3 +1,4 @@
+import { PortalTheme } from "@/components/portal/portal-theme";
 import type { ReactNode } from "react";
 import { MockRouteGuard } from "@/features/auth/mock-route-guard";
 import { UserRole } from "@/lib/constants/roles";
@@ -8,10 +9,10 @@ import { RiderIncomingOffer } from "@/features/volunteer-dashboard/rider-incomin
 export default async function VolunteerLayout({ children }: { children: ReactNode }) {
   await requirePortalRole(UserRole.VOLUNTEER);
   return (
-    <MockRouteGuard allowedRole={UserRole.VOLUNTEER}>
+    <MockRouteGuard allowedRole={UserRole.VOLUNTEER}><PortalTheme role="volunteer">
       {children}
       <VolunteerDutySync />
       <RiderIncomingOffer />
-    </MockRouteGuard>
+    </PortalTheme></MockRouteGuard>
   );
 }

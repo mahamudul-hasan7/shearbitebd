@@ -1,9 +1,15 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react";
+import styles from "./button.module.css";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ActionGlyph } from "@/components/motion/live-icon";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
+export type ButtonVariant =
+  "primary" | "secondary" | "outline" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
@@ -38,6 +44,8 @@ export function buttonClassNames({
 }) {
   return cn(
     "group icon-interactive inline-flex items-center justify-center gap-2 font-heading font-bold tracking-wide transition-all duration-200 cursor-pointer disabled:pointer-events-none disabled:opacity-50 select-none",
+    styles.action,
+    styles[variant],
     variants[variant],
     sizes[size],
     fullWidth && "w-full",
@@ -67,6 +75,8 @@ export function Button({
   return (
     <button
       type={type}
+      data-ui="button"
+      data-variant={variant}
       className={buttonClassNames({ variant, size, fullWidth, className })}
       {...props}
     >
@@ -85,7 +95,10 @@ export function Button({
   );
 }
 
-export interface ButtonLinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
+export interface ButtonLinkProps extends Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "href"
+> {
   href: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -116,7 +129,13 @@ export function ButtonLink({
 
   if (disabled) {
     return (
-      <span className={classes} aria-disabled="true" role="link">
+      <span
+        className={classes}
+        data-ui="button"
+        data-variant={variant}
+        aria-disabled="true"
+        role="link"
+      >
         {leftIcon && (
           <span className="shrink-0 transition-transform duration-200">
             {leftIcon}
@@ -133,7 +152,13 @@ export function ButtonLink({
   }
 
   return (
-    <Link href={href} className={classes} {...props}>
+    <Link
+      href={href}
+      data-ui="button"
+      data-variant={variant}
+      className={classes}
+      {...props}
+    >
       {leftIcon && (
         <span className="shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5">
           <ActionGlyph>{leftIcon}</ActionGlyph>

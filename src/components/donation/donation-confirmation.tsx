@@ -9,7 +9,7 @@ import {
   Plus,
   Sparkles,
 } from "lucide-react";
-import Link from "next/link";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { DonationWizardResult } from "@/features/donations/types";
 import { ROUTES } from "@/lib/routes";
@@ -119,31 +119,31 @@ export function DonationConfirmation({
         </div>
       </div>
 
-      {/* Action Buttons */}
       <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-        <Link
+        <ButtonLink
           href={ROUTES.donor.donationTracking(donation.id)}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-700/20 transition-all font-heading"
+          leftIcon={
+            <LiveIcon
+              icon={Navigation}
+              motion="interaction"
+              className="size-4"
+            />
+          }
         >
-          <LiveIcon icon={Navigation} motion="interaction" className="size-4" />
-          <span>{tx("লাইভ ট্র্যাকিং পেজে যান")}</span>
-        </Link>
-
-        <Link
-          href={ROUTES.donor.donations}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-5 py-2.5 text-xs font-bold text-slate-700 transition-colors font-heading shadow-2xs"
-        >
+          {tx("লাইভ ট্র্যাকিং পেজে যান")}
+        </ButtonLink>
+        <ButtonLink href={ROUTES.donor.donations} variant="outline">
           {tx("আমার খাদ্য তালিকা দেখুন")}
-        </Link>
-
-        <button
-          type="button"
+        </ButtonLink>
+        <Button
+          variant="outline"
           onClick={addAnother}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-5 py-2.5 text-xs font-bold text-slate-700 transition-colors font-heading shadow-2xs cursor-pointer"
+          leftIcon={
+            <LiveIcon icon={Plus} motion="interaction" className="size-4" />
+          }
         >
-          <LiveIcon icon={Plus} motion="interaction" className="size-4" />
-          <span>{tx("আরেকটি খাবার পোস্ট করুন")}</span>
-        </button>
+          {tx("আরেকটি খাবার পোস্ট করুন")}
+        </Button>
       </div>
     </div>
   );

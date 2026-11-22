@@ -56,6 +56,26 @@
 }
 
 :root {
+  /* Role identity is separate from semantic success, warning and danger. */
+  --identity-donor: #047857;
+  --identity-donor-hover: #065f46;
+  --identity-donor-soft: #ecfdf5;
+  --identity-donor-ink: #065f46;
+  --identity-donor-border: #a7f3d0;
+  --identity-donor-sidebar: #062b23;
+  --identity-ngo: #1d4ed8;
+  --identity-ngo-hover: #1e40af;
+  --identity-ngo-soft: #eff6ff;
+  --identity-ngo-ink: #1e40af;
+  --identity-ngo-border: #bfdbfe;
+  --identity-ngo-sidebar: #101f3a;
+  --identity-rider: #c2410c;
+  --identity-rider-hover: #9a3412;
+  --identity-rider-soft: #fff7ed;
+  --identity-rider-ink: #9a3412;
+  --identity-rider-border: #fed7aa;
+  --identity-rider-sidebar: #301b12;
+
   --brand-50: #ecfdf5;
   --brand-100: #d1fae5;
   --brand-200: #a7f3d0;

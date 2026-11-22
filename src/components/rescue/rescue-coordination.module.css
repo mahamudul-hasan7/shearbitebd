@@ -20,7 +20,7 @@
   flex-shrink: 0;
   border-radius: 15px;
   overflow: hidden;
-  background: var(--brand-50);
+  background: var(--role-soft, var(--brand-50));
 }
 .summaryPhoto > span {
   display: block;
@@ -57,9 +57,9 @@
 }
 .next {
   padding: 20px 22px;
-  border: 1px solid var(--brand-200);
+  border: 1px solid var(--role-border, var(--brand-200));
   border-radius: 18px;
-  background: linear-gradient(115deg, var(--brand-50), var(--surface));
+  background: linear-gradient(115deg, var(--role-soft, var(--brand-50)), var(--surface));
   animation: enter 0.25s ease;
 }
 .next[data-tone="warning"] {
@@ -83,7 +83,7 @@
   gap: 7px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
 }
 .next h2 {
   font-family: var(--font-heading);
@@ -160,7 +160,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-size: 12px;
   font-weight: 600;
 }
@@ -190,7 +190,7 @@
   border-radius: 11px;
   border: 1px solid var(--line);
   background: var(--surface);
-  color: var(--brand-800);
+  color: var(--role-ink, var(--brand-800));
   font-size: 12px;
   font-weight: 600;
 }
@@ -279,7 +279,7 @@
 .workspace button:focus-visible,
 .workspace a:focus-visible,
 .workspace summary:focus-visible {
-  outline: 2px solid var(--brand-600);
+  outline: 2px solid var(--role-accent, var(--brand-600));
   outline-offset: 3px;
 }
 @keyframes enter {
