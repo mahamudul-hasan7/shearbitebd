@@ -81,9 +81,14 @@ below describe the intended product and should not be read as verified backend f
 
 ### Option 1: 1-Click Launch on Windows (Recommended) ⚡
 Simply double-click the **`run-project.bat`** file in the project root directory.
+
+For a class presentation, close the existing server and open **`run-demo.bat`**.
+It builds the current project, starts production mode and prints the actual LAN
+addresses/port for other devices. Keep the terminal open; use Ctrl+C to stop.
+See the [first-update rehearsal guide](docs/FIRST_UPDATE_DEMO_BN.md).
 * Automatically verifies Node.js installation.
 * Automatically installs missing packages safely on the first run.
-* **Smart Auto-Launch:** Monitors the server and opens your default browser at `http://localhost:3000` the exact moment Next.js is 100% ready.
+* **Smart Auto-Launch:** Opens the browser when Next.js reports ready and prints the actual local and LAN URLs, including the selected port.
 
 ---
 

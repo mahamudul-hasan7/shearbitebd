@@ -52,6 +52,7 @@ export async function startRescueThroughUi(h) {
   const volunteer = signedIn.headers.get("set-cookie").split(";")[0];
   const browser = await chromium.launch({
     headless: true,
+    args: process.env.RUN_LAN_BROWSER === "1" ? ["--proxy-server=direct://", "--proxy-bypass-list=*"] : [],
     ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
       : { channel: process.env.PLAYWRIGHT_CHANNEL || undefined }),
@@ -78,6 +79,9 @@ export async function startRescueThroughUi(h) {
     return page;
   }
   async function snapshot(page, stage) {
+    if (process.env.RUN_LAN_BROWSER === "1") {
+      assert.equal(await page.evaluate(() => window.isSecureContext), false, "Journey must exercise LAN HTTP browser rules");
+    }
     for (const language of ["en", "bn"]) {
       await page
         .getByRole("button", {

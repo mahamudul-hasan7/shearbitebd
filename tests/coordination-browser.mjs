@@ -42,6 +42,7 @@ export async function runCoordinationBrowserChecks({
   });
   const browser = await chromium.launch({
     headless: true,
+    args: process.env.RUN_LAN_BROWSER === "1" ? ["--proxy-server=direct://", "--proxy-bypass-list=*"] : [],
     ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
       : { channel: process.env.PLAYWRIGHT_CHANNEL || undefined }),
@@ -79,8 +80,17 @@ export async function runCoordinationBrowserChecks({
       const page = await context.newPage();
       pages[role] = page;
       page.on("pageerror", (error) => errors.push(error.message));
-      await page.goto(paths[role], { waitUntil: "networkidle" });
+      await page.goto(paths[role], { waitUntil: "domcontentloaded" });
       await page.getByTestId("rescue-next-action").waitFor();
+      assert.equal(await page.getByTestId("location-map").count(), 0, "Closed rescue maps must not mount or request tiles");
+      if (process.env.RUN_LAN_BROWSER === "1") {
+        await page.route("https://tile.openstreetmap.org/**", route => route.abort());
+        await page.getByText("Map & saved handover locations", { exact: true }).click();
+        await page.getByTestId("location-map").waitFor();
+        await page.getByRole("status").filter({ hasText: "Map tiles could not load" }).waitFor();
+        await page.getByText("Map & saved handover locations", { exact: true }).click();
+        await page.getByTestId("location-map").waitFor({ state: "detached" });
+      }
     }
     const { donor, ngo, volunteer: rider } = pages;
     assert.equal(
@@ -271,7 +281,7 @@ export async function runCoordinationBrowserChecks({
     await ngo
       .getByRole("heading", { name: uiName("Receipt saved"), exact: true })
       .waitFor();
-    await ngo.goto(paths.ngo, { waitUntil: "networkidle" });
+    await ngo.goto(paths.ngo, { waitUntil: "domcontentloaded" });
     await ngo
       .getByTestId("rescue-next-action")
       .getByRole("link", { name: uiName("Record distribution"), exact: true })
@@ -306,7 +316,7 @@ export async function runCoordinationBrowserChecks({
       phase(donor, "distributed", "complete"),
       phase(ngo, "distributed", "complete"),
     ]);
-    await rider.reload({ waitUntil: "networkidle" });
+    await rider.reload({ waitUntil: "domcontentloaded" });
     await phase(rider, "completed", "complete");
     await ngo.screenshot({
       path: `${artifacts}/ngo-distributed.png`,
@@ -355,7 +365,7 @@ export async function runCoordinationBrowserChecks({
     const held = await assignedRescue();
     await reportIncident(held, held.ngo);
     await ngo.goto(`/ngo/claims/${held.claim.id}`, {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
     });
     await phase(ngo, "rider", "paused");
     assert.equal(
