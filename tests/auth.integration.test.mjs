@@ -3279,3 +3279,9 @@ test("browser LAN HTTP supports registration verification and account controls w
   const { runAdminUsersBrowserChecks } = await import("./admin-users-browser.mjs");
   await runAdminUsersBrowserChecks({ base, prisma, request, login, assignedRescue, seedUser, fixturePassword });
 });
+
+
+test("browser portal navigation preserves its frame with consistent motion across roles and screen sizes", { skip: process.env.RUN_NAVIGATION_BROWSER !== "1", timeout: 360_000 }, async () => {
+  const { runNavigationBrowserChecks } = await import("./navigation-browser.mjs");
+  await runNavigationBrowserChecks({ base, login, assignedRescue });
+});

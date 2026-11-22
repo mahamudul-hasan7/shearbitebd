@@ -1,10 +1,18 @@
-import { PortalTheme } from "@/components/portal/portal-theme";
+import { PortalFrame } from "@/components/layout/portal-frame";
 import type { ReactNode } from "react";
 import { MockRouteGuard } from "@/features/auth/mock-route-guard";
 import { UserRole } from "@/lib/constants/roles";
 import { requirePortalRole } from "@/lib/auth/server";
 
-export default async function DonorLayout({ children }: { children: ReactNode }) {
+export default async function DonorLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   await requirePortalRole(UserRole.DONOR);
-  return <MockRouteGuard allowedRole={UserRole.DONOR}><PortalTheme role="donor">{children}</PortalTheme></MockRouteGuard>;
+  return (
+    <MockRouteGuard allowedRole={UserRole.DONOR}>
+      <PortalFrame role="donor">{children}</PortalFrame>
+    </MockRouteGuard>
+  );
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { useUiText } from "@/lib/i18n/use-ui-text";
-import type { ReactNode } from "react";
+import { useContext, useLayoutEffect, useRef, type ReactNode } from "react";
+import { PortalFrameContext } from "./portal-frame";
+import { usePageEntrance } from "@/components/navigation/navigation-motion";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -56,6 +58,30 @@ export function PortalShell({
 }) {
   const tx = useUiText();
   const pathname = usePathname();
+  const frame = useContext(PortalFrameContext);
+  const main = useRef<HTMLElement>(null);
+  const previewPath = useRef<string | null>(null);
+  usePageEntrance(main, pathname, frame?.previousPath || previewPath);
+  useLayoutEffect(() => {
+    frame?.updatePage({
+      pathname,
+      activeHref,
+      hideMobileNav,
+      profileName,
+      profileDescription,
+      avatarInitials,
+      notificationHref,
+    });
+  }, [
+    frame,
+    pathname,
+    activeHref,
+    hideMobileNav,
+    profileName,
+    profileDescription,
+    avatarInitials,
+    notificationHref,
+  ]);
   const shouldHideMobileNav =
     hideMobileNav ||
     /\/(new|edit|tracking|confirm-delivery|distribution)\/?$/.test(pathname) ||
@@ -64,6 +90,92 @@ export function PortalShell({
     activeHref.includes("/tracking") ||
     activeHref.includes("/confirm-delivery") ||
     activeHref.includes("/missions/");
+
+  const content = (
+    <PageContainer
+      className={cn(
+        "flex-1 pt-4 sm:pt-8",
+        shouldHideMobileNav
+          ? "pb-8 sm:pb-12"
+          : "pb-[calc(7.5rem+env(safe-area-inset-bottom))] lg:pb-12",
+      )}
+    >
+      <main ref={main} data-portal-page={pathname} className="min-w-0">
+        {/* Dedicated Left-Aligned Back Navigation */}
+        {backHref && (
+          <div className="mb-4">
+            <Link
+              href={backHref}
+              className={`${theme.backLink} inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-1.5 text-xs font-semibold transition-colors`}
+            >
+              <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
+              <span>{backLabel}</span>
+            </Link>
+          </div>
+        )}
+
+        <div
+          className={cn(
+            compactHeader
+              ? "mb-5 flex flex-col gap-3 sm:mb-8"
+              : "mb-8 flex flex-col gap-4",
+            "sm:flex-row sm:items-center sm:justify-between",
+          )}
+        >
+          <div className="min-w-0 flex-1">
+            <div
+              className={cn(
+                "items-center gap-2",
+                compactHeader ? "hidden sm:flex" : "flex",
+              )}
+            >
+              <span className={theme.workspaceLabel}>
+                <span className="size-1.5 rounded-full bg-current" />
+                {role === "donor"
+                  ? tx("দাতা ওয়ার্কস্পেস · বাংলাদেশ")
+                  : role === "volunteer"
+                    ? tx("ভলান্টিয়ার স্কোয়াড · বাংলাদেশ")
+                    : tx("এনজিও ওয়ার্কস্পেস · বাংলাদেশ")}
+              </span>
+            </div>
+            <h1
+              className={cn(
+                "mt-2 text-2xl font-black tracking-tight text-ink-900 sm:text-3xl lg:text-4xl",
+                titleClassName,
+              )}
+            >
+              {title}
+            </h1>
+            {description && (
+              <p
+                className={cn(
+                  "mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-600",
+                  compactHeader && "hidden sm:block",
+                )}
+              >
+                {description}
+              </p>
+            )}
+          </div>
+          {actions && (
+            <div
+              className={cn(
+                "min-w-0 max-w-full shrink-0 self-start sm:self-center",
+                actionsClassName,
+              )}
+            >
+              {actions}
+            </div>
+          )}
+        </div>
+        {showDutyPanel &&
+          role === "volunteer" &&
+          !activeHref.includes("/missions/") && <VolunteerDutyPanel />}
+        {children}
+      </main>
+    </PageContainer>
+  );
+  if (frame?.role === role) return content;
 
   return (
     <PortalTheme role={role}>
@@ -88,88 +200,7 @@ export function PortalShell({
             notificationHref={notificationHref}
             unreadNotifications={unreadNotifications}
           />
-          <PageContainer
-            className={cn(
-              "flex-1 pt-4 sm:pt-8",
-              shouldHideMobileNav
-                ? "pb-8 sm:pb-12"
-                : "pb-[calc(7.5rem+env(safe-area-inset-bottom))] lg:pb-12",
-            )}
-          >
-            <main className="min-w-0">
-              {/* Dedicated Left-Aligned Back Navigation */}
-              {backHref && (
-                <div className="mb-4">
-                  <Link
-                    href={backHref}
-                    className={`${theme.backLink} inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-1.5 text-xs font-semibold transition-colors`}
-                  >
-                    <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
-                    <span>{backLabel}</span>
-                  </Link>
-                </div>
-              )}
-
-              <div
-                className={cn(
-                  compactHeader
-                    ? "mb-5 flex flex-col gap-3 sm:mb-8"
-                    : "mb-8 flex flex-col gap-4",
-                  "sm:flex-row sm:items-center sm:justify-between",
-                )}
-              >
-                <div className="min-w-0 flex-1">
-                  <div
-                    className={cn(
-                      "items-center gap-2",
-                      compactHeader ? "hidden sm:flex" : "flex",
-                    )}
-                  >
-                    <span className={theme.workspaceLabel}>
-                      <span className="size-1.5 rounded-full bg-current" />
-                      {role === "donor"
-                        ? tx("দাতা ওয়ার্কস্পেস · বাংলাদেশ")
-                        : role === "volunteer"
-                          ? tx("ভলান্টিয়ার স্কোয়াড · বাংলাদেশ")
-                          : tx("এনজিও ওয়ার্কস্পেস · বাংলাদেশ")}
-                    </span>
-                  </div>
-                  <h1
-                    className={cn(
-                      "mt-2 text-2xl font-black tracking-tight text-ink-900 sm:text-3xl lg:text-4xl",
-                      titleClassName,
-                    )}
-                  >
-                    {title}
-                  </h1>
-                  {description && (
-                    <p
-                      className={cn(
-                        "mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-600",
-                        compactHeader && "hidden sm:block",
-                      )}
-                    >
-                      {description}
-                    </p>
-                  )}
-                </div>
-                {actions && (
-                  <div
-                    className={cn(
-                      "min-w-0 max-w-full shrink-0 self-start sm:self-center",
-                      actionsClassName,
-                    )}
-                  >
-                    {actions}
-                  </div>
-                )}
-              </div>
-              {showDutyPanel &&
-                role === "volunteer" &&
-                !activeHref.includes("/missions/") && <VolunteerDutyPanel />}
-              {children}
-            </main>
-          </PageContainer>
+          {content}
           {/* Native Mobile Bottom Navigation App Bar (auto-hidden in focused action flows) */}
           {!shouldHideMobileNav && (
             <MobileBottomNavigation

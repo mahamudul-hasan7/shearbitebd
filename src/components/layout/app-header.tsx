@@ -23,6 +23,14 @@ import { getNavigation, type DesktopNavItem } from "@/lib/navigation";
 import { useLanguage } from "@/lib/i18n/language-context";
 import type { PortalRole } from "@/types/navigation";
 import { LiveIcon } from "@/components/motion/live-icon";
+import { usePathname } from "next/navigation";
+import { useVolunteerStore } from "@/features/volunteer-dashboard/volunteer-store";
+import { ROUTES } from "@/lib/routes";
+import {
+  missionNavigation,
+  selectedNavigationHref,
+} from "@/components/navigation/navigation-state";
+import { NavigationFeedback } from "@/components/navigation/navigation-feedback";
 
 export function AppHeader({
   role,
@@ -43,6 +51,8 @@ export function AppHeader({
   unreadNotifications?: number;
 }) {
   const tx = useUiText();
+  const pathname = usePathname();
+  const { activeMission } = useVolunteerStore();
   const { session } = useMockAuth();
   const { language } = useLanguage();
   const isBn = language === "bn";
@@ -54,7 +64,24 @@ export function AppHeader({
   const drawer = useRef<HTMLDialogElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const drawerId = useId();
-  const items = getNavigation(role) as DesktopNavItem[];
+  const items = missionNavigation(
+    getNavigation(role) as DesktopNavItem[],
+    role === "volunteer" && activeMission
+      ? ROUTES.volunteer.mission(activeMission.id)
+      : undefined,
+  );
+  const selected = selectedNavigationHref(
+    items,
+    activeHref || pathname,
+    pathname,
+  );
+  const [renderedPath, setRenderedPath] = useState(pathname);
+  if (renderedPath !== pathname) {
+    setRenderedPath(pathname);
+    setDrawerOpen(false);
+    setSearchOpen(false);
+    setQuery("");
+  }
   const filtered = items.filter((item) =>
     tx(item.label).toLowerCase().includes(query.trim().toLowerCase()),
   );
@@ -255,12 +282,17 @@ export function AppHeader({
                   <Link
                     key={item.href}
                     href={item.href}
-                    aria-current={item.href === activeHref ? "page" : undefined}
+                    aria-current={item.href === selected ? "page" : undefined}
                     onClick={() => setDrawerOpen(false)}
                     className={`${theme.drawerLink} flex items-center gap-3 rounded-xl border border-transparent p-3 text-sm font-semibold hover:bg-slate-50`}
                   >
-                    <LiveIcon icon={item.icon} className="size-5 shrink-0" />
+                    <LiveIcon
+                      icon={item.icon}
+                      motion={selected === item.href ? "once" : "interaction"}
+                      className="size-5 shrink-0"
+                    />
                     {tx(item.label)}
+                    <NavigationFeedback />
                   </Link>
                 ))}
               </nav>

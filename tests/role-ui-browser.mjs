@@ -212,7 +212,7 @@ export async function runRoleUiChecks(h) {
           .locator('[aria-current="page"]');
         assert.equal(await selected.count(), 1);
         assert.equal(
-          await selected.evaluate((el) => getComputedStyle(el).backgroundColor),
+          await page.getByTestId("sidebar-nav-selection").evaluate((el) => getComputedStyle(el).backgroundColor),
           palettes[role].rgb,
         );
       }
