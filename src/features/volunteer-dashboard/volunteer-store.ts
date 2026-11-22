@@ -212,7 +212,16 @@ class VolunteerStore {
     const dispatch = this.state.dispatches.find((d) => d.id === dispatchId);
     if (!dispatch?.claimId) throw new Error("Dispatch not found.");
     try { await apiRequest("/api/dispatches", { method: "POST", body: JSON.stringify({ claimId: dispatch.claimId }) }); }
-    catch (error) { await this.refreshDuty(); throw error; }
+    catch (error) {
+      // Assignment may already be saved when its response is lost. Continue the
+      // matching mission instead of offering another acceptance of the same rescue.
+      try {
+        await this.fetchDispatches();
+        if (this.state.activeMission?.claimId === dispatch.claimId) return this.state.activeMission;
+      } catch { /* Preserve the assignment error when reconciliation is unavailable. */ }
+      await this.refreshDuty().catch(() => {});
+      throw error;
+    }
     await this.fetchDispatches();
     if (!this.state.activeMission) throw new Error("The assigned mission could not be loaded. Refresh the page.");
     return this.state.activeMission;

@@ -76,6 +76,7 @@ export function DonationWizard() {
   const [uploading, setUploading] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const publishLock = useRef(false);
   const [result, setResult] = useState<DonationWizardResult>();
   const [preferredNgo, setPreferredNgo] = useState<NGODirectoryItem>();
   const formRef = useRef<HTMLFormElement>(null);
@@ -182,7 +183,7 @@ export function DonationWizard() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (result || submitting || uploading || !profileReady) return;
+    if (result || publishLock.current || submitting || uploading || !profileReady) return;
     if (currentStep < 5) {
       goNext();
       return;
@@ -192,6 +193,7 @@ export function DonationWizard() {
       revealErrors(nextErrors);
       return;
     }
+    publishLock.current = true;
     setSubmitting(true);
     const submittedAt = new Date().toISOString();
 
@@ -254,8 +256,8 @@ export function DonationWizard() {
       // Trigger Celebration Animation Popup
       triggerCelebration({
         title: "উদ্বৃত্ত খাবার পোস্ট সম্পন্ন!",
-        message: `${draft.title} সফলভাবে ডেটাবেজে তালিকাভুক্ত হয়েছে।`,
-        badge: "খাদ্য সুরক্ষা যাচাইকৃত",
+        message: tx("Your donation is published. Open tracking to follow the next steps."),
+        badge: "Post saved",
         type: "SUCCESS",
         actionLabel: "ধন্যবাদ, সম্পন্ন",
       });
@@ -267,6 +269,7 @@ export function DonationWizard() {
         setErrors({ form: "The donation could not be saved. Try again." });
       }
     } finally {
+      publishLock.current = false;
       setSubmitting(false);
     }
   }
