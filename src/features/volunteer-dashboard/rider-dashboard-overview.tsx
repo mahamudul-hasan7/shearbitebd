@@ -14,6 +14,8 @@ import type {
   VolunteerMission,
   CompletedMissionRecord,
 } from "./volunteer-types";
+import { VolunteerDutyPanel } from "./volunteer-duty-panel";
+
 export function RiderDashboardOverview({
   mission,
   history,
@@ -33,6 +35,7 @@ export function RiderDashboardOverview({
   const active = mission?.currentStage !== "completed" ? mission : null;
   return (
     <>
+      {!active && <VolunteerDutyPanel />}
       <section>
         <DashboardSectionHeading title="Your next mission step" />
         <DashboardWorkCard>
@@ -64,6 +67,7 @@ export function RiderDashboardOverview({
           </div>
         </DashboardWorkCard>
       </section>
+      {active && <VolunteerDutyPanel />}
       <section>
         <DashboardSectionHeading
           title="Your contribution"

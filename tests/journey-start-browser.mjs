@@ -10,6 +10,10 @@ export async function startRescueThroughUi(h) {
   await mkdir(artifacts, { recursive: true });
   const donor = (await login()).cookie,
     ngo = (await login("NGO")).cookie;
+  await prisma.address.updateMany({
+    where: { ownerId: "test-DONOR", isPrimary: true },
+    data: { addressLine: "UIU cafeteria, United City, Madani Avenue", area: "Badda" },
+  });
   for (const [cookie, point] of [
     [donor, { latitude: 23.781234, longitude: 90.421234 }],
     [ngo, { latitude: 23.79, longitude: 90.42 }],
@@ -126,8 +130,8 @@ export async function startRescueThroughUi(h) {
     await page.setViewportSize({ width: 390, height: 1000 });
   }
   try {
-    const d = await contextFor("donor", donor),
-      title = "Journey meal boxes " + unique.slice(0, 8);
+    const d = await contextFor("donor", donor);
+    const title = "Campus lunch demo · Vegetable khichuri";
     await d.goto("/donor/donations/new", { waitUntil: "networkidle" });
     await d.getByTestId("donation-next").click();
     await d.locator('[name="title"][aria-invalid="true"]').waitFor();
@@ -137,12 +141,14 @@ export async function startRescueThroughUi(h) {
         .evaluate((el) => el === document.activeElement),
       true,
     );
-    await d.locator('[name="title"]').fill(title);
-    await d.locator('[name="quantity"]').fill("20");
-    await d.locator('[name="allergenInfo"]').fill("None known");
-    await d
-      .locator('textarea[name="description"]')
-      .fill("Fresh covered meal boxes prepared for community collection.");
+    const titleField = d.locator('[name="title"]');
+    await titleField.fill("Unfinished regular post");
+    await d.getByRole("button", { name: uiName("খসড়া"), exact: true }).click();
+    await d.goto("/donor/donations/new?demo=campus-lunch", { waitUntil: "networkidle" });
+    assert.equal(await titleField.inputValue(), title);
+    assert.equal(await d.locator('[name="quantity"]').inputValue(), "20");
+    assert.equal(await d.locator('[name="allergenInfo"]').inputValue(), "Mustard");
+    await d.locator('textarea[name="description"]').fill("Demo pickup: 20 covered boxes of vegetable khichuri at the UIU cafeteria.");
     await d.getByRole("button", { name: uiName("খসড়া"), exact: true }).click();
     await d.reload({ waitUntil: "networkidle" });
     assert.equal(await d.locator('[name="title"]').inputValue(), title);
@@ -154,12 +160,14 @@ export async function startRescueThroughUi(h) {
     await d.locator('[name="safePickupDeadline"]').fill(local(150 * 60000));
     await snapshot(d, "time-storage");
     await goDonationStep(d, 3);
+    assert.match(await d.getByTestId("sample-image-picker").innerText(), /Packed meals/);
     await snapshot(d, "optional-photos");
     await goDonationStep(d, 4);
     await d.locator('[name="pickupWindowStart"]').fill(local(-15 * 60000));
     await d.locator('[name="pickupWindowEnd"]').fill(local(120 * 60000));
     await snapshot(d, "pickup-details");
     await goDonationStep(d, 5);
+    assert.equal(await d.locator('form input[type="checkbox"]:checked').count(), 0);
     for (const checkbox of await d.locator('form input[type="checkbox"]').all())
       await checkbox.check();
     await snapshot(d, "publish-review");
@@ -209,6 +217,8 @@ export async function startRescueThroughUi(h) {
     const response = await posted;
     assert.equal(response.status(), 201, await response.text());
     const donation = (await response.json()).donation;
+    assert.equal(donation.sampleImageId, "packed-meals");
+    assert.equal(donation.quantity.estimatedMeals, 20);
     assert.equal(posts, 1);
     assert.equal(await prisma.donation.count({ where: { title } }), 1);
     await d
@@ -316,6 +326,20 @@ export async function startRescueThroughUi(h) {
         })
       ).id,
     );
+    await d.goto("/donor/donations/new", { waitUntil: "networkidle" });
+    assert.equal(await titleField.inputValue(), "Unfinished regular post");
+    await v.goto("/volunteer/dashboard", { waitUntil: "domcontentloaded" });
+    const resume = v.getByRole("link", { name: "Continue mission", exact: true });
+    await resume.waitFor();
+    assert.equal(await resume.getAttribute("href"), "/volunteer/missions/mission-" + claim.id);
+    assert.ok((await resume.boundingBox()).y < (await v.getByTestId("volunteer-duty-panel").boundingBox()).y);
+    await snapshot(v, "rider-current-work");
+    await n.goto("/ngo/dashboard", { waitUntil: "domcontentloaded" });
+    const pickup = n.getByTestId("ngo-active-work").getByRole("link", { name: "Follow the pickup" });
+    await pickup.waitFor();
+    assert.equal(await pickup.getAttribute("href"), "/ngo/claims/" + claim.id);
+    assert.ok((await pickup.boundingBox()).y < (await n.getByTestId("ngo-stats").boundingBox()).y);
+    await snapshot(n, "ngo-current-work");
     assert.deepEqual(errors, []);
     await writeFile(
       artifacts + "/start-results.json",

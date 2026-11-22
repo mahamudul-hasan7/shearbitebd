@@ -165,6 +165,7 @@ export function NGODashboard() {
               data-testid="ngo-dashboard-error"
             />
           )}
+          {data.activeClaims.length > 0 && <ActiveClaimOverview items={data.activeClaims} />}
           <section
             aria-labelledby="ngo-stats-title"
             data-testid="ngo-stats-section"
@@ -192,7 +193,7 @@ export function NGODashboard() {
                 icon={WorkChecklistIcon}
                 tone="info"
                 badge={tx("Current")}
-                helper={tx("Follow each job's actual stage below.")}
+                helper={tx("Collections awaiting a next step.")}
               />
               <DashboardMetric
                 data-stat="meals"
@@ -227,7 +228,7 @@ export function NGODashboard() {
             )}
           </section>
 
-          <ActiveClaimOverview items={data.activeClaims} />
+          {data.activeClaims.length === 0 && <ActiveClaimOverview items={data.activeClaims} />}
 
           <div className={styles.lowerGrid}>
             <section aria-labelledby="recommended-heading">

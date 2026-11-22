@@ -15,7 +15,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Stepper } from "@/components/ui/stepper";
 import styles from "@/components/donation/donation-form.module.css";
-import { createInitialDonationDraft, DONATION_DRAFT_STORAGE_KEY, restoreDonationDraft } from "@/features/donations/donation-draft";
+import { createCampusLunchDraft, createInitialDonationDraft, DONATION_DRAFT_STORAGE_KEY, restoreDonationDraft } from "@/features/donations/donation-draft";
 import type { DonationDraft, DonationDraftErrors, DonationDraftField, DonationWizardResult, DonationWizardStep } from "@/features/donations/types";
 import { donationErrorStep, hasDonationDraftErrors, validateDonationDraft, validateDonationWizardStep } from "@/features/donations/validation";
 import { PriorityLevel, QuantityUnit } from "@/lib/constants/domain";
@@ -61,11 +61,11 @@ function allergensFromDraft(value: string) {
   return value.split(",").map((item) => item.trim()).filter(Boolean);
 }
 
-export function DonationWizard() {
+export function DonationWizard({ campusDemo = false }: { campusDemo?: boolean }) {
   const tx = useUiText();
   const { session } = useMockAuth();
   const userId = session?.id;
-  const draftStorageKey = `${DONATION_DRAFT_STORAGE_KEY}.${userId}`;
+  const draftStorageKey = `${DONATION_DRAFT_STORAGE_KEY}.${userId}${campusDemo ? ".campus-lunch" : ""}`;
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [profileReady, setProfileReady] = useState(false);
   const [currentStep, setCurrentStep] = useState<DonationWizardStep>(1);
@@ -87,7 +87,7 @@ export function DonationWizard() {
       try {
         const profile = await profileService.getOwnProfile(userId || "", {}, { signal: controller.signal });
         const preferredNgoProfileId = new URLSearchParams(window.location.search).get("ngo")?.trim() ?? "";
-        let restored = createInitialDonationDraft();
+        let restored = campusDemo ? createCampusLunchDraft() : createInitialDonationDraft();
         try {
           const raw = window.sessionStorage.getItem(draftStorageKey);
           if (raw) restored = restoreDonationDraft(JSON.parse(raw));
@@ -112,7 +112,7 @@ export function DonationWizard() {
     }
     void load();
     return () => controller.abort();
-  }, [draftStorageKey, userId]);
+  }, [campusDemo, draftStorageKey, userId]);
 
   useEffect(() => {
     // Persist only the loaded account's draft; a submitted form must stay cleared.

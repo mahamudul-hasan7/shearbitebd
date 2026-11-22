@@ -56,23 +56,23 @@ export function DonationConfirmation({
       {/* Summary Card */}
       <div className="mx-auto mt-7 max-w-2xl rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 text-left shadow-xs">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
+          <div className="min-w-0">
             <p className="text-[11px] font-bold text-slate-400 font-heading">
               {tx("রেফারেন্স ট্র্যাকিং আইডি")}
             </p>
-            <p className="mt-1 font-mono text-sm font-black text-emerald-800">
+            <p className="mt-1 break-all font-mono text-sm font-black text-emerald-800">
               #{donation.id.toUpperCase()}
             </p>
           </div>
           <StatusBadge status={donation.status} />
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-3 text-xs font-heading">
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs font-heading">
           <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5">
             <p className="text-slate-400 font-bold uppercase text-[10px]">
               {tx("খাদ্যের নাম")}
             </p>
-            <p className="mt-1 font-black text-slate-900 text-sm truncate">
+            <p className="mt-1 font-black text-slate-900 text-sm wrap-anywhere">
               {donation.title}
             </p>
           </div>
@@ -88,7 +88,7 @@ export function DonationConfirmation({
             <p className="text-slate-400 font-bold uppercase text-[10px]">
               {tx("পিকআপ জোন")}
             </p>
-            <p className="mt-1 font-black text-slate-900 text-sm truncate">
+            <p className="mt-1 font-black text-slate-900 text-sm wrap-anywhere">
               {donation.pickup.approximateArea}
             </p>
           </div>

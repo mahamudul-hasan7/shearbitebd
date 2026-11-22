@@ -38,7 +38,7 @@ export async function runCoordinationBrowserChecks({
   const rescue = await assignedRescue();
   await prisma.donation.update({
     where: { id: rescue.donation.id },
-    data: { sampleImageId: "meal-trays", windowEnd:new Date(Date.now()+240000) },
+    data: { sampleImageId: rescue.donation.sampleImageId || "meal-trays", windowEnd:new Date(Date.now()+240000) },
   });
   const browser = await chromium.launch({
     headless: true,
@@ -323,6 +323,19 @@ export async function runCoordinationBrowserChecks({
       fullPage: true,
       animations: "disabled",
     });
+    const dashboard = await ngo.context().newPage();
+    await dashboard.goto("/ngo/dashboard", { waitUntil: "domcontentloaded" });
+    const impact = dashboard.getByTestId("ngo-stats");
+    await impact.waitFor();
+    const totals = await prisma.distributionRecord.aggregate({
+      where: { ngoProfileId: record.ngoProfileId },
+      _sum: { mealsDistributed: true, beneficiariesServed: true },
+    });
+    assert.equal(await impact.locator('[data-stat="meals"] > p').first().textContent(), String(totals._sum.mealsDistributed));
+    assert.equal(await impact.locator('[data-stat="people"] > p').first().textContent(), String(totals._sum.beneficiariesServed));
+    console.log("Saved distribution and NGO dashboard agree:", totals._sum.mealsDistributed, "meals,", totals._sum.beneficiariesServed, "recipients.");
+    await dashboard.screenshot({ path: `${artifacts}/ngo-confirmed-impact.png`, animations: "disabled" });
+    await dashboard.close();
     // Maps remain an optional disclosure; navigation is derived from saved pins.
     await donor
       .getByText("Map & saved handover locations", { exact: true })

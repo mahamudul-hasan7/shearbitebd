@@ -39,6 +39,11 @@ Windows-এ `run-demo.bat` build করে presentation server চালায় �
 
 ## ২. Location ও খাবার প্রকাশ — donor
 
+ক্যাম্পাস লাঞ্চের নমুনা পোস্ট দেখাতে Donor দিয়ে লগইন করে একই সার্ভারে
+`/donor/donations/new?demo=campus-lunch` খুলুন। এতে ২০ বক্স সবজি খিচুড়ি,
+একটি নমুনা ছবি ও ক্যাফেটেরিয়া কাউন্টারের নির্দেশনা পাবেন। নিজের সংরক্ষিত
+ঠিকানা, সময় ও ঘোষণাগুলো দেখে Publish চাপুন। এই ডেমোর খসড়া আলাদা করে সেভ হয়।
+
 1. `/donor/addresses` থেকে ঠিকানার `Set location pin` খুলুন। Map-এ click/drag,
    device location, অথবা latitude/longitude দিয়ে `Apply coordinates` করুন। এরপর save।
 2. `/donor/donations/new` থেকে খাবারের নাম, category, quantity, preparation time,

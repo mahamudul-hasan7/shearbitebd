@@ -5,6 +5,9 @@ export const metadata = {
   description: "ক্যাফেটেরিয়া বা রেস্তোরাঁর তাজা অতিরিক্ত খাবারের বিবরণ ও পিকআপ তথ্য দিয়ে লাইভ ফিডে তালিকাভুক্ত করুন।",
 };
 
-export default function NewDonationPage() {
-  return <DonationWizard />;
+export default async function NewDonationPage({ searchParams }: {
+  searchParams: Promise<{ demo?: string | string[] }>;
+}) {
+  const campusDemo = (await searchParams).demo === "campus-lunch";
+  return <DonationWizard key={campusDemo ? "campus-lunch" : "standard"} campusDemo={campusDemo} />;
 }
