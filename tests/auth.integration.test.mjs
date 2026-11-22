@@ -3213,3 +3213,14 @@ test("browser admin user controls separate verification and account access on mo
  const {runAdminUsersBrowserChecks}=await import("./admin-users-browser.mjs");
  await runAdminUsersBrowserChecks(userControlHelpers());
 });
+
+test("browser complete rescue journey publishes, claims, assigns and distributes with recoverable errors",{skip:process.env.RUN_JOURNEY_BROWSER!=="1",timeout:360_000},async()=>{
+ const {startRescueThroughUi}=await import("./journey-start-browser.mjs");
+ const {runCoordinationBrowserChecks}=await import("./coordination-browser.mjs");
+ const helpers={base,prisma,request,login,seedUser,fixturePassword,assignedRescue,issue,reportIncident};
+ const rescue=await startRescueThroughUi(helpers);let first=true;
+ await runCoordinationBrowserChecks({...helpers,assignedRescue:async()=>{if(first){first=false;return rescue;}return assignedRescue();}});
+});
+test("browser receipt recovery supports retries, focused errors, one save and damaged food guidance",{skip:process.env.RUN_JOURNEY_BROWSER!=="1",timeout:180_000},async()=>{
+ const {receiptRecoveryChecks}=await import("./receipt-recovery-browser.mjs");await receiptRecoveryChecks({base,prisma,deliveredRescue});
+});

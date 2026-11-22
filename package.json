@@ -55,6 +55,7 @@
     "test:auth:browser": "node scripts/test-auth-pages-browser.mjs",
     "test:verification:browser": "node scripts/test-verification-browser.mjs",
     "test:discovery:browser": "node scripts/test-discovery-browser.mjs",
+    "test:journey:browser": "node scripts/test-journey-browser.mjs",
     "test:coordination:browser": "node scripts/test-coordination-browser.mjs"
   },
   "dependencies": {

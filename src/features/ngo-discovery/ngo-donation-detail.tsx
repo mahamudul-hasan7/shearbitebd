@@ -115,7 +115,28 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
       .getById(donationId, NGO_PROFILE_ID, NGO_VIEWER, {
         signal: controller.signal,
       })
-      .then((item) => setState(asyncState.success(item)))
+      .then(async (item) => {
+        if (controller.signal.aborted) return;
+        setState(asyncState.success(item));
+        if (!["AVAILABLE", "PUBLISHED"].includes(item.donation.status)) {
+          const existing = (
+            await claimService.list(
+              { donationId },
+              { signal: controller.signal },
+            )
+          ).find((claim) =>
+            [
+              "RESERVED",
+              "ASSIGNED",
+              "PICKED_UP",
+              "DELIVERED",
+              "DISPUTED",
+              "DISTRIBUTED",
+            ].includes(claim.status),
+          );
+          if (!controller.signal.aborted) setClaimId(existing?.id);
+        } else setClaimId(undefined);
+      })
       .catch((error: unknown) => {
         if (!controller.signal.aborted)
           setState(asyncState.error(toServiceError(error)));
@@ -590,7 +611,7 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
               tone="success"
               title={tx("খাদ্য লট সফলভাবে ক্লেইম করা হয়েছে!")}
               description={tx(
-                "উদ্ধার কাজটি আপনার এনজিও প্যানেলে বরাদ্দ করা হয়েছে। ভলান্টিয়ার অ্যাসাইন করতে ক্লেইম পাতায় যান।",
+                "Verified volunteers accept rescue missions from their dispatch list. Open your NGO's saved claim to follow the current status and coordinate the next step.",
               )}
               action={
                 <ButtonLink
@@ -622,30 +643,36 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                   ? "সংরক্ষণ করুন"
                   : "Save for later"}
             </Button>
-            <Button
-              disabled={!canClaim || claiming}
-              leftIcon={<ShieldCheck className="size-4" />}
-              onClick={() => {
-                setClaimError(undefined);
-                setConfirming(true);
-              }}
-            >
-              {claiming
-                ? isBn
-                  ? tx("ক্লেইম করা হচ্ছে…")
-                  : tx("Claiming…")
-                : claimId
+            {claimId ? (
+              <ButtonLink href={ROUTES.ngo.claim(claimId)}>
+                {tx("Continue to claim")}
+              </ButtonLink>
+            ) : (
+              <Button
+                disabled={!canClaim || claiming}
+                leftIcon={<ShieldCheck className="size-4" />}
+                onClick={() => {
+                  setClaimError(undefined);
+                  setConfirming(true);
+                }}
+              >
+                {claiming
                   ? isBn
-                    ? tx("ক্লেইম সম্পন্ন")
-                    : tx("Claimed")
-                  : item.eligibility.eligible
+                    ? tx("ক্লেইম করা হচ্ছে…")
+                    : tx("Claiming…")
+                  : claimId
                     ? isBn
-                      ? tx("খাদ্য লট ক্লেইম করুন")
-                      : tx("Claim donation")
-                    : isBn
-                      ? tx("ক্লেইমের উপযুক্ত নয়")
-                      : tx("Not eligible to claim")}
-            </Button>
+                      ? tx("ক্লেইম সম্পন্ন")
+                      : tx("Claimed")
+                    : item.eligibility.eligible
+                      ? isBn
+                        ? tx("খাদ্য লট ক্লেইম করুন")
+                        : tx("Claim donation")
+                      : isBn
+                        ? tx("ক্লেইমের উপযুক্ত নয়")
+                        : tx("Not eligible to claim")}
+              </Button>
+            )}
           </StickyActionBar>
           {confirming && (
             <ClaimConfirmation

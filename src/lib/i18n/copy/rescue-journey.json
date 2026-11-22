@@ -1,0 +1,70 @@
+[
+  [
+    "Verified NGOs can now find and claim your donation. An available volunteer can accept the rescue after it is claimed.",
+    "যাচাই করা এনজিও এখন আপনার খাবার খুঁজে ক্লেইম করতে পারবে। ক্লেইম হলে একজন উপলব্ধ স্বেচ্ছাসেবক উদ্ধারকাজ গ্রহণ করতে পারবেন।"
+  ],
+  [
+    "1. Follow the NGO claim and volunteer assignment on your tracking page and in-app notifications.",
+    "১. ট্র্যাকিং পেজ ও অ্যাপের নোটিফিকেশনে এনজিওর ক্লেইম ও স্বেচ্ছাসেবক যুক্ত হওয়ার খবর দেখুন।"
+  ],
+  [
+    "2. When the assigned volunteer arrives, generate the pickup code on the tracking page and share it at handover.",
+    "২. নির্ধারিত স্বেচ্ছাসেবক পৌঁছালে ট্র্যাকিং পেজে পিকআপ কোড তৈরি করুন এবং খাবার হস্তান্তরের সময় দিন।"
+  ],
+  [
+    "3. The NGO records its receipt and actual distribution before meals are added to the saved impact history.",
+    "৩. এনজিও প্রাপ্ত খাবার ও প্রকৃত বিতরণের তথ্য সংরক্ষণ করলে মিলের হিসাব ইমপ্যাক্টের ইতিহাসে যুক্ত হবে।"
+  ],
+  [
+    "Your donation is published. Open tracking to follow the next steps.",
+    "আপনার খাবারের পোস্ট প্রকাশিত হয়েছে। পরের ধাপগুলো দেখতে ট্র্যাকিং পেজ খুলুন।"
+  ],
+  [
+    "Post saved",
+    "পোস্ট সংরক্ষিত"
+  ],
+  [
+    "Verified volunteers accept rescue missions from their dispatch list. Open your NGO's saved claim to follow the current status and coordinate the next step.",
+    "যাচাই করা স্বেচ্ছাসেবকেরা নিজেদের dispatch তালিকা থেকে উদ্ধারকাজ গ্রহণ করেন। বর্তমান অবস্থা দেখতে ও পরের ধাপের সমন্বয় করতে আপনার এনজিওর সংরক্ষিত ক্লেইম খুলুন।"
+  ],
+  [
+    "Continue to claim",
+    "ক্লেইম পেজে যান"
+  ],
+  [
+    "Receipt details could not load",
+    "প্রাপ্ত খাবারের তথ্য লোড করা যায়নি"
+  ],
+  [
+    "Enter a received quantity greater than zero and no more than 1,000,000.",
+    "প্রাপ্ত পরিমাণ শূন্যের বেশি এবং সর্বোচ্চ ১০,০০,০০০ দিন।"
+  ],
+  [
+    "Confirm the difference from the expected quantity.",
+    "ঘোষিত পরিমাণের সঙ্গে পার্থক্য নিশ্চিত করুন।"
+  ],
+  [
+    "Describe the damaged food condition in at least 12 characters.",
+    "নষ্ট খাবারের অবস্থা অন্তত ১২ অক্ষরে লিখুন।"
+  ],
+  [
+    "Check the highlighted fields before saving the receipt.",
+    "প্রাপ্ত খাবারের তথ্য সংরক্ষণের আগে চিহ্নিত ঘরগুলো ঠিক করুন।"
+  ],
+  [
+    "Food safety notes (required)",
+    "খাবারের নিরাপত্তা সম্পর্কিত বিবরণ (আবশ্যক)"
+  ],
+  [
+    "Describe the issue in at least 12 characters. This food will be blocked from distribution.",
+    "সমস্যাটি অন্তত ১২ অক্ষরে লিখুন। এই খাবার বিতরণ বন্ধ থাকবে।"
+  ],
+  [
+    "Report a food safety concern",
+    "খাবারের নিরাপত্তার সমস্যা জানান"
+  ],
+  [
+    "NGO pickup team",
+    "এনজিওর খাবার সংগ্রহকারী দল"
+  ]
+]
