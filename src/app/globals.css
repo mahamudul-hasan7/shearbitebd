@@ -57,24 +57,21 @@
 
 :root {
   /* Role identity is separate from semantic success, warning and danger. */
-  --identity-donor: #047857;
-  --identity-donor-hover: #065f46;
-  --identity-donor-soft: #ecfdf5;
-  --identity-donor-ink: #065f46;
-  --identity-donor-border: #a7f3d0;
-  --identity-donor-sidebar: #062b23;
-  --identity-ngo: #1d4ed8;
-  --identity-ngo-hover: #1e40af;
-  --identity-ngo-soft: #eff6ff;
-  --identity-ngo-ink: #1e40af;
-  --identity-ngo-border: #bfdbfe;
-  --identity-ngo-sidebar: #101f3a;
-  --identity-rider: #c2410c;
-  --identity-rider-hover: #9a3412;
-  --identity-rider-soft: #fff7ed;
-  --identity-rider-ink: #9a3412;
-  --identity-rider-border: #fed7aa;
-  --identity-rider-sidebar: #301b12;
+  --identity-donor: #176b55;
+  --identity-donor-hover: #10503f;
+  --identity-donor-soft: #edf5f1;
+  --identity-donor-ink: #124f40;
+  --identity-donor-border: #cee1d7;
+  --identity-ngo: #3d5f87;
+  --identity-ngo-hover: #2c4869;
+  --identity-ngo-soft: #eef3f8;
+  --identity-ngo-ink: #2e4865;
+  --identity-ngo-border: #d2deeb;
+  --identity-rider: #9a5b35;
+  --identity-rider-hover: #774328;
+  --identity-rider-soft: #f8f1eb;
+  --identity-rider-ink: #754329;
+  --identity-rider-border: #ead7c8;
 
   --brand-50: #ecfdf5;
   --brand-100: #d1fae5;

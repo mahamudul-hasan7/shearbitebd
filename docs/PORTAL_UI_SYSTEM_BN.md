@@ -8,9 +8,13 @@ card, button, form focus, filter, feedback ও motion-এর নিয়ম shared
 
 | Role | Accent | Hover/strong | Soft background |
 | --- | --- | --- | --- |
-| Donor | `#047857` | `#065f46` | `#ecfdf5` |
-| NGO | `#1d4ed8` | `#1e40af` | `#eff6ff` |
-| Rider | `#c2410c` | `#9a3412` | `#fff7ed` |
+| Donor | `#176b55` | `#10503f` | `#edf5f1` |
+| NGO | `#3d5f87` | `#2c4869` | `#eef3f8` |
+| Rider | `#9a5b35` | `#774328` | `#f8f1eb` |
+
+তিন role-এর neutral canvas/sidebar ও typography এক। Forest green, slate blue ও copper
+accent মূল action, role badge ও selection rail-এ থাকে; selection background হালকা tint।
+Primary action solid, border/shadow সংযত; semantic status-এর নিজস্ব colour বহাল।
 
 Palette `src/app/globals.css`-এ আছে। `PortalTheme` প্রতিটি role layout ও
 `PortalShell`-এ scoped `--role-*` variables দেয়; এর ফলে incoming offer-ও সঠিক

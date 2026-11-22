@@ -47,12 +47,12 @@ export function DesktopSidebar({
   useNavigationSelection(navigation, selection, selected);
   return (
     <aside
-      className={`${theme.sidebar} fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r text-white lg:flex`}
+      className={`${theme.sidebar} fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r lg:flex`}
     >
-      <div className="border-b border-white/10 p-5">
-        <BrandLogo inverse />
+      <div className="border-b border-line p-5">
+        <BrandLogo />
         <div className="mt-4">
-          <RoleBadge role={role} inverse />
+          <RoleBadge role={role} />
         </div>
       </div>
       <nav
@@ -91,11 +91,11 @@ export function DesktopSidebar({
           </Link>
         ))}
       </nav>
-      <div className="border-t border-white/10 p-5">
-        <p className="truncate text-sm font-bold">
+      <div className="border-t border-line p-5">
+        <p className="truncate text-sm font-semibold text-ink-900">
           {session?.displayName || profileName || "My account"}
         </p>
-        <p className="mt-1 truncate text-xs text-white/65">
+        <p className="mt-1 truncate text-xs text-muted-600">
           {session?.email || "Account preview"}
         </p>
       </div>

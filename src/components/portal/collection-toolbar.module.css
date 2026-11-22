@@ -16,11 +16,11 @@
   min-height: 44px;
 }
 .toolbar button[aria-pressed="true"] {
-  background: var(--role-accent, var(--brand-700));
-  color: white;
-  border-color: var(--role-accent, var(--brand-700));
+  background: var(--role-soft, var(--brand-50));
+  color: var(--role-ink, var(--brand-800));
+  border-color: var(--role-border, var(--brand-200));
 }
 .toolbar button[aria-pressed="true"] > span:last-child:not(:first-child) {
-  background: rgb(255 255 255 / 16%);
-  color: white;
+  background: var(--surface);
+  color: var(--role-ink, var(--brand-800));
 }
