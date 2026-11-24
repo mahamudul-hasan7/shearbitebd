@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import { uiLabel } from "./ui-labels.mjs";
 import { chromium } from "playwright";
 
 export async function runAuthPageBrowserChecks({ base, prisma }) {
@@ -270,11 +271,8 @@ export async function runAuthPageBrowserChecks({ base, prisma }) {
       assert.equal(row.role, role.toUpperCase());
       if (role === "donor")
         assert.equal(row.donorProfile.donorType, "EVENT_ORGANIZER");
-      else
-        assert.equal(
-          (row.ngoProfile || row.volunteerProfile).verificationStatus,
-          "PENDING",
-        );
+      assert.equal((row.donorProfile || row.ngoProfile || row.volunteerProfile).verificationStatus, "VERIFIED");
+      await page.getByText(uiLabel("Your account was approved automatically at registration.", language), { exact: true }).waitFor();
       assert.ok((await page.locator("body").innerText()).includes(email));
       await page.screenshot({
         path: `${artifacts}/${role}-success.png`,
@@ -301,6 +299,10 @@ export async function runAuthPageBrowserChecks({ base, prisma }) {
         await page.locator('input[type="checkbox"]').uncheck();
       await page.locator('button[type="submit"]').click();
       await page.waitForURL("**/" + role + "/dashboard");
+      await page.goto("/" + role + "/notifications", { waitUntil: "networkidle" });
+      const approval = page.locator('main article[data-unread="true"]').filter({ hasText: uiLabel("Account approved", language) });
+      await approval.getByText(uiLabel("Your account was approved automatically at registration.", language), { exact: true }).waitFor();
+      assert.equal(await approval.count(), 1);
       await context.close();
     }
     assert.deepEqual(failures, []);

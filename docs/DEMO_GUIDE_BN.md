@@ -25,11 +25,9 @@ Windows-এ `run-demo.bat` build করে presentation server চালায় �
    একই browser-এর সাধারণ tab-গুলো একই login cookie ব্যবহার করে।
 3. নিজের তিনটি account register করুন বা বিদ্যমান account ব্যবহার করুন। Guide কোনো
    account-এর password প্রকাশ করে না। Owner-এর নির্দেশে password hashing এখনও স্থগিত।
-4. অ্যাডমিন account দিয়ে `/login` থেকে ঢুকে **Verification Requests** পাতায় নতুন account যাচাই করুন।
-   Local admin-এর username `admin` এবং password `admin123`।
-   বিস্তারিত [অ্যাডমিন গাইডে](ADMIN_GUIDE_BN.md) আছে। NGO ও volunteer register করার পর DEMO / SAMPLE লেখা PDF বা ছবি জমা দিন।
-   Admin-এর Verification Requests থেকে ফাইল preview করে approve/reject করুন।
-   Account approval কোনো food safety certificate নয়।
+4. নিবন্ধন শেষ হলে Donor, NGO ও Rider সরাসরি dashboard খুলতে পারবেন। 🔔 থেকে
+   অনুমোদনের নোটিফিকেশন দেখুন। পুরোনো pending অ্যাকাউন্টের জন্য
+   [অ্যাডমিন গাইড](ADMIN_GUIDE_BN.md) দেখুন।
 
 খাবার খোঁজা, filter, map ও claim confirmation দেখানোর জন্য
 [NGO discovery নির্দেশনা](NGO_DISCOVERY_BN.md) অনুসরণ করুন।

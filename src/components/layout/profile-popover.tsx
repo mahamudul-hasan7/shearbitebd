@@ -1,6 +1,7 @@
 "use client";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
+import { VolunteerDutySwitch } from "@/features/volunteer-dashboard/volunteer-duty-switch";
 import { RoleBadge } from "@/components/portal/role-badge";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -123,6 +124,7 @@ export function ProfilePopover({
               </p>
             )}
           </div>
+          {role === "volunteer" && <VolunteerDutySwitch />}
           {verification && (
             <p className="rounded-xl bg-slate-50 p-3 text-xs">
               {tx("Account verification:")}{" "}

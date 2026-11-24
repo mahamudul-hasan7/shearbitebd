@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 import { PortalTheme } from "@/components/portal/portal-theme";
 import theme from "@/components/portal/portal-theme.module.css";
-import { VolunteerDutyPanel } from "@/features/volunteer-dashboard/volunteer-duty-panel";
 
 export function PortalShell({
   role,
@@ -33,7 +32,6 @@ export function PortalShell({
   notificationHref,
   unreadNotifications,
   compactHeader = false,
-  showDutyPanel = true,
   titleClassName,
   children,
 }: {
@@ -52,7 +50,6 @@ export function PortalShell({
   notificationHref?: string;
   unreadNotifications?: number;
   compactHeader?: boolean;
-  showDutyPanel?: boolean;
   titleClassName?: string;
   children: ReactNode;
 }) {
@@ -168,9 +165,6 @@ export function PortalShell({
             </div>
           )}
         </div>
-        {showDutyPanel &&
-          role === "volunteer" &&
-          !activeHref.includes("/missions/") && <VolunteerDutyPanel />}
         {children}
       </main>
     </PageContainer>

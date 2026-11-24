@@ -2,7 +2,7 @@
   ["User control", "ইউজার নিয়ন্ত্রণ"],
   ["Verification", "ভেরিফিকেশন"],
   ["Verification Requests", "ভেরিফিকেশন অনুরোধ"],
-  ["Review new account documents", "নতুন অ্যাকাউন্টের নথি যাচাই"],
+  ["Review pending documents", "অপেক্ষমাণ নথি যাচাই"],
   ["All Users", "সব ইউজার"],
   ["Manage account access", "অ্যাকাউন্টের প্রবেশাধিকার নিয়ন্ত্রণ"],
   [
@@ -10,12 +10,12 @@
     "সব দাতা, এনজিও ও স্বেচ্ছাসেবক খুঁজুন। ভেরিফিকেশন ও প্রবেশাধিকার আলাদাভাবে নিয়ন্ত্রণ করুন।"
   ],
   [
-    "Approve or reject new accounts here. Use All Users to ban, unblock or delete an account.",
-    "এখানে নতুন অ্যাকাউন্ট অনুমোদন বা প্রত্যাখ্যান করুন। ব্যান, আনব্লক বা ডিলিট করতে সব ইউজার অংশে যান।"
+    "Review accounts awaiting a decision here. Use All Users to ban, unblock or delete an account.",
+    "যেসব অ্যাকাউন্টের সিদ্ধান্ত বাকি আছে, এখানে সেগুলো দেখুন। ব্যান, আনব্লক বা ডিলিট করতে সব ইউজার অংশে যান।"
   ],
   [
-    "Review new accounts and their verification documents.",
-    "নতুন অ্যাকাউন্ট ও তাদের ভেরিফিকেশনের নথি যাচাই করুন।"
+    "Review pending accounts and their documents.",
+    "অপেক্ষমাণ অ্যাকাউন্ট ও তাদের নথি যাচাই করুন।"
   ],
   [
     "Find users. Manage access with clear, recorded decisions.",

@@ -12,9 +12,6 @@ export function NGOVerification() {
       role="ngo"
       activeHref={ROUTES.ngo.verification}
       title={tx("Account verification")}
-      description={tx(
-        "Submit your document, read feedback and follow the review.",
-      )}
       profileName={session?.displayName}
       notificationHref={ROUTES.ngo.notifications}
     >

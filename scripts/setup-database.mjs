@@ -7,6 +7,7 @@ for (const args of [
   ["scripts/local-postgres.mjs", "start"],
   ["scripts/db-command.mjs", "migrate", "deploy"],
   ["node_modules/tsx/dist/cli.mjs", "scripts/import-legacy-data.ts"],
+  ["node_modules/tsx/dist/cli.mjs", "scripts/approve-registered-accounts.ts"],
   ["node_modules/tsx/dist/cli.mjs", "scripts/setup-local-admin.ts"],
 ]) {
   const child = spawn(process.execPath, args, { stdio: "inherit", windowsHide: true });
