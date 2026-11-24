@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "ঠিকানা এবং সংস্থার প্রয়োজনীয় নিবন্ধন তথ্য দিন।" }, { status: 400 });
   }
   try {
-    const user = await createAccount({ email, password, displayName: resolvedRole === UserRole.NGO ? profile.organizationName : fullName.trim(), phone, role: resolvedRole, profile });
+    const user = await createAccount({ email, password, displayName: resolvedRole === UserRole.NGO ? profile.organizationName : fullName.trim(), phone, role: resolvedRole, profile }, { approveRegistration: true });
     return await authenticatedResponse(user, true, 201);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {

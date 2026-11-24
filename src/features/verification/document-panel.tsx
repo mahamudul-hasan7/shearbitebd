@@ -192,7 +192,7 @@ export function VerificationDocumentPanel() {
       )}
       {data && (
         <div className={styles.panelBody}>
-          <ol
+          {(!verified || uploaded) && <ol
             className={styles.steps}
             aria-label={tx("Document verification progress")}
           >
@@ -218,14 +218,14 @@ export function VerificationDocumentPanel() {
                 <strong>{tx(label)}</strong>
               </li>
             ))}
-          </ol>
-          <p className={styles.intro}>
+          </ol>}
+          {!verified && <p className={styles.intro}>
             {tx(
               data.role === "NGO"
                 ? "Upload your NGO registration certificate for an administrator to review."
                 : "Upload an identity document for an administrator to review your volunteer account.",
             )}
-          </p>
+          </p>}
           {data.document && (
             <DocumentFileCard
               document={data.document}
@@ -238,7 +238,7 @@ export function VerificationDocumentPanel() {
               {tx(
                 uploaded
                   ? "Your account is verified. Your approved document is saved with the review."
-                  : "This account was verified before document uploads were available.",
+                  : "Your account is approved and ready to use.",
               )}
             </p>
           ) : (
@@ -397,11 +397,11 @@ export function VerificationDocumentPanel() {
               </div>
             </>
           )}
-          <p className={styles.demoNote}>
+          {!verified && <p className={styles.demoNote}>
             {tx(
               "For a project demo, use a PDF or image marked DEMO / SAMPLE. The app does not certify document authenticity.",
             )}
-          </p>
+          </p>}
           {data.reviews.length > 0 && (
             <section className={styles.reviewHistory}>
               <h3>{tx("Review feedback")}</h3>

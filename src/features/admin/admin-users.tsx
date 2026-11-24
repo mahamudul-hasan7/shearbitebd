@@ -35,7 +35,7 @@ export function UserControlLinks({
         <ShieldCheck size={19} />
         <span>
           {tx("Verification Requests")}
-          <small>{tx("Review new account documents")}</small>
+          <small>{tx("Review pending documents")}</small>
         </span>
       </Link>
       <Link

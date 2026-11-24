@@ -126,7 +126,6 @@ export function VolunteerDashboard() {
       profileName={volunteerName}
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={volunteerInitials}
-      showDutyPanel={false}
       compactHeader={hasCurrentMission}
       actionsClassName={hasCurrentMission ? ui.desktopActions : undefined}
       actions={
@@ -181,8 +180,8 @@ export function VolunteerDashboard() {
           </div>
         )}
 
-        {/* Duty Status Ribbon & Hero Banner */}
-        <RiderDashboardOverview mission={activeMission} history={completedHistory} completed={profile.completedMissions} available={dispatches.length}/>
+        {/* Contribution totals from saved delivery records. */}
+        <RiderDashboardOverview history={completedHistory} completed={profile.completedMissions} available={dispatches.length}/>
         {progressStale && <DashboardFeedback stale message={tx("Saved mission details may be out of date. Refresh before taking action.")} onRetry={()=>void fetchDispatches().then(()=>setProgressStale(false)).catch(()=>setProgressStale(true))}/>}
 
         {/* Command View Switcher */}

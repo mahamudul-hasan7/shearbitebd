@@ -5,8 +5,9 @@
 
 ## NGO ও volunteer
 
-1. Register শেষ হলে একই পাতায় verification document দিন। পরে NGO account-এর
-   **Verification** অথবা volunteer-এর **ID card** পাতায়ও একই ব্যবস্থা পাবেন।
+নতুন অ্যাকাউন্ট নিবন্ধনের সময় অনুমোদিত হয়। নিচের ধাপগুলো আগে থেকে review বাকি থাকা অ্যাকাউন্টের জন্য।
+
+1. NGO account-এর **Verification** অথবা volunteer-এর **ID card** পাতায় যান।
 2. PDF, JPG বা PNG বেছে নিন। সর্বোচ্চ 5 MB; PDF-এ ১–১০ পৃষ্ঠা থাকতে পারবে।
    ভুল format, নষ্ট ফাইল, script/form/embedded file থাকা PDF গ্রহণ করা হয় না।
 3. **Submit document** দিন। বাস্তব upload progress দেখা যাবে। ব্যর্থ হলে একই ফাইল

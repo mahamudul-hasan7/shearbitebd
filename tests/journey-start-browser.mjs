@@ -291,8 +291,10 @@ export async function startRescueThroughUi(h) {
       true,
     );
     await snapshot(v, "dispatch-duty-off");
+    await v.getByRole("button", { name: "Open account menu", exact: true }).click();
     await v.getByRole("switch").click();
     await v.getByRole("switch", { checked: true }).waitFor();
+    await v.keyboard.press("Escape");
     await v.route(
       "**/api/dispatches",
       async (route) => {
@@ -329,10 +331,9 @@ export async function startRescueThroughUi(h) {
     await d.goto("/donor/donations/new", { waitUntil: "networkidle" });
     assert.equal(await titleField.inputValue(), "Unfinished regular post");
     await v.goto("/volunteer/dashboard", { waitUntil: "domcontentloaded" });
-    const resume = v.getByRole("link", { name: "Continue mission", exact: true });
-    await resume.waitFor();
-    assert.equal(await resume.getAttribute("href"), "/volunteer/missions/mission-" + claim.id);
-    assert.ok((await resume.boundingBox()).y < (await v.getByTestId("volunteer-duty-panel").boundingBox()).y);
+    await v.getByTestId("rider-impact").waitFor();
+    assert.equal(await v.getByTestId("volunteer-duty-panel").count(), 0);
+    assert.equal(await v.getByRole("heading", { name: "Your next mission step", exact: true }).count(), 0);
     await snapshot(v, "rider-current-work");
     await n.goto("/ngo/dashboard", { waitUntil: "domcontentloaded" });
     const pickup = n.getByTestId("ngo-active-work").getByRole("link", { name: "Follow the pickup" });

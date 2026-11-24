@@ -1,4 +1,7 @@
 [
+  ["Your account has been approved automatically. You can start using it now.", "আপনার অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে। এখন ব্যবহার শুরু করতে পারেন।"],
+  ["Account approved", "অ্যাকাউন্ট অনুমোদিত হয়েছে"],
+  ["Your account was approved automatically at registration.", "নিবন্ধনের সময় আপনার অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে।"],
   ["Your notification inbox", "তোমার নোটিফিকেশনের খবর"],
   ["Time unavailable", "সময় পাওয়া যায়নি"],
   ["See notification details", "বিস্তারিত দেখো"],

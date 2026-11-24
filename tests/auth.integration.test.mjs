@@ -153,8 +153,10 @@ test("browser mobile layouts navigation overlays and form controls fit touch scr
               const nav = page.getByRole("navigation", { name: t("Mobile Bottom App Navigation"), exact: true });
               assert.equal(await nav.isVisible(), !route.endsWith("/new"), route + " bottom navigation visibility");
               if (role === "VOLUNTEER") {
+                assert.equal(await page.getByTestId("volunteer-duty-panel").count(), 0);
+                await page.getByRole("button", { name: t("Open account menu"), exact: true }).click();
                 assert.equal(await page.getByRole("switch", { name: t("Duty ON/OFF"), exact: true }).count(), 1);
-                assert.equal(await page.getByTestId("volunteer-duty-panel").evaluate((node) => getComputedStyle(node).position), "static");
+                await page.keyboard.press("Escape");
               }
             }
           }
@@ -460,6 +462,7 @@ test("registration persists the account and creates a session; duplicate email a
   for (const change of [{ email: registration.email.toUpperCase(), phone: "01812345679" }, { email: "another@example.test", phone: "+8801812345678" }]) {
     assert.equal((await request("/api/auth/register", { method: "POST", body: { ...registration, ...change } })).status, 409);
   }
+  assert.equal(await prisma.notification.count({ where: { userId: user.id, title: "Account approved", readAt: null } }), 1);
 });
 
 test("accounts and sessions survive an application restart", async () => {
@@ -603,12 +606,12 @@ test("expired food cannot be claimed and is excluded from discovery", async () =
   assert.ok(!feed.donations.some((d) => d.id === id));
 });
 
-test("unverified newly registered NGOs cannot claim food", async () => {
+test("newly registered NGOs can claim food immediately", async () => {
   const donor = await login();
   const created = await newDonation(donor.cookie);
   const response = await request("/api/auth/login", { method: "POST", body: { email: "new-ngo@example.test", password: registration.password } });
   const cookie = response.headers.get("set-cookie").split(";")[0];
-  assert.equal((await request("/api/claims", { cookie, method: "POST", body: { donationId: created.body.donation.id } })).status, 403);
+  assert.equal((await request("/api/claims", { cookie, method: "POST", body: { donationId: created.body.donation.id } })).status, 201);
 });
 
 test("two volunteers racing for one dispatch produce one assignment", async () => {
@@ -736,116 +739,25 @@ test("browser rider incoming offers follow duty accept once and handle competing
   await runRiderOfferBrowserChecks({ prisma, base, dutyRider, dutyClaim, jsonResult });
 });
 
+test("setup approves existing active pending participants once and keeps rejected or blocked accounts", async () => {
+  const pending = await dutyRider(false), rejected = await dutyRider(false), blocked = await dutyRider(false);
+  await prisma.volunteerProfile.update({ where: { userId: rejected.user.id }, data: { verificationStatus: "REJECTED" } });
+  await prisma.user.update({ where: { id: blocked.user.id }, data: { isActive: false } });
+  const registered = await seedUser({ id: randomUUID(), email: randomUUID()+"@example.test", password: fixturePassword, displayName: "Existing pending NGO", role: "NGO", phone: null, normalizedPhone: null });
+  await prisma.nGOProfile.update({ where: { userId: registered.id }, data: { verificationStatus: "PENDING" } });
+  for (let repeat = 0; repeat < 2; repeat++) await runNode(["node_modules/tsx/dist/cli.mjs", "scripts/approve-registered-accounts.ts"]);
+  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: pending.user.id } })).verificationStatus, "VERIFIED");
+  assert.equal((await prisma.nGOProfile.findUniqueOrThrow({ where: { userId: registered.id } })).verificationStatus, "VERIFIED");
+  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: rejected.user.id } })).verificationStatus, "REJECTED");
+  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: blocked.user.id } })).verificationStatus, "PENDING");
+  for (const userId of [pending.user.id, registered.id]) assert.equal(await prisma.notification.count({ where: { userId, title: "Account approved" } }), 1);
+  assert.equal((await request("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: true } })).status, 200);
+});
+
 test("browser duty switch persists, syncs tabs and blocks new missions while OFF", { skip: process.env.RUN_DUTY_BROWSER !== "1" }, async () => {
-  const { chromium } = await import("playwright");
-  const { mkdir } = await import("node:fs/promises");
-  const artifacts = ".local-postgres/duty-browser";
-  await mkdir(artifacts, { recursive: true });
-  const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
-  const errors = [];
-  try {
-    for (const [width, language] of [[320, "bn"], [390, "en"], [1280, "en"]]) {
-      const rider = await dutyRider(), food = await dutyClaim();
-      const context = await browser.newContext({ baseURL: base, viewport: { width, height: 844 }, isMobile: width < 600, hasTouch: width < 600 });
-      await context.addInitScript((lang) => localStorage.setItem("sharebite_preferred_lang", lang), language);
-      const [name, value] = rider.cookie.split("=");
-      await context.addCookies([{ name, value, url: base, httpOnly: true, sameSite: "Lax" }]);
-      const page = await context.newPage();
-      page.on("pageerror", (error) => errors.push(error.message));
-      const t = (source) => uiLabel(source, language);
-      const control = (target = page) => target.getByRole("switch", { name: t("Duty ON/OFF"), exact: true });
-      async function dismissIncomingOffer(target) {
-        const { dispatches, duty } = await jsonResult("/api/dispatches", { cookie: rider.cookie });
-        const dismissed = await target.evaluate((userId) => JSON.parse(sessionStorage.getItem(`sharebite.rider-offers.${userId}`) || "[]"), rider.user.id);
-        const offer = target.getByTestId("rider-incoming-offer");
-        if (duty.isOnDuty && duty.canGoOnDuty && !duty.hasActiveMission && dispatches.some(item => !dismissed.includes(item.id))) await offer.waitFor();
-        if (await offer.isVisible()) {
-          await offer.getByRole("button", { name: t("Not now; keep it in the list"), exact: true }).click();
-          await offer.waitFor({ state: "hidden" });
-        }
-      }
-      async function setDuty(on, target = page) {
-        await dismissIncomingOffer(target);
-        await control(target).click();
-        await target.waitForFunction((value) => document.querySelector('[role="switch"]')?.getAttribute("aria-checked") === String(value), on);
-        if (on) await dismissIncomingOffer(target);
-      }
-      await page.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
-      await control().waitFor();
-      assert.equal(await control().count(), 1);
-      assert.equal(await control().getAttribute("aria-checked"), "false");
-      assert.equal(await control().isEnabled(), true);
-      assert.equal(await page.getByRole("button", { name: t("মিশন গ্রহণ করুন (Accept Mission 🛵)"), exact: true }).isDisabled(), true);
-      assert.ok((await control().boundingBox()).height >= 44);
-      assert.equal(await page.getByRole("button", { name: /^Duty:/ }).count(), 0);
-      if (width === 320) {
-        await page.route("**/api/volunteer/duty", async (route) => {
-          if (route.request().method() !== "PATCH") return route.continue();
-          await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ error: "Duty status could not be saved. Try again." }) });
-        }, { times: 1 });
-        await control().click();
-        await page.getByTestId("volunteer-duty-panel").getByRole("alert").waitFor();
-        assert.equal(await control().getAttribute("aria-checked"), "false");
-        assert.equal((await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty.isOnDuty, false);
-        await page.getByRole("button", { name: t("Retry"), exact: true }).click();
-        await page.getByTestId("volunteer-duty-panel").getByRole("alert").waitFor({ state: "hidden" });
-      }
-      await page.screenshot({ path: `${artifacts}/off-${width}-${language}.png` });
-      await page.goto("/volunteer/dispatches", { waitUntil: "networkidle" });
-      const accept = page.getByRole("button", { name: t("Accept mission"), exact: true });
-      assert.equal(await accept.isDisabled(), true);
-      await setDuty(true);
-      assert.equal((await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty.isOnDuty, true);
-      await page.reload({ waitUntil: "networkidle" });
-      assert.equal(await control().getAttribute("aria-checked"), "true");
-      const other = await context.newPage();
-      await other.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
-      assert.equal(await control(other).getAttribute("aria-checked"), "true");
-      await setDuty(false, other);
-      await page.bringToFront();
-      await page.waitForFunction(() => document.querySelector('[role="switch"]')?.getAttribute("aria-checked") === "false");
-      assert.equal(await accept.isDisabled(), true);
-      await other.close();
-      await setDuty(true);
-      const assigned = page.waitForResponse((response) => response.url() === base + "/api/dispatches" && response.request().method() === "POST");
-      await accept.click();
-      assert.equal((await assigned).status(), 200);
-      await page.waitForURL(base + "/volunteer/missions/mission-" + food.claim.id);
-      await page.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
-      await page.getByTestId("volunteer-duty-panel").getByText(t("Mission in progress"), { exact: true }).waitFor();
-      await setDuty(false);
-      await page.getByText(t("Turning duty OFF does not cancel your current mission. Continue it as usual."), { exact: true }).waitFor();
-      assert.equal((await jsonResult("/api/missions", { cookie: rider.cookie })).activeMission.claimId, food.claim.id);
-      if (width === 320) {
-        const code = await issue({ ...food, volunteer: rider.cookie }, "PICKUP");
-        await page.getByRole("textbox", { name: t("হ্যান্ডওভার ওটিপি যাচাইকরণ"), exact: true }).fill(code);
-        const verifyButton = page.getByRole("button", { name: t("যাচাই"), exact: true });
-        const box = await verifyButton.boundingBox();
-        assert.ok(box.x >= 0 && box.x + box.width <= width, "Handover verification must remain reachable while OFF");
-        const verified = page.waitForResponse((response) => response.url() === base + "/api/handovers" && response.request().method() === "POST");
-        await verifyButton.click();
-        assert.equal((await verified).status(), 200);
-        assert.equal((await jsonResult("/api/missions", { cookie: rider.cookie })).activeMission.currentStage, "cargo_loaded");
-      }
-      await page.goto("/volunteer/id-card", { waitUntil: "networkidle" });
-      await page.getByTestId("volunteer-duty-panel").getByText(t("Mission in progress"), { exact: true }).waitFor();
-      assert.equal(await control().getAttribute("aria-checked"), "false");
-      await page.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-      await page.screenshot({ path: `${artifacts}/busy-off-${width}-${language}.png`, fullPage: true });
-      if (width === 320) {
-        await setDuty(true);
-        const second = await dutyRider();
-        const [nextName, nextValue] = second.cookie.split("=");
-        await context.addCookies([{ name: nextName, value: nextValue, url: base, httpOnly: true, sameSite: "Lax" }]);
-        await page.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
-        assert.equal(await control().getAttribute("aria-checked"), "false");
-        assert.equal(await page.getByTestId("volunteer-duty-panel").getByText(t("Mission in progress"), { exact: true }).count(), 0);
-      }
-      await context.close();
-    }
-    assert.deepEqual(errors, []);
-  } finally { await browser.close(); }
+  const { runRiderDutyMenuChecks } = await import("./rider-duty-menu-browser.mjs");
+  await runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonResult });
+
 });
 
 async function assignedRescue() {
@@ -2838,7 +2750,8 @@ test("browser demo cleanup uses real identity counts photos notifications langua
     assert.equal(await navigation.getByRole("link", { name: uiName("বর্তমান মিশন"), exact: true }).getAttribute("href"), "/volunteer/dashboard#active-mission");
     await volunteer.getByRole("button", { name: uiName("Close navigation"), exact: true }).click();
     await volunteer.screenshot({ path: screenshots + "/volunteer-profile-mobile.png", fullPage: true });
-    const dutyPanel = volunteer.getByTestId("volunteer-duty-panel");
+    await volunteer.getByRole("button", { name: uiName("Open account menu"), exact: true }).click();
+    const dutyPanel = volunteer.getByTestId("volunteer-duty-switch");
     await dutyPanel.scrollIntoViewIfNeeded();
     assert.equal(await dutyPanel.evaluate(node => getComputedStyle(node).position), "static");
     const sessionBar = await dutyPanel.boundingBox();
