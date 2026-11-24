@@ -124,7 +124,7 @@ export function AdminShell({
               <p>
                 {tx(
                   pathname.includes("verifications")
-                    ? "Review pending accounts and their documents."
+                    ? "Review new accounts and their verification documents."
                     : pathname.includes("users")
                       ? "Find users. Manage access with clear, recorded decisions."
                     : pathname.includes("rescues")

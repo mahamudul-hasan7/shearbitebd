@@ -38,7 +38,7 @@ script নিজে থেকে admin তৈরি বা password reset কর
   ক্ষতিগ্রস্ত খাবার এবং অন্য unresolved report-এর বাধা পরীক্ষা হয়।
 
 NGO ও volunteer-এর জমা দেওয়া নথি **Preview document** দিয়ে খুলুন। PDF বা ছবি দেখে
-প্রয়োজনে download করুন। নতুন account নিবন্ধনের সময় স্বয়ংক্রিয়ভাবে অনুমোদিত হয়। পুরোনো pending NGO বা volunteer-এর নথি দেখে ম্যানুয়াল review করুন। Reject করলে
+প্রয়োজনে download করুন। নতুন account-এর নথি না থাকলে approve করা যায় না। Reject করলে
 মালিক আপনার কারণ দেখবেন এবং নতুন ফাইল জমা দিতে পারবেন। Review history-তে যে সংস্করণ
 দেখে সিদ্ধান্ত নেওয়া হয়েছিল সেটির preview থাকবে। আগে থেকেই verified account-এর অবস্থা
 বদলানো হয় না।

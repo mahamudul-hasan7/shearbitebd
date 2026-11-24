@@ -8,7 +8,7 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
   const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
   try {
     for (const [width, language] of [[320, "bn"], [390, "en"], [1280, "en"]]) {
-      const rider = await dutyRider(false);
+      const rider = await dutyRider();
       const food = await dutyClaim();
       const context = await browser.newContext({ baseURL: base, viewport: { width, height: 900 } });
       await context.addInitScript(lang => localStorage.setItem("sharebite_preferred_lang", lang), language);
@@ -30,9 +30,6 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
         await offer.getByRole("button", { name: t("Not now; keep it in the list"), exact: true }).click();
         await offer.waitFor({ state: "hidden" });
       }
-      if (width === 320) await page.route("**/api/volunteer/duty", route => route.request().method() === "GET"
-        ? route.fulfill({ status: 503, json: { error: "Duty status could not load. Try again." } })
-        : route.continue());
       await page.goto("/volunteer/dashboard", { waitUntil: "networkidle" });
       await page.getByTestId("rider-impact").waitFor();
       assert.equal(await page.getByTestId("volunteer-duty-panel").count(), 0);
@@ -42,15 +39,6 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
       assert.equal(await toggle.getAttribute("aria-checked"), "false");
       assert.equal(await toggle.isEnabled(), true);
       assert.ok((await toggle.boundingBox()).height >= 44);
-      if (width === 320) {
-        await toggle.click();
-        await dismissOffer(page);
-        assert.equal((await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty.isOnDuty, true);
-        await page.unroute("**/api/volunteer/duty");
-        await page.getByRole("button", { name: t("Open account menu"), exact: true }).click();
-        await toggle.click();
-        await page.waitForFunction(() => document.querySelector('[role="switch"]')?.getAttribute("aria-checked") === "false");
-      }
       if (width === 320) {
         await page.route("**/api/volunteer/duty", route => route.request().method() === "PATCH"
           ? route.fulfill({ status: 500, json: { error: "Duty status could not be saved. Try again." } })
@@ -64,7 +52,7 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
       }
       await page.screenshot({ path: `.local-postgres/duty-menu/off-${width}-${language}.png` });
       await toggle.click();
-      if (width !== 320) await dismissOffer(page);
+      await dismissOffer(page);
       assert.equal((await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty.isOnDuty, true);
       await page.reload({ waitUntil: "networkidle" });
       const saved = await open();

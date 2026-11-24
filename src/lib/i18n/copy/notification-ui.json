@@ -1,4 +1,6 @@
 [
+  ["Account review required", "অ্যাকাউন্ট যাচাই প্রয়োজন"],
+  ["Your account needs administrator verification before you can continue.", "চালিয়ে যেতে আপনার অ্যাকাউন্টে অ্যাডমিনের যাচাই প্রয়োজন।"],
   ["Your account has been approved automatically. You can start using it now.", "আপনার অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে। এখন ব্যবহার শুরু করতে পারেন।"],
   ["Account approved", "অ্যাকাউন্ট অনুমোদিত হয়েছে"],
   ["Your account was approved automatically at registration.", "নিবন্ধনের সময় আপনার অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে অনুমোদিত হয়েছে।"],

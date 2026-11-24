@@ -77,7 +77,7 @@ export function AdminListView({
   const rows = query.data?.items || [];
   return (
     <>
-      {kind === "accounts" && <><UserControlLinks current="verifications"/><p className={s.userIntro}>{tx("Review accounts awaiting a decision here. Use All Users to ban, unblock or delete an account.")}</p></>}
+      {kind === "accounts" && <><UserControlLinks current="verifications"/><p className={s.userIntro}>{tx("Approve or reject new accounts here. Use All Users to ban, unblock or delete an account.")}</p></>}
       <section className={s.panel}>
         <form
           className={s.filters}

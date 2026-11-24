@@ -12,6 +12,7 @@ import {
   Phone,
   UserRound,
 } from "lucide-react";
+import { VerificationDocumentPanel } from "@/features/verification/document-panel";
 import { AuthProgress } from "@/components/auth/auth-progress";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
@@ -227,9 +228,18 @@ export function RegisterForm() {
             {tx("Your account is ready")}
           </h1>
           <p className="mt-3 text-sm leading-7 text-muted-600">
-            {tx("Your account was approved automatically at registration.")}
+            {tx("Your account has been created successfully.")}
           </p>
         </div>
+        {role !== "donor" && (
+          <Alert
+            tone="info"
+            title={tx("Account review pending")}
+            description={tx(
+              "Upload your document below. An administrator will review your account before you can claim or deliver food.",
+            )}
+          />
+        )}
         {!sessionReady && (
           <Alert
             tone="info"
@@ -240,6 +250,7 @@ export function RegisterForm() {
           />
         )}
         <p className="break-all text-sm text-muted-600">{data.email}</p>
+        {role !== "donor" && sessionReady && <VerificationDocumentPanel />}
         <ButtonLink
           href={
             sessionReady ? getRoleLandingRoute(userRole) : ROUTES.auth.login
@@ -531,6 +542,15 @@ export function RegisterForm() {
                   </div>
                 ))}
               </dl>
+              {role !== "donor" && (
+                <Alert
+                  tone="info"
+                  title={tx("Account review")}
+                  description={tx(
+                    "Upload your document below. An administrator will review your account before you can claim or deliver food.",
+                  )}
+                />
+              )}
               <Checkbox
                 label={tx(
                   "I confirm my details and accept the food-sharing terms.",

@@ -109,18 +109,19 @@ export async function runVerificationBrowserChecks({ prisma, login, base }) {
       await form
         .getByRole("button", { name: "Create account", exact: true })
         .click();
-      await page.getByText("Your account was approved automatically at registration.", { exact: true }).waitFor();
-      const user = await prisma.user.findUniqueOrThrow({ where: { email } });
-      await page.goto(`/${role}/notifications`, { waitUntil: "networkidle" });
-      await page.locator("main article").getByText("Account approved", { exact: true }).waitFor();
-
-      // Model an existing pending account for the legacy document review journey.
-      const profile = role === "ngo" ? prisma.nGOProfile : prisma.volunteerProfile;
-      await profile.update({ where: { userId: user.id }, data: { verificationStatus: "PENDING" } });
       const route = role === "ngo" ? "/ngo/verification" : "/volunteer/id-card";
-      await page.goto(route, { waitUntil: "networkidle" });
       const panel = page.getByTestId("verification-panel");
       await panel.getByText("Document needed", { exact: true }).waitFor();
+      const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+      if (role === "volunteer") {
+        await page.getByRole("link", { name: "Continue to dashboard", exact: true }).click();
+        await page.getByRole("button", { name: "Open account menu", exact: true }).click();
+        const duty = page.getByRole("switch", { name: "Duty ON/OFF", exact: true });
+        await duty.waitFor();
+        assert.equal(await duty.isDisabled(), true);
+        await page.keyboard.press("Escape");
+        await page.goto(route, { waitUntil: "networkidle" });
+      }
       await panel
         .getByLabel("Choose verification document", { exact: true })
         .setInputFiles({
@@ -323,6 +324,11 @@ export async function runVerificationBrowserChecks({ prisma, login, base }) {
         await page.getByText(/^Account verification:\s*Verified$/).waitFor();
         await page.getByRole("button", { name: "Open account menu", exact: true }).click();
         await page.waitForFunction(() => !document.querySelector('[role="switch"]').disabled);
+        const duty = page.getByRole("switch", { name: "Duty ON/OFF", exact: true });
+        await duty.click();
+        await page.getByRole("switch", { checked: true }).waitFor();
+        await duty.click();
+        await page.getByRole("switch", { checked: false }).waitFor();
         await page.keyboard.press("Escape");
         assert.equal(
           await page
