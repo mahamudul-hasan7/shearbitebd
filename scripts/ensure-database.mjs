@@ -18,3 +18,12 @@ if (fs.existsSync(".local-postgres/credentials.json") && process.env.DATABASE_UR
     process.exitCode = code ?? 1;
   }
 }
+
+// Apply the review policy for npm dev/demo as well as the Windows launchers.
+if (process.env.DATABASE_URL && !process.exitCode) {
+  const child = spawn(process.execPath, ["node_modules/tsx/dist/cli.mjs", "scripts/restore-account-reviews.ts"], {
+    stdio: "inherit", windowsHide: true,
+  });
+  const [code] = await once(child, "exit");
+  process.exitCode = code ?? 1;
+}

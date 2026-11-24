@@ -38,7 +38,7 @@ export async function findAccount(identifier: string) {
   return row ? toAuthAccount(row) : undefined;
 }
 
-export async function createAccount(input: Omit<DBUser, "id" | "createdAt"> & { id?: string; createdAt?: string; verified?: boolean }, { approveRegistration = false } = {}) {
+export async function createAccount(input: Omit<DBUser, "id" | "createdAt"> & { id?: string; createdAt?: string; verified?: boolean }) {
   const details = input.profile ?? {};
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.create({ data: {
@@ -52,7 +52,7 @@ export async function createAccount(input: Omit<DBUser, "id" | "createdAt"> & { 
       id: `address-${randomUUID()}`, ownerId: user.id, label: "Primary address", isPrimary: true,
       addressLine: details.address || "", area: details.serviceAreas?.[0] || details.city || "Dhaka", city: details.city || "Dhaka",
     } });
-    const verificationStatus = approveRegistration || input.verified ? "VERIFIED" : "PENDING";
+    const verificationStatus = input.verified ? "VERIFIED" : "PENDING";
     if (user.role === "DONOR") {
       const donorTypes = ["INDIVIDUAL", "CAFETERIA", "RESTAURANT", "BAKERY", "EVENT_ORGANIZER"] as const;
       const type = details.donorType?.toUpperCase();
@@ -74,15 +74,6 @@ export async function createAccount(input: Omit<DBUser, "id" | "createdAt"> & { 
       } });
     }
     await tx.userPreference.create({ data: { userId: user.id } });
-    if (approveRegistration) {
-      await tx.notification.create({ data: {
-        userId: user.id,
-        type: "SYSTEM",
-        title: "Account approved",
-        message: "Your account was approved automatically at registration.",
-        href: `/${user.role.toLowerCase()}/dashboard`,
-      } });
-    }
     return toAuthAccount(await tx.user.findUniqueOrThrow({ where: { id: user.id }, include: accountInclude }));
   });
 }

@@ -462,7 +462,7 @@ test("registration persists the account and creates a session; duplicate email a
   for (const change of [{ email: registration.email.toUpperCase(), phone: "01812345679" }, { email: "another@example.test", phone: "+8801812345678" }]) {
     assert.equal((await request("/api/auth/register", { method: "POST", body: { ...registration, ...change } })).status, 409);
   }
-  assert.equal(await prisma.notification.count({ where: { userId: user.id, title: "Account approved", readAt: null } }), 1);
+  assert.equal(await prisma.notification.count({ where: { userId: user.id, title: "Account approved", readAt: null } }), 0);
 });
 
 test("accounts and sessions survive an application restart", async () => {
@@ -606,12 +606,12 @@ test("expired food cannot be claimed and is excluded from discovery", async () =
   assert.ok(!feed.donations.some((d) => d.id === id));
 });
 
-test("newly registered NGOs can claim food immediately", async () => {
+test("newly registered NGOs require verification before claiming food", async () => {
   const donor = await login();
   const created = await newDonation(donor.cookie);
   const response = await request("/api/auth/login", { method: "POST", body: { email: "new-ngo@example.test", password: registration.password } });
   const cookie = response.headers.get("set-cookie").split(";")[0];
-  assert.equal((await request("/api/claims", { cookie, method: "POST", body: { donationId: created.body.donation.id } })).status, 201);
+  assert.equal((await request("/api/claims", { cookie, method: "POST", body: { donationId: created.body.donation.id } })).status, 403);
 });
 
 test("two volunteers racing for one dispatch produce one assignment", async () => {
@@ -690,7 +690,6 @@ test("volunteer duty starts OFF, persists across restart and is isolated by the 
 
 test("volunteer duty validates role, verification, input and cross-site writes", async () => {
   const rider = await dutyRider(), pending = await dutyRider(false);
-  await prisma.volunteerProfile.update({ where: { userId: pending.user.id }, data: { verificationStatus: "REJECTED" } });
   for (const role of ["DONOR", "NGO"]) {
     const { cookie } = await login(role);
     for (const method of ["GET", "PATCH"]) assert.equal((await request("/api/volunteer/duty", { cookie, method, ...(method === "PATCH" ? { body: { isOnDuty: true } } : {}) })).status, 403);
@@ -698,25 +697,21 @@ test("volunteer duty validates role, verification, input and cross-site writes",
   for (const isOnDuty of ["true", "online", 1, null, undefined]) assert.equal((await request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty } })).status, 422);
   assert.equal((await request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty: true }, headers: { origin: "https://foreign.example", "sec-fetch-site": "cross-site" } })).status, 403);
   assert.equal((await request("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: true } })).status, 403);
-  assert.equal((await jsonResult("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: false } })).duty.isOnDuty, false);
+  assert.equal((await request("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: false } })).status, 403);
 });
 
-test("pending riders automatically become duty eligible once without restarting setup", async () => {
-  for (const status of ["PENDING", "NOT_SUBMITTED"]) {
+test("unverified riders stay pending on duty reads and both switch actions are denied", async () => {
+  for (const status of ["PENDING", "NOT_SUBMITTED", "REJECTED"]) {
     const rider = await dutyRider(false);
     await prisma.volunteerProfile.update({ where: { userId: rider.user.id }, data: { verificationStatus: status } });
-    const responses = await Promise.all([
-      request("/api/volunteer/duty", { cookie: rider.cookie }),
-      request("/api/volunteer/duty", { cookie: rider.cookie }),
-      request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty: true } }),
-    ]);
-    assert.ok(responses.every(r => r.status === 200));
+    for (const isOnDuty of [true, false]) {
+      assert.equal((await request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty } })).status, 403);
+    }
     const duty = (await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty;
-    assert.equal(duty.canGoOnDuty, true);
-    assert.equal(duty.isOnDuty, true);
-    assert.equal(duty.version, 2);
-    assert.equal(await prisma.notification.count({ where: { userId: rider.user.id, title: "Account approved" } }), 1);
-    assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: rider.user.id } })).verificationStatus, "VERIFIED");
+    assert.equal(duty.canGoOnDuty, false);
+    assert.equal(duty.isOnDuty, false);
+    assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: rider.user.id } })).verificationStatus, status);
+    assert.equal(await prisma.notification.count({ where: { userId: rider.user.id, title: "Account approved" } }), 0);
   }
 });
 
@@ -759,19 +754,38 @@ test("browser rider incoming offers follow duty accept once and handle competing
   await runRiderOfferBrowserChecks({ prisma, base, dutyRider, dutyClaim, jsonResult });
 });
 
-test("setup approves existing active pending participants once and keeps rejected or blocked accounts", async () => {
-  const pending = await dutyRider(false), rejected = await dutyRider(false), blocked = await dutyRider(false);
-  await prisma.volunteerProfile.update({ where: { userId: rejected.user.id }, data: { verificationStatus: "REJECTED" } });
-  await prisma.user.update({ where: { id: blocked.user.id }, data: { isActive: false } });
-  const registered = await seedUser({ id: randomUUID(), email: randomUUID()+"@example.test", password: fixturePassword, displayName: "Existing pending NGO", role: "NGO", phone: null, normalizedPhone: null });
-  await prisma.nGOProfile.update({ where: { userId: registered.id }, data: { verificationStatus: "PENDING" } });
-  for (let repeat = 0; repeat < 2; repeat++) await runNode(["node_modules/tsx/dist/cli.mjs", "scripts/approve-registered-accounts.ts"]);
-  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: pending.user.id } })).verificationStatus, "VERIFIED");
-  assert.equal((await prisma.nGOProfile.findUniqueOrThrow({ where: { userId: registered.id } })).verificationStatus, "VERIFIED");
-  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: rejected.user.id } })).verificationStatus, "REJECTED");
-  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: blocked.user.id } })).verificationStatus, "PENDING");
-  for (const userId of [pending.user.id, registered.id]) assert.equal(await prisma.notification.count({ where: { userId, title: "Account approved" } }), 1);
-  assert.equal((await request("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: true } })).status, 200);
+test("setup restores manual review for automatically approved accounts once", async () => {
+  const automatic = await dutyRider(), manual = await dutyRider(), pending = await dutyRider(false);
+  const original = await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: manual.user.id } });
+  const message = "Your account has been approved automatically. You can start using it now.";
+  for (const rider of [automatic, manual]) await prisma.notification.create({ data: { userId: rider.user.id, type: "SYSTEM", title: "Account approved", message } });
+  await prisma.volunteerProfile.update({ where: { userId: automatic.user.id }, data: { isOnDuty: true, dutyStartedAt: new Date() } });
+  await prisma.accountReview.create({ data: {
+    targetUserId: manual.user.id, actorUserId: "test-ADMIN", actorLabel: "Test administrator",
+    status: "VERIFIED", previousStatus: "PENDING", note: "Manual account review completed.",
+    submissionKey: randomUUID(), previousUpdatedAt: original.updatedAt,
+  } });
+  const previousAccounts = [];
+  for (const role of ["DONOR", "NGO"]) {
+    const user = await seedUser({ id: randomUUID(), email: randomUUID()+"@example.test", password: fixturePassword, displayName: "Automatic participant", role, phone: null, normalizedPhone: null });
+    await prisma.notification.create({ data: { userId: user.id, type: "SYSTEM", title: "Account approved", message: "Your account was approved automatically at registration." } });
+    previousAccounts.push(user);
+  }
+  for (let repeat = 0; repeat < 2; repeat++) await runNode(["node_modules/tsx/dist/cli.mjs", "scripts/restore-account-reviews.ts"]);
+  for (const user of previousAccounts) {
+    const profile = user.role === "DONOR" ? await prisma.donorProfile.findUniqueOrThrow({ where: { userId: user.id } })
+      : await prisma.nGOProfile.findUniqueOrThrow({ where: { userId: user.id } });
+    assert.equal(profile.verificationStatus, "PENDING");
+    assert.equal(await prisma.notification.count({ where: { userId: user.id, title: "Account review required" } }), 1);
+  }
+  const restored = await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: automatic.user.id } });
+  assert.equal(restored.verificationStatus, "PENDING");
+  assert.equal(restored.isOnDuty, false);
+  assert.equal(restored.dutyStartedAt, null);
+  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: manual.user.id } })).verificationStatus, "VERIFIED");
+  assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: pending.user.id } })).verificationStatus, "PENDING");
+  assert.equal(await prisma.notification.count({ where: { userId: automatic.user.id, title: "Account review required" } }), 1);
+  assert.equal((await request("/api/volunteer/duty", { cookie: automatic.cookie, method: "PATCH", body: { isOnDuty: true } })).status, 403);
 });
 
 test("browser duty switch persists, syncs tabs and blocks new missions while OFF", { skip: process.env.RUN_DUTY_BROWSER !== "1" }, async () => {

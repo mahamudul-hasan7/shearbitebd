@@ -154,7 +154,7 @@ class VolunteerStore {
 
   setDutyStatus = async (status: DutyStatus) => {
     const userId = this.currentUser();
-    if (this.state.dutySaving || (this.state.dutyReady && this.state.dutyStatus === status)) return;
+    if (!this.state.dutyReady || !this.state.canGoOnDuty || this.state.dutySaving || this.state.dutyStatus === status) return;
     this.state = { ...this.state, dutySaving: true, dutyError: null };
     this.notify();
     try {

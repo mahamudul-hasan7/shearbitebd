@@ -12,7 +12,7 @@ const files = [
   "prisma/schema.prisma",
   "scripts/setup-database.mjs",
   "scripts/setup-local-admin.ts",
-  "scripts/approve-registered-accounts.ts",
+  "scripts/restore-account-reviews.ts",
   ...readdirSync("prisma/migrations")
     .sort()
     .map((name) => join("prisma/migrations", name, "migration.sql"))

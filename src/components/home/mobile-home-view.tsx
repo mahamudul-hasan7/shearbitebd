@@ -26,7 +26,7 @@ const steps = [
   { title: "Meals reach people", description: "The NGO distributes the food and updates the record." },
 ];
 const questions = [
-  { question: "How can I get started?", answer: "Choose a role and register. Your account is approved automatically." },
+  { question: "How can I get started?", answer: "Choose donor, NGO or rider and create an account. New NGO and rider accounts need approval from the project operator." },
   { question: "Who picks up the food?", answer: "After an NGO claims a post, a rider accepts the delivery and coordinates pickup with the donor." },
   { question: "Does the app check food quality?", answer: "The app records the donor's information and handovers. It does not independently test food quality or temperature." },
   { question: "Where can I see food posts?", answer: "Sign in with an NGO account to see the food listings available to your account. Food details are shared according to account permissions." },

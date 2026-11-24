@@ -435,7 +435,9 @@ npm run db:verify -- account@example.com
 tables or replaces existing accounts. Demo login credentials remain `Demo1234` for
 those three specific accounts. No universal password override exists.
 
-Public registration approves new donor, NGO and volunteer accounts and creates an unread approval notification in the account creation transaction. Administrators can review existing pending accounts.
+New NGO and volunteer registrations remain pending verification. The local project
+operator can explicitly approve a selected account using `db:verify`; public users
+cannot self-approve. An administrator approval UI is still pending.
 
 Use `AUTH_COOKIE_SECURE=false` for HTTP localhost demos and `true` for HTTPS hosting.
 Do not publish the current plaintext password implementation as production-ready.

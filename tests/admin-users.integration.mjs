@@ -366,7 +366,7 @@ export async function deletion(h) {
   assert.notEqual(fresh.user.id, user.id);
   assert.equal(
     (await f.detail(fresh.user.id, admin)).user.verification,
-    "VERIFIED",
+    "PENDING",
   );
   const ngo = await f.target("NGO"),
     ngoCookie = await f.signIn(ngo),

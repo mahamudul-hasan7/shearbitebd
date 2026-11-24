@@ -1,4 +1,5 @@
 [
+  ["Admin approval is required to use duty controls.", "ডিউটি চালু বা বন্ধ করতে অ্যাডমিনের অনুমোদন প্রয়োজন।"],
   ["Duty status", "ডিউটির অবস্থা"],
   ["Duty ON/OFF", "ডিউটি অন/অফ"],
   ["Duty ON", "ডিউটি ON"],

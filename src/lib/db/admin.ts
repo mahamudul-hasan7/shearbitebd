@@ -410,7 +410,7 @@ export async function reviewAccount(
         ? await tx.donorProfile.updateMany({ where, data })
         : row.role === "NGO"
           ? await tx.nGOProfile.updateMany({ where, data })
-          : await tx.volunteerProfile.updateMany({ where, data });
+          : await tx.volunteerProfile.updateMany({ where, data: { ...data, dutyVersion: { increment: 1 }, ...(status === "REJECTED" ? { isOnDuty: false, dutyStartedAt: null } : {}) } });
     if (changed.count !== 1)
       throw new ApiError(
         409,
