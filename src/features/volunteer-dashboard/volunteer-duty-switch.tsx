@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useEffect, useId } from "react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useVolunteerStore } from "./volunteer-store";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 export function VolunteerDutySwitch() {
   const tx = useUiText();
   const labelId = useId();
-  const { dutyStatus, dutyReady, dutySaving, dutyError, canGoOnDuty, setDutyStatus, refreshDuty } = useVolunteerStore();
+  const { dutyStatus, dutyReady, dutySaving, dutyError, setDutyStatus, refreshDuty } = useVolunteerStore();
+  useEffect(() => { void refreshDuty(); }, [refreshDuty]);
   const on = dutyReady && dutyStatus === "online";
   return (
     <section data-testid="volunteer-duty-switch" className="rounded-xl border border-slate-200 p-3">
@@ -25,7 +26,7 @@ export function VolunteerDutySwitch() {
           aria-labelledby={labelId}
           aria-checked={on}
           aria-busy={dutySaving || !dutyReady}
-          disabled={!dutyReady || dutySaving || (!canGoOnDuty && !on)}
+          disabled={dutySaving}
           onClick={() => void setDutyStatus(on ? "offline" : "online")}
           className="grid h-11 w-14 shrink-0 place-items-center rounded-xl outline-offset-2 focus-visible:outline-2 focus-visible:outline-emerald-600 disabled:cursor-wait disabled:opacity-50"
         >

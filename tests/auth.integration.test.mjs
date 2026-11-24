@@ -690,6 +690,7 @@ test("volunteer duty starts OFF, persists across restart and is isolated by the 
 
 test("volunteer duty validates role, verification, input and cross-site writes", async () => {
   const rider = await dutyRider(), pending = await dutyRider(false);
+  await prisma.volunteerProfile.update({ where: { userId: pending.user.id }, data: { verificationStatus: "REJECTED" } });
   for (const role of ["DONOR", "NGO"]) {
     const { cookie } = await login(role);
     for (const method of ["GET", "PATCH"]) assert.equal((await request("/api/volunteer/duty", { cookie, method, ...(method === "PATCH" ? { body: { isOnDuty: true } } : {}) })).status, 403);
@@ -698,6 +699,25 @@ test("volunteer duty validates role, verification, input and cross-site writes",
   assert.equal((await request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty: true }, headers: { origin: "https://foreign.example", "sec-fetch-site": "cross-site" } })).status, 403);
   assert.equal((await request("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: true } })).status, 403);
   assert.equal((await jsonResult("/api/volunteer/duty", { cookie: pending.cookie, method: "PATCH", body: { isOnDuty: false } })).duty.isOnDuty, false);
+});
+
+test("pending riders automatically become duty eligible once without restarting setup", async () => {
+  for (const status of ["PENDING", "NOT_SUBMITTED"]) {
+    const rider = await dutyRider(false);
+    await prisma.volunteerProfile.update({ where: { userId: rider.user.id }, data: { verificationStatus: status } });
+    const responses = await Promise.all([
+      request("/api/volunteer/duty", { cookie: rider.cookie }),
+      request("/api/volunteer/duty", { cookie: rider.cookie }),
+      request("/api/volunteer/duty", { cookie: rider.cookie, method: "PATCH", body: { isOnDuty: true } }),
+    ]);
+    assert.ok(responses.every(r => r.status === 200));
+    const duty = (await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty;
+    assert.equal(duty.canGoOnDuty, true);
+    assert.equal(duty.isOnDuty, true);
+    assert.equal(duty.version, 2);
+    assert.equal(await prisma.notification.count({ where: { userId: rider.user.id, title: "Account approved" } }), 1);
+    assert.equal((await prisma.volunteerProfile.findUniqueOrThrow({ where: { userId: rider.user.id } })).verificationStatus, "VERIFIED");
+  }
 });
 
 test("OFF blocks new assignment without cancelling an active mission or its handovers", async () => {
