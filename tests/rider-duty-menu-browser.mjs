@@ -64,7 +64,7 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
       }
       await page.screenshot({ path: `.local-postgres/duty-menu/off-${width}-${language}.png` });
       await toggle.click();
-      await dismissOffer(page);
+      if (width !== 320) await dismissOffer(page);
       assert.equal((await jsonResult("/api/volunteer/duty", { cookie: rider.cookie })).duty.isOnDuty, true);
       await page.reload({ waitUntil: "networkidle" });
       const saved = await open();
