@@ -76,6 +76,20 @@ test("incident holds and closed rescues offer no progress actions", () => {
         undefined,
       );
     }
+  assert.equal(
+    rescueNextStep({ role: "ngo", status: "DELIVERED", distributionBlocked: true })
+      .action,
+    "REPORT_ISSUE",
+  );
+  assert.equal(
+    rescueNextStep({
+      role: "volunteer",
+      status: "PICKED_UP",
+      routeStage: "en_route_dropoff",
+      expired: true,
+    }).action,
+    "REPORT_ISSUE",
+  );
 });
 test("relisted food cannot reuse a cancelled receiver as its current rescue", () => {
   const cancelled = { id: "old", status: "CANCELLED" },

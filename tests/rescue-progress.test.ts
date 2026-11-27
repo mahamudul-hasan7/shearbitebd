@@ -39,7 +39,10 @@ test("incident holds and closures retain recorded checkpoints without claiming c
     assert.equal(progress.steps[3].done, true);
     assert.equal(progress.steps[4].done, false);
     assert.equal(progress.steps[4].timestamp, undefined);
+    assert.equal(progress.stoppedAtLabel, "Pickup verified");
+    assert.equal(progress.completedSteps, 4);
     assert.equal(buildRescueProgress({ scope: "rider", status, routeStage: "at_pickup", assignedAt: at }).state, state);
+    assert.equal(buildRescueProgress({ scope: "rider", status: "CANCELLED", routeStage: "assigned", pickedUpAt: at }).stoppedAtLabel, "Pickup verified");
   }
 });
 
