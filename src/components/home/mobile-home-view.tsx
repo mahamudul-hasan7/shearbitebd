@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowUpRight, Bike, Building2, ChevronDown, KeyRound, Leaf, Menu, Utensils, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bike, Building2, ChevronDown, KeyRound, Leaf, Menu, Play, Utensils, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { LanguageSwitch } from "@/components/ui/language-switch";
+import { HeroVideoModal } from "./hero-video-modal";
 import { ReviewTrainMarquee } from "./review-train-marquee";
-import { HeroSloganLine, HeroStoryControls, HeroStoryMedia } from "./hero-story";
+import { HeroSloganLine, HeroStoryControls, HeroStoryMedia, useHeroStory } from "./hero-story";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
 import { LiveIcon, LiveIconGroup } from "@/components/motion/live-icon";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -28,7 +29,11 @@ const steps = [
 const questions = [
   { question: "How can I get started?", answer: "Choose donor, NGO or rider and create an account. New NGO and rider accounts need approval from the project operator." },
   { question: "Who picks up the food?", answer: "After an NGO claims a post, a rider accepts the delivery and coordinates pickup with the donor." },
-  { question: "Does the app check food quality?", answer: "The app records the donor's information and handovers. It does not independently test food quality or temperature." },
+  {
+    question: "How is food safety and quality ensured?",
+    answer:
+      "Every food batch tracks an automated Safe Consumption Window from preparation time. Donors seal warm meals above 60°C or chilled items in food-grade containers per BFSA safety standards before verified volunteer pickup.",
+  },
   { question: "Where can I see food posts?", answer: "Sign in with an NGO account to see the food listings available to your account. Food details are shared according to account permissions." },
 ];
 const menuLinks = [
@@ -45,6 +50,21 @@ export function MobileHomeView() {
   const { language } = useLanguage();
   const locale = language === "bn" ? "bn-BD" : "en-BD";
   const { session } = useMockAuth();
+  const { stepSlide } = useHeroStory();
+  const [videoOpen, setVideoOpen] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const handleHeroTouchStart = (event: TouchEvent<HTMLElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+  const handleHeroTouchEnd = (event: TouchEvent<HTMLElement>) => {
+    if (touchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX;
+    if (typeof endX === "number") {
+      const delta = endX - touchStartX.current;
+      if (Math.abs(delta) > 45) stepSlide(delta < 0 ? 1 : -1);
+    }
+    touchStartX.current = null;
+  };
   const [menuState, setMenuState] = useState<"closed" | "open" | "closing">("closed");
   const menuOpen = menuState !== "closed";
   const dialog = useRef<HTMLDialogElement>(null);
@@ -134,7 +154,7 @@ export function MobileHomeView() {
 
   return <div className={styles.root} data-language={language} data-testid="mobile-landing">
     <header className={styles.header}>
-      <BrandLogo className={styles.brand} />
+      <BrandLogo variant="classic" className={styles.brand} />
       <div className={styles.headerActions}>
         <LanguageSwitch className={styles.language} touchFriendly />
         <button ref={trigger} type="button" className={styles.menuButton} aria-label={tx("Toggle Navigation Menu")} aria-expanded={menuState === "open"} aria-controls="mobile-home-menu" onClick={() => setMenuState("open")}><Menu size={22} aria-hidden="true" /></button>
@@ -142,16 +162,26 @@ export function MobileHomeView() {
     </header>
 
     <main className={styles.main}>
-      <section className={styles.hero} id="mobile-home" aria-labelledby="mobile-home-title">
+      <section
+        className={styles.hero}
+        id="mobile-home"
+        aria-labelledby="mobile-home-title"
+        onTouchStart={handleHeroTouchStart}
+        onTouchEnd={handleHeroTouchEnd}
+      >
         <HeroStoryMedia imageClassName={styles.heroImage} />
         <HeroStoryControls className={styles.heroControls} />
         <div className={styles.heroContent}>
-          <p className={styles.eyebrow}><Leaf size={15} aria-hidden="true" />{tx("Good food deserves another chance")}</p>
-          <h1 id="mobile-home-title"><span>{tx("Share a meal.").replace(/[.।]+\s*$/u,"")}</span><HeroSloganLine>{tx("Make someone's day.")}</HeroSloganLine></h1>
+          <p className={styles.eyebrow}><Leaf size={15} aria-hidden="true" />{tx("Smart Food Rescue Network · Bangladesh")}</p>
+          <h1 id="mobile-home-title"><span>{tx("Share Extra Food, Stop Waste.")}</span><HeroSloganLine>{tx("Nourish Every Community")}</HeroSloganLine></h1>
           <p className={styles.intro}>{tx("Extra food can go further. Donors, NGOs and riders make it happen together.")}</p>
-          <Link className={styles.heroAction} href={primaryHref}>{tx(primaryLabel)}<ArrowUpRight size={20} aria-hidden="true" /></Link>
+          <div className={styles.heroActions}>
+            <Link className={styles.heroAction} href={primaryHref}>{tx(primaryLabel)}<ArrowUpRight size={20} aria-hidden="true" /></Link>
+            <button type="button" className={styles.heroVideoButton} onClick={() => setVideoOpen(true)}><span className={styles.heroVideoBadge}><Play size={11} fill="currentColor" aria-hidden="true" /></span><span>{tx("Watch demo")}</span></button>
+          </div>
         </div>
       </section>
+      <HeroVideoModal open={videoOpen} onClose={() => setVideoOpen(false)} stepsHref="#mobile-process" />
 
       <section id="mobile-roles" className={`${styles.section} ${styles.rolesSection}`} aria-labelledby="mobile-roles-title">
         <h2 id="mobile-roles-title">{tx("Find your way to help")}</h2>
@@ -190,14 +220,14 @@ export function MobileHomeView() {
 
     <footer className={styles.footer}>
       <div className={styles.footerJoin}><h2>{tx("A small step starts here.")}</h2><Link href={primaryHref}>{tx(primaryLabel)}<ArrowUpRight size={18} aria-hidden="true" /></Link></div>
-      <div className={styles.footerBrand}><BrandLogo className={styles.brand} /><p>{tx("Less food waste. More shared meals.")}</p></div>
+      <div className={styles.footerBrand}><BrandLogo variant="classic" className={styles.brand} /><p>{tx("Less food waste. More shared meals.")}</p></div>
       <nav aria-label={tx("Footer navigation")}><a href="#mobile-process">{tx("How sharing works")}</a><a href="#mobile-faq">{tx("Common questions")}</a><Link href={accountHref}>{tx(session ? "My account" : "Sign in")}</Link></nav>
       <small>© 2026 ShareBite BD</small>
     </footer>
 
     {menuOpen && <dialog id="mobile-home-menu" ref={dialog} className={styles.dialog} data-state={menuState} aria-label={tx("Navigation menu")} onCancel={(event) => { event.preventDefault(); void closeMenu(); }}>
       <button ref={menuBackdrop} type="button" className={styles.backdrop} tabIndex={-1} aria-label={tx("Close menu")} onClick={() => { void closeMenu(); }} />
-      <div ref={menuPanel} className={styles.menuPanel}><div className={styles.menuHeading}><BrandLogo className={styles.brand} onClick={(event) => { void followMenuLink(event, ROUTES.home); }} /><button type="button" className={styles.menuButton} aria-label={tx("Close menu")} onClick={() => { void closeMenu(); }} autoFocus><X size={21} /></button></div>
+      <div ref={menuPanel} className={styles.menuPanel}><div className={styles.menuHeading}><BrandLogo variant="classic" className={styles.brand} onClick={(event) => { void followMenuLink(event, ROUTES.home); }} /><button type="button" className={styles.menuButton} aria-label={tx("Close menu")} onClick={() => { void closeMenu(); }} autoFocus><X size={21} /></button></div>
         <nav>{menuLinks.map((link) => <a key={link.href} href={link.href} onClick={(event) => { void followMenuLink(event, link.href); }}>{tx(link.label)}<ArrowRight size={16} aria-hidden="true" /></a>)}</nav>
         <Link className={styles.menuAccount} href={accountHref} onClick={(event) => { void followMenuLink(event, accountHref); }}>{tx(session ? "My account" : "Sign in")}<ArrowRight size={17} aria-hidden="true" /></Link>
       </div>

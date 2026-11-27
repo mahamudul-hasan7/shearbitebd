@@ -1,9 +1,9 @@
 .root { display:none; }
 @media(max-width:1023px) {
-  .root { --home-gutter:22px; display:block; background:#fff; color:#1d4031; overflow-x:clip; }
+  .root { --home-gutter:22px; display:block; background:radial-gradient(500px 320px at 10% 35%, rgb(16 185 129 / 10%), transparent 70%), radial-gradient(460px 320px at 90% 68%, rgb(56 189 248 / 10%), transparent 70%), #f3f7f4; color:#1d4031; overflow-x:clip; }
   .root * { box-sizing:border-box; }
   .root main [id] { scroll-margin-top:82px; }
-  .header { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:10px; height:66px; padding:0 18px; border-bottom:1px solid #e5ebe5; background:#fffffff5; backdrop-filter:blur(12px); }
+  .header { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:10px; height:66px; padding:0 18px; border-bottom:1px solid #e2efe8; background:rgba(255,255,255,0.92); -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); box-shadow:0 2px 14px -6px rgb(2 44 34 / 8%); }
   .brand { gap:7px; }
   .brand > span:first-child { width:35px; height:35px; }
   .brand > span:nth-child(2) > span:first-child { font-size:18px; }
@@ -12,27 +12,31 @@
   .language button { min-height:44px; min-width:44px; padding-inline:8px; }
   .menuButton { display:grid; width:44px; height:44px; flex-shrink:0; place-items:center; border:1px solid #dfe7e0; border-radius:11px; background:#fff; color:#244b37; }
 
-  .hero { position:relative; isolation:isolate; display:flex; align-items:flex-end; min-height:475px; padding:110px var(--home-gutter) 27px; background:#123c2c; color:#fff; }
-  .hero::after { content:""; position:absolute; z-index:1; inset:0; background:linear-gradient(180deg,#082e2010 10%,#052c2338 27%,#042c23d9 57%,#042c23 100%); }
-  .heroImage { z-index:0; object-fit:cover; object-position:50% 20%; }
+  .hero { position:relative; isolation:isolate; display:flex; align-items:flex-end; overflow:hidden; min-height:540px; padding:195px var(--home-gutter) 32px; background:#effaf5; color:#022c22; }
+  .hero::after { content:""; position:absolute; z-index:1; inset:0; background:linear-gradient(180deg, rgba(242,250,246,0) 0%, rgba(242,250,246,0.18) 32%, rgba(242,250,246,0.88) 54%, #f1faf6 74%, #f3f7f4 100%); }
+  .heroImage { z-index:0; object-fit:cover; object-position:75% 15%; opacity:1; }
   .heroContent { position:relative; z-index:2; width:100%; max-width:656px; margin-inline:auto; animation:arrive 400ms ease-out both; }
-  .eyebrow { display:flex; align-items:center; gap:7px; margin:0 0 12px; color:#d8ecd5; font-size:12px; font-weight:500; line-height:1.7; }
-  .hero h1 { margin:0; font-family:var(--font-heading); font-size:clamp(30px,8.7vw,42px); font-weight:600; line-height:1.22; letter-spacing:-.025em; }
+  .eyebrow { display:inline-flex; align-items:center; gap:7px; margin:0 0 14px; padding:5px 12px; border:1px solid #a7f3d0; border-radius:999px; background:rgba(236,253,245,0.92); color:#065f46; font-size:12px; font-weight:600; line-height:1.5; backdrop-filter:blur(6px); }
+  .hero h1 { margin:0; font-family:var(--font-heading); font-size:clamp(26px,7vw,39px); font-weight:800; line-height:1.25; letter-spacing:-.02em; color:#022c22; }
   .hero h1 > span { display:block; }
-  .hero h1 > span:last-child { color:#d7edb4; }
-  .root[data-language="bn"] h1 { line-height:1.38; letter-spacing:0; }
-  .intro { max-width:41ch; margin:13px 0 0; color:#d6e2da; font-size:14px; line-height:1.8; }
-  .heroAction { display:flex; align-items:center; justify-content:space-between; gap:25px; width:fit-content; max-width:100%; min-width:170px; min-height:49px; margin-top:20px; padding:12px 17px; border-radius:10px; background:#fffcef; color:#1c4e36; font-size:14px; font-weight:600; line-height:1.5; transition:background 150ms,transform 150ms; }
+  .hero h1 > span:last-child { color:#047857; }
+  .root[data-language="bn"] h1 { line-height:1.35; letter-spacing:0; }
+  .intro { max-width:41ch; margin:13px 0 0; color:#475569; font-size:14px; line-height:1.78; }
+  .heroActions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:20px; }
+  .heroAction { display:inline-flex; align-items:center; justify-content:space-between; gap:16px; width:fit-content; max-width:100%; min-width:152px; min-height:48px; padding:12px 20px; border-radius:999px; background:#065f46; color:#fff; font-size:14px; font-weight:600; line-height:1.5; box-shadow:0 12px 26px -10px rgba(6,95,70,0.48); transition:background 150ms,transform 150ms; }
+  .heroVideoButton { display:inline-flex; align-items:center; gap:9px; min-height:48px; padding:10px 18px; border:1px solid #cbd5e1; border-radius:999px; background:rgba(255,255,255,0.95); color:#022c22; font-size:13.5px; font-weight:600; line-height:1.4; box-shadow:0 8px 20px -12px rgba(2,44,34,0.22); cursor:pointer; transition:background 150ms,transform 150ms; }
+  .heroVideoBadge { display:grid; width:24px; height:24px; place-items:center; border-radius:999px; background:#d1fae5; color:#047857; flex-shrink:0; }
+  .heroVideoButton:hover { background:#ecfdf5; }
   .heroAction > svg { flex-shrink:0; }
-  .heroAction:hover { background:#e6f0d9; }
-  .heroAction:active,.role:active { transform:translateY(1px); }
-  .heroControls { top:14px; right:var(--home-gutter); bottom:auto; }
+  .heroAction:hover { background:#047857; }
+  .heroAction:active,.heroVideoButton:active,.role:active { transform:translateY(1px); }
+  .heroControls { position:absolute; top:14px; right:var(--home-gutter); bottom:auto; }
 
   .section { max-width:700px; margin-inline:auto; padding:31px var(--home-gutter); }
   .section h2 { margin:0; font-family:var(--font-heading); font-size:24px; font-weight:600; line-height:1.5; letter-spacing:-.015em; }
   .root[data-language="bn"] h2 { letter-spacing:0; }
   .rolesSection { padding-top:27px; padding-bottom:25px; }
-  .roles { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:17px; padding:18px 0; border-radius:14px; background:#f0f5ed; }
+  .roles { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:17px; padding:18px 0; border-radius:20px; border:1px solid rgb(255 255 255 / 82%); background:linear-gradient(145deg, rgb(255 255 255 / 74%), rgb(236 253 245 / 54%)); -webkit-backdrop-filter:blur(18px) saturate(175%); backdrop-filter:blur(18px) saturate(175%); box-shadow:inset 0 1px 0 rgb(255 255 255 / 90%), 0 14px 32px -18px rgb(2 44 34 / 14%); }
   .role { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-width:0; min-height:99px; padding:7px 8px; text-align:center; transition:background 150ms,transform 150ms; }
   .role + .role { border-left:1px solid #d9e3d5; }
   .role > svg:first-child { margin-bottom:7px; color:#33734c; }
@@ -87,7 +91,7 @@
   .dialog { position:fixed; inset:0; margin:0; width:100vw; height:100dvh; max-width:none; max-height:none; border:0; padding:0; background:transparent; }
   .dialog::backdrop { background:transparent; }
   .backdrop { position:absolute; inset:0; width:100%; height:100%; border:0; padding:0; background:#062b2080; backdrop-filter:blur(6px); }
-  .menuPanel { position:relative; width:calc(100% - 24px); max-width:420px; max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; margin:12px auto; padding:20px; border-radius:17px; background:#fff; box-shadow:0 15px 40px #123c2a30; }
+  .menuPanel { position:relative; width:calc(100% - 24px); max-width:420px; max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain; margin:12px auto; padding:20px; border:1px solid rgb(255 255 255 / 80%); border-radius:24px; background:linear-gradient(155deg, rgb(255 255 255 / 88%), rgb(255 255 255 / 72%)); -webkit-backdrop-filter:blur(26px) saturate(185%); backdrop-filter:blur(26px) saturate(185%); box-shadow:inset 0 1px 0.5px rgb(255 255 255 / 95%), 0 22px 54px #123c2a34; }
   .menuHeading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
   .menuPanel nav { display:grid; margin-bottom:20px; }
   .menuPanel nav a { display:flex; min-height:53px; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid #e0e7d9; color:#385b40; font-size:14px; }

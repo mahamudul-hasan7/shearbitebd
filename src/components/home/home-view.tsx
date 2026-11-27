@@ -1,29 +1,32 @@
 "use client";
 import { LiveIcon, LiveIconGroup } from "@/components/motion/live-icon";
-import homeSloganStyles from "./home-slogan.module.css";
 import mobile from "./home-mobile.module.css";
 import responsive from "./home-responsive.module.css";
+import { DesktopHero } from "./desktop-hero";
 import { MobileHomeView } from "./mobile-home-view";
-import { HeroSloganLine, HeroStoryControls, HeroStoryMedia, HeroStoryProvider } from "./hero-story";
+import { HeroStoryProvider } from "./hero-story";
 import { UiText } from "@/lib/i18n/ui-text-node";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { localizeUiCopy } from "@/lib/i18n/ui-text";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Award,
+  Bike,
   Building2,
+  CheckCircle2,
   ChevronDown,
   Clock,
+  Flame,
   HelpCircle,
-  MapPin,
+  KeyRound,
   Menu,
   QrCode,
-  Search,
+  ShieldCheck,
   Sparkles,
   Utensils,
   X,
@@ -61,7 +64,7 @@ const copy = {
       searchBtn: "খাবার অনুসন্ধান ও ক্লেইম",
       popularLabel: "জনপ্রিয় জোন:",
       popularZones: "গুলশান ১ ও ২ · ধানমন্ডি ২৭ · বাড্ডা UIU ক্যাম্পাস",
-      urgentTag: "⚡ ১৫ মিনিটে জরুরি রেসকিউ",
+      urgentTag: "১৫ মিনিটে জরুরি রেসকিউ",
       demoLabel: "সরাসরি ডেমো পোর্টাল:",
       donorDemo: "ফুড ডোনার ড্যাশবোর্ড",
       ngoDemo: "এনজিও ড্যাশবোর্ড",
@@ -75,24 +78,32 @@ const copy = {
     },
     bento: {
       badge: "উদ্ধার প্রক্রিয়া",
-      title: "প্রতিটি অতিরিক্ত খাবার পৌঁছাবে সঠিক মানুষের কাছে",
+      title: "প্রতিটি খাবার পৌঁছাবে সঠিক মানুষের কাছে",
       subtitle:
-        "কনভেনশন সেন্টার ও ক্যাফেটেরিয়ার অতিরিক্ত খাবার নষ্ট না করে নিরাপদ প্যাকেজিংয়ে অভাবী মানুষের কাছে পৌঁছে দেওয়ার ডিজিটাল নেটওয়ার্ক।",
-      card1Title: "১. উদ্বৃত্ত খাবার পোস্ট",
+        "কনভেনশন সেন্টার ও ক্যাফেটেরিয়ার অতিরিক্ত খাবার নষ্ট না করে নিরাপদ প্যাকেজিংয়ে মানুষের কাছে পৌঁছে দেওয়ার ডিজিটাল নেটওয়ার্ক।",
+      card1Tag: "০১ · দাতা",
+      card1Title: "নিরাপদ খাবার পোস্ট",
       card1Desc:
         "হোটেল, কনভেনশন বা ক্যাফেটেরিয়া অনুষ্ঠান শেষে অতিরিক্ত খাবারের ছবি ও আনুমানিক মিল সংখ্যাসহ তাৎক্ষণিক পোস্ট করতে পারে।",
-      card2Title: "২. স্মার্ট কিউআর ভেরিফিকেশন",
+      card1Meta: "ছবি, পরিমাণ ও পিকআপ সময়",
+      card2Tag: "০২ · কিউআর ও ওটিপি",
+      card2Title: "স্মার্ট কিউআর ভেরিফিকেশন",
       card2Desc:
         "ডোনার ও রিসিভার উভয়েই কিউআর কোড স্ক্যানের মাধ্যমে খাবারের গুণগত মান যাচাই ও ডিজিটাল হস্তান্তর নিশ্চিত করেন।",
-      card3Title: "৩. ৬০ মিনিটে কোল্ড-চেইন বিতরণ",
+      card2Meta: "৬-অঙ্কের নিরাপদ হস্তান্তর কোড",
+      card3Tag: "০৩ · দ্রুত ডেলিভারি",
+      card3Title: "৬০ মিনিটে কোল্ড-চেইন বিতরণ",
       card3Desc:
         "খাবার রান্নার সময় অনুযায়ী নিরাপদ ব্যবহারের মেয়াদ স্বয়ংক্রিয়ভাবে ট্র্যাক হয় এবং দ্রুততম ভলান্টিয়ারের কাছে অ্যালার্ট যায়।",
+      card3Meta: "লাইভ রুট ও সময়সীমা অ্যালার্ট",
     },
     standards: {
       badge: "খাদ্য নিরাপত্তা",
-      title: "বাণিজ্যিক মানের খাদ্য নিরাপত্তা ও সিলযুক্ত প্যাকেজিং",
+      title: "বাণিজ্যিক মানের খাদ্য নিরাপত্তা ও সিলড প্যাকেজিং",
       subtitle:
-        "আমরা নিশ্চিত করি প্রতিটি উদ্বৃত্ত খাবার সর্বোচ্চ পুষ্টিগুণ, স্বাস্থ্যসম্মত মর্যাদা এবং নিরাপদ প্যাকেজিং বজায় রেখে বিতরণ করা হচ্ছে।",
+        "আমরা নিশ্চিত করি প্রতিটি খাবার সর্বোচ্চ পুষ্টিগুণ, স্বাস্থ্যসম্মত মর্যাদা এবং নিরাপদ প্যাকেজিং বজায় রেখে বিতরণ করা হচ্ছে।",
+      photoBadge: "BFSA মানদণ্ড · ৬০°C+ সংরক্ষণ",
+      photoTag: "১০০% সিলড প্যাকেজিং",
       card1Badge: "হাইজিন সিল প্রোটোকল",
       card1Title: "ফুড-গ্রেড বক্সে নিরাপদ সিল",
       card1Desc:
@@ -196,7 +207,7 @@ const copy = {
       searchBtn: "Search & Claim Meals",
       popularLabel: "Popular Zones:",
       popularZones: "Gulshan 1 & 2 · Dhanmondi 27 · Badda UIU Campus",
-      urgentTag: "⚡ 15-Minute Rapid Rescue",
+      urgentTag: "15-Minute Rapid Rescue",
       demoLabel: "Direct Demo Portals:",
       donorDemo: "Food Donor Dashboard",
       ngoDemo: "NGO Dashboard",
@@ -210,24 +221,32 @@ const copy = {
     },
     bento: {
       badge: "Rescue Process",
-      title: "Every surplus meal reaches the right people",
+      title: "Every meal reaches the right people safely",
       subtitle:
-        "A digital network ensuring excess food from convention centers and cafeterias is not wasted, but hygienically packaged and delivered to those in need.",
-      card1Title: "1. Post Surplus Food",
+        "A digital network ensuring extra food from convention centers and cafeterias is hygienically packaged and delivered to those in need.",
+      card1Tag: "01 · DONOR",
+      card1Title: "Post Safe Extra Food",
       card1Desc:
-        "Hotels, conventions, or cafeterias can instantly post excess food with photos and estimated portions right after events.",
-      card2Title: "2. Smart QR Verification",
+        "Hotels, conventions, or cafeterias can instantly post extra food with photos and estimated portions right after events.",
+      card1Meta: "Photos, portions & pickup window",
+      card2Tag: "02 · QR + OTP",
+      card2Title: "Smart QR Verification",
       card2Desc:
         "Both donors and receivers verify food quality and complete authenticated digital handovers via QR code scans.",
-      card3Title: "3. 60-Minute Cold-Chain Delivery",
+      card2Meta: "6-digit confirmed handover codes",
+      card3Tag: "03 · DISPATCH",
+      card3Title: "60-Minute Cold-Chain Delivery",
       card3Desc:
         "Safe consumption windows are tracked automatically based on cooking timestamps, instantly alerting the nearest volunteers.",
+      card3Meta: "Live route & shelf-life alerts",
     },
     standards: {
       badge: "Food Safety",
       title: "Commercial Food-Grade Safety & Sealed Packaging",
       subtitle:
-        "We ensure all surplus meals maintain peak nutritional quality, hygienic dignity, and secure food-grade packaging throughout delivery.",
+        "We ensure all donated meals maintain peak nutritional quality, hygienic dignity, and secure food-grade packaging throughout delivery.",
+      photoBadge: "BFSA Standard · 60°C+ Hold",
+      photoTag: "100% Sealed Containers",
       card1Badge: "Hygiene Seal Protocol",
       card1Title: "Sealed Food-Grade Containers",
       card1Desc:
@@ -310,71 +329,123 @@ const copy = {
 
 export function HomeView() {
   const tx = useUiText();
-  const router = useRouter();
   const { session } = useMockAuth();
   const primaryHref = session ? getRoleLandingRoute(session.role) : ROUTES.auth.roleSelection;
   const { language: lang, setLanguage: setLang } = useLanguage();
   const [activeNav, setActiveNav] = useState<string>("hero");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // Forward area searches to the account-authorized food discovery page.
-  const [searchQuery, setSearchQuery] = useState("");
+  const navRef = useRef<HTMLElement | null>(null);
+  const navLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const scrollLockUntilRef = useRef(0);
+  const [navIndicator, setNavIndicator] = useState<{ left: number; width: number; ready: boolean }>({
+    left: 0,
+    width: 0,
+    ready: false,
+  });
 
   // FAQ Accordion state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const original = copy[lang];
   const isBn = lang === "bn";
-  const t = localizeUiCopy({ ...original,
-    hero: { ...original.hero, subtitle: isBn ? "বিশ্ববিদ্যালয় প্রজেক্ট: surplus food দান, NGO claim, volunteer handover ও distribution record এক জায়গায়। আপনার account দিয়ে আসল তথ্য সংরক্ষণ করুন।" : "A university project connecting food donations, NGO claims, volunteer handovers and recorded distributions. Sign in to work with saved rescue records.", urgentTag: isBn ? "Donor-declared pickup deadline" : "Donor-declared pickup deadline" },
-    bento: { ...original.bento, card3Title: isBn ? "সংরক্ষিত distribution record" : "Recorded distributions", card3Desc: isBn ? "NGO-এর actual distribution থেকে meal ও beneficiary count সংরক্ষিত হয়। Certificate issuance যুক্ত হয়নি।" : "Actual NGO distribution records supply meal and beneficiary counts. Certificate issuance is not connected." },
-    standards: { ...original.standards, badge: isBn ? "কী সংরক্ষণ করা হয়" : "Recorded workflow", title: isBn ? "ঘোষণা, handover ও distribution" : "Declarations, handovers and distributions", subtitle: isBn ? "Food safety পরীক্ষা বা temperature monitoring করা হচ্ছে না।" : "Food testing and temperature monitoring are not connected.", card1Title: isBn ? "দাতার ঘোষণা" : "Donor declarations", card1Desc: isBn ? "দাতা preparation time, pickup deadline ও storage method ঘোষণা করেন।" : "The donor supplies preparation time, pickup deadline and storage declarations.", card2Title: "OTP handover", card2Desc: isBn ? "নির্ধারিত volunteer ছয় সংখ্যার pickup ও delivery code যাচাই করেন।" : "The assigned volunteer verifies six-digit pickup and delivery codes.", card3Title: "Distribution record", card3Desc: isBn ? "NGO receipt ও actual distribution সংরক্ষণ করে।" : "The receiving NGO records receipt and actual distribution." },
-    stories: { ...original.stories, badge: tx("Demo reviews"), title: tx("Small stories about sharing food"), subtitle: tx("Sample names, profiles and comments for the demo. These are not real user reviews.") },
-    faq: { ...original.faq, items: [
-      { q: isBn ? "কীভাবে শুরু করব?" : "How do I start?", a: isBn ? "Donor, NGO অথবা volunteer account খুলে sign in করুন। নতুন NGO ও volunteer account-এর verification project operator করেন।" : "Register and sign in as a donor, NGO or volunteer. New NGO and volunteer accounts need verification by the project operator." },
-      { q: isBn ? "Food safety পরীক্ষা করা হয়?" : "Does the app test food safety?", a: isBn ? "না। App দাতার declaration, deadline ও handover record সংরক্ষণ করে। খাবারের quality বা temperature স্বাধীনভাবে পরীক্ষা করা হয় না।" : "No. The app stores donor declarations, deadlines and handover records. Food quality and temperature are not independently tested." },
-      { q: isBn ? "কীভাবে handover হয়?" : "How do handovers work?", a: isBn ? "NGO claim করার পরে volunteer mission গ্রহণ করেন। Donor pickup code এবং NGO delivery code দেন; assigned volunteer সেগুলো যাচাই করেন।" : "After an NGO claim, a volunteer accepts the mission. The donor issues a pickup code and the NGO a delivery code; the assigned volunteer verifies them." },
-      { q: isBn ? "কোন feature এখনও বাকি?" : "Which features remain pending?", a: isBn ? "Live GPS, road ETA, SMS/push, team invitation, support ticket, certificate issuance ও পূর্ণ admin dashboard এখনও যুক্ত হয়নি।" : "Live GPS, road ETA, SMS/push, team invitations, support tickets, certificates and the full admin dashboard are not connected yet." },
-    ] },
-    footer: { ...original.footer, helpline: isBn ? "Project hotline যুক্ত হয়নি। Account সহায়তার জন্য project operator-এর সাথে যোগাযোগ করুন।" : "A project hotline is not configured. Contact your project operator for account help." },
-  }, lang);
+  const t = localizeUiCopy(copy[lang], lang);
+
+  const measureNavIndicator = useCallback(() => {
+    const navEl = navRef.current;
+    const activeEl = navLinkRefs.current[activeNav];
+    if (!navEl || !activeEl || activeEl.offsetWidth === 0) return;
+
+    const nextLeft = activeEl.offsetLeft;
+    const nextWidth = activeEl.offsetWidth;
+    setNavIndicator((prev) =>
+      prev.ready && prev.left === nextLeft && prev.width === nextWidth
+        ? prev
+        : { left: nextLeft, width: nextWidth, ready: true },
+    );
+  }, [activeNav]);
+
+  useLayoutEffect(() => {
+    measureNavIndicator();
+  }, [measureNavIndicator, lang]);
 
   useEffect(() => {
-    const sectionIds = [
-      "how-it-works",
-      "standards",
-      "impact",
-      "faq",
-    ];
-    const handleScroll = () => {
-      if (window.innerWidth < 1024) return;
-      // Dynamic scroll contraction trigger
-      const scrolled = window.scrollY > 20;
-      setIsScrolled(scrolled);
+    const navEl = navRef.current;
+    if (!navEl) return;
 
-      if (window.scrollY < 200) {
-        setActiveNav("hero");
+    let cancelled = false;
+    const handleResize = () => measureNavIndicator();
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(handleResize) : null;
+    observer?.observe(navEl);
+    window.addEventListener("resize", handleResize);
+    document.fonts?.ready.then(() => {
+      if (!cancelled) measureNavIndicator();
+    });
+
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [measureNavIndicator]);
+
+  useEffect(() => {
+    const orderedIds = ["hero", "how-it-works", "standards", "impact", "faq"];
+    let frameId = 0;
+
+    const updateOnScroll = () => {
+      frameId = 0;
+      const scrollY = window.scrollY;
+      // Hysteresis prevents rapid scroll threshold oscillation near top of page.
+      setIsScrolled((prev) => (prev ? scrollY >= 12 : scrollY > 36));
+
+      if (window.innerWidth < 1024) return;
+      if (performance.now() < scrollLockUntilRef.current) return;
+
+      if (scrollY < 140) {
+        setActiveNav((prev) => (prev === "hero" ? prev : "hero"));
         return;
       }
-      const scrollPos = window.scrollY + 200;
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveNav(id);
-            break;
-          }
+
+      const nearBottom = scrollY + window.innerHeight >= document.documentElement.scrollHeight - 48;
+      if (nearBottom) {
+        setActiveNav((prev) => (prev === "faq" ? prev : "faq"));
+        return;
+      }
+
+      const probeY = scrollY + 140;
+      let resolved = "hero";
+      for (let i = orderedIds.length - 1; i >= 0; i -= 1) {
+        const el = document.getElementById(orderedIds[i]);
+        if (el && probeY >= el.offsetTop) {
+          resolved = orderedIds[i];
+          break;
         }
+      }
+      setActiveNav((prev) => (prev === resolved ? prev : resolved));
+    };
+
+    const scheduleUpdate = () => {
+      if (!frameId) {
+        frameId = window.requestAnimationFrame(updateOnScroll);
       }
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    return () => { window.removeEventListener("scroll", handleScroll); window.removeEventListener("resize", handleScroll); };
+    const releaseScrollLock = () => {
+      scrollLockUntilRef.current = 0;
+    };
+
+    updateOnScroll();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("wheel", releaseScrollLock, { passive: true });
+    window.addEventListener("touchstart", releaseScrollLock, { passive: true });
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("wheel", releaseScrollLock);
+      window.removeEventListener("touchstart", releaseScrollLock);
+    };
   }, []);
 
   const navLinks = [
@@ -386,115 +457,116 @@ export function HomeView() {
   ];
 
   const handleNavClick = (id: string, href: string) => {
+    scrollLockUntilRef.current = performance.now() + 900;
     setActiveNav(id);
     setIsMobileMenuOpen(false);
     if (id === "hero") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    setTimeout(() => {
-      const el = document.querySelector(href);
-      if (el) {
-        const headerOffset = 70;
-        const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
-        window.scrollTo({
-          top: elementPosition - headerOffset,
-          behavior: "smooth",
-        });
-      }
-    }, 60);
+    const el = document.querySelector(href);
+    if (el) {
+      const headerOffset = 72;
+      const targetTop = Math.max(0, el.getBoundingClientRect().top + window.scrollY - headerOffset);
+      window.scrollTo({
+        top: targetTop,
+        behavior: "smooth",
+      });
+    }
   };
 
-  function openFoodDiscovery(query: string) {
-    const value = query.trim();
-    const target = `${ROUTES.ngo.discover}${value ? `?q=${encodeURIComponent(value)}` : ""}`;
-    router.push(session?.role === UserRole.NGO ? target : `${ROUTES.auth.login}?next=${encodeURIComponent(target)}`);
-  }
-
-  function handleZoneSelect(zone: string) {
-    openFoodDiscovery(zone);
-  }
-
-  function handleHeroSearchSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    openFoodDiscovery(searchQuery);
-  }
-
   return (
-    <HeroStoryProvider><MobileHomeView /><div className={cn("min-h-screen bg-[#f8faf9] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased", mobile.page, responsive.desktop)}>
-      {/* 1. Header / Navbar with Smart Dynamic Scroll Contraction */}
+    <HeroStoryProvider><MobileHomeView /><div className={cn("min-h-screen bg-[#f6fbf8] text-ink-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased", mobile.page, responsive.desktop)}>
+      {/* 1. Clean Airy Sticky Navbar */}
       <header
         data-scrolled={isScrolled}
         className={cn(
-          "sticky top-0 z-50 transition-all duration-300 ease-in-out",
-          "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/90 before:to-transparent before:transition-opacity before:duration-300",
+          "sticky top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ease-out",
           isScrolled
-            ? "border-b border-slate-200/70 bg-white/80 backdrop-blur-xl backdrop-saturate-150 shadow-[0_4px_30px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.02)] before:opacity-100"
-            : "border-b border-slate-200/30 bg-white/50 backdrop-blur-md shadow-none before:opacity-0",
+            ? "border-b border-emerald-100/90 bg-white/95 backdrop-blur-xl shadow-[0_10px_28px_-14px_rgba(2,44,34,0.12)]"
+            : "border-b border-emerald-100/70 bg-white/92 backdrop-blur-md shadow-none",
         )}
       >
         <div
           className={cn(
-            "mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out", mobile.headerRow,
-            isScrolled ? "h-14 sm:h-14" : "h-18 sm:h-20",
+            "mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 xl:px-8 h-16 sm:h-[72px]", mobile.headerRow,
           )}
         >
-          <div
-            className={cn(
-              "flex items-center gap-6 transition-transform duration-300 origin-left", mobile.logo,
-              isScrolled ? "scale-95" : "scale-100",
-            )}
-          >
-            <BrandLogo />
+          <div className={cn("flex shrink-0 items-center", mobile.logo)}>
+            <BrandLogo variant="classic" />
           </div>
 
-          {/* Desktop Navigation Links (Clean, Sequential & Balanced) */}
-          <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
+          {/* Desktop Navigation Links (Constant font weight + sliding underline indicator) */}
+          <nav ref={navRef} className="relative hidden items-center gap-1 xl:gap-4 lg:flex">
+            <span
+              aria-hidden="true"
+              style={{
+                transform: `translate3d(${navIndicator.left}px, 0, 0)`,
+                width: `${navIndicator.width}px`,
+                opacity: navIndicator.ready ? 1 : 0,
+                transition:
+                  "transform 320ms cubic-bezier(0.22, 1, 0.36, 1), width 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease",
+              }}
+              className="pointer-events-none absolute inset-y-0 left-0 z-0 will-change-transform"
+            >
+              <span className="absolute inset-x-2.5 xl:inset-x-3.5 bottom-0.5 h-[2.5px] rounded-full bg-[#047857]" />
+            </span>
             {navLinks.map((item) => {
               const isActive = activeNav === item.id;
               return (
                 <a
                   key={item.id}
+                  ref={(el) => {
+                    navLinkRefs.current[item.id] = el;
+                  }}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick(item.id, item.href);
                   }}
                   className={cn(
-                    "group relative rounded-xl px-2.5 text-xs font-bold transition-all duration-200 cursor-pointer",
-                    isScrolled ? "py-1" : "py-1.5",
+                    "relative z-10 px-2.5 xl:px-3.5 py-2 text-[13px] xl:text-[14.5px] font-semibold whitespace-nowrap transition-colors duration-200 cursor-pointer select-none",
                     isActive
-                      ? "text-emerald-900 font-extrabold bg-emerald-50/70 backdrop-blur-xs"
-                      : "text-slate-600 hover:text-emerald-800 hover:bg-white/60 hover:backdrop-blur-xs font-semibold",
+                      ? "text-[#065f46]"
+                      : "text-slate-600 hover:text-[#047857]",
                   )}
                 >
-                  <span className="relative z-10">{item.label}</span>
-                  {isActive && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-emerald-600 shadow-[0_2px_8px_rgba(16,185,129,0.5)] transition-all duration-200" />
+                  {item.label}
+                  {isActive && !navIndicator.ready && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-2.5 xl:inset-x-3.5 bottom-0.5 h-[2.5px] rounded-full bg-[#047857]"
+                    />
                   )}
                 </a>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {/* Apple-Style Segmented Language Switcher */}
+          <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+            {/* Crisp Pill Language Switcher */}
             <div
               className={cn(
-                "inline-flex items-center p-0.5 rounded-xl border border-white/70 bg-slate-200/50 backdrop-blur-md text-xs font-semibold select-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300",
-                isScrolled ? "h-8" : "h-9", mobile.language,
+                "relative grid grid-cols-2 items-center p-0.5 rounded-full border border-slate-200/90 bg-slate-50/90 text-xs xl:text-[13px] font-semibold select-none h-9 xl:h-10",
+                mobile.language,
               )}
             >
+              <span
+                aria-hidden="true"
+                style={{
+                  transform: lang === "bn" ? "translate3d(100%, 0, 0)" : "translate3d(0, 0, 0)",
+                  transition: "transform 240ms cubic-bezier(0.22, 1, 0.36, 1)",
+                }}
+                className="pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-full bg-white shadow-xs ring-1 ring-emerald-200/70 will-change-transform"
+              />
               <button
                 type="button"
                 onClick={() => setLang("en")}
                 aria-pressed={lang === "en"}
                 className={cn(
-                  "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
-                  isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
-                  lang === "en"
-                    ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
-                    : "text-slate-600 hover:text-slate-900",
+                  "relative z-10 cursor-pointer rounded-full text-[11px] xl:text-[12.5px] font-bold transition-colors duration-200 leading-none px-2.5 xl:px-3.5 py-1.5 text-center",
+                  lang === "en" ? "text-[#047857]" : "text-slate-500 hover:text-slate-900",
                 )}
               ><UiText source={"EN"} /></button>
               <button
@@ -502,35 +574,28 @@ export function HomeView() {
                 onClick={() => setLang("bn")}
                 aria-pressed={lang === "bn"}
                 className={cn(
-                  "cursor-pointer rounded-lg text-[11px] sm:text-xs font-bold transition-all leading-none",
-                  isScrolled ? "px-1.5 sm:px-2 py-0.5" : "px-2 sm:px-2.5 py-1",
-                  lang === "bn"
-                    ? "bg-white/95 text-emerald-900 shadow-2xs font-extrabold backdrop-blur-xs"
-                    : "text-slate-600 hover:text-slate-900",
+                  "relative z-10 cursor-pointer rounded-full text-[11px] xl:text-[12.5px] font-bold transition-colors duration-200 leading-none px-2.5 xl:px-3.5 py-1.5 text-center",
+                  lang === "bn" ? "text-[#047857]" : "text-slate-500 hover:text-slate-900",
                 )}
               >
                 {tx("বাংলা")}</button>
             </div>
 
-            <Link
-              href={ROUTES.auth.login}
-              className={cn(
-                "hidden sm:inline-flex items-center rounded-xl text-xs font-bold text-slate-800 hover:text-emerald-950 bg-white/80 hover:bg-white/95 border border-slate-200/80 backdrop-blur-xs transition-all duration-300 px-3 sm:px-3.5 shadow-2xs active:scale-95 touch-manipulation cursor-pointer",
-                isScrolled ? "h-8" : "h-9",
-              )}
-            >
-              {t.nav.login}
-            </Link>
+            {!session && (
+              <Link
+                href={ROUTES.auth.login}
+                className="hidden sm:inline-flex items-center rounded-full text-xs xl:text-sm font-semibold whitespace-nowrap text-[#022c22] hover:text-[#047857] bg-white hover:bg-emerald-50/60 border border-slate-200/90 transition-all duration-200 px-4 xl:px-5 h-9 xl:h-10 shadow-2xs active:scale-95 touch-manipulation cursor-pointer"
+              >
+                {t.nav.login}
+              </Link>
+            )}
 
             <Link
-              href={ROUTES.auth.roleSelection}
-              className={cn(
-                "hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-600 text-xs font-bold text-white shadow-[0_2px_12px_rgba(16,185,129,0.32),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95",
-                isScrolled ? "h-8.5 px-3.5" : "h-9 px-4",
-              )}
+              href={primaryHref}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-[#065f46] hover:bg-[#047857] text-xs xl:text-sm font-semibold whitespace-nowrap text-white shadow-[0_8px_20px_-8px_rgba(6,95,70,0.52)] transition-all duration-200 active:scale-95 h-9 xl:h-10 px-4 xl:px-5"
             >
-              <span>{t.nav.join}</span>
-              <ArrowRight className="size-3.5" />
+              <span>{session ? tx("Continue to dashboard") : t.nav.join}</span>
+              <ArrowRight className="size-3.5 xl:size-4" />
             </Link>
 
             {/* Mobile Hamburger Menu Button - Prominent, never pushed off-screen */}
@@ -578,7 +643,7 @@ export function HomeView() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md font-heading active:scale-98 cursor-pointer touch-manipulation"
               >
-                <span>🔑 {t.nav.login} {" "}{tx("করুন (ড্যাশবোর্ড)")}</span>
+                <span className="inline-flex items-center gap-2"><KeyRound className="size-4" />{t.nav.login} {" "}{tx("করুন (ড্যাশবোর্ড)")}</span>
                 <ArrowRight className="size-4" />
               </a>
 
@@ -587,25 +652,25 @@ export function HomeView() {
                 <Link
                   href="/login?next=/donor/dashboard"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50/80 p-2 text-center text-[11px] font-bold text-emerald-900 active:scale-95"
+                  className="flex flex-col items-center justify-center gap-1 rounded-xl border border-emerald-100 bg-emerald-50/80 p-2 text-center text-[11px] font-bold text-emerald-900 active:scale-95"
                 >
-                  <span className="text-base">👨‍🍳</span>
+                  <Utensils className="size-4 text-emerald-700" />
                   <span>{tx("ডোনার")}</span>
                 </Link>
                 <Link
                   href="/login?next=/ngo/dashboard"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl border border-teal-100 bg-teal-50/80 p-2 text-center text-[11px] font-bold text-teal-900 active:scale-95"
+                  className="flex flex-col items-center justify-center gap-1 rounded-xl border border-teal-100 bg-teal-50/80 p-2 text-center text-[11px] font-bold text-teal-900 active:scale-95"
                 >
-                  <span className="text-base">🏢</span>
+                  <Building2 className="size-4 text-teal-700" />
                   <span>{tx("এনজিও")}</span>
                 </Link>
                 <Link
                   href="/login?next=/volunteer/dashboard"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex flex-col items-center justify-center rounded-xl border border-amber-100 bg-amber-50/80 p-2 text-center text-[11px] font-bold text-amber-900 active:scale-95"
+                  className="flex flex-col items-center justify-center gap-1 rounded-xl border border-amber-100 bg-amber-50/80 p-2 text-center text-[11px] font-bold text-amber-900 active:scale-95"
                 >
-                  <span className="text-base">🚴</span>
+                  <Bike className="size-4 text-amber-700" />
                   <span>{tx("ভলান্টিয়ার")}</span>
                 </Link>
               </div>
@@ -631,265 +696,250 @@ export function HomeView() {
       </header>
 
       {/* 2. Hero Section with Background Image & Intact Right Column */}
-      <section id="hero" className={cn("relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 text-white", mobile.hero)}>
-        {/* Full-bleed Emotional Background Image */}
-        <div className="absolute inset-0 z-0">
-          <HeroStoryMedia imageClassName={cn("object-cover object-center", mobile.background)} />
-          {/* Deep dark-green gradient overlay on the left for contrast, open/transparent on the right so background is visible */}
-          <div className={cn("absolute inset-0 bg-gradient-to-r from-[#011d15]/98 via-[#011d15]/80 to-black/20", mobile.shade)} />
-          <div className="absolute inset-0 bg-radial-[at_top_left] from-emerald-500/15 via-transparent to-transparent" />
-        </div>
-        <HeroStoryControls />
+      {/* 2. Clean Light-Emerald Sunlit Hero Section */}
+      <DesktopHero
+        language={lang}
+        isLoggedIn={Boolean(session)}
+        dashboardHref={primaryHref}
+      />
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className={cn("grid gap-12 lg:grid-cols-12 lg:items-center", mobile.layout)}>
-            {/* Left 7 Columns: Content kept on left */}
-            <div className={cn("lg:col-span-7 space-y-6 text-left", mobile.content)}>
-              <div className={cn("inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/70 px-4 py-1.5 text-xs font-extrabold text-emerald-300 shadow-lg backdrop-blur-md font-heading", mobile.badge)}>
-                <Sparkles className="size-3.5 text-amber-400 animate-pulse" />
-                <span>{t.hero.badge}</span>
-              </div>
-
-              <h1 className={homeSloganStyles.slogan}>
-                {t.hero.titlePart1}
-                <HeroSloganLine className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">
-                  {t.hero.titleHighlight}
-                </HeroSloganLine>
-              </h1>
-
-              <p className={cn("max-w-2xl text-xs sm:text-base lg:text-lg leading-relaxed text-emerald-100/90 font-normal", mobile.subtitle)}>
-                {t.hero.subtitle}
-              </p>
-
-              <div className={responsive.heroActions}>
-                <Link href={primaryHref} className={responsive.primaryAction}>
-                  {tx(session ? "Continue to dashboard" : "Join ShareBite")}
-                  <ArrowRight className="size-5" aria-hidden="true" />
-                </Link>
-                {!session && <Link href={ROUTES.auth.login} className={responsive.secondaryAction}>
-                  {t.nav.login}
-                </Link>}
-              </div>
-
-              <details className={responsive.foodSearch}>
-                <summary>
-                  <Building2 className="size-5" aria-hidden="true" />
-                  {tx("Find food for your NGO")}
-                  <ChevronDown className="size-4" aria-hidden="true" />
-                </summary>
-                {/* Integrated Search & Action Box (Floating Glass Style) */}
-                <form onSubmit={handleHeroSearchSubmit} className={cn("rounded-2xl border border-emerald-500/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-3.5 text-left", mobile.search)}>
-                  <div className={cn("grid gap-2 sm:grid-cols-12", mobile.searchRow)}>
-                    <div className={cn("relative flex items-center sm:col-span-7", mobile.inputWrap)}>
-                      <MapPin className="pointer-events-none absolute left-3.5 size-5 text-emerald-600" />
-                      <input
-                        type="text"
-                        aria-label={tx("Search by area")}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={t.hero.searchPlaceholder}
-                        className="h-12 w-full rounded-xl border-none bg-slate-100/80 pl-11 pr-3 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden"
-                      />
-                    </div>
-                    <div className={cn("sm:col-span-5 flex items-center", mobile.searchAction)}>
-                      <button
-                        type="submit"
-                        className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-4 text-xs sm:text-sm font-extrabold text-white shadow-md shadow-emerald-900/40 hover:from-emerald-500 hover:to-teal-600 transition-all font-heading cursor-pointer active:scale-98", mobile.searchButton)}
-                      >
-                        <Search className="size-4" />
-                        <span>{t.hero.searchBtn}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={cn("mt-2.5 flex flex-wrap items-center justify-between px-2 pt-1.5 text-[11px] text-slate-600 font-medium border-t border-slate-200/60", mobile.searchMeta)}>
-                    <span className="flex items-center gap-1.5 flex-wrap">
-                      <strong className="text-slate-800">{t.hero.popularLabel}</strong>
-                      <button
-                        type="button"
-                        onClick={() => handleZoneSelect("gulshan")}
-                        className="hover:text-emerald-700 hover:underline cursor-pointer"
-                      >
-                        {tx("গুলশান ১ ও ২")}</button>
-                      <span>·</span>
-                      <button
-                        type="button"
-                        onClick={() => handleZoneSelect("dhanmondi")}
-                        className="hover:text-emerald-700 hover:underline cursor-pointer"
-                      >
-                        {tx("ধানমন্ডি ২৭")}</button>
-                      <span>·</span>
-                      <button
-                        type="button"
-                        onClick={() => handleZoneSelect("badda")}
-                        className="hover:text-emerald-700 hover:underline cursor-pointer font-bold text-emerald-800"
-                      >
-                        {tx("বাড্ডা UIU ক্যাম্পাস")}</button>
-                    </span>
-                    <span className="text-emerald-700 font-extrabold">{t.hero.urgentTag}</span>
-                  </div>
-                </form>
-              </details>
-
-            </div>
-
-            {/* Right 5 Columns: Kept clear so the emotional background image remains visible */}
-            <div className="hidden lg:block lg:col-span-5" />
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Bento Grid: Civic Infrastructure in Action (উদ্ধার প্রক্রিয়া) */}
-      <section id="how-it-works" className="py-14 sm:py-16 bg-white border-b border-slate-200/90">
+      {/* 3. Architectural Editorial Showcase: How Rescue Works */}
+      <section
+        id="how-it-works"
+        className="border-b border-emerald-100/70 bg-[radial-gradient(680px_380px_at_12%_10%,rgba(16,185,129,0.09),transparent_68%),radial-gradient(560px_340px_at_88%_18%,rgba(13,148,136,0.08),transparent_68%),linear-gradient(180deg,#f2faf6_0%,#f7fbf9_100%)] pt-14 pb-16 sm:pt-16 sm:pb-20"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
-              {t.bento.badge}
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/90 bg-emerald-50/95 px-3.5 py-1 text-xs font-bold tracking-wide text-emerald-800 shadow-2xs">
+              <Sparkles className="size-3.5 text-emerald-600" aria-hidden="true" />
+              <span>{t.bento.badge}</span>
             </span>
-            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl font-heading">
+            <h2 className="mt-3.5 font-heading text-2xl font-black tracking-tight text-[#022c22] sm:text-4xl">
               {t.bento.title}
             </h2>
-            <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
               {t.bento.subtitle}
             </p>
           </div>
 
-          <LiveIconGroup className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* Bento Card 1 */}
-            <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-emerald-500/50 hover:shadow-md transition-all">
-              <span className="grid size-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 shadow-2xs">
-                <LiveIcon icon={Utensils} motion="ambient" className="size-6" />
-              </span>
-              <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
-                {t.bento.card1Title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {t.bento.card1Desc}
-              </p>
-            </div>
+          <LiveIconGroup className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3 lg:gap-6">
+            {[
+              {
+                icon: Utensils,
+                tag: t.bento.card1Tag,
+                title: t.bento.card1Title,
+                desc: t.bento.card1Desc,
+                meta: t.bento.card1Meta,
+                glow: "from-emerald-100/50 via-transparent to-transparent",
+                iconBox: "bg-emerald-50 text-[#065f46] border-emerald-200/80",
+                tagStyle: "bg-emerald-50 text-emerald-800 border-emerald-200/70",
+                metaColor: "text-emerald-700",
+              },
+              {
+                icon: QrCode,
+                tag: t.bento.card2Tag,
+                title: t.bento.card2Title,
+                desc: t.bento.card2Desc,
+                meta: t.bento.card2Meta,
+                glow: "from-teal-100/50 via-transparent to-transparent",
+                iconBox: "bg-teal-50 text-teal-800 border-teal-200/80",
+                tagStyle: "bg-teal-50 text-teal-800 border-teal-200/70",
+                metaColor: "text-teal-700",
+              },
+              {
+                icon: Clock,
+                tag: t.bento.card3Tag,
+                title: t.bento.card3Title,
+                desc: t.bento.card3Desc,
+                meta: t.bento.card3Meta,
+                glow: "from-amber-100/45 via-transparent to-transparent",
+                iconBox: "bg-amber-50 text-amber-800 border-amber-200/80",
+                tagStyle: "bg-amber-50 text-amber-800 border-amber-200/70",
+                metaColor: "text-amber-700",
+              },
+            ].map((card) => (
+              <div
+                key={card.tag}
+                className="group relative flex flex-col overflow-hidden rounded-[26px] border border-emerald-100/90 bg-white/95 p-7 shadow-[0_16px_44px_-22px_rgba(2,44,34,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300/80 hover:shadow-[0_24px_54px_-22px_rgba(4,120,87,0.18)]"
+              >
+                <div
+                  className={cn(
+                    "pointer-events-none absolute -right-10 -top-10 size-36 rounded-full bg-radial opacity-80",
+                    card.glow,
+                  )}
+                  aria-hidden="true"
+                />
 
-            {/* Bento Card 2 */}
-            <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-teal-500/50 hover:shadow-md transition-all">
-              <span className="grid size-12 place-items-center rounded-2xl bg-teal-50 text-teal-700 shadow-2xs">
-                <LiveIcon icon={QrCode} motion="ambient" className="size-6" />
-              </span>
-              <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
-                {t.bento.card2Title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {t.bento.card2Desc}
-              </p>
-            </div>
+                <div className="relative flex items-center justify-between gap-3">
+                  <span
+                    className={cn(
+                      "grid size-12 place-items-center rounded-2xl border shadow-2xs transition-transform duration-300 group-hover:scale-105",
+                      card.iconBox,
+                    )}
+                  >
+                    <LiveIcon icon={card.icon} motion="ambient" className="size-6" />
+                  </span>
+                  <span
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-[11px] font-bold tracking-wide",
+                      card.tagStyle,
+                    )}
+                  >
+                    {card.tag}
+                  </span>
+                </div>
 
-            {/* Bento Card 3 */}
-            <div className="overflow-hidden rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-7 shadow-xs hover:border-amber-500/50 hover:shadow-md transition-all">
-              <span className="grid size-12 place-items-center rounded-2xl bg-amber-50 text-amber-700 shadow-2xs">
-                <LiveIcon icon={Clock} motion="ambient" className="size-6" />
-              </span>
-              <h3 className="mt-5 text-lg font-black text-slate-900 font-heading">
-                {t.bento.card3Title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {t.bento.card3Desc}
-              </p>
-            </div>
+                <h3 className="relative mt-6 font-heading text-lg font-extrabold tracking-tight text-[#022c22]">
+                  {card.title}
+                </h3>
+                <p className="relative mt-2.5 flex-1 text-sm leading-relaxed text-slate-600">
+                  {card.desc}
+                </p>
+
+                <div className="relative mt-6 flex items-center gap-2 border-t border-slate-100 pt-4 text-xs font-semibold">
+                  <CheckCircle2 className={cn("size-4 shrink-0", card.metaColor)} aria-hidden="true" />
+                  <span className={card.metaColor}>{card.meta}</span>
+                </div>
+              </div>
+            ))}
           </LiveIconGroup>
         </div>
       </section>
 
-      {/* 5. Food Safety & Packaging Standards */}
-      <section id="standards" className="border-t border-slate-200/90 bg-white py-14 sm:py-16">
+      {/* 5. Food Safety & Packaging Standards Showcase */}
+      <section
+        id="standards"
+        className="bg-[radial-gradient(620px_380px_at_86%_22%,rgba(16,185,129,0.08),transparent_68%),linear-gradient(180deg,#f7fbf9_0%,#eff7f3_100%)] py-14 sm:py-16"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
-              {t.standards.badge}
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/90 bg-emerald-50/95 px-3.5 py-1 text-xs font-bold tracking-wide text-emerald-800 shadow-2xs">
+              <ShieldCheck className="size-3.5 text-emerald-600" aria-hidden="true" />
+              <span>{t.standards.badge}</span>
             </span>
-            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl font-heading">
+            <h2 className="mt-3.5 font-heading text-2xl font-black tracking-tight text-[#022c22] sm:text-4xl">
               {t.standards.title}
             </h2>
-            <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-600">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
               {t.standards.subtitle}
             </p>
           </div>
 
-          <div className="mt-14 grid items-center gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-slate-200 shadow-xl">
-                <Image
-                  src="/images/surplus-food-containers.jpg"
-                  alt={tx("Sealed hygienic catering containers with Kacchi Biryani and Polao")}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  className="object-cover"
-                />
+          <div className="mt-11 grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
+            {/* Left Gallery Frame */}
+            <div className="lg:col-span-6">
+              <div className="rounded-[28px] border border-emerald-100/90 bg-white p-2.5 shadow-[0_24px_60px_-24px_rgba(2,44,34,0.16)] sm:p-3">
+                <div className="relative aspect-[16/11] w-full overflow-hidden rounded-[20px]">
+                  <Image
+                    src="/images/surplus-food-containers.jpg"
+                    alt={tx("Sealed hygienic catering containers with Kacchi Biryani and Polao")}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#022c22]/55 via-transparent to-transparent" />
+                  <div className="absolute inset-x-3 bottom-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-white/85 bg-white/92 px-3.5 py-2.5 text-xs shadow-lg backdrop-blur-md">
+                    <span className="inline-flex items-center gap-1.5 font-bold text-[#022c22]">
+                      <ShieldCheck className="size-4 text-emerald-600" aria-hidden="true" />
+                      {t.standards.photoBadge}
+                    </span>
+                    <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 ring-1 ring-emerald-200/80">
+                      {t.standards.photoTag}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-emerald-700 font-heading">
-                  {t.standards.card1Badge}
-                </p>
-                <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
-                  {t.standards.card1Title}
-                </h4>
-                <p className="mt-1.5 text-sm leading-7 text-slate-600">
-                  {t.standards.card1Desc}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-amber-700 font-heading">
-                  {t.standards.card2Badge}
-                </p>
-                <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
-                  {t.standards.card2Title}
-                </h4>
-                <p className="mt-1.5 text-sm leading-7 text-slate-600">
-                  {t.standards.card2Desc}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-teal-700 font-heading">
-                  {t.standards.card3Badge}
-                </p>
-                <h4 className="mt-1 text-base font-bold text-slate-900 font-heading">
-                  {t.standards.card3Title}
-                </h4>
-                <p className="mt-1.5 text-sm leading-7 text-slate-600">
-                  {t.standards.card3Desc}
-                </p>
-              </div>
+            {/* Right Clean Protocol Cards (No clunky side stripes) */}
+            <div className="space-y-4 lg:col-span-6">
+              {[
+                {
+                  icon: ShieldCheck,
+                  badge: t.standards.card1Badge,
+                  title: t.standards.card1Title,
+                  desc: t.standards.card1Desc,
+                  iconStyle: "bg-emerald-50 text-[#047857] border-emerald-200/80",
+                  pillStyle: "text-emerald-700",
+                },
+                {
+                  icon: Flame,
+                  badge: t.standards.card2Badge,
+                  title: t.standards.card2Title,
+                  desc: t.standards.card2Desc,
+                  iconStyle: "bg-amber-50 text-amber-700 border-amber-200/80",
+                  pillStyle: "text-amber-700",
+                },
+                {
+                  icon: Award,
+                  badge: t.standards.card3Badge,
+                  title: t.standards.card3Title,
+                  desc: t.standards.card3Desc,
+                  iconStyle: "bg-teal-50 text-teal-700 border-teal-200/80",
+                  pillStyle: "text-teal-700",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="group flex items-start gap-4 rounded-[22px] border border-emerald-100/90 bg-white/95 p-5 shadow-[0_12px_32px_-20px_rgba(2,44,34,0.1)] transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300/75 hover:shadow-[0_18px_40px_-20px_rgba(4,120,87,0.16)]"
+                >
+                  <span
+                    className={cn(
+                      "mt-0.5 grid size-11 shrink-0 place-items-center rounded-2xl border shadow-2xs transition-transform duration-200 group-hover:scale-105",
+                      item.iconStyle,
+                    )}
+                  >
+                    <item.icon className="size-5" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={cn(
+                        "font-heading text-[11px] font-bold uppercase tracking-wider",
+                        item.pillStyle,
+                      )}
+                    >
+                      {item.badge}
+                    </p>
+                    <h3 className="mt-1 font-heading text-base font-extrabold text-[#022c22]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* 7. Clearly labelled fictional demo reviews */}
-      <section id="impact" className="py-12 sm:py-14 bg-gradient-to-b from-[#01140e] to-[#021f17] text-white">
+      <section id="impact" className="bg-[#f3f8f6] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-300 font-heading border border-emerald-400/30">
-              {t.stories.badge}
-            </span>
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl font-heading">
-              {t.stories.title}
-            </h2>
-          </div>
+          <div className="overflow-hidden rounded-[28px] border border-emerald-900/15 bg-gradient-to-br from-[#022c22] via-[#043629] to-[#064e3b] py-12 text-white shadow-[0_24px_56px_-22px_rgba(2,44,34,0.32)]">
+            <div className="px-4 text-center max-w-2xl mx-auto space-y-3 sm:px-6">
+              <span className="inline-block rounded-full bg-emerald-400/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-200 font-heading border border-emerald-400/25">
+                {t.stories.badge}
+              </span>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl font-heading">
+                {t.stories.title}
+              </h2>
+            </div>
 
-          {/* Continuous Infinite Review Train Animation */}
-          <div className="mt-6 -mx-4 sm:-mx-6 lg:-mx-8">
-            <ReviewTrainMarquee lang={lang} compact />
+            {/* Continuous Infinite Review Train Animation */}
+            <div className="mt-6">
+              <ReviewTrainMarquee lang={lang} compact />
+            </div>
           </div>
         </div>
       </section>
 
       {/* 8. NEW: Frequently Asked Questions (FAQ Accordion) */}
-      <section id="faq" className="py-14 sm:py-16 bg-white border-t border-slate-200/90">
+      <section id="faq" className="py-14 sm:py-16 bg-[radial-gradient(560px_340px_at_80%_20%,rgba(56,189,248,0.10),transparent_70%),radial-gradient(520px_340px_at_15%_85%,rgba(16,185,129,0.10),transparent_70%),#f3f8f6] border-t border-white/70">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-600/20">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/12 px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-emerald-800 font-heading border border-emerald-500/25 backdrop-blur-sm">
               <HelpCircle className="size-3.5 text-emerald-600" />
               {t.faq.badge}
             </span>
@@ -907,7 +957,7 @@ export function HomeView() {
               return (
                 <div
                   key={idx}
-                  className="overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-50/50 transition-all duration-200"
+                  className="liquid-glass-card overflow-hidden rounded-2xl transition-all duration-200"
                 >
                   <button
                     type="button"
@@ -919,7 +969,7 @@ export function HomeView() {
                     <span>{item.q}</span>
                     <span
                       className={cn(
-                        "grid size-8 shrink-0 place-items-center rounded-xl bg-white text-slate-500 shadow-2xs transition-transform duration-200 ring-1 ring-slate-200/70",
+                        "grid size-8 shrink-0 place-items-center rounded-xl bg-white/80 text-slate-500 shadow-2xs transition-transform duration-200 ring-1 ring-white",
                         isOpen && "rotate-180 text-emerald-700 bg-emerald-50"
                       )}
                     >
@@ -927,7 +977,7 @@ export function HomeView() {
                     </span>
                   </button>
                   {isOpen && (
-                    <div id={`landing-faq-answer-${idx}`} className="px-5 pb-5 pt-3 text-sm leading-7 text-slate-600 font-normal border-t border-slate-200/60 bg-white">
+                    <div id={`landing-faq-answer-${idx}`} className="px-5 pb-5 pt-3 text-sm leading-7 text-slate-700 font-normal border-t border-white/60 bg-white/45">
                       {item.a}
                     </div>
                   )}
@@ -939,7 +989,7 @@ export function HomeView() {
       </section>
 
       {/* 9. Partner Logos Strip */}
-      <section id="partners" className="border-y border-slate-200/90 bg-[#f8faf9] py-14">
+      <section id="partners" className="border-y border-white/70 bg-[#eef5f2] py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm font-semibold text-slate-600 font-heading">
             {t.partnersTitle}
@@ -948,36 +998,36 @@ export function HomeView() {
             {t.partnersList.map((partner) => (
               <div
                 key={partner}
-                className="flex h-14 items-center justify-center rounded-xl border border-slate-200/80 bg-white px-3 text-sm font-extrabold text-slate-700 shadow-2xs font-heading"
+                className="liquid-glass-tile flex min-h-14 items-center justify-center gap-2 rounded-xl px-2.5 py-2 text-center text-xs font-extrabold text-slate-700 font-heading"
               >
-                {partner}
+                <span className="size-2 shrink-0 rounded-full bg-emerald-500" />
+                <span>{partner}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 10. High-Impact Call to Action Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-[#03271d] to-[#011a13] py-18 text-white">
-        <div className="absolute inset-0 dark-surface-grid opacity-25" />
+      {/* 10. Clean Sunlit Call to Action Banner */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#eaf7f0] via-[#f2fbf6] to-[#e4f5ed] py-16 text-[#022c22] border-t border-emerald-100/80">
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl font-heading">
+          <h2 className="text-3xl font-black tracking-tight text-[#022c22] sm:text-4xl lg:text-5xl font-heading">
             {t.cta.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-emerald-100/80 font-normal">
+          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
             {t.cta.desc}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href={ROUTES.auth.registerDonor}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-7 font-extrabold text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-400 hover:to-teal-500 transition-all active:scale-95 font-heading"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#065f46] px-7 font-semibold text-white shadow-[0_12px_26px_-10px_rgba(6,95,70,0.48)] hover:bg-[#047857] transition-all active:scale-95 font-heading"
             >
               {t.cta.donorBtn} <ArrowRight className="size-4" />
             </Link>
             <Link
               href={ROUTES.auth.registerNgo}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/60 px-7 font-extrabold text-emerald-100 hover:bg-emerald-900/60 transition-colors font-heading"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-emerald-200 bg-white px-7 font-semibold text-[#022c22] shadow-2xs hover:bg-emerald-50/70 transition-colors font-heading"
             >
               {t.cta.ngoBtn}
             </Link>
@@ -989,7 +1039,7 @@ export function HomeView() {
       <footer className="border-t border-slate-200 bg-white py-12 text-slate-600">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <BrandLogo />
+            <BrandLogo variant="classic" />
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-slate-700 font-heading">
               <Link href={ROUTES.donor.dashboard} className="hover:text-emerald-700">{t.nav.donorPortal}</Link>
               <Link href={ROUTES.ngo.dashboard} className="hover:text-emerald-700">{t.nav.ngoPortal}</Link>
