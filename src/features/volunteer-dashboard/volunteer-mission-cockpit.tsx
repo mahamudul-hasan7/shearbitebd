@@ -1,7 +1,8 @@
 "use client";
 import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { ChevronDown, Navigation, RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Camera, ChevronDown, Navigation, QrCode, RefreshCw, X } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { useMockAuth } from "@/features/auth/mock-auth";
@@ -28,13 +29,15 @@ const ACTIONS: Partial<Record<MissionStage, string>> = {
 export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   const tx = useUiText(),
     { language } = useLanguage(),
-    { session } = useMockAuth();
+    { session } = useMockAuth(),
+    router = useRouter();
   const {
     activeMission,
     syncWithUserSession,
     loadMission,
     advanceStage,
     verifyOtp,
+    releaseMission,
   } = useVolunteerStore();
   const owner = session?.role === "VOLUNTEER" ? session.id : undefined;
   const mission =
@@ -49,7 +52,59 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
     [pinValue, setPinValue] = useState<{ key: string; value: string }>(),
     [revision, setRevision] = useState(0);
   const [notice, setNotice] = useState<{ success: boolean; message: string }>();
+  const [qrOpen, setQrOpen] = useState(false);
+  const [qrPayload, setQrPayload] = useState("");
+  const [cameraStatus, setCameraStatus] = useState<string>("");
+  const videoRef = useRef<HTMLVideoElement>(null);
   const lock = useRef(false);
+
+  useEffect(() => {
+    if (!qrOpen) return;
+    let stream: MediaStream | undefined;
+    let timer: number | undefined;
+    let cancelled = false;
+    async function startCamera() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraStatus("Camera unavailable on this connection. Paste or scan QR string below.");
+        return;
+      }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        if (videoRef.current) videoRef.current.srcObject = stream;
+        setCameraStatus("Camera active. Point at Donor/NGO QR code or paste payload below.");
+        const Detector = (window as unknown as { BarcodeDetector?: new (opts?: { formats: string[] }) => { detect: (src: HTMLVideoElement) => Promise<Array<{ rawValue?: string }>> } }).BarcodeDetector;
+        if (Detector) {
+          const detector = new Detector({ formats: ["qr_code"] });
+          timer = window.setInterval(async () => {
+            if (!videoRef.current || cancelled) return;
+            try {
+              const found = await detector.detect(videoRef.current);
+              const raw = found[0]?.rawValue || "";
+              const match = raw.match(/(\d{6})/);
+              if (match) {
+                setPinRef.current(match[1]);
+                setQrOpen(false);
+              }
+            } catch {
+              // Ignore transient frame decode errors.
+            }
+          }, 450);
+        }
+      } catch {
+        if (!cancelled) setCameraStatus("Camera permission denied or unavailable. Enter/paste QR payload below.");
+      }
+    }
+    void startCamera();
+    return () => {
+      cancelled = true;
+      if (timer) window.clearInterval(timer);
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+  }, [qrOpen]);
   useEffect(() => {
     if (!owner) return;
     const controller = new AbortController();
@@ -83,14 +138,19 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
       document.removeEventListener("visibilitychange", refresh);
     };
   }, [owner, missionId, revision, syncWithUserSession, loadMission]);
+  const expired =
+    !!mission?.safeDeadline && Date.parse(mission.safeDeadline) <= Date.now();
   const model = rescueNextStep({
     role: "volunteer",
     status: mission?.claimStatus || "ASSIGNED",
     routeStage: mission?.currentStage,
+    expired,
   });
   const pinKey = `${owner}:${missionId}:${model.action}`;
   const pin = pinValue?.key === pinKey ? pinValue.value : "";
   const setPin = (value: string) => setPinValue({ key: pinKey, value });
+  const setPinRef = useRef(setPin);
+  setPinRef.current = setPin;
   const stageAction = Object.keys(ACTIONS).includes(model.action || "")
     ? (model.action as MissionStage)
     : undefined;
@@ -99,6 +159,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   const active =
     !!mission &&
     !mission.incidentPaused &&
+    !(expired && mission.claimStatus === "PICKED_UP") &&
     !["CANCELLED", "EXPIRED", "DISPUTED", "DELIVERED", "DISTRIBUTED"].includes(
       mission.claimStatus || "",
     );
@@ -123,6 +184,23 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
           error instanceof Error ? error.message : "Stage update failed.",
       });
     } finally {
+      lock.current = false;
+      setBusy(false);
+    }
+  }
+  async function releaseAssignedMission() {
+    if (lock.current || stale || !active || !mission || mission.claimStatus !== "ASSIGNED") return;
+    lock.current = true;
+    setBusy(true);
+    setNotice(undefined);
+    try {
+      await releaseMission();
+      router.push(ROUTES.volunteer.dispatches);
+    } catch (error) {
+      setNotice({
+        success: false,
+        message: error instanceof Error ? error.message : "Could not release mission.",
+      });
       lock.current = false;
       setBusy(false);
     }
@@ -221,6 +299,15 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                   {tx(ACTIONS[stageAction])}
                 </Button>
               )}
+              {active && mission.claimStatus === "ASSIGNED" && (
+                <Button
+                  variant="outline"
+                  disabled={busy || stale}
+                  onClick={() => void releaseAssignedMission()}
+                >
+                  {tx("দায়িত্ব ছেড়ে দিন")}
+                </Button>
+              )}
               {active && target && (
                 <a
                   className={styles.jump}
@@ -240,6 +327,14 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                       : "Navigate to pickup",
                   )}
                 </a>
+              )}
+              {model.action === "REPORT_ISSUE" && (
+                <ButtonLink
+                  href={ROUTES.volunteer.reportIssue(mission.id)}
+                  variant="danger"
+                >
+                  {tx("Report an issue / history")}
+                </ButtonLink>
               )}
               {["DELIVERED", "DISTRIBUTED"].includes(
                 mission.claimStatus || "",
@@ -297,18 +392,32 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                         setPin(event.target.value.replace(/\D/g, ""))
                       }
                     />
-                    <Button
-                      type="submit"
-                      disabled={busy || stale || pin.length !== 6}
-                    >
-                      {tx(
-                        busy
-                          ? "Verifying…"
-                          : model.action === "PICKUP_CODE"
-                            ? "Confirm pickup"
-                            : "Confirm delivery",
-                      )}
-                    </Button>
+                    <div className="flex flex-wrap gap-2.5">
+                      <Button
+                        type="submit"
+                        disabled={busy || stale || pin.length !== 6}
+                      >
+                        {tx(
+                          busy
+                            ? "Verifying…"
+                            : model.action === "PICKUP_CODE"
+                              ? "Confirm pickup"
+                              : "Confirm delivery",
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={busy || stale}
+                        leftIcon={<QrCode className="size-4" />}
+                        onClick={() => {
+                          setQrPayload("");
+                          setQrOpen(true);
+                        }}
+                      >
+                        {tx("Scan handover QR")}
+                      </Button>
+                    </div>
                     <p className={styles.status}>
                       {tx(
                         "A code is single use. For an expired or locked code, ask its owner for a replacement.",
@@ -409,6 +518,61 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
           </>
         )}
       </div>
+      {qrOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setQrOpen(false)}
+        >
+          <div
+            className="liquid-glass-card w-full max-w-md rounded-3xl border border-white/80 bg-white/82 backdrop-blur-2xl p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 font-bold text-ink-900">
+                <Camera className="size-5 text-amber-700" />
+                <span>{tx("Scan handover QR code")}</span>
+              </div>
+              <button
+                type="button"
+                aria-label={tx("Close")}
+                onClick={() => setQrOpen(false)}
+                className="grid size-8 place-items-center rounded-full hover:bg-slate-100"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 aspect-video relative grid place-items-center">
+              <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-cover" />
+              <div className="pointer-events-none absolute inset-6 rounded-xl border-2 border-dashed border-emerald-400/80" />
+            </div>
+            <p className="text-xs text-muted-600">{tx(cameraStatus || "Initializing camera…")}</p>
+            <div className="space-y-2">
+              <Input
+                label={tx("Or paste scanned QR URI / 6-digit code")}
+                placeholder="sharebite://handover/.../123456"
+                value={qrPayload}
+                onChange={(e) => setQrPayload(e.target.value)}
+              />
+              <Button
+                type="button"
+                className="w-full"
+                disabled={!qrPayload.match(/\d{6}/)}
+                onClick={() => {
+                  const match = qrPayload.match(/(\d{6})/);
+                  if (match) {
+                    setPin(match[1]);
+                    setQrOpen(false);
+                  }
+                }}
+              >
+                {tx("Apply scanned code")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </PortalShell>
   );
 }

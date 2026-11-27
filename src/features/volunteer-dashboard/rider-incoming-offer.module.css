@@ -1,7 +1,7 @@
 .dialog { position:fixed; inset:0; width:100vw; height:100dvh; max-width:none; max-height:none; margin:0; padding:0; border:0; background:transparent; }
 .dialog::backdrop { background:transparent; }
-.backdrop { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:#082d225c; backdrop-filter:blur(4px); }
-.panel { position:absolute; top:50%; left:50%; display:flex; flex-direction:column; width:min(450px,calc(100vw - 28px)); max-height:calc(100dvh - 28px); margin-top:0; translate:-50% -50%; overflow:hidden; border:1px solid #dce8df; border-radius:23px; background:#fff; color:#254333; box-shadow:0 25px 90px #082f2540; }
+.backdrop { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:var(--glass-backdrop); backdrop-filter:blur(4px); }
+.panel { position:absolute; top:50%; left:50%; display:flex; flex-direction:column; width:min(450px,calc(100vw - 28px)); max-height:calc(100dvh - 28px); margin-top:0; translate:-50% -50%; overflow:hidden; border:1px solid var(--glass-border); border-radius:var(--radius-panel); background:var(--glass-modal); -webkit-backdrop-filter:var(--glass-blur-modal); backdrop-filter:var(--glass-blur-modal); color:#254333; box-shadow:var(--glass-shadow-modal); }
 .header { display:flex; align-items:center; gap:12px; padding:21px 20px; border-bottom:1px solid #e1ece3; background:#eff7ee; }
 .bike { display:grid; width:48px; height:48px; flex-shrink:0; place-items:center; border:1px solid #c8dfcc; border-radius:16px; background:#dfeee0; color:#287344; }
 .header > div { flex:1; min-width:0; }

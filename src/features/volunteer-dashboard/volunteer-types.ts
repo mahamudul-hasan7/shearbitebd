@@ -119,7 +119,12 @@ export interface CompletedMissionRecord {
   cargoTempHandover: number;
   foodValueSavedEstimated: number;
   verificationToken: string;
-  status: "delivered_verified" | "disputed" | "late_handled";
+  status: "delivered_verified" | "cancelled" | "expired" | "disputed" | "late_handled";
+  stoppedAtLabel?: string;
+  completedSteps?: number;
+  totalSteps?: number;
+  outcomeReason?: string;
+  progressSteps?: Array<{ id: string; label: string; done: boolean; current: boolean }>;
   ngoRating: number;
   ngoFeedback: string;
 }

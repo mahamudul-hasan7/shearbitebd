@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 export function VolunteerDutySwitch() {
   const tx = useUiText();
   const labelId = useId();
-  const { dutyStatus, dutyReady, dutySaving, dutyError, canGoOnDuty, setDutyStatus, refreshDuty } = useVolunteerStore();
+  const { dutyStatus, dutyReady, dutySaving, dutyError, dutyHasActiveMission, canGoOnDuty, setDutyStatus, refreshDuty } = useVolunteerStore();
   useEffect(() => { void refreshDuty(); }, [refreshDuty]);
   const on = dutyReady && dutyStatus === "online";
   return (
-    <section data-testid="volunteer-duty-switch" className="rounded-xl border border-slate-200 p-3">
+    <section data-testid="volunteer-duty-switch" className="liquid-glass-tile rounded-xl p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p id={labelId} className="text-sm font-semibold text-slate-900">{tx("Duty ON/OFF")}</p>
@@ -36,6 +36,11 @@ export function VolunteerDutySwitch() {
         </button>
       </div>
       {dutyReady && !canGoOnDuty && <p className="mt-2 text-xs text-amber-800">{tx("Admin approval is required to use duty controls.")}</p>}
+      {dutyReady && dutyHasActiveMission && (
+        <p className="mt-2 rounded-lg border border-amber-200/80 bg-amber-50/75 px-2.5 py-1.5 text-xs text-amber-900">
+          {tx("Active mission must still be completed; turning Duty OFF pauses new offers only.")}
+        </p>
+      )}
       {dutyError && <div role="alert" className="mt-2 text-xs text-red-800">
         <p>{tx(dutyError)}</p>
         <button type="button" disabled={dutySaving} className="min-h-11 font-semibold underline" onClick={() => void refreshDuty()}>{tx("Retry")}</button>

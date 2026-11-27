@@ -1,6 +1,5 @@
 "use client";
 import { LiveIcon } from "@/components/motion/live-icon";
-import { UiText } from "@/lib/i18n/ui-text-node";
 import { getUiLocale } from "@/lib/i18n/locale";
 import { STORAGE_CONDITION_LABELS } from "@/lib/constants/domain";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -10,7 +9,8 @@ import {
   AlertTriangle,
   Bike,
   CheckCircle2,
-  History,
+  Clock,
+  MapPin,
   Navigation,
   PackageOpen,
   QrCode,
@@ -20,6 +20,7 @@ import { RiderDashboardOverview } from "./rider-dashboard-overview";
 import { DashboardFeedback } from "@/components/dashboard/dashboard-ui";
 import ui from "@/components/dashboard/dashboard.module.css";
 import { PortalShell } from "@/components/layout/portal-shell";
+import { localizeQuantityText } from "@/features/donations/donation-presentation";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DhakaRouteHud } from "@/features/volunteer-dashboard/dhaka-route-hud";
@@ -52,11 +53,13 @@ export function VolunteerDashboard() {
     broadcastSos,
     dismissSos,
     clearActiveMission,
+    releaseMission,
     syncWithUserSession,
     fetchDispatches,
   } = useVolunteerStore();
   const acceptanceLock=useRef(false);
   const [progressStale, setProgressStale] = useState(false);
+  const [releasingMission, setReleasingMission] = useState(false);
 
   useEffect(() => {
     if (!session?.email) return;
@@ -93,6 +96,33 @@ export function VolunteerDashboard() {
     activeMission?.currentStage === "assigned" ||
     activeMission?.currentStage === "en_route_pickup" ||
     activeMission?.currentStage === "at_pickup";
+  const isDisputedHold = Boolean(
+    activeMission && (activeMission.incidentPaused || activeMission.claimStatus === "DISPUTED"),
+  );
+  const isDeadlineElapsed = Boolean(
+    activeMission &&
+      !isDisputedHold &&
+      activeMission.currentStage !== "completed" &&
+      new Date(activeMission.safeDeadline).getTime() <= Date.now(),
+  );
+
+  async function handleReleaseMission() {
+    if (!activeMission || releasingMission || progressStale) return;
+    setReleasingMission(true);
+    setPinNotice(null);
+    try {
+      await releaseMission();
+      setAcceptedNotice("মিশনটি সফলভাবে ডিসপ্যাচে ফিরিয়ে দেওয়া হয়েছে।");
+      setTimeout(() => setAcceptedNotice(null), 4000);
+    } catch (error) {
+      setPinNotice({
+        success: false,
+        message: error instanceof Error ? error.message : "Could not release mission.",
+      });
+    } finally {
+      setReleasingMission(false);
+    }
+  }
 
   async function handleVerifyPin() {
     if (!activePin.trim()) return;
@@ -127,31 +157,6 @@ export function VolunteerDashboard() {
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={volunteerInitials}
       compactHeader={hasCurrentMission}
-      actionsClassName={hasCurrentMission ? ui.desktopActions : undefined}
-      actions={
-        <div className={ui.headerActions}>
-          <ButtonLink
-            href={ROUTES.volunteer.history}
-            variant="outline"
-            leftIcon={<History className="size-4 text-[var(--role-accent)]" />}
-            className={ui.secondaryAction}
-          ><UiText source={"মিশন হিস্ট্রি ("} />{profile.completedMissions})
-          </ButtonLink>
-          <span className="hidden sm:inline-flex"><ButtonLink
-            href={ROUTES.volunteer.idCard}
-            variant="outline"
-            leftIcon={<ShieldCheck className="size-4 text-[var(--role-accent)]" />}
-            className={ui.secondaryAction}
-          ><UiText source={"ডিজিটাল আইডি"} /></ButtonLink></span>
-          {!hasCurrentMission && <ButtonLink
-            href={ROUTES.volunteer.dispatches}
-            variant="primary"
-            leftIcon={<LiveIcon icon={Navigation} motion="interaction" className="size-4" />}
-            className={ui.primaryAction}
-          ><UiText source={"উন্মুক্ত ডিসপ্যাচ ("} />{dispatches.length})
-          </ButtonLink>}
-        </div>
-      }
     >
       <div className={ui.stack}>
         {/* SOS Delay Banner if Active */}
@@ -185,16 +190,16 @@ export function VolunteerDashboard() {
         {progressStale && <DashboardFeedback stale message={tx("Saved mission details may be out of date. Refresh before taking action.")} onRetry={()=>void fetchDispatches().then(()=>setProgressStale(false)).catch(()=>setProgressStale(true))}/>}
 
         {/* Command View Switcher */}
-        <div className="flex flex-col items-start gap-3 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 w-full items-center gap-1.5 rounded-2xl bg-canvas p-1.5 border border-line overflow-x-auto max-w-full scrollbar-none snap-x sm:w-auto">
+        <div className="flex flex-col items-start gap-3 border-b border-white/55 pb-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="liquid-glass-pill flex min-w-0 w-full items-center gap-1.5 rounded-2xl p-1.5 overflow-x-auto max-w-full scrollbar-none snap-x sm:w-auto">
             <button
               type="button"
               onClick={() => setActiveTab("all")}
               className={cn(
                 "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "all"
-                  ? "bg-[var(--role-accent)] text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
+                  ? "bg-[var(--role-accent)] text-white shadow-sm font-semibold"
+                  : "text-ink-700 hover:text-ink-900 hover:bg-white/60"
               )}
             >
               {tx("কমান্ড সেন্টার (সব)")}</button>
@@ -204,8 +209,8 @@ export function VolunteerDashboard() {
               className={cn(
                 "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "active"
-                  ? "bg-[var(--role-accent)] text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
+                  ? "bg-[var(--role-accent)] text-white shadow-sm font-semibold"
+                  : "text-ink-700 hover:text-ink-900 hover:bg-white/60"
               )}
             >
               {tx("Mission progress")}</button>
@@ -215,8 +220,8 @@ export function VolunteerDashboard() {
               className={cn(
                 "shrink-0 snap-start flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "available"
-                  ? "bg-[var(--role-accent)] text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
+                  ? "bg-[var(--role-accent)] text-white shadow-sm font-semibold"
+                  : "text-ink-700 hover:text-ink-900 hover:bg-white/60"
               )}
             >
               <span>{tx("উন্মুক্ত ডিসপ্যাচ")}</span>
@@ -230,8 +235,8 @@ export function VolunteerDashboard() {
               className={cn(
                 "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "comms"
-                  ? "bg-[var(--role-accent)] text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
+                  ? "bg-[var(--role-accent)] text-white shadow-sm font-semibold"
+                  : "text-ink-700 hover:text-ink-900 hover:bg-white/60"
               )}
             >
               {tx("ওয়াকি-টকি ও রেডিও")}</button>
@@ -241,8 +246,8 @@ export function VolunteerDashboard() {
               className={cn(
                 "shrink-0 snap-start rounded-xl px-3.5 py-2 text-xs font-bold transition-all select-none touch-manipulation",
                 activeTab === "badges"
-                  ? "bg-[var(--role-accent)] text-white shadow-xs font-semibold"
-                  : "text-ink-700 hover:text-ink-900 hover:bg-slate-100"
+                  ? "bg-[var(--role-accent)] text-white shadow-sm font-semibold"
+                  : "text-ink-700 hover:text-ink-900 hover:bg-white/60"
               )}
             >
               {tx("অর্জিত ব্যাজ ও স্কোয়াড")}</button>
@@ -266,19 +271,39 @@ export function VolunteerDashboard() {
               </div>
               {activeMission ? (
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={clearActiveMission}
-                    className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
-                  >
-                    {tx("মিশন ক্লিয়ার / পরিবর্তন")}</button>
+                  {activeMission.currentStage === "completed" ? (
+                    <button
+                      type="button"
+                      onClick={clearActiveMission}
+                      className="rounded-xl border border-slate-300/80 bg-white/70 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-white transition-colors cursor-pointer"
+                    >
+                      {tx("সম্পন্ন কার্ড লুকান")}
+                    </button>
+                  ) : isDisputedHold ? (
+                    <ButtonLink
+                      href={ROUTES.volunteer.reportIssue(activeMission.id)}
+                      variant="outline"
+                      className="text-xs font-bold text-amber-800"
+                    >
+                      {tx("সমস্যা ও রিপোর্ট দেখুন")}
+                    </ButtonLink>
+                  ) : activeMission.claimStatus === "ASSIGNED" ? (
+                    <button
+                      type="button"
+                      disabled={releasingMission || progressStale}
+                      onClick={() => void handleReleaseMission()}
+                      className="rounded-xl border border-rose-300 bg-rose-50/85 px-3 py-2 text-xs font-bold text-rose-700 hover:bg-rose-100 disabled:opacity-60 transition-colors cursor-pointer"
+                    >
+                      {releasingMission ? tx("ছাড়া হচ্ছে…") : tx("দায়িত্ব ছেড়ে দিন")}
+                    </button>
+                  ) : null}
                   <ButtonLink
                     href={ROUTES.volunteer.mission(activeMission.id)}
                     variant="primary"
                     leftIcon={<LiveIcon icon={Navigation} motion="interaction" className="size-4" />}
                     className="font-semibold"
                   >
-                    {tx("ফুলস্ক্রিন মিশন ককপিট 🛵")}</ButtonLink>
+                    {tx("ফুলস্ক্রিন মিশন ককপিট")}</ButtonLink>
                 </div>
               ) : (
                 <ButtonLink
@@ -302,15 +327,15 @@ export function VolunteerDashboard() {
                 />
 
                 {/* Mission Details & Verification Card */}
-                <Card className="overflow-hidden border border-line shadow-sm">
+                <Card className="shadow-sm">
                   <div className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-12 lg:gap-8">
                     {/* Mission Details */}
                     <div className="space-y-5 lg:col-span-7">
-                      <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4">
+                      <div className="liquid-glass-tile rounded-2xl p-4">
                         <div className="flex items-start gap-3">
                           <div className="flex flex-col items-center gap-1 pt-1">
                             <div className="size-3 rounded-full bg-emerald-600" />
-                            <div className="h-10 w-0.5 border-l-2 border-dashed border-slate-300" />
+                            <div className="h-10 w-0.5 border-l-2 border-dashed border-slate-400/60" />
                             <div className="size-3 rounded-full bg-amber-500" />
                           </div>
 
@@ -351,7 +376,7 @@ export function VolunteerDashboard() {
                         <div className="min-w-0 space-y-1">
                           <h3 className="break-words font-semibold text-ink-900">{activeMission.foodTitle}</h3>
                           <p className="text-base font-black text-ink-900">
-                            {activeMission.quantity} (~{activeMission.servings} {tx("জনের খাবার)")}</p>
+                            {localizeQuantityText(activeMission.quantity)} (~{activeMission.servings.toLocaleString(getUiLocale())} {tx("জনের খাবার")})</p>
                           <p className="break-words text-xs text-muted-600">
                             {tx("নিরাপদ সময়সীমা:")} <strong>{new Intl.DateTimeFormat(getUiLocale(),{dateStyle:"medium",timeStyle:"short",timeZone:"Asia/Dhaka"}).format(new Date(activeMission.safeDeadline))}</strong> · {tx(STORAGE_CONDITION_LABELS[activeMission.storageCondition as keyof typeof STORAGE_CONDITION_LABELS] || activeMission.storageCondition)}
                           </p>
@@ -360,68 +385,100 @@ export function VolunteerDashboard() {
                     </div>
 
                     {/* Step Handover Verification Box */}
-                    <div className="flex flex-col justify-between rounded-2xl border border-line bg-canvas p-5 lg:col-span-5">
+                    <div className="liquid-glass-tile flex flex-col justify-between rounded-2xl p-5 lg:col-span-5">
                       <div>
                         <div className="flex items-center gap-2">
                           <QrCode className="size-5 text-[var(--role-accent)]" />
                           <h3 className="text-sm font-black text-ink-900">
                             {tx("হ্যান্ডওভার ওটিপি যাচাইকরণ")}</h3>
                         </div>
-                        <p className="mt-1.5 text-xs text-muted-600">
-                          {isPickupPhase ? tx("ডোনারের কাছ থেকে ৬-সংখ্যার pickup code নিয়ে প্রবেশ করান:") : tx("এনজিও প্রতিনিধির কাছ থেকে ৬-সংখ্যার delivery code নিয়ে প্রবেশ করান:")}
-                        </p>
-
-                        <div className="mt-4 space-y-2">
-                          <div className="flex flex-col gap-2 sm:flex-row">
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              autoComplete="one-time-code"
-                              aria-label={tx("হ্যান্ডওভার ওটিপি যাচাইকরণ")}
-                              maxLength={6}
-                              placeholder={isPickupPhase ? tx("Donor-এর ৬-সংখ্যার code") : tx("NGO-এর ৬-সংখ্যার code")}
-                              value={activePin}
-                              onChange={(e) => setActivePin(e.target.value.replace(/\D/g, ""))}
-                              className="h-11 min-w-0 w-full rounded-xl border border-line bg-white px-3 font-mono text-center text-lg font-black tracking-widest text-ink-900 focus:border-emerald-600 focus:outline-hidden sm:flex-1"
-                            />
-                            <Button
-                              type="button"
-                              onClick={handleVerifyPin}
-                              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 sm:w-auto"
-                            >
-                              {tx("যাচাই")}</Button>
-                          </div>
-
-                          {pinNotice && (
-                            <p
-                              className={cn(
-                                "text-xs font-bold",
-                                pinNotice.success ? "text-emerald-700" : "text-rose-600"
-                              )}
-                            >
-                              {tx(pinNotice.message)}
+                        {isDisputedHold ? (
+                          <div className="mt-3 space-y-3 rounded-xl border border-amber-300/70 bg-amber-50/75 p-3.5 text-xs text-amber-950">
+                            <p className="font-bold">
+                              {tx("এই উদ্ধারকাজ সমস্যা যাচাইয়ের জন্য স্থগিত আছে। অ্যাডমিন সিদ্ধান্ত না দেওয়া পর্যন্ত কোড যাচাই বন্ধ থাকবে।")}
                             </p>
-                          )}
-                        </div>
+                            <ButtonLink
+                              href={ROUTES.volunteer.reportIssue(activeMission.id)}
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-center font-bold"
+                            >
+                              {tx("সমস্যা ও রিপোর্ট দেখুন")}
+                            </ButtonLink>
+                          </div>
+                        ) : isDeadlineElapsed ? (
+                          <div className="mt-3 space-y-3 rounded-xl border border-rose-300/70 bg-rose-50/75 p-3.5 text-xs text-rose-950">
+                            <p className="font-bold">
+                              {tx("দাতার নির্ধারিত নিরাপদ সময়সীমা পার হয়েছে। অনুগ্রহ করে অ্যাডমিন পর্যালোচনার জন্য ইস্যু রিপোর্ট জমা দিন।")}
+                            </p>
+                            <ButtonLink
+                              href={ROUTES.volunteer.reportIssue(activeMission.id)}
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-center font-bold"
+                            >
+                              {tx("সমস্যা ও রিপোর্ট দেখুন")}
+                            </ButtonLink>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="mt-1.5 text-xs text-muted-600">
+                              {isPickupPhase ? tx("ডোনারের কাছ থেকে ৬-সংখ্যার pickup code নিয়ে প্রবেশ করান:") : tx("এনজিও প্রতিনিধির কাছ থেকে ৬-সংখ্যার delivery code নিয়ে প্রবেশ করান:")}
+                            </p>
+
+                            <div className="mt-4 space-y-2">
+                              <div className="flex flex-col gap-2 sm:flex-row">
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  autoComplete="one-time-code"
+                                  aria-label={tx("হ্যান্ডওভার ওটিপি যাচাইকরণ")}
+                                  maxLength={6}
+                                  placeholder={isPickupPhase ? tx("Donor-এর ৬-সংখ্যার code") : tx("NGO-এর ৬-সংখ্যার code")}
+                                  value={activePin}
+                                  onChange={(e) => setActivePin(e.target.value.replace(/\D/g, ""))}
+                                  className="liquid-glass-control h-11 min-w-0 w-full rounded-xl px-3 font-mono text-center text-lg font-black tracking-widest text-ink-900 focus:border-emerald-600 focus:outline-hidden sm:flex-1"
+                                />
+                                <Button
+                                  type="button"
+                                  onClick={handleVerifyPin}
+                                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 sm:w-auto"
+                                >
+                                  {tx("যাচাই")}</Button>
+                              </div>
+
+                              {pinNotice && (
+                                <p
+                                  className={cn(
+                                    "text-xs font-bold",
+                                    pinNotice.success ? "text-emerald-700" : "text-rose-600"
+                                  )}
+                                >
+                                  {tx(pinNotice.message)}
+                                </p>
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
 
-                      <div className="mt-6 flex flex-col gap-2 pt-4 border-t border-line">
+                      <div className="mt-6 flex flex-col gap-2 pt-4 border-t border-white/55">
                         <Button
                           type="button"
                           variant="danger"
                           size="sm"
-                          leftIcon={<AlertTriangle className="size-4" />}
+                          leftIcon={<AlertTriangle className="size-4 shrink-0" />}
                           onClick={() => setIsSosOpen(true)}
-                          className="w-full justify-center font-bold"
+                          className="h-auto min-h-9 w-full justify-center py-2 text-center leading-snug font-bold"
                         >
-                          {tx("🚨 ট্রাফিক বা অনাকাঙ্ক্ষিত বিলম্ব SOS রিপোর্ট")}</Button>
+                          {tx("ট্রাফিক বা অনাকাঙ্ক্ষিত বিলম্ব SOS রিপোর্ট")}</Button>
                       </div>
                     </div>
                   </div>
                 </Card>
               </>
             ) : (
-              <Card className="p-8 text-center border-line">
+              <Card className="p-8 text-center">
                 <LiveIcon icon={Bike} motion="interaction" className="size-12 text-[var(--role-accent)] mx-auto" />
                 <h3 className="mt-3 text-lg font-black text-ink-900">{tx("বর্তমানে কোনো সক্রিয় মিশন নেই")}</h3>
                 <p className="mt-1 text-xs text-muted-600 max-w-sm mx-auto">
@@ -454,14 +511,17 @@ export function VolunteerDashboard() {
               {dispatches.map((dispatch: AvailableDispatch) => (
                 <Card
                   key={dispatch.id}
-                  className="flex flex-col justify-between border-line p-5 shadow-sm hover:border-emerald-500/40 transition-all"
+                  className="flex flex-col justify-between p-5 shadow-sm transition-all"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-black text-rose-700 border border-rose-200">
-                        {tx("⏳ বাকি")}{dispatch.expiresInMins} {tx("মিনিট")}</span>
-                      <span className="text-xs font-bold text-muted-600">
-                        📍 {dispatch.distanceKm > 0 ? tx("{0} কিমি সরাসরি দূরত্ব", dispatch.distanceKm) : tx("দূরত্ব মাপা হয়নি")}
+                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-50/75 px-2.5 py-0.5 text-xs font-black text-rose-700 border border-rose-200/80 backdrop-blur-xs">
+                        <Clock className="size-3 shrink-0" />
+                        <span>{tx("বাকি")} {dispatch.expiresInMins} {tx("মিনিট")}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-muted-600">
+                        <MapPin className="size-3.5 shrink-0" />
+                        <span>{dispatch.distanceKm > 0 ? tx("{0} কিমি সরাসরি দূরত্ব", dispatch.distanceKm) : tx("দূরত্ব মাপা হয়নি")}</span>
                       </span>
                     </div>
 
@@ -470,10 +530,10 @@ export function VolunteerDashboard() {
                         {dispatch.donorName}
                       </p>
                       <h3 className="mt-1 text-base font-black text-ink-900">{dispatch.foodType}</h3>
-                      <p className="mt-0.5 text-xs text-muted-600">{dispatch.quantity}</p>
+                      <p className="mt-0.5 text-xs text-muted-600">{localizeQuantityText(dispatch.quantity)}</p>
                     </div>
 
-                    <div className="rounded-xl bg-canvas p-3 text-xs leading-relaxed space-y-1 border border-line">
+                    <div className="liquid-glass-tile rounded-xl p-3 text-xs leading-relaxed space-y-1">
                       <p>
                         <strong className="text-ink-800">{tx("পিকআপ:")}</strong> {dispatch.donorArea}
                       </p>
@@ -484,7 +544,7 @@ export function VolunteerDashboard() {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-line flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-white/55 flex items-center justify-between gap-2">
                     <Button
                       type="button"
                       variant="primary"
@@ -494,7 +554,7 @@ export function VolunteerDashboard() {
                       disabled={progressStale || !dutyReady || dutyStatus !== "online" || dutySaving || !canGoOnDuty || Boolean(acceptingDispatchId) || Boolean(activeMission && activeMission.currentStage !== "completed")}
                       className="w-full justify-center font-semibold"
                     >
-                      {acceptingDispatchId === dispatch.id ? tx("Assigning…") : tx("মিশন গ্রহণ করুন (Accept Mission 🛵)")}</Button>
+                      {acceptingDispatchId === dispatch.id ? tx("Assigning…") : tx("মিশন গ্রহণ করুন (Accept Mission)")}</Button>
                   </div>
                 </Card>
               ))}
@@ -507,7 +567,7 @@ export function VolunteerDashboard() {
           <section id="comms" className="space-y-4">
             <h2 className="text-lg font-semibold text-ink-900 sm:text-xl">
               {tx("যোগাযোগ")}</h2>
-            <p className="rounded-2xl border border-line bg-white p-5 text-sm">{tx("Radio ও GPS integration এখনও যুক্ত করা হয়নি। Mission-এর donor/NGO contact number দিয়ে যোগাযোগ করুন।")}</p>
+            <p className="liquid-glass-card rounded-2xl p-5 text-sm">{tx("Radio ও GPS integration এখনও যুক্ত করা হয়নি। Mission-এর donor/NGO contact number দিয়ে যোগাযোগ করুন।")}</p>
           </section>
         )}
 
@@ -526,7 +586,7 @@ export function VolunteerDashboard() {
                 variant="outline"
                 size="sm"
                 leftIcon={<ShieldCheck className="size-4" />}
-                className="font-bold border-line"
+                className="font-bold"
               >
                 {tx("ভলান্টিয়ার প্রোফাইল দেখুন")}</ButtonLink>
             </div>

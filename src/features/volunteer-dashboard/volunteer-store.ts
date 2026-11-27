@@ -270,6 +270,19 @@ class VolunteerStore {
     this.notify();
   };
 
+  releaseMission = async () => {
+    const mission = this.state.activeMission;
+    if (!mission?.claimId) throw new Error("No assigned mission to release.");
+    if (mission.incidentPaused || mission.claimStatus !== "ASSIGNED") {
+      throw new Error("Only pre-pickup missions can be released back to dispatch.");
+    }
+    await apiRequest("/api/missions", {
+      method: "PATCH",
+      body: JSON.stringify({ claimId: mission.claimId, action: "release" }),
+    });
+    await this.fetchDispatches();
+  };
+
 
 }
 
@@ -293,6 +306,7 @@ export function useVolunteerStore() {
     broadcastSos: volunteerStoreInstance.broadcastSos,
     dismissSos: volunteerStoreInstance.dismissSos,
     clearActiveMission: volunteerStoreInstance.clearActiveMission,
+    releaseMission: volunteerStoreInstance.releaseMission,
     syncWithUserSession: volunteerStoreInstance.syncWithUserSession,
     fetchDispatches: volunteerStoreInstance.fetchDispatches,
     loadMission: volunteerStoreInstance.loadMission,
