@@ -35,15 +35,7 @@ export const PeopleGreetingIcon = createLucideIcon("DashboardPeopleGreeting", [
   ["path", { d:"m18 15 3-3V8", className:`${styles.part} ${styles.wave}`, key:"greeting" }],
 ]);
 
-export const RidingBikeIcon = createLucideIcon("LiveRidingBike", [
-  ["circle", { cx:"5.5", cy:"17", r:"4", key:"rear-wheel" }],
-  ["circle", { cx:"18.5", cy:"17", r:"4", key:"front-wheel" }],
-  ["path", { d:"M2.8 17h5.4m-2.7-2.7v5.4", className:`${styles.part} ${styles.rearWheel}`, key:"rear-spokes" }],
-  ["path", { d:"M15.8 17h5.4m-2.7-2.7v5.4", className:`${styles.part} ${styles.frontWheel}`, key:"front-spokes" }],
-  ["path", { d:"m5.5 17 5-8 4 3 4 5M10.5 9l-3-2 2-3h3", key:"rider" }],
-  ["path", { d:"m10 12 2 3-2 3", className:`${styles.part} ${styles.pedal}`, key:"leg" }],
-  ["circle", { cx:"14", cy:"3", r:"1.5", fill:"currentColor", key:"head" }],
-]);
+export const RidingBikeIcon = Bike;
 
 export const NotificationBellIcon = createLucideIcon("LiveNotificationBell", [
   ["path", { d:"M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9", className:`${styles.part} ${styles.bell}`, key:"bell" }],
@@ -121,7 +113,7 @@ export const HandoverCodeIcon = createLucideIcon("LiveHandoverCode", [
 const equivalents = new Map<LucideIcon,LucideIcon>([
   [Package,FoodBoxIcon],[PackageSearch,FoodBoxIcon],[PackageOpen,FoodBoxIcon],[PackageCheck,FoodBoxIcon],
   [ClipboardList,WorkChecklistIcon],[HandHeart,ServingMealIcon],[HeartHandshake,ServingMealIcon],[Utensils,ServingMealIcon],
-  [UsersRound,PeopleGreetingIcon],[Bike,RidingBikeIcon],[Bell,NotificationBellIcon],
+  [UsersRound,PeopleGreetingIcon],[Bell,NotificationBellIcon],
   [CheckCircle2,ConfirmedIcon],[CircleCheck,ConfirmedIcon],[Check,TickIcon],[ShieldCheck,VerifiedShieldIcon],
   [Building2,OrganizationIcon],[MapPin,LocationPinIcon],[Search,SearchFoodIcon],
   [LayoutDashboard,DashboardIcon],[Home,DashboardIcon],[Plus,AddPostIcon],

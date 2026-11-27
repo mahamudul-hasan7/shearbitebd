@@ -42,9 +42,9 @@ export function Modal({
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
         }}
-        className={cn("m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-1.5rem)] overflow-y-auto overscroll-contain rounded-panel border border-line bg-white p-0 shadow-dialog sm:w-[calc(100%-2rem)]", sizes[size])}
+        className={cn("m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-1.5rem)] overflow-y-auto overscroll-contain rounded-panel border border-white/80 bg-white/82 p-0 shadow-dialog backdrop-blur-2xl backdrop:bg-slate-900/35 backdrop:backdrop-blur-md sm:w-[calc(100%-2rem)]", sizes[size])}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-line p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4 border-b border-white/65 p-5 sm:p-6">
           <div>
             <h2 id={titleId} className="text-xl font-black text-ink-900">{title}</h2>
             {description && <p id={descriptionId} className="mt-1 text-sm leading-6 text-muted-600">{description}</p>}
@@ -52,7 +52,7 @@ export function Modal({
           <IconButton autoFocus label={tx("Close dialog")} onClick={close} className="shrink-0"><X className="size-5" /></IconButton>
         </div>
         <div className="p-5 sm:p-6">{children}</div>
-        {footer && <div className="flex flex-col-reverse gap-3 border-t border-line p-5 sm:flex-row sm:flex-wrap sm:justify-end sm:p-6 [&>*]:w-full sm:[&>*]:w-auto">{footer}</div>}
+        {footer && <div className="flex flex-col-reverse gap-3 border-t border-white/65 p-5 sm:flex-row sm:flex-wrap sm:justify-end sm:p-6 [&>*]:w-full sm:[&>*]:w-auto">{footer}</div>}
       </dialog>
     </>
   );

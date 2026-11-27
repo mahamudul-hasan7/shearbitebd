@@ -23,37 +23,6 @@ export function triggerCelebration(payload: CelebrationPayload) {
   }
 }
 
-function playSuccessChime() {
-  try {
-    const AudioCtx =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const now = ctx.currentTime;
-
-    // Harmonic 3-note major chord (C5, E5, G5)
-    const notes = [523.25, 659.25, 783.99];
-    notes.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-
-      gain.gain.setValueAtTime(0.09, now + idx * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.45);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now + idx * 0.08);
-      osc.stop(now + idx * 0.08 + 0.45);
-    });
-  } catch {
-    // Non-blocking
-  }
-}
-
 export function ActionSuccessModal() {
   const tx = useUiText();
   const [data, setData] = useState<CelebrationPayload | null>(null);
@@ -72,7 +41,6 @@ export function ActionSuccessModal() {
       const customEvent = event as CustomEvent<CelebrationPayload>;
       if (customEvent.detail) {
         setData(customEvent.detail);
-        playSuccessChime();
 
         if (autoCloseTimerRef.current) {
           clearTimeout(autoCloseTimerRef.current);

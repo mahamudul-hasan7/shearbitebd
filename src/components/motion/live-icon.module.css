@@ -15,6 +15,7 @@
 .rearWheel { transform-origin:5.5px 17px; animation-name:wheelTurn; animation-duration:2.8s; animation-timing-function:linear; }
 .frontWheel { transform-origin:18.5px 17px; animation-name:wheelTurn; animation-duration:2.8s; animation-timing-function:linear; }
 .pedal { transform-origin:10px 12px; animation-name:pedal; animation-duration:1.4s; }
+.breeze { animation-name:breezeGlide; animation-duration:2.2s; }
 .bell { transform-origin:12px 2px; animation-name:ringBell; }
 .clapper { transform-origin:12px 2px; animation-name:ringClapper; }
 .draw { stroke-dasharray:1; stroke-dashoffset:0; animation-name:drawLine; }
@@ -62,6 +63,7 @@
 }
 @keyframes wheelTurn { to { transform:rotate(360deg); } }
 @keyframes pedal { 0%,100% { transform:rotate(-6deg); } 50% { transform:rotate(9deg); } }
+@keyframes breezeGlide { 0%,100% { transform:translateX(0); opacity:.75; } 50% { transform:translateX(-2px); opacity:.3; } }
 @keyframes ringBell { 0%,70%,100% { transform:rotate(0); } 18%,42% { transform:rotate(10deg); } 30%,54% { transform:rotate(-8deg); } }
 @keyframes ringClapper { 0%,70%,100% { transform:rotate(0); } 18%,42% { transform:rotate(-5deg); } 30%,54% { transform:rotate(4deg); } }
 @keyframes drawLine { 0%,12% { stroke-dashoffset:1; } 65%,100% { stroke-dashoffset:0; } }

@@ -56,25 +56,36 @@ export function LanguageSwitch({
       role="group"
       aria-label={tx("Choose language")}
       className={cn(
-        "inline-flex items-center p-0.5 rounded-xl text-xs font-semibold select-none transition-all shadow-2xs",
+        "relative grid grid-cols-2 items-center p-0.5 rounded-xl text-xs font-semibold select-none transition-colors shadow-2xs",
         touchFriendly ? "h-11 sm:h-9" : "h-9",
         isDark
           ? "border border-emerald-800/60 bg-emerald-950/70 text-emerald-100"
-          : "border border-slate-200/80 bg-slate-100/80 text-slate-600",
+          : "border border-slate-200/80 bg-slate-100/85 text-slate-600",
         className
       )}
     >
+      <span
+        aria-hidden="true"
+        style={{
+          transform: language === "bn" ? "translate3d(100%, 0, 0)" : "translate3d(0, 0, 0)",
+          transition: "transform 240ms cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
+        className={cn(
+          "pointer-events-none absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-lg will-change-transform",
+          isDark ? "bg-emerald-800 shadow-xs" : "bg-white shadow-2xs",
+        )}
+      />
       <button
         type="button"
         onClick={() => setLanguage("en")}
         aria-pressed={language === "en"}
         className={cn(
-          "cursor-pointer transition-all px-2.5 py-1 rounded-lg text-xs font-bold leading-none",
-          touchFriendly && "min-h-9 min-w-9 px-2 sm:min-h-0 sm:min-w-0 sm:px-2.5",
+          "relative z-10 cursor-pointer transition-colors duration-200 px-2.5 py-1 rounded-lg text-xs font-bold leading-none text-center",
+          touchFriendly && "min-h-9 min-w-7 px-1.5 text-[11px] min-[375px]:min-w-9 min-[375px]:px-2 min-[375px]:text-xs sm:min-h-0 sm:min-w-0 sm:px-2.5",
           language === "en"
             ? isDark
-              ? "bg-emerald-800 text-white shadow-xs"
-              : "bg-white text-emerald-900 shadow-2xs font-extrabold"
+              ? "text-white"
+              : "text-emerald-900"
             : isDark
             ? "text-emerald-200/60 hover:text-white"
             : "text-slate-500 hover:text-slate-900"
@@ -86,12 +97,12 @@ export function LanguageSwitch({
         onClick={() => setLanguage("bn")}
         aria-pressed={language === "bn"}
         className={cn(
-          "cursor-pointer transition-all px-2.5 py-1 rounded-lg text-xs font-bold leading-none",
-          touchFriendly && "min-h-9 min-w-9 px-2 sm:min-h-0 sm:min-w-0 sm:px-2.5",
+          "relative z-10 cursor-pointer transition-colors duration-200 px-2.5 py-1 rounded-lg text-xs font-bold leading-none text-center",
+          touchFriendly && "min-h-9 min-w-7 px-1.5 text-[11px] min-[375px]:min-w-9 min-[375px]:px-2 min-[375px]:text-xs sm:min-h-0 sm:min-w-0 sm:px-2.5",
           language === "bn"
             ? isDark
-              ? "bg-emerald-800 text-white shadow-xs"
-              : "bg-white text-emerald-900 shadow-2xs font-extrabold"
+              ? "text-white"
+              : "text-emerald-900"
             : isDark
             ? "text-emerald-200/60 hover:text-white"
             : "text-slate-500 hover:text-slate-900"
