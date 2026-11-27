@@ -19,6 +19,7 @@ export function RadioGroup({
   defaultValue,
   onChange,
   orientation = "vertical",
+  gridClassName,
   error,
   className,
 }: {
@@ -29,6 +30,7 @@ export function RadioGroup({
   defaultValue?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   orientation?: "vertical" | "horizontal";
+  gridClassName?: string;
   error?: string;
   className?: string;
 }) {
@@ -39,11 +41,11 @@ export function RadioGroup({
   return (
     <fieldset aria-describedby={error ? errorId : undefined} className={className}>
       <legend className="text-sm font-bold text-ink-700">{tx(label)}</legend>
-      <div className={cn("mt-2 grid gap-2", orientation === "horizontal" && "sm:grid-cols-2 lg:grid-cols-3")}>
+      <div className={cn("mt-2 grid gap-2", gridClassName ?? (orientation === "horizontal" && "sm:grid-cols-2 lg:grid-cols-3"))}>
         {items.map((item) => {
           const itemId = `${groupId}-${item.value}`;
           return (
-            <label key={item.value} htmlFor={itemId} className={cn("flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-white p-4 transition hover:border-brand-200", item.disabled && "cursor-not-allowed opacity-55")}>
+            <label key={item.value} htmlFor={itemId} className={cn("liquid-glass-tile flex cursor-pointer items-start gap-3 rounded-2xl p-4 hover:border-brand-200", item.disabled && "cursor-not-allowed opacity-55")}>
               <input
                 id={itemId}
                 type="radio"

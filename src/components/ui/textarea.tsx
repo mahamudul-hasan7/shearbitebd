@@ -26,8 +26,8 @@ export function Textarea({ label, hint, error, id, className, containerClassName
         aria-describedby={error || hint ? descriptionId : props["aria-describedby"]}
         aria-invalid={error ? true : props["aria-invalid"]}
         className={cn(
-          "min-h-28 min-w-0 w-full resize-y rounded-control border bg-white px-3.5 py-3 text-sm text-ink-900 outline-none transition-colors placeholder:text-muted-400",
-          error ? "border-danger focus:border-danger" : "border-line hover:border-muted-400 focus:border-brand-500",
+          "liquid-glass-control min-h-28 min-w-0 w-full resize-y rounded-control border px-3.5 py-3 text-sm text-ink-900 outline-none transition-all placeholder:text-muted-400",
+          error ? "border-danger focus:border-danger" : "border-white/80 ring-1 ring-slate-200/75 hover:border-white focus:border-brand-500 focus:ring-brand-500/20",
           className,
         )}
       />

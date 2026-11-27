@@ -1,22 +1,37 @@
 .action.primary {
-  background: linear-gradient(
-    115deg,
-    var(--role-accent, var(--brand-600)),
-    var(--role-hover, var(--brand-800))
+  background-color: var(--role-hover, #047857);
+  background-image: linear-gradient(
+    135deg,
+    var(--role-accent, #065f46) 0%,
+    var(--role-hover, #047857) 58%,
+    color-mix(in srgb, var(--role-accent, #059669) 82%, #10b981) 100%
   );
-  border-color: var(--role-hover, var(--brand-900));
+  border-color: color-mix(in srgb, var(--role-hover, #064e3b) 75%, transparent);
   color: white;
-  box-shadow: 0 3px 8px
-    color-mix(in srgb, var(--role-accent, var(--brand-700)) 20%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 26%),
+    0 8px 20px -8px color-mix(in srgb, var(--role-accent, #059669) 42%, transparent);
 }
-.action.primary:hover {
-  background: var(--role-hover, var(--brand-800));
+.action.primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 34%),
+    0 12px 26px -8px color-mix(in srgb, var(--role-accent, #059669) 52%, transparent);
 }
-.action.outline:hover,
-.action.ghost:hover {
+.action.primary:active:not(:disabled) {
+  filter: brightness(0.95);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 18%),
+    0 4px 10px -4px color-mix(in srgb, var(--role-accent, #059669) 36%, transparent);
+}
+.action.outline:hover:not(:disabled),
+.action.ghost:hover:not(:disabled) {
   background: var(--role-soft, var(--brand-50));
   border-color: var(--role-accent, var(--brand-600));
   color: var(--role-ink, var(--brand-800));
+}
+.action:active:not(:disabled) {
+  transform: scale(0.985);
 }
 .action:focus-visible {
   outline: 3px solid var(--role-accent, var(--brand-600));
@@ -58,6 +73,12 @@
 .action {
   min-width: 0;
   max-width: 100%;
+  transition:
+    transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease,
+    filter 160ms ease,
+    border-color 160ms ease,
+    opacity 150ms ease;
 }
 .action > span {
   min-width: 0;

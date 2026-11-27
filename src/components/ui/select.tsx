@@ -25,8 +25,8 @@ export function Select({ label, hint, error, id, className, containerClassName, 
         aria-describedby={error || hint ? descriptionId : props["aria-describedby"]}
         aria-invalid={error ? true : props["aria-invalid"]}
         className={cn(
-          "h-11 min-w-0 w-full rounded-control border bg-white px-3.5 text-sm text-ink-900 outline-none transition-colors",
-          error ? "border-danger focus:border-danger" : "border-line hover:border-muted-400 focus:border-brand-500",
+          "liquid-glass-control h-11 min-w-0 w-full rounded-control border px-3.5 text-sm text-ink-900 outline-none transition-all",
+          error ? "border-danger focus:border-danger" : "border-white/80 ring-1 ring-slate-200/75 hover:border-white focus:border-brand-500 focus:ring-brand-500/20",
           className,
         )}
       >

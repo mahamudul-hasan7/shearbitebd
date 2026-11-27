@@ -14,15 +14,15 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-md shadow-emerald-700/25 hover:from-emerald-500 hover:via-emerald-600 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-700/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ring-1 ring-white/20 border-b-2 border-emerald-950/40",
+    "border border-emerald-800/25 bg-[#047857] text-white ring-1 ring-inset ring-white/20",
   secondary:
-    "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-600/25 hover:from-amber-400 hover:to-amber-500 hover:shadow-lg hover:shadow-amber-600/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ring-1 ring-white/20 border-b-2 border-amber-900/40",
+    "border border-amber-700/30 bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-600/25 hover:brightness-105 hover:shadow-lg hover:shadow-amber-600/35 ring-1 ring-inset ring-white/20",
   outline:
-    "border-2 border-slate-300 bg-white text-slate-800 shadow-xs hover:border-emerald-600 hover:bg-emerald-50 hover:text-emerald-900 hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
+    "border border-emerald-950/15 bg-white/80 text-slate-800 shadow-xs backdrop-blur-sm hover:border-emerald-600 hover:bg-emerald-50/80 hover:text-emerald-900",
   ghost:
-    "border border-slate-300/80 bg-slate-100/70 text-slate-700 shadow-2xs hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-800 hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
+    "border border-slate-300/80 bg-slate-100/70 text-slate-700 shadow-2xs hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-800",
   danger:
-    "bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md shadow-red-600/25 hover:from-rose-500 hover:to-red-500 hover:shadow-lg hover:shadow-red-600/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ring-1 ring-white/20 border-b-2 border-red-950/40",
+    "border border-red-900/25 bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md shadow-red-600/25 hover:brightness-105 hover:shadow-lg hover:shadow-red-600/35 ring-1 ring-inset ring-white/20",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -43,7 +43,7 @@ export function buttonClassNames({
   className?: string;
 }) {
   return cn(
-    "group icon-interactive inline-flex items-center justify-center gap-2 font-heading font-bold tracking-wide transition-all duration-200 cursor-pointer disabled:pointer-events-none disabled:opacity-50 select-none",
+    "group icon-interactive inline-flex items-center justify-center gap-2 font-heading font-bold tracking-wide cursor-pointer disabled:pointer-events-none disabled:opacity-55 select-none",
     styles.action,
     styles[variant],
     variants[variant],

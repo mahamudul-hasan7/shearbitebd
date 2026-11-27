@@ -41,7 +41,7 @@ export function StatCard({
       data-live-trigger="true"
       {...props}
       className={cn(
-        "min-w-0 p-3.5 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md border border-slate-200/80 bg-white",
+        "min-w-0 p-3.5 sm:p-5 transition-all duration-200 hover:-translate-y-0.5",
         className,
       )}
     >
@@ -57,7 +57,7 @@ export function StatCard({
           </ActionGlyph>
         </span>
         {badge && (
-          <span className="inline-flex items-center text-[10px] sm:text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
+          <span className="inline-flex items-center text-[10px] sm:text-xs font-semibold text-slate-700 bg-white/70 ring-1 ring-white/85 backdrop-blur-sm px-2.5 py-0.5 rounded-full shadow-[inset_0_1px_0_rgb(255_255_255/85%)]">
             <UiText source={badge} />
           </span>
         )}

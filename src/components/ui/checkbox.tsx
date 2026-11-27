@@ -21,7 +21,7 @@ export function Checkbox({ label, description, error, id, containerClassName, cl
 
   return (
     <div className={cn("grid gap-1.5", containerClassName)}>
-      <label htmlFor={inputId} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-white p-4 transition hover:border-brand-200 hover:bg-brand-50/40">
+      <label htmlFor={inputId} className="liquid-glass-tile flex cursor-pointer items-start gap-3 rounded-2xl p-4 hover:bg-brand-50/40">
         <input
           {...props}
           id={inputId}

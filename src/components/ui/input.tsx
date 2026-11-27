@@ -42,7 +42,7 @@ export function Input({
         {leftIcon && (
           <span
             className={cn(
-              "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-600 transition-all duration-300 group-hover:scale-110 group-focus-within:scale-115 group-focus-within:text-brand-700",
+              "pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-emerald-700 transition-all duration-300 group-hover:scale-110 group-focus-within:scale-115 group-focus-within:text-emerald-800",
               nativeDatePicker && "max-[359px]:hidden",
             )}
           >
@@ -58,18 +58,18 @@ export function Input({
           }
           aria-invalid={error ? true : props["aria-invalid"]}
           className={cn(
-            "h-11 min-w-0 w-full rounded-control border bg-white px-3.5 text-sm text-ink-900 outline-none transition-colors placeholder:text-muted-400",
+            "liquid-glass-control h-11 min-w-0 w-full rounded-control border px-3.5 text-sm text-ink-900 outline-none transition-all placeholder:text-slate-500/75",
             leftIcon ? "pl-11" : undefined,
             rightElement ? "pr-14" : undefined,
             Boolean(leftIcon) && nativeDatePicker && "max-[359px]:pl-3.5",
             error
               ? "border-danger focus:border-danger"
-              : "border-line hover:border-muted-400 focus:border-brand-500",
+              : "border-white/90 ring-1 ring-emerald-950/10 hover:border-white focus:border-brand-500 focus:ring-brand-500/20",
             className,
           )}
         />
         {rightElement && (
-          <span className="absolute right-1 top-1/2 -translate-y-1/2">
+          <span className="absolute right-1 top-1/2 z-10 -translate-y-1/2">
             {rightElement}
           </span>
         )}

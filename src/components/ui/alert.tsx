@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 export type AlertTone = "success" | "warning" | "danger" | "info";
 
 const alertStyles: Record<AlertTone, { className: string; icon: LucideIcon }> = {
-  success: { className: "border-success/20 bg-success-soft text-success-strong", icon: CheckCircle2 },
-  warning: { className: "border-warning/25 bg-warning-soft text-warning-strong", icon: AlertTriangle },
-  danger: { className: "border-danger/20 bg-danger-soft text-danger-strong", icon: CircleAlert },
-  info: { className: "border-info/20 bg-info-soft text-info-strong", icon: Info },
+  success: { className: "border-emerald-300/60 bg-emerald-50/72 text-success-strong backdrop-blur-md shadow-[inset_0_1px_0_rgb(255_255_255/75%)]", icon: CheckCircle2 },
+  warning: { className: "border-amber-300/65 bg-amber-50/74 text-warning-strong backdrop-blur-md shadow-[inset_0_1px_0_rgb(255_255_255/75%)]", icon: AlertTriangle },
+  danger: { className: "border-rose-300/60 bg-rose-50/74 text-danger-strong backdrop-blur-md shadow-[inset_0_1px_0_rgb(255_255_255/75%)]", icon: CircleAlert },
+  info: { className: "border-sky-300/60 bg-sky-50/72 text-info-strong backdrop-blur-md shadow-[inset_0_1px_0_rgb(255_255_255/75%)]", icon: Info },
 };
 
 export function Alert({

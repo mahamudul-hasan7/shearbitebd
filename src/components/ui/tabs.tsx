@@ -17,7 +17,7 @@ export function Tabs({
   return (
     <nav
       aria-label={label}
-      className="flex max-w-full gap-1 overflow-x-auto overscroll-x-contain border-b border-line bg-transparent pb-px [scrollbar-width:thin]"
+      className="flex max-w-full gap-1 overflow-x-auto scrollbar-none overscroll-x-contain border-b border-line bg-transparent pb-px"
     >
       {items.map((item) => (
         <Link

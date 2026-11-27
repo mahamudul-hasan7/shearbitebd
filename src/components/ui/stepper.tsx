@@ -26,10 +26,10 @@ export function Stepper({
   return (
     <div>
       {/* 1. Mobile-First App Segmented Progress Bar (< sm) */}
-      <div className="sm:hidden mb-4 rounded-2xl border border-slate-200/80 bg-white/90 p-3.5 shadow-2xs backdrop-blur-md">
+      <div className="liquid-glass-card sm:hidden mb-4 rounded-2xl p-3.5">
         <div className="flex items-center justify-between gap-2 mb-2.5">
           <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full font-heading">
-            {tx("ধাপ")}{current} / {steps.length}
+            {tx("ধাপ")} {current} / {steps.length}
           </span>
           <span className="text-xs font-bold text-slate-800 truncate font-heading">
             {tx(steps[current - 1]?.label)}

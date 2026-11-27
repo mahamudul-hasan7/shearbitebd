@@ -6,7 +6,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
     <div
       data-ui="card"
       className={cn(
-        "min-w-0 rounded-[var(--radius-card)] border border-slate-200/90 bg-white shadow-2xs transition-all duration-200",
+        "liquid-glass-card min-w-0 overflow-clip rounded-[var(--radius-card)] transition-all duration-200 hover:border-white",
         className,
       )}
       {...props}
@@ -24,7 +24,7 @@ export function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4.5">
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/60 px-5 py-4 sm:flex-nowrap sm:gap-4 sm:px-6 sm:py-4.5">
       <div className="min-w-0 flex-1">
         <h3 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 font-heading">
           {title}
