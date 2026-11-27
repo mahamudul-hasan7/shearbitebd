@@ -26,6 +26,9 @@ export const donationService = {
   async cancel(id: string, reason: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<DonationView> {
     void viewer; return (await apiRequest<{ donation: DonationView }>("/api/donations", { method: "PATCH", signal: options?.signal, body: JSON.stringify({ id, action: "cancel", reason }) })).donation;
   },
+  async publishDraft(id: string, viewer: ViewerContext, options?: MockServiceOptions): Promise<DonationView> {
+    void viewer; return (await apiRequest<{ donation: DonationView }>("/api/donations", { method: "PATCH", signal: options?.signal, body: JSON.stringify({ id, action: "publish" }) })).donation;
+  },
   async transitionStatus(id: string, status: DonationStatus, viewer: ViewerContext, options?: MockServiceOptions): Promise<DonationView> {
     void viewer; return (await apiRequest<{ donation: DonationView }>("/api/donations", { method: "PATCH", signal: options?.signal, body: JSON.stringify({ id, status }) })).donation;
   },

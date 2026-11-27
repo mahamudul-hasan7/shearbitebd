@@ -15,6 +15,7 @@ export interface RescueProgressInput extends RescueProgressTimes {
   status: string;
   routeStage?: RescueRouteStage;
   updatedAt?: string;
+  cancellationReason?: string;
 }
 
 const foodSteps = [
@@ -58,7 +59,8 @@ export function buildRescueProgress(input: RescueProgressInput) {
   let index = 0;
   if (rider) {
     index = Math.max(0, riderSteps.findIndex((step) => step.id === input.routeStage));
-    if (["DELIVERED", "DISTRIBUTED"].includes(input.status)) index = riderSteps.length - 1;
+    if (["DELIVERED", "DISTRIBUTED"].includes(input.status) || recorded(input.deliveredAt)) index = riderSteps.length - 1;
+    else if (exceptional && recorded(input.pickedUpAt)) index = Math.max(index, 3);
     if (!exceptional && index === riderSteps.length - 1) state = "complete";
   } else {
     index = ({ DRAFT: 0, PUBLISHED: 0, AVAILABLE: 0, RESERVED: 1, ASSIGNED: 2, PICKED_UP: 3, DELIVERED: 4, DISTRIBUTED: 5 } as Record<string, number>)[input.status] ?? 0;
@@ -82,5 +84,15 @@ export function buildRescueProgress(input: RescueProgressInput) {
     return { id: step.id, label: step.label, icon: step.icon as RescueProgressIcon, timestamp: recorded(timestamp) ? timestamp : undefined,
       done: state === "complete" || i < index || (exceptional && i === index && recorded(timestamp)), current: i === index };
   });
-  return { scope: input.scope ?? "donation", state, index, title, description, steps, position: index / (definitions.length - 1) * 100 };
+  return {
+    scope: input.scope ?? "donation",
+    state,
+    index,
+    title,
+    description,
+    stoppedAtLabel: current.label,
+    completedSteps: steps.filter((step) => step.done).length,
+    steps,
+    position: index / (definitions.length - 1) * 100,
+  };
 }

@@ -5,11 +5,15 @@ export function rescueNextStep({
   status,
   routeStage,
   receiptRecorded = false,
+  distributionBlocked = false,
+  expired = false,
 }: {
   role: RescueActor;
   status: string;
   routeStage?: RescueRouteStage;
   receiptRecorded?: boolean;
+  distributionBlocked?: boolean;
+  expired?: boolean;
 }) {
   if (status === "DISPUTED")
     return {
@@ -42,6 +46,22 @@ export function rescueNextStep({
         "The NGO has saved the distribution record. This food journey is complete.",
       tone: "success",
       action: undefined,
+    };
+  if (distributionBlocked && status === "DELIVERED")
+    return {
+      title: "Distribution blocked",
+      description:
+        "The delivery receipt marked this food damaged or poor. Do not distribute it; submit or follow up on an issue report for administrator closure.",
+      tone: "warning",
+      action: role === "ngo" ? "REPORT_ISSUE" : undefined,
+    };
+  if (expired && ["PICKED_UP", "DELIVERED"].includes(status))
+    return {
+      title: "Safe food deadline passed",
+      description:
+        "The donor's safe food deadline has expired. Do not serve this batch; report an issue or contact an administrator to close this rescue.",
+      tone: "warning",
+      action: role === "ngo" || role === "volunteer" ? "REPORT_ISSUE" : undefined,
     };
   if (status === "DELIVERED") {
     if (role !== "ngo")
