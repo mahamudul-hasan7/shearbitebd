@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import { PdfPreview } from "./pdf-preview";
-import { useEffect, useId, useRef, useState } from "react";
-import { Download, FileText, LoaderCircle, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Download, FileText, LoaderCircle } from "lucide-react";
+import { ExecutiveDialog } from "@/components/ui/executive-dialog";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import type { VerificationFile } from "./types";
@@ -15,23 +16,11 @@ export function DocumentPreview({
   onClose: () => void;
 }) {
   const tx = useUiText();
-  const titleId = useId();
-  const ref = useRef<HTMLDialogElement>(null);
   const [result, setResult] = useState<{
     id: string;
     url?: string;
     error?: string;
   }>();
-  useEffect(() => {
-    const dialog = ref.current;
-    const previous = globalThis.document.body.style.overflow;
-    globalThis.document.body.style.overflow = "hidden";
-    dialog?.showModal();
-    return () => {
-      dialog?.close();
-      globalThis.document.body.style.overflow = previous;
-    };
-  }, []);
   useEffect(() => {
     const controller = new AbortController();
     let objectUrl: string | undefined;
@@ -66,33 +55,33 @@ export function DocumentPreview({
   }, [document.id, document.url]);
   const current = result?.id === document.id ? result : undefined;
   return (
-    <dialog
-      ref={ref}
-      className={styles.previewDialog}
-      aria-labelledby={titleId}
-      onCancel={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        onClose();
-      }}
-      data-testid="verification-preview"
+    <ExecutiveDialog
+      open
+      onClose={onClose}
+      tone="slate"
+      size="xl"
+      zIndexClassName="z-[95]"
+      testId="verification-preview"
+      closeLabel="Close document preview"
+      eyebrow={tx("Private document preview")}
+      title={document.name}
+      leading={<FileText className="size-5" />}
+      footer={
+        <>
+          <span className="text-xs text-muted-600">
+            {tx("Visible only to the account owner and administrators.")}
+          </span>
+          <a
+            href={`${document.url}?download=1`}
+            download
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-emerald-800"
+          >
+            <Download size={16} />
+            {tx("Download document")}
+          </a>
+        </>
+      }
     >
-      <header className={styles.previewHeader}>
-        <span className={styles.fileIcon}>
-          <FileText size={21} />
-        </span>
-        <div>
-          <p>{tx("Private document preview")}</p>
-          <h2 id={titleId}>{document.name}</h2>
-        </div>
-        <button
-          type="button"
-          aria-label={tx("Close document preview")}
-          onClick={onClose}
-        >
-          <X size={22} />
-        </button>
-      </header>
       <div className={styles.previewBody}>
         {!current && (
           <p role="status" className={styles.loading}>
@@ -119,16 +108,7 @@ export function DocumentPreview({
             />
           ))}
       </div>
-      <footer className={styles.previewFooter}>
-        <span>
-          {tx("Visible only to the account owner and administrators.")}
-        </span>
-        <a href={`${document.url}?download=1`} download>
-          <Download size={16} />
-          {tx("Download document")}
-        </a>
-      </footer>
-    </dialog>
+    </ExecutiveDialog>
   );
 }
 export function DocumentFileCard({

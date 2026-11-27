@@ -267,6 +267,23 @@ function ReceiptForm({ claimId }: { claimId: string }) {
                     )}
                   />
                   <CardContent className="grid gap-5">
+                    {Date.parse(details.donation.safePickupDeadline) <= Date.now() && (
+                      <Alert
+                        tone="warning"
+                        title={tx("Safe food deadline passed")}
+                        description={tx(
+                          "The donor's safe food deadline has already passed. Record damaged/poor condition if spoiled, or submit an issue report before distributing.",
+                        )}
+                        action={
+                          <ButtonLink
+                            variant="outline"
+                            href={ROUTES.ngo.reportIssue(claimId)}
+                          >
+                            {tx("Report an issue / history")}
+                          </ButtonLink>
+                        }
+                      />
+                    )}
                     <Input
                       name="actualQuantity"
                       label={tx(

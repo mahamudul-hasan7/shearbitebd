@@ -9,6 +9,7 @@ import {
   Refrigerator,
   ShieldCheck,
   Soup,
+  Sparkles,
   Utensils,
   X,
 } from "lucide-react";
@@ -60,9 +61,14 @@ export function DonationDiscoveryCard({
         .join(":")
     : "--:--:--";
   const distance = donation.pickup.distanceKm;
+  const blocked = item.eligibility.checks.find((check) => !check.passed);
+  const categoryPts = acceptedCategory(item) ? 40 : 12;
+  const distancePts =
+    distance === undefined ? 14 : distance <= 3 ? 30 : distance <= 7 ? 24 : distance <= 15 ? 18 : 10;
+  const windowPts = remaining >= 45 * 60 ? 30 : remaining > 0 ? 22 : 0;
+  const matchScore = blocked ? Math.min(48, categoryPts + distancePts) : Math.min(100, categoryPts + distancePts + windowPts);
   const href =
     ROUTES.ngo.donation(donation.id) + (queryString ? `?${queryString}` : "");
-  const blocked = item.eligibility.checks.find((check) => !check.passed);
   return (
     <article
       className={styles.card}
@@ -79,10 +85,16 @@ export function DonationDiscoveryCard({
         </div>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.category}>
-              <Utensils size={15} />
-              {tx(FOOD_CATEGORY_LABELS[donation.category])}
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={styles.category}>
+                <Utensils size={15} />
+                {tx(FOOD_CATEGORY_LABELS[donation.category])}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/80 bg-emerald-50 px-2.5 py-0.5 text-xs font-extrabold text-emerald-800">
+                <Sparkles size={13} className="text-emerald-600" />
+                {number(matchScore)}% {tx("Match")}
+              </span>
+            </div>
             <button
               type="button"
               className={styles.iconButton}
@@ -177,7 +189,7 @@ export function DonationDiscoveryCard({
       </div>
       <details className={styles.matchDetails}>
         <summary>
-          {tx("Why this food fits")}
+          {tx("Why this food fits")} · {number(matchScore)}% ({tx("Category")} +{categoryPts}, {tx("Distance")} +{distancePts}, {tx("Window")} +{windowPts})
           <ChevronDown size={15} />
         </summary>
         <ul>

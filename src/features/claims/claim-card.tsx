@@ -32,6 +32,7 @@ import {
   getDonorOrganizationBn,
 } from "@/features/donations/donation-presentation";
 import { ClaimStatus } from "@/lib/constants/statuses";
+import { buildRescueProgress } from "@/lib/rescue-progress";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ROUTES } from "@/lib/routes";
 import type { ClaimCoordinationDetails } from "@/services";
@@ -50,9 +51,22 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
 
   const displayTitle = isBn ? titleBn || donation.title : donation.title;
   const displayDonor = isBn ? donorBn || donorOrganization : donorOrganization;
+  const progress = buildRescueProgress({
+    scope: "claim",
+    status: claim.status,
+    routeStage: claim.routeStage,
+    reservedAt: claim.reservedAt,
+    assignedAt: claim.assignedAt,
+    pickedUpAt: claim.pickedUpAt,
+    deliveredAt: claim.deliveredAt,
+    distributedAt: claim.distributedAt,
+    updatedAt: claim.updatedAt,
+    cancellationReason: donation.cancellationReason,
+  });
+  const claimSteps = progress.steps.slice(1);
 
   return (
-    <Card className="group overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
+    <Card className="group overflow-hidden rounded-3xl transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300/80">
       <div className="grid md:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)]">
         {/* Left Side: Food Image Thumbnail */}
         <div className="relative min-h-52 overflow-hidden bg-emerald-50 sm:min-h-56 md:min-h-full">
@@ -121,7 +135,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
 
             {/* 4 Logistics Metric Pills */}
             <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              <div className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-xs text-slate-700">
+              <div className="liquid-glass-tile flex items-center gap-2.5 rounded-xl p-2.5 text-xs text-slate-700">
                 <MapPin className="size-4 shrink-0 text-emerald-600" />
                 <div className="min-w-0">
                   <span className="block font-bold text-slate-900 truncate">
@@ -133,7 +147,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-xs text-slate-700">
+              <div className="liquid-glass-tile flex items-center gap-2.5 rounded-xl p-2.5 text-xs text-slate-700">
                 <PackageOpen className="size-4 shrink-0 text-emerald-600" />
                 <div className="min-w-0">
                   <span className="block font-bold text-slate-900 truncate">
@@ -145,7 +159,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-xs text-slate-700">
+              <div className="liquid-glass-tile flex items-center gap-2.5 rounded-xl p-2.5 text-xs text-slate-700">
                 {volunteer ? (
                   <UserRoundCheck className="size-4 shrink-0 text-blue-600" />
                 ) : (
@@ -161,7 +175,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-xs text-slate-700">
+              <div className="liquid-glass-tile flex items-center gap-2.5 rounded-xl p-2.5 text-xs text-slate-700">
                 <Clock3 className="size-4 shrink-0 text-emerald-600" />
                 <div className="min-w-0">
                   <span className="block font-bold text-slate-900 truncate">
@@ -172,6 +186,71 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* Progress Milestone Strip */}
+            <div className="mt-4 rounded-xl border border-white/75 bg-white/60 p-3">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold">
+                <span className="text-slate-600">{tx("Rescue progress")}</span>
+                <span
+                  className={
+                    progress.state === "cancelled"
+                      ? "text-rose-700"
+                      : progress.state === "expired" || progress.state === "paused"
+                        ? "text-amber-700"
+                        : "text-emerald-700"
+                  }
+                >
+                  {progress.state === "complete"
+                    ? tx("All {0} steps completed", progress.steps.length)
+                    : ["cancelled", "expired", "paused"].includes(progress.state)
+                      ? tx("Stopped at: {0}", tx(progress.stoppedAtLabel))
+                      : tx(progress.title)}
+                </span>
+              </div>
+              <div className="grid grid-cols-5 gap-1.5">
+                {claimSteps.map((step) => {
+                  const stoppedHere =
+                    ["cancelled", "expired", "paused"].includes(progress.state) &&
+                    step.current;
+                  return (
+                    <div key={step.id} className="min-w-0 text-center">
+                      <div
+                        className={`h-1.5 rounded-full ${
+                          stoppedHere
+                            ? progress.state === "cancelled"
+                              ? "bg-rose-600"
+                              : "bg-amber-500"
+                            : step.done
+                              ? "bg-emerald-600"
+                              : step.current
+                                ? "bg-emerald-400"
+                                : "bg-slate-200"
+                        }`}
+                      />
+                      <span
+                        className={`mt-1 block truncate text-[10px] font-bold ${
+                          stoppedHere
+                            ? progress.state === "cancelled"
+                              ? "text-rose-800"
+                              : "text-amber-800"
+                            : step.done || step.current
+                              ? "text-emerald-800"
+                              : "text-slate-400"
+                        }`}
+                        title={tx(step.label)}
+                      >
+                        {tx(step.label)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              {donation.cancellationReason && progress.state === "cancelled" && (
+                <p className="mt-1.5 truncate text-[11px] font-medium text-rose-800">
+                  {tx("Reason: {0}", donation.cancellationReason)}
+                </p>
+              )}
             </div>
           </div>
 

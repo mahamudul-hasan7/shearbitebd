@@ -18,6 +18,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { StatCard } from "@/components/ui/stat-card";
 import { ClaimCard } from "@/features/claims/claim-card";
 import { ClaimFilters } from "@/features/claims/claim-filters";
+import { NgoClaimArchiveList } from "@/features/claims/ngo-claim-archive";
 import { ACTIVE_CLAIM_STATUSES } from "@/features/claims/types";
 import { useNgoClaims } from "@/features/claims/use-ngo-claims";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -29,11 +30,13 @@ function ClaimSection({
   subtitle,
   count,
   items,
+  compact = false,
 }: {
   title: string;
   subtitle?: string;
   count: number;
   items: ClaimCoordinationDetails[];
+  compact?: boolean;
 }) {
   if (items.length === 0) return null;
 
@@ -52,11 +55,15 @@ function ClaimSection({
           {subtitle && <p className="mt-1 text-xs text-slate-500">{subtitle}</p>}
         </div>
       </div>
-      <div className="grid gap-4">
-        {items.map((item) => (
-          <ClaimCard key={item.claim.id} item={item} />
-        ))}
-      </div>
+      {compact ? (
+        <NgoClaimArchiveList items={items} />
+      ) : (
+        <div className="grid gap-4">
+          {items.map((item) => (
+            <ClaimCard key={item.claim.id} item={item} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -198,6 +205,7 @@ export function NGOClaimsList() {
               }
               count={historyItems.length}
               items={historyItems}
+              compact
             />
           </div>
         )}

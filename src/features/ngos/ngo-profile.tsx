@@ -142,7 +142,7 @@ export function DonorNGOProfile({ ngoId }: { ngoId: string }) {
                       key={area}
                       className="rounded-lg bg-white/10 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-xs font-heading"
                     >
-                      📍 {area}
+                      {area}
                     </span>
                   ))}
                 </div>
@@ -156,67 +156,67 @@ export function DonorNGOProfile({ ngoId }: { ngoId: string }) {
             <div className="space-y-6">
               {/* 4 Impact Stat Cards */}
               <section className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label={tx("NGO Impact Statistics")}>
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
-                  <span className="text-xs font-bold text-slate-500 font-heading">{tx("উপকৃত মানুষ")}</span>
+                <div className="liquid-glass-tile rounded-2xl p-4">
+                  <span className="text-xs font-bold text-slate-600 font-heading">{tx("উপকৃত মানুষ")}</span>
                   <p className="mt-1.5 text-2xl font-black text-slate-900 font-heading">
                     {formatNumberBn(item.impact.peopleHelped)}+
                   </p>
-                  <p className="text-[11px] text-slate-400">{tx("অনাহারী মুখে আহার")}</p>
+                  <p className="text-[11px] text-slate-500">{tx("অনাহারী মুখে আহার")}</p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
-                  <span className="text-xs font-bold text-slate-500 font-heading">{tx("সফল রেসকিউ")}</span>
-                  <p className="mt-1.5 text-2xl font-black text-emerald-700 font-heading">
+                <div className="liquid-glass-tile rounded-2xl border-emerald-200/80 bg-emerald-100/40 p-4">
+                  <span className="text-xs font-bold text-slate-600 font-heading">{tx("সফল রেসকিউ")}</span>
+                  <p className="mt-1.5 text-2xl font-black text-emerald-800 font-heading">
                     {formatNumberBn(item.impact.completedRescues)}+
                   </p>
-                  <p className="text-[11px] text-emerald-600">{tx("সম্পন্ন খাদ্য মিশন")}</p>
+                  <p className="text-[11px] text-emerald-700">{tx("সম্পন্ন খাদ্য মিশন")}</p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
-                  <span className="text-xs font-bold text-slate-500 font-heading">{tx("বিতরণকৃত মিলস")}</span>
-                  <p className="mt-1.5 text-2xl font-black text-sky-700 font-heading">
+                <div className="liquid-glass-tile rounded-2xl border-sky-200/80 bg-sky-100/40 p-4">
+                  <span className="text-xs font-bold text-slate-600 font-heading">{tx("বিতরণকৃত মিলস")}</span>
+                  <p className="mt-1.5 text-2xl font-black text-sky-800 font-heading">
                     {formatNumberBn(item.impact.recentMealsDistributed || 1250)}+
                   </p>
-                  <p className="text-[11px] text-sky-600">{tx("ডিজিটাল অডিটে ভেরিফাইড")}</p>
+                  <p className="text-[11px] text-sky-700">{tx("ডিজিটাল অডিটে ভেরিফাইড")}</p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
-                  <span className="text-xs font-bold text-slate-500 font-heading">{tx("সংগৃহীত খাদ্য")}</span>
-                  <p className="mt-1.5 text-2xl font-black text-emerald-800 font-heading">
+                <div className="liquid-glass-tile rounded-2xl border-emerald-200/80 bg-emerald-100/40 p-4">
+                  <span className="text-xs font-bold text-slate-600 font-heading">{tx("সংগৃহীত খাদ্য")}</span>
+                  <p className="mt-1.5 text-2xl font-black text-emerald-900 font-heading">
                     {formatNumberBn(item.impact.recentFoodRescuedKg || 4850)} {tx("কেজি")}</p>
-                  <p className="text-[11px] text-emerald-600">{tx("অপচয় থেকে রক্ষা")}</p>
+                  <p className="text-[11px] text-emerald-700">{tx("অপচয় থেকে রক্ষা")}</p>
                 </div>
               </section>
 
               {/* Mission & Vision Dual Card */}
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-2">
+                <div className="liquid-glass-card rounded-2xl p-5 space-y-2">
                   <div className="flex items-center gap-2.5">
-                    <span className="grid size-9 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <span className="grid size-9 place-items-center rounded-xl bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-300/40">
                       <Target className="size-4.5" />
                     </span>
                     <h3 className="text-base font-black text-slate-900 font-heading">{tx("আমাদের মিশন")}</h3>
                   </div>
-                  <p className="text-xs leading-relaxed text-slate-600 font-normal">
+                  <p className="text-xs leading-relaxed text-slate-700 font-normal">
                     {profile.mission}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-2">
+                <div className="liquid-glass-card rounded-2xl p-5 space-y-2">
                   <div className="flex items-center gap-2.5">
-                    <span className="grid size-9 place-items-center rounded-xl bg-amber-50 text-amber-700">
+                    <span className="grid size-9 place-items-center rounded-xl bg-amber-500/15 text-amber-700 ring-1 ring-amber-300/40">
                       <Sparkles className="size-4.5" />
                     </span>
                     <h3 className="text-base font-black text-slate-900 font-heading">{tx("আমাদের ভিশন")}</h3>
                   </div>
-                  <p className="text-xs leading-relaxed text-slate-600 font-normal">
+                  <p className="text-xs leading-relaxed text-slate-700 font-normal">
                     {profile.vision}
                   </p>
                 </div>
               </div>
 
               {/* Values & Food Categories Card */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+              <div className="liquid-glass-card rounded-2xl p-5 sm:p-6 space-y-4">
                 <div>
                   <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 font-heading">
                     {tx("কমিউনিটি অঙ্গীকার")}</span>
@@ -253,7 +253,7 @@ export function DonorNGOProfile({ ngoId }: { ngoId: string }) {
               </div>
 
               {/* Traceable Activity Log */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
+              <div className="liquid-glass-card rounded-2xl p-5 sm:p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 font-heading">
@@ -300,7 +300,7 @@ export function DonorNGOProfile({ ngoId }: { ngoId: string }) {
             {/* Right Action & Verification Sidebar */}
             <aside className="space-y-4 xl:sticky xl:top-24">
               {/* Organization Quick Specs Card */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-4">
+              <div className="liquid-glass-card rounded-2xl p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-black text-slate-900 font-heading">
                     {tx("প্রাতিষ্ঠানিক তথ্যাদি")}</h3>
@@ -358,7 +358,7 @@ export function DonorNGOProfile({ ngoId }: { ngoId: string }) {
               </button>
 
               {/* Public Contact Information */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-3">
+              <div className="liquid-glass-card rounded-2xl p-5 space-y-3">
                 <h4 className="text-xs font-bold text-slate-500 font-heading uppercase">
                   {tx("সরাসরি ফোকাল যোগাযোগ")}</h4>
                 <div className="grid gap-2">

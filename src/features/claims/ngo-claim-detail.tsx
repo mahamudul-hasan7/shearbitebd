@@ -29,11 +29,16 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
     useNgoClaim(claimId);
   const details = state.data,
     claim = details?.claim;
+  const expired = details
+    ? Date.parse(details.donation.safePickupDeadline) <= Date.now()
+    : false;
   const model = rescueNextStep({
     role: "ngo",
     status: claim?.status || "RESERVED",
     routeStage: claim?.routeStage,
     receiptRecorded: details?.receiptRecorded,
+    distributionBlocked: details?.distributionBlocked,
+    expired,
   });
   const locale = language === "bn" ? "bn-BD" : "en-BD";
   return (
@@ -116,6 +121,11 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
                   {tx("Record distribution")}
                 </ButtonLink>
               )}
+              {model.action === "REPORT_ISSUE" && (
+                <ButtonLink href={ROUTES.ngo.reportIssue(claim.id)} variant="danger">
+                  {tx("Report an issue / history")}
+                </ButtonLink>
+              )}
               {details.volunteer?.phone &&
                 ["ASSIGNED", "PICKED_UP"].includes(claim.status) && (
                   <a
@@ -126,9 +136,19 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
                   </a>
                 )}
               {claim.status === "DISTRIBUTED" && (
-                <ButtonLink href={ROUTES.ngo.impact}>
-                  {tx("View impact")}
-                </ButtonLink>
+                <>
+                  <ButtonLink href={ROUTES.ngo.impact}>
+                    {tx("View impact")}
+                  </ButtonLink>
+                  <a
+                    className={styles.jump}
+                    href={`/api/certificates/${encodeURIComponent(details.donation.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {tx("Download CSR Certificate (PDF)")}
+                  </a>
+                </>
               )}
             </RescueNextAction>
             {actionError && (
@@ -148,6 +168,7 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
               <div className={styles.column}>
                 <ClaimStatusTimeline
                   claim={claim}
+                  cancellationReason={details.donation.cancellationReason}
                   stale={state.status === "error"}
                 />
                 <div className={styles.contacts}>

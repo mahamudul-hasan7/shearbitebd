@@ -1,7 +1,7 @@
 "use client";
 import { createRequestId } from "@/lib/request-id";
 import { UiText } from "@/lib/i18n/ui-text-node";
-import { getUiLocale } from "@/lib/i18n/locale";
+import { formatUiNumber, formatUiTime, getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { isNoKnownAllergens } from "@/lib/i18n/food-input";
 
@@ -40,6 +40,7 @@ function listFromText(value: string) {
 
 export function FoodRequestWizard() {
   const tx = useUiText();
+  const locale = getUiLocale();
   const router = useRouter();
   const { session } = useMockAuth();
   const draftStorageKey = `${FOOD_REQUEST_DRAFT_STORAGE_KEY}.${session?.id}`;
@@ -53,6 +54,10 @@ export function FoodRequestWizard() {
   const [hydrated, setHydrated] = useState(false);
   const [savedAt, setSavedAt] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.title = `${tx("Create food request")} | ShareBite BD`;
+  }, [tx]);
 
   useEffect(() => {
     if (!session?.id) return;
@@ -133,12 +138,12 @@ export function FoodRequestWizard() {
       window.sessionStorage.setItem(draftStorageKey, JSON.stringify(draft));
       setSavedAt(new Date().toISOString());
     } catch {
-      setErrors((current) => ({ ...current, form: "This browser could not save the mock draft." }));
+      setErrors((current) => ({ ...current, form: "This browser could not save the draft." }));
     }
   }
 
   function resetDraft() {
-    if (!window.confirm("Clear this food request draft and start again?")) return;
+    if (!window.confirm(tx("Clear this food request draft and start again?"))) return;
     try { window.sessionStorage.removeItem(draftStorageKey); } catch { /* Reset the form even when storage is unavailable. */ }
     setDraft((current) => ({ ...createInitialFoodRequestDraft(), deliveryAddressId: current.deliveryAddressId, addressLine: current.addressLine, area: current.area, city: current.city, landmark: current.landmark }));
     setCurrentStep(1);
@@ -211,13 +216,20 @@ export function FoodRequestWizard() {
       profileName={session?.displayName || "NGO"}
       profileDescription={tx("Verified NGO")}
       avatarInitials={session?.displayName.slice(0, 2).toUpperCase() || "NG"}
-      notificationHref={ROUTES.ngo.dashboard + "#recent-activity"}
+      notificationHref={ROUTES.ngo.notifications}
       backHref={ROUTES.ngo.dashboard}
       backLabel={tx("ড্যাশবোর্ডে ফিরুন")}
       actions={<ButtonLink href={ROUTES.ngo.requests} variant="outline" leftIcon={<ClipboardList className="size-4" />}><UiText source={"My requests"} /></ButtonLink>}
     >
       <div className="grid gap-6">
-        <Stepper steps={steps} current={currentStep} label={tx("Food request progress")} />
+        <Stepper
+          steps={steps}
+          current={currentStep}
+          label={tx("Food request progress")}
+          onStepClick={(step) => {
+            if (step < currentStep) editStep(step as RequestWizardStep);
+          }}
+        />
         {errors.form && <Alert tone="danger" title={tx("Request needs attention")} description={tx(errors.form)} />}
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
           <form ref={formRef} onSubmit={submit} noValidate>
@@ -230,25 +242,25 @@ export function FoodRequestWizard() {
                 {currentStep === 4 && <RequestLocationStep draft={draft} errors={errors} update={update} addresses={addresses} />}
                 {currentStep === 5 && <RequestReviewStep draft={draft} editStep={editStep} />}
               </CardContent>
-              <StickyActionBar className="px-5 sm:px-6">
-                <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2">
+              <StickyActionBar contained className="px-5 sm:px-6">
+                <div className="flex w-full flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center justify-between gap-2 sm:justify-start">
                     {currentStep === 1 ? (
-                      <ButtonLink href={ROUTES.ngo.dashboard} variant="outline" leftIcon={<ArrowLeft className="size-4" />}>
+                      <ButtonLink href={ROUTES.ngo.dashboard} variant="outline" size="sm" className="sm:h-11 sm:px-5 sm:text-sm" leftIcon={<ArrowLeft className="size-4" />}>
                         {tx("Dashboard")}</ButtonLink>
                     ) : (
-                      <Button type="button" variant="outline" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>
+                      <Button type="button" variant="outline" size="sm" className="sm:h-11 sm:px-5 sm:text-sm" leftIcon={<ArrowLeft className="size-4" />} onClick={goBack}>
                         {tx("Back")}</Button>
                     )}
-                    <Button type="button" variant="ghost" leftIcon={<Save className="size-4" />} onClick={saveDraft}>
+                    <Button type="button" variant="ghost" size="sm" className="sm:h-11 sm:px-4 sm:text-sm" leftIcon={<Save className="size-4" />} onClick={saveDraft}>
                       {tx("Save draft")}</Button>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center sm:w-auto">
                     {currentStep < 5 ? (
-                      <Button key="continue-request" type="button" rightIcon={<ArrowRight className="size-4" />} disabled={!hydrated || submitting} onClick={goNext}>
+                      <Button key="continue-request" type="button" className="w-full justify-center sm:w-auto" rightIcon={<ArrowRight className="size-4" />} disabled={!hydrated || submitting} onClick={goNext}>
                         {tx("Continue")}</Button>
                     ) : (
-                      <Button key="publish-request" type="submit" rightIcon={<Send className="size-4" />} disabled={submitting || !hydrated || !verified}>
+                      <Button key="publish-request" type="submit" className="w-full justify-center sm:w-auto" rightIcon={<Send className="size-4" />} disabled={submitting || !hydrated || !verified}>
                         {submitting ? tx("Submitting...") : tx("Submit request")}
                       </Button>
                     )}
@@ -258,7 +270,30 @@ export function FoodRequestWizard() {
             </Card>
           </form>
           <aside className="xl:sticky xl:top-6 xl:self-start">
-            <Card><CardHeader title={tx("Request snapshot")} description={savedAt ? tx("Draft saved {0}", new Date(savedAt).toLocaleTimeString(getUiLocale(), { hour: "numeric", minute: "2-digit" })) : tx("Draft autosaves in this browser tab")} /><CardContent className="grid gap-4 text-sm"><div><p className="text-xs font-bold uppercase tracking-wide text-muted-500">{tx("Need")}</p><p className="mt-1 font-black text-ink-900">{draft.title || "Untitled request"}</p></div><div className="grid grid-cols-2 gap-3"><div className="rounded-2xl bg-brand-50 p-3"><p className="text-xs text-muted-600">{tx("Meals")}</p><p className="mt-1 text-xl font-black text-brand-900">{draft.mealsNeeded || "—"}</p></div><div className="rounded-2xl bg-accent-50 p-3"><p className="text-xs text-muted-600">{tx("People")}</p><p className="mt-1 text-xl font-black text-accent-700">{draft.peopleToServe || "—"}</p></div></div><p className="leading-6 text-muted-600">{tx("A request asks the network to find a match. It does not reserve an existing donation or create a claim.")}</p><Button type="button" size="sm" variant="ghost" leftIcon={<RotateCcw className="size-4" />} onClick={resetDraft}>{tx("Clear saved draft")}</Button></CardContent></Card>
+            <Card>
+              <CardHeader
+                title={tx("Request snapshot")}
+                description={savedAt ? tx("Draft saved at {0}", formatUiTime(savedAt, locale)) : tx("Draft autosaves automatically on this device")}
+              />
+              <CardContent className="grid gap-4 text-sm">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-muted-500">{tx("Need")}</p>
+                  <p className="mt-1 font-black text-ink-900">{draft.title.trim() || tx("Untitled request")}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-emerald-200/70 bg-emerald-50/70 p-3.5">
+                    <p className="text-xs font-semibold text-muted-600">{tx("Requested meals")}</p>
+                    <p className="mt-1 text-xl font-black tabular-nums text-brand-900">{formatUiNumber(draft.mealsNeeded, locale)}</p>
+                  </div>
+                  <div className="rounded-2xl border border-amber-200/70 bg-amber-50/70 p-3.5">
+                    <p className="text-xs font-semibold text-muted-600">{tx("People to serve")}</p>
+                    <p className="mt-1 text-xl font-black tabular-nums text-accent-700">{formatUiNumber(draft.peopleToServe, locale)}</p>
+                  </div>
+                </div>
+                <p className="leading-6 text-muted-600">{tx("A request asks the network to find a match. It does not reserve an existing donation or create a claim.")}</p>
+                <Button type="button" size="sm" variant="ghost" leftIcon={<RotateCcw className="size-4" />} onClick={resetDraft}>{tx("Clear saved draft")}</Button>
+              </CardContent>
+            </Card>
           </aside>
         </div>
       </div>

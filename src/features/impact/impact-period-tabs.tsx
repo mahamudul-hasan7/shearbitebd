@@ -11,5 +11,5 @@ const PERIODS: Array<{ value: NGOImpactPeriod; label: string }> = [
 
 export function ImpactPeriodTabs({ value, onChange }: { value: NGOImpactPeriod; onChange: (period: NGOImpactPeriod) => void }) {
   const tx = useUiText();
-  return <div role="tablist" aria-label={tx("Impact date range")} className="flex gap-1 rounded-2xl border border-line bg-white p-1.5 shadow-sm">{PERIODS.map((period) => <button key={period.value} type="button" role="tab" aria-selected={value === period.value} onClick={() => onChange(period.value)} className={`rounded-xl px-4 py-2 text-sm font-bold transition ${value === period.value ? "bg-brand-600 text-white" : "text-muted-600 hover:bg-brand-50"}`}>{tx(period.label)}</button>)}</div>;
+  return <div role="tablist" aria-label={tx("Impact date range")} className="liquid-glass-pill flex gap-1 rounded-2xl p-1.5">{PERIODS.map((period) => <button key={period.value} type="button" role="tab" aria-selected={value === period.value} onClick={() => onChange(period.value)} className={`rounded-xl px-4 py-2 text-sm font-bold transition ${value === period.value ? "bg-brand-600 text-white shadow-sm" : "text-slate-700 hover:bg-white/60"}`}>{tx(period.label)}</button>)}</div>;
 }

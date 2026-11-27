@@ -144,57 +144,57 @@ export function NGODirectory() {
         <div className="space-y-6">
           {/* 1. High-Impact Network Overview Metric Tiles */}
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label={tx("NGO Network Overview")}>
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("নিবন্ধিত সংস্থা")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("নিবন্ধিত সংস্থা")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-300/40">
                   <ShieldCheck className="size-4" />
                 </span>
               </div>
               <p className="mt-2 text-2xl font-black text-slate-900 font-heading">
                 {ngos.length}{tx("টি সংস্থা")}</p>
-              <p className="text-[11px] text-emerald-600 font-medium">{tx("প্ল্যাটফর্মে account verification সম্পন্ন")}</p>
+              <p className="text-[11px] text-emerald-700 font-medium">{tx("প্ল্যাটফর্মে account verification সম্পন্ন")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-sky-200/80 bg-sky-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("মেট্রো সার্ভিস জোন")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-sky-50 text-sky-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("মেট্রো সার্ভিস জোন")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-sky-500/15 text-sky-700 ring-1 ring-sky-300/40">
                   <MapPin className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-sky-700 font-heading">
+              <p className="mt-2 text-2xl font-black text-sky-800 font-heading">
                 {areaCount}{tx("টি এলাকা")}</p>
-              <p className="text-[11px] text-sky-600 font-medium">{tx("ঢাকা উত্তর ও দক্ষিণ জুড়ে বিস্তৃত")}</p>
+              <p className="text-[11px] text-sky-700 font-medium">{tx("ঢাকা উত্তর ও দক্ষিণ জুড়ে বিস্তৃত")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-emerald-200/80 bg-emerald-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("উপকৃত সুবিধাবঞ্চিত")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("উপকৃত সুবিধাবঞ্চিত")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-300/40">
                   <UsersRound className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-emerald-800 font-heading">
+              <p className="mt-2 text-2xl font-black text-emerald-900 font-heading">
                 {formatNumberBn(totalPeopleHelped)}{tx("+ জন")}</p>
-              <p className="text-[11px] text-emerald-600 font-medium">{tx("অভাবী মানুষের মুখে আহার")}</p>
+              <p className="text-[11px] text-emerald-700 font-medium">{tx("অভাবী মানুষের মুখে আহার")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-amber-200/80 bg-amber-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("সফল রেসকিউ মিশন")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-amber-50 text-amber-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("সফল রেসকিউ মিশন")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-amber-500/15 text-amber-700 ring-1 ring-amber-300/40">
                   <HeartHandshake className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-amber-700 font-heading">
+              <p className="mt-2 text-2xl font-black text-amber-800 font-heading">
                 {formatNumberBn(totalCompletedRescues)}{tx("+ বার")}</p>
-              <p className="text-[11px] text-amber-600 font-medium">{tx("ডিজিটাল অডিটে ভেরিফাইড")}</p>
+              <p className="text-[11px] text-amber-700 font-medium">{tx("ডিজিটাল অডিটে ভেরিফাইড")}</p>
             </div>
           </section>
 
           {/* 2. Cohesive Search & Smart Filter Ribbon */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-4.5 shadow-2xs space-y-3.5">
+          <div className="liquid-glass-card rounded-2xl p-3.5 sm:p-4.5 space-y-3.5">
             <div className="grid gap-2.5 sm:grid-cols-12 items-center">
               {/* Search Bar */}
               <div className="relative sm:col-span-4">
@@ -218,7 +218,7 @@ export function NGODirectory() {
                   <option value="all">{tx("সকল মেট্রো সার্ভিস এলাকা")}</option>
                   {locations.map((area) => (
                     <option key={area} value={area}>
-                      📍 {area}
+                      {area}
                     </option>
                   ))}
                 </select>
@@ -275,7 +275,10 @@ export function NGODirectory() {
 
               <div className="flex items-center gap-3">
                 <p className="font-bold text-slate-500">
-                  {tx("মোট")}<span className="text-slate-900 font-black">{filtered.length}{tx("টি")}</span> {tx("ভেরিফায়েড সংস্থা প্রদর্শিত হচ্ছে")}</p>
+                  {tx("মোট")}{" "}
+                  <span className="text-slate-900 font-black">{tx("{0}টি", filtered.length)}</span>{" "}
+                  {tx("ভেরিফায়েড সংস্থা প্রদর্শিত হচ্ছে")}
+                </p>
                 {(search || cause !== "all" || category !== "all" || location !== "all" || savedOnly) && (
                   <button
                     type="button"
@@ -321,7 +324,7 @@ export function NGODirectory() {
                 return (
                   <div
                     key={profile.id}
-                    className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-2xs hover:border-emerald-500/70 hover:shadow-xl hover:shadow-emerald-950/5 transition-all duration-300"
+                    className="liquid-glass-card group flex flex-col justify-between overflow-hidden rounded-3xl hover:border-emerald-400/70 transition-all duration-300"
                   >
                     <div>
                       {/* NGO Cover Image & Badges */}
@@ -393,22 +396,22 @@ export function NGODirectory() {
 
                         {/* 3 Core Stats Grid */}
                         <div className="grid grid-cols-3 gap-2 text-center text-xs font-heading">
-                          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-2.5">
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                          <div className="liquid-glass-tile rounded-xl p-2.5">
+                            <span className="block text-[10px] font-bold text-slate-500 uppercase">
                               {tx("দৈনিক ধারণক্ষমতা")}</span>
                             <p className="mt-1 text-sm font-black text-slate-900">
                               {formatNumberBn(profile.capacityMealsPerDay)} {tx("মিলস")}</p>
                           </div>
 
-                          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-2.5">
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                          <div className="liquid-glass-tile rounded-xl border-emerald-200/70 bg-emerald-100/35 p-2.5">
+                            <span className="block text-[10px] font-bold text-slate-500 uppercase">
                               {tx("সফল রেসকিউ")}</span>
                             <p className="mt-1 text-sm font-black text-emerald-700">
                               {formatNumberBn(item.impact.completedRescues)}{tx("+ বার")}</p>
                           </div>
 
-                          <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-2.5">
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase">
+                          <div className="liquid-glass-tile rounded-xl border-sky-200/70 bg-sky-100/35 p-2.5">
+                            <span className="block text-[10px] font-bold text-slate-500 uppercase">
                               {tx("উপকৃত মানুষ")}</span>
                             <p className="mt-1 text-sm font-black text-sky-700">
                               {formatNumberBn(item.impact.peopleHelped)}{tx("+ জন")}</p>

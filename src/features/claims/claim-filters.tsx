@@ -38,7 +38,7 @@ export function ClaimFilters({
       <div className="relative flex items-center">
         <Search className="pointer-events-none absolute left-4 size-5 text-slate-400" />
         <input
-          type="text"
+          type="search"
           aria-label={tx("Search claims")}
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
@@ -49,14 +49,14 @@ export function ClaimFilters({
                   "Search by food title, donor organization, area, volunteer, or claim ID...",
                 )
           }
-          className="h-12 w-full rounded-2xl border border-slate-200/90 bg-white pl-11 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-400 shadow-xs transition hover:border-slate-300 focus:border-emerald-600 focus:outline-none focus:ring-3 focus:ring-emerald-500/15"
+          className="liquid-glass-control h-12 w-full rounded-2xl border border-white/80 pl-11 pr-11 text-sm font-medium text-slate-900 placeholder:text-slate-500 transition hover:border-white focus:border-emerald-600 focus:outline-none focus:ring-3 focus:ring-emerald-500/15"
         />
         {search && (
           <button
             type="button"
             onClick={() => onSearchChange("")}
             title={isBn ? tx("সার্চ মুছুন") : tx("Clear search")}
-            className="absolute right-1 grid size-11 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800"
+            className="absolute right-1 grid size-11 place-items-center rounded-full bg-white/70 text-slate-600 transition hover:bg-white hover:text-slate-900"
           >
             <X className="size-3.5" />
           </button>
@@ -71,7 +71,7 @@ export function ClaimFilters({
             ? tx("স্ট্যাটাস অনুসারে ক্লেইম ফিল্টার করুন")
             : tx("Filter claims by status")
         }
-        className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
+        className="flex flex-wrap gap-2"
       >
         {CLAIM_FILTERS.map((item) => {
           const active = filter === item.value;
@@ -85,12 +85,12 @@ export function ClaimFilters({
               aria-pressed={active}
               onClick={() => onFilterChange(item.value)}
               className={cn(
-                "group inline-flex min-w-max cursor-pointer items-center gap-2 rounded-xl border-2 px-3.5 py-2 text-xs font-bold transition-all duration-200 select-none hover:-translate-y-0.5 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:text-sm",
+                "group inline-flex min-w-max cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold transition-all duration-200 select-none hover:-translate-y-0.5 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:text-sm",
                 active
                   ? isException
-                    ? "border-rose-600 bg-rose-600 text-white shadow-md shadow-rose-600/25"
-                    : "border-emerald-700 bg-emerald-700 text-white shadow-md shadow-emerald-700/25"
-                  : "border-slate-300 bg-white text-slate-700 shadow-2xs hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-900 hover:shadow-xs",
+                    ? "border-rose-500 bg-rose-600/90 text-white shadow-md shadow-rose-600/25 backdrop-blur-md"
+                    : "border-emerald-600 bg-emerald-700/90 text-white shadow-md shadow-emerald-700/25 backdrop-blur-md"
+                  : "liquid-glass-pill text-slate-800 hover:bg-white/80 hover:text-emerald-900",
               )}
             >
               <span>{isBn ? item.labelBn : item.label}</span>
@@ -99,7 +99,7 @@ export function ClaimFilters({
                   "rounded-full px-2 py-0.5 text-xs font-black transition",
                   active
                     ? "bg-white/25 text-white"
-                    : "bg-slate-100 text-slate-600 group-hover:bg-emerald-100 group-hover:text-emerald-900",
+                    : "bg-white/75 text-slate-700 group-hover:bg-emerald-100 group-hover:text-emerald-900",
                 )}
               >
                 {count}

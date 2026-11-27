@@ -154,9 +154,11 @@ export function VerificationDocumentPanel() {
           <p className={styles.eyebrow}>{tx("Account verification")}</p>
           <h2 id={`${inputId}-heading`}>
             {tx(
-              (data?.role || query.role) === "VOLUNTEER"
-                ? "Your identity document"
-                : "Your registration document",
+              (data?.role || query.role) === "DONOR"
+                ? "Your business or license document"
+                : (data?.role || query.role) === "VOLUNTEER"
+                  ? "Your identity document"
+                  : "Your registration document",
             )}
           </h2>
         </div>
@@ -221,9 +223,11 @@ export function VerificationDocumentPanel() {
           </ol>}
           {!verified && <p className={styles.intro}>
             {tx(
-              data.role === "NGO"
-                ? "Upload your NGO registration certificate for an administrator to review."
-                : "Upload an identity document for an administrator to review your volunteer account.",
+              data.role === "DONOR"
+                ? "Upload a trade license, BFSA certificate, or valid ID for an administrator to verify your donor account."
+                : data.role === "NGO"
+                  ? "Upload your NGO registration certificate for an administrator to review."
+                  : "Upload an identity document for an administrator to review your volunteer account.",
             )}
           </p>}
           {data.document && (

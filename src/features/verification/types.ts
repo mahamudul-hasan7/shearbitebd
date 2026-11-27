@@ -21,7 +21,7 @@ export interface VerificationReview {
   document: VerificationFile | null;
 }
 export interface VerificationState {
-  role: "NGO" | "VOLUNTEER";
+  role: "DONOR" | "NGO" | "VOLUNTEER";
   status: "PENDING" | "NOT_SUBMITTED" | "VERIFIED" | "REJECTED";
   document: VerificationFile | null;
   reviews: VerificationReview[];
