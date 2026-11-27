@@ -17,9 +17,12 @@
   gap: 6px;
   padding: 5px;
   margin-bottom: 12px;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-control);
+  background: var(--glass-tile);
+  -webkit-backdrop-filter: var(--glass-blur-tile);
+  backdrop-filter: var(--glass-blur-tile);
+  box-shadow: var(--glass-shadow-tile);
 }
 .filters button {
   display: inline-flex;
@@ -49,9 +52,12 @@
   padding: 0 18px;
   margin: 0;
   list-style: none;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow-card);
 }
 .list li + li {
   border-top: 1px solid var(--line);
@@ -59,11 +65,12 @@
 .listRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-height: 96px;
-  padding: 16px 0;
-  border-radius: 10px;
-  transition: background 160ms;
+  padding: 16px 10px;
+  margin-inline: -10px;
+  border-radius: var(--radius-control);
+  transition: background 180ms, transform 180ms;
 }
 .listRow:hover {
   background: var(--role-soft, var(--brand-50));
@@ -111,9 +118,12 @@
   justify-items: center;
   gap: 9px;
   padding: 28px 16px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  background: var(--glass-surface-strong);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  box-shadow: var(--glass-shadow-card);
   text-align: center;
   color: var(--muted-600);
 }
@@ -183,9 +193,12 @@
   align-items: flex-start;
   gap: 13px;
   padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  background: var(--glass-surface-strong);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  box-shadow: var(--glass-shadow-card);
 }
 .emptyOverview > svg {
   flex-shrink: 0;

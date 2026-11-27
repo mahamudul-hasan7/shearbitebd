@@ -1,6 +1,7 @@
 "use client";
 
 import { UiText } from "@/lib/i18n/ui-text-node";
+import { getUiLocale } from "@/lib/i18n/locale";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { ArrowRight, Building2, MapPin, Utensils } from "lucide-react";
 import Link from "next/link";
@@ -10,8 +11,9 @@ import type { SupportedNGOSummary } from "@/features/donor-dashboard/types";
 
 export function SupportedNgosCard({ ngos }: { ngos: SupportedNGOSummary[] }) {
   const tx = useUiText();
+  const locale = getUiLocale();
   return (
-    <Card className="h-full border-slate-200/90 shadow-xs">
+    <Card className="h-full border-white/80">
       <CardHeader
         title={tx("সহায়তাপ্রাপ্ত পার্টনার এনজিও")}
         description={tx("যেসব সার্টিফাইড এনজিও আপনার খাদ্য সরাসরি অভাবী মানুষের মাঝে পৌঁছে দিয়েছে।")}
@@ -27,10 +29,10 @@ export function SupportedNgosCard({ ngos }: { ngos: SupportedNGOSummary[] }) {
           <Link
             key={ngo.id}
             href={ROUTES.donor.ngoProfile(ngo.id)}
-            className="group rounded-3xl border border-slate-200/90 bg-[#f8faf9] p-4 transition-all hover:border-emerald-500/50 hover:bg-emerald-50/50 hover:shadow-xs"
+            className="liquid-glass-tile group rounded-2xl p-4 transition-all hover:-translate-y-0.5 hover:border-emerald-400/60"
           >
             <div className="flex items-start gap-3">
-              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-emerald-100 text-emerald-800 shadow-2xs">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-800 ring-1 ring-emerald-300/50 shadow-2xs">
                 <Building2 className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
@@ -42,11 +44,11 @@ export function SupportedNgosCard({ ngos }: { ngos: SupportedNGOSummary[] }) {
                   <MapPin className="size-3.5 text-emerald-600" /> {ngo.serviceAreas.slice(0, 2).join(" · ")}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold font-heading">
-                  <span className="rounded-full bg-emerald-100/80 px-2.5 py-1 text-emerald-900 border border-emerald-300/40">
+                  <span className="rounded-full bg-emerald-100/85 px-2.5 py-1 text-emerald-900 border border-emerald-300/45">
                     <Utensils className="mr-1 inline size-3.5 text-emerald-700" />
-                    {ngo.mealsSupported}{tx("টি মিল যৌথভাবে বিতরণ")}</span>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-slate-700 ring-1 ring-slate-200 shadow-2xs">
-                    {ngo.completedRescues}{tx("টি সফল উদ্ধার")}</span>
+                    {ngo.mealsSupported.toLocaleString(locale)}{tx("টি মিল যৌথভাবে বিতরণ")}</span>
+                  <span className="rounded-full bg-white/85 px-2.5 py-1 text-slate-700 ring-1 ring-white shadow-2xs">
+                    {ngo.completedRescues.toLocaleString(locale)}{tx("টি সফল উদ্ধার")}</span>
                 </div>
               </div>
             </div>

@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { ArrowRight, FileText } from "lucide-react";
-import { useLanguage } from "@/lib/i18n/language-context";
 import { useUiText } from "@/lib/i18n/use-ui-text";
+import { formatDonationQuantity } from "@/features/donations/donation-presentation";
 import { DonationPhoto } from "@/components/donation/donation-photo";
 import { RescueClock } from "@/components/donor/rescue-clock";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -14,7 +14,6 @@ import type { DonationView } from "@/types/domain";
 import styles from "./donor-mobile.module.css";
 export function ActiveDonationCard({ donation }: { donation: DonationView }) {
   const tx = useUiText();
-  const { language } = useLanguage();
   const nextStep =
     donation.status === DonationStatus.PICKED_UP
       ? "The rider has collected this food. Follow the delivery progress."
@@ -33,6 +32,7 @@ export function ActiveDonationCard({ donation }: { donation: DonationView }) {
         <div className={styles.activePhoto}>
           <DonationPhoto
             donation={donation}
+            hideSampleBadge
             fill
             sizes="(min-width:768px) 112px, 80px"
             className="object-cover"
@@ -42,10 +42,7 @@ export function ActiveDonationCard({ donation }: { donation: DonationView }) {
           <StatusBadge status={donation.status} />
           <h3>{donation.title}</h3>
           <p>
-            {donation.quantity.value.toLocaleString(
-              language === "bn" ? "bn-BD" : "en-BD",
-            )}{" "}
-            {tx(donation.quantity.unit)} · {donation.pickup.approximateArea}
+            {formatDonationQuantity(donation)} · {donation.pickup.approximateArea}
           </p>
         </div>
       </div>
