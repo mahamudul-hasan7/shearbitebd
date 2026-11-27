@@ -2,16 +2,16 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import Image from "next/image";
-import { Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { cn } from "@/lib/utils";
 import styles from "./hero-story.module.css";
 
 export const HERO_INTERVAL_MS = 6_000;
 export const HERO_SLIDES = [
-  {src:"/images/hero/food-sharing.webp",label:"Food sharing",alt:"Volunteers packing extra meals in a community kitchen"},
-  {src:"/images/hero/rider-collection.webp",label:"Rider collection",alt:"A volunteer rider with a bicycle and a food delivery bag"},
-  {src:"/images/hero/ngo-distribution.webp",label:"NGO distribution",alt:"NGO volunteers handing a packed meal to a community member"},
+  {src:"/images/hero/slide-1-kitchen.webp",label:"Food sharing",alt:"Volunteers packing extra meals in a community kitchen"},
+  {src:"/images/hero/slide-2-rider.webp",label:"Rider collection",alt:"A volunteer rider with a bicycle and a food delivery bag"},
+  {src:"/images/hero/slide-3-distribution.webp",label:"NGO distribution",alt:"NGO volunteers handing a packed meal to a community member"},
 ] as const;
 
 type StoryState = {index:number;ready:boolean[];requested:boolean[];failed:boolean[];pending?:number;revision:number};
@@ -45,11 +45,11 @@ function subscribeMotionPolicy(notify:()=>void) {
 function motionPolicy() {return !document.hidden && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;}
 
 type StoryContext = {
-  state:StoryState;cycling:boolean;paused:boolean;motionAllowed:boolean;
-  dispatch:(action:StoryAction)=>void;togglePaused:()=>void;register:(element:HTMLElement)=>()=>void;
+  state:StoryState;cycling:boolean;inView:boolean;paused:boolean;motionAllowed:boolean;
+  dispatch:(action:StoryAction)=>void;stepSlide:(delta:-1 | 1)=>void;togglePaused:()=>void;register:(element:HTMLElement)=>()=>void;
 };
 const Context=createContext<StoryContext | null>(null);
-function useHeroStory() {const story=useContext(Context);if(!story) throw new Error("Hero story provider is missing");return story;}
+export function useHeroStory() {const story=useContext(Context);if(!story) throw new Error("Hero story provider is missing");return story;}
 
 export function HeroStoryProvider({children}:{children:ReactNode}) {
   const [state,dispatch]=useReducer(reducer,initialState);
@@ -70,17 +70,25 @@ export function HeroStoryProvider({children}:{children:ReactNode}) {
   const next=[1,2].map(offset=>(state.index+offset)%HERO_SLIDES.length).find(index=>!state.failed[index]);
   const cycling=motionAllowed && inView && !paused && state.pending===undefined && state.ready[state.index] && next!==undefined && state.ready[next];
 
-  // Fetch the following image after the visible one is ready, outside the critical load.
+  const stepSlide=useCallback((delta:-1 | 1)=>{
+    const len=HERO_SLIDES.length;
+    const target=[1,2].map(offset=>(state.index+delta*offset+len)%len).find(index=>!state.failed[index]);
+    if(target!==undefined) dispatch({type:"select",index:target});
+  },[state.index,state.failed]);
+
+  // Prefetch following images after the active image loads so sliding is instant.
   useEffect(()=>{
-    if(!motionAllowed || !inView || paused || next===undefined || state.requested[next] || (!state.ready[state.index] && !state.failed[state.index])) return;
-    const request=()=>dispatch({type:"request",index:next});
+    if(!inView || (!state.ready[state.index] && !state.failed[state.index])) return;
+    const pendingIndexes=HERO_SLIDES.map((_,i)=>i).filter(i=>!state.requested[i] && !state.failed[i]);
+    if(pendingIndexes.length===0) return;
+    const requestAll=()=>pendingIndexes.forEach(index=>dispatch({type:"request",index}));
     if(typeof window.requestIdleCallback === "function") {
-      const id=window.requestIdleCallback(request,{timeout:1500});
+      const id=window.requestIdleCallback(requestAll,{timeout:1200});
       return ()=>window.cancelIdleCallback(id);
     }
-    const id=window.requestAnimationFrame(request);
+    const id=window.requestAnimationFrame(requestAll);
     return ()=>window.cancelAnimationFrame(id);
-  },[motionAllowed,inView,paused,next,state.requested,state.ready,state.failed,state.index]);
+  },[inView,state.requested,state.ready,state.failed,state.index]);
 
   // One timer drives both responsive views, the photograph and the slogan animation.
   useEffect(()=>{
@@ -89,7 +97,7 @@ export function HeroStoryProvider({children}:{children:ReactNode}) {
     return ()=>window.clearTimeout(id);
   },[cycling,next,state.index,state.revision]);
 
-  const value=useMemo(()=>({state,cycling,paused,motionAllowed,dispatch,togglePaused:()=>setPaused(value=>!value),register}),[state,cycling,paused,motionAllowed,register]);
+  const value=useMemo(()=>({state,cycling,inView,paused,motionAllowed,dispatch,stepSlide,togglePaused:()=>setPaused(value=>!value),register}),[state,cycling,inView,paused,motionAllowed,stepSlide,register]);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
@@ -105,17 +113,21 @@ export function HeroStoryMedia({imageClassName}:{imageClassName?:string}) {
 
 export function HeroStoryControls({className}:{className?:string}) {
   const tx=useUiText();
-  const {state,dispatch,paused,togglePaused,motionAllowed}=useHeroStory();
+  const {state,dispatch,stepSlide,paused,togglePaused,motionAllowed}=useHeroStory();
   return <div className={cn(styles.controls,className)} role="group" aria-label={tx("Landing photo controls")} data-testid="hero-story-controls">
+    <button type="button" className={styles.navButton} aria-label={tx("Previous photo")} onClick={()=>stepSlide(-1)}><ChevronLeft size={14} aria-hidden="true" /></button>
     {HERO_SLIDES.map((slide,index)=><button key={slide.src} type="button" className={styles.dotButton} aria-label={tx("Show photo {0}: {1}",index+1,tx(slide.label))} aria-pressed={index===state.index} aria-busy={index===state.pending} disabled={state.failed[index]} onClick={()=>dispatch({type:"select",index})}><span className={styles.dot} /></button>)}
+    <button type="button" className={styles.navButton} aria-label={tx("Next photo")} onClick={()=>stepSlide(1)}><ChevronRight size={14} aria-hidden="true" /></button>
     <button type="button" className={styles.pauseButton} aria-label={tx(paused ? "Play slideshow" : "Pause slideshow")} aria-pressed={paused} disabled={!motionAllowed} onClick={togglePaused}>{paused || !motionAllowed ? <Play size={13} aria-hidden="true" /> : <Pause size={13} aria-hidden="true" />}</button>
   </div>;
 }
 
 export function HeroSloganLine({children,className}:{children:string;className?:string}) {
-  const {state,cycling}=useHeroStory();
+  const {state,cycling,inView,paused,motionAllowed}=useHeroStory();
   const text=children.replace(/[.।]+\s*$/u,"");
-  return <span className={styles.sloganLine} data-testid="hero-slogan-line" data-slide={state.index} data-running={cycling}>
+  const cursorRunning=(motionAllowed && inView && !paused) || cycling;
+
+  return <span className={styles.sloganLine} data-testid="hero-slogan-line" data-slide={state.index} data-running={cursorRunning}>
     <span className={styles.reserved} aria-hidden="true">{text}<i className={styles.cursorSpace} /></span>
     <span className={cn(styles.animatedLine,className)} aria-hidden="true">{text}<i className={styles.cursor} /></span>
     <span className="sr-only">{text}</span>
