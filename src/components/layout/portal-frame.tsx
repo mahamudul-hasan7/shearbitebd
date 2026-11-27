@@ -15,6 +15,8 @@ import { AppHeader } from "./app-header";
 import { DesktopSidebar } from "@/components/navigation/desktop-sidebar";
 import { MobileBottomNavigation } from "@/components/navigation/mobile-bottom-nav";
 import { PortalTheme } from "@/components/portal/portal-theme";
+import theme from "@/components/portal/portal-theme.module.css";
+import { DemoRoleSwitcher } from "@/components/portal/demo-role-switcher";
 import { ROUTES } from "@/lib/routes";
 import type { PortalRole } from "@/types/navigation";
 
@@ -73,7 +75,7 @@ export function PortalFrame({
     <PortalTheme role={role}>
       <div
         data-portal-shell={role}
-        className="min-h-screen bg-canvas antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900"
+        className={`${theme.ambientShell} min-h-screen antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900`}
       >
         <DesktopSidebar role={role} activeHref={activeHref} {...profile} />
         <div className="min-w-0 flex min-h-screen flex-col lg:pl-[var(--sidebar-width)]">
@@ -92,6 +94,7 @@ export function PortalFrame({
             <MobileBottomNavigation role={role} activeHref={activeHref} />
           )}
         </div>
+        <DemoRoleSwitcher />
       </div>
     </PortalTheme>
   );

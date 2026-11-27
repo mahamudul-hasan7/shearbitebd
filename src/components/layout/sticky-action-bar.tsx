@@ -1,11 +1,18 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-export function StickyActionBar({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export function StickyActionBar({
+  contained = false,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement> & { contained?: boolean }) {
   return (
     <div
       className={cn(
-        "sticky bottom-0 z-30 -mx-3 border-t border-slate-200/80 bg-white/95 backdrop-blur-xl px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] xs:-mx-4 sm:mx-0 sm:py-4 sm:flex sm:items-center sm:justify-end sm:rounded-t-2xl",
+        "sticky bottom-0 z-30 backdrop-blur-2xl backdrop-saturate-180 px-4 py-3 sm:py-4 sm:flex sm:items-center sm:justify-end",
+        contained
+          ? "mx-0 rounded-b-[calc(var(--radius-card)-1.5px)] border-t border-white/65 bg-white/38 shadow-[inset_0_1px_0_rgb(255_255_255/82%)]"
+          : "-mx-1 rounded-2xl border border-white/82 bg-white/68 shadow-[0_14px_34px_-12px_rgba(12,40,75,0.22),inset_0_1px_0_rgba(255,255,255,0.92)] sm:mx-0",
         className,
       )}
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}

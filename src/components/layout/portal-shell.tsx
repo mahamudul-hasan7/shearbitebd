@@ -14,6 +14,7 @@ import { MobileBottomNavigation } from "@/components/navigation/mobile-bottom-na
 import { cn } from "@/lib/utils";
 import type { PortalRole } from "@/types/navigation";
 import { PortalTheme } from "@/components/portal/portal-theme";
+import { DemoRoleSwitcher } from "@/components/portal/demo-role-switcher";
 import theme from "@/components/portal/portal-theme.module.css";
 
 export function PortalShell({
@@ -94,16 +95,16 @@ export function PortalShell({
         "flex-1 pt-4 sm:pt-8",
         shouldHideMobileNav
           ? "pb-8 sm:pb-12"
-          : "pb-[calc(7.5rem+env(safe-area-inset-bottom))] lg:pb-12",
+          : "pb-[calc(9.5rem+env(safe-area-inset-bottom))] lg:pb-24",
       )}
     >
-      <main ref={main} data-portal-page={pathname} className="min-w-0">
+      <main ref={main} data-portal-page={pathname} className="relative z-[1] min-w-0">
         {/* Dedicated Left-Aligned Back Navigation */}
         {backHref && (
           <div className="mb-4">
             <Link
               href={backHref}
-              className={`${theme.backLink} inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-white px-3.5 py-1.5 text-xs font-semibold transition-colors`}
+              className={`${theme.backLink} liquid-glass-pill inline-flex min-h-11 items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all`}
             >
               <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
               <span>{backLabel}</span>
@@ -175,8 +176,14 @@ export function PortalShell({
     <PortalTheme role={role}>
       <div
         data-portal-shell={role}
-        className="min-h-screen bg-canvas antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900"
+        className={`${theme.ambientShell} relative min-h-screen antialiased text-ink-900 selection:bg-brand-100 selection:text-brand-900`}
       >
+        <div className={theme.donorGlassCanvas} aria-hidden="true">
+          <span className={`${theme.donorOrb} ${theme.donorOrbEmerald}`} />
+          <span className={`${theme.donorOrb} ${theme.donorOrbTeal}`} />
+          <span className={`${theme.donorOrb} ${theme.donorOrbSky}`} />
+          <span className={`${theme.donorOrb} ${theme.donorOrbGold}`} />
+        </div>
         <DesktopSidebar
           role={role}
           activeHref={activeHref}
@@ -204,6 +211,7 @@ export function PortalShell({
             />
           )}
         </div>
+        <DemoRoleSwitcher />
       </div>
     </PortalTheme>
   );

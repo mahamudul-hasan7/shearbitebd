@@ -3,14 +3,16 @@
   gap: 14px;
   min-width: 0;
   padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  box-shadow: var(--glass-shadow-card);
 }
 .toolbar :is(input, select) {
   min-height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius-control);
 }
 .toolbar button {
   min-height: 44px;

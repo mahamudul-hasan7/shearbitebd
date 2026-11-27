@@ -100,15 +100,21 @@
 }
 .metric {
   min-width: 0;
-  padding: 17px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--shadow-card);
+  padding: 18px;
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow-card);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
 .metric:hover {
-  transform: none;
-  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 95%),
+    0 18px 34px -16px rgb(16 32 43 / 16%);
 }
 .metric > div > span:first-child {
   width: 36px;
@@ -149,19 +155,24 @@
   flex-direction: column;
   min-width: 0;
   padding: 18px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--shadow-card);
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  backdrop-filter: var(--glass-blur-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow-card);
 }
 .workCard[data-status="DISPUTED"] {
   border-color: var(--danger);
 }
 .disclosure {
   min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  background: var(--glass-tile);
+  -webkit-backdrop-filter: var(--glass-blur-tile);
+  backdrop-filter: var(--glass-blur-tile);
+  box-shadow: var(--glass-shadow-tile);
 }
 .disclosure > summary {
   display: flex;
@@ -377,23 +388,27 @@
   gap: 10px;
   min-height: 46px;
   margin-top: auto;
-  padding: 11px 13px;
-  border: 1px solid var(--role-soft, var(--brand-100));
-  border-radius: 12px;
-  background: var(--role-soft, var(--brand-50));
+  padding: 11px 14px;
+  border: 1px solid rgb(255 255 255 / 78%);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 54%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 88%);
   color: var(--role-ink, var(--brand-800));
   font-size: 13px;
   font-weight: 600;
   line-height: 1.7;
-  transition: background 160ms;
+  transition: background 160ms, border-color 160ms;
 }
 .workAction[data-secondary="true"] {
   justify-content: center;
-  background: var(--surface);
-  border-color: var(--line);
+  background: rgb(255 255 255 / 44%);
+  border-color: rgb(255 255 255 / 72%);
 }
 .workAction:hover {
-  background: var(--role-soft, var(--brand-100));
+  background: rgb(255 255 255 / 78%);
+  border-color: rgb(255 255 255 / 95%);
 }
 .workAction svg {
   flex-shrink: 0;

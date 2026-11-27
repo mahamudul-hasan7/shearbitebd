@@ -1,6 +1,7 @@
 "use client";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
+import { ArrowUpRight, LogOut } from "lucide-react";
 import { RoleBadge } from "@/components/portal/role-badge";
 import theme from "@/components/portal/portal-theme.module.css";
 import Link from "next/link";
@@ -33,7 +34,7 @@ export function DesktopSidebar({
   const pathname = usePathname();
   const navigation = useRef<HTMLElement>(null);
   const selection = useRef<HTMLSpanElement>(null);
-  const { session } = useMockAuth();
+  const { session, signOut } = useMockAuth();
   const { activeMission } = useVolunteerStore();
   const feed = useNotificationFeed();
   const unread = feed.notifications.filter((item) => !item.read).length;
@@ -49,16 +50,17 @@ export function DesktopSidebar({
     <aside
       className={`${theme.sidebar} fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col border-r lg:flex`}
     >
-      <div className="border-b border-line p-5">
-        <BrandLogo />
-        <div className="mt-4">
-          <RoleBadge role={role} />
+      <div className="p-4 pb-3">
+        <BrandLogo inverse />
+        <div className="mt-3">
+          <RoleBadge role={role} inverse />
         </div>
       </div>
+      <p className={theme.sidebarSectionLabel}>{tx("MANAGE")}</p>
       <nav
         ref={navigation}
         aria-label={tx("Account sidebar")}
-        className={`${theme.sidebarNav} grid flex-1 content-start gap-1 overflow-y-auto p-3`}
+        className={`${theme.sidebarNav} grid flex-1 content-start gap-1 px-3 pb-3`}
       >
         <span
           ref={selection}
@@ -66,38 +68,60 @@ export function DesktopSidebar({
           aria-hidden="true"
           data-testid="sidebar-nav-selection"
         />
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={selected === item.href ? "page" : undefined}
-            className={theme.sidebarLink}
-          >
-            <LiveIcon
-              icon={item.icon}
-              motion={selected === item.href ? "once" : "interaction"}
-              className="size-4 shrink-0"
-            />
-            <span className="flex-1">{tx(item.label)}</span>
-            {item.href.endsWith("/notifications") && unread > 0 && (
-              <span
-                aria-label={tx("{0} unread notifications", unread)}
-                className="rounded-full bg-red-600 px-2 text-xs text-white"
-              >
-                {unread}
-              </span>
-            )}
-            <NavigationFeedback />
-          </Link>
-        ))}
+        {items.map((item) => {
+          const active = selected === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={theme.sidebarLink}
+            >
+              <LiveIcon
+                icon={item.icon}
+                motion={active ? "once" : "interaction"}
+                className="size-4.5 shrink-0"
+              />
+              <span className="flex-1 truncate">{tx(item.label)}</span>
+              {item.href.endsWith("/notifications") && unread > 0 && (
+                <span
+                  aria-label={tx("{0} unread notifications", unread)}
+                  className="rounded-full bg-red-600 px-2 text-xs text-white"
+                >
+                  {unread}
+                </span>
+              )}
+              {active && (
+                <ArrowUpRight className="size-4 shrink-0 text-white/75" aria-hidden="true" />
+              )}
+              <NavigationFeedback />
+            </Link>
+          );
+        })}
       </nav>
-      <div className="border-t border-line p-5">
-        <p className="truncate text-sm font-semibold text-ink-900">
-          {session?.displayName || profileName || "My account"}
-        </p>
-        <p className="mt-1 truncate text-xs text-muted-600">
-          {session?.email || "Account preview"}
-        </p>
+      <div className="border-t border-white/12 p-4">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/15 text-xs font-extrabold text-white ring-1 ring-white/20">
+            {(session?.displayName || profileName || "U").slice(0, 1).toUpperCase()}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-bold text-white">
+              {session?.displayName || profileName || "My account"}
+            </p>
+            <p className="truncate text-[11px] text-white/65">
+              {session?.email || "Account preview"}
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-label={tx("Log out")}
+            title={tx("Log out")}
+            onClick={() => void signOut()}
+            className="grid size-9 shrink-0 place-items-center rounded-xl text-white/80 hover:bg-white/12 hover:text-white transition cursor-pointer"
+          >
+            <LogOut className="size-4" />
+          </button>
+        </div>
       </div>
     </aside>
   );

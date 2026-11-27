@@ -1,4 +1,5 @@
 "use client";
+import { useLanguage } from "@/lib/i18n/language-context";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
 import Link from "next/link";
@@ -123,6 +124,7 @@ export function MobileBottomNavigation({
   unreadNotifications?: number;
 }) {
   const tx = useUiText();
+  const { language } = useLanguage();
   const { activeMission } = useVolunteerStore();
   const feed = useNotificationFeed();
   const unreadNotifications = feed.notifications.filter(
@@ -223,7 +225,13 @@ export function MobileBottomNavigation({
                   <LiveIcon icon={Icon} className={styles.primaryIcon} />
                   <NavigationFeedback />
                 </Link>
-                <span className={styles.primaryLabel}>{tx(item.label)}</span>
+                <span className={styles.primaryLabel}>
+                  {item.label === "মিশন"
+                    ? language === "bn"
+                      ? "মিশন"
+                      : "Mission"
+                    : tx(item.label)}
+                </span>
               </div>
             );
           }
@@ -251,7 +259,13 @@ export function MobileBottomNavigation({
                   </span>
                 )}
               </div>
-              <span className={styles.label}>{tx(item.label)}</span>
+              <span className={styles.label}>
+                {item.label === "ডিসপ্যাচ"
+                  ? language === "bn"
+                    ? "ডিসপ্যাচ"
+                    : "Dispatches"
+                  : tx(item.label)}
+              </span>
               <NavigationFeedback />
             </Link>
           );
