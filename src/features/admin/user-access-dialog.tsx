@@ -82,6 +82,14 @@ export function UserAccessDialog({
   return (
     <Dialog
       title={user?.displayName || tx("Manage user")}
+      tone={
+        action === "BAN" ||
+        action === "DELETE" ||
+        user?.access === "BANNED" ||
+        user?.access === "DELETED"
+          ? "rose"
+          : "slate"
+      }
       onClose={onClose}
       busy={busy}
     >

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { adminNavigation } from "@/lib/navigation";
 import { LanguageSwitch } from "@/components/ui/language-switch";
+import { DemoRoleSwitcher } from "@/components/portal/demo-role-switcher";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -150,6 +151,7 @@ export function AdminShell({
         </main>
       </div>
       {nav(true)}
+      <DemoRoleSwitcher />
     </div>
   );
 }

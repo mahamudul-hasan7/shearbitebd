@@ -285,7 +285,11 @@ export function AdminListView({
         />
       )}
       {rescue && (
-        <RescueDialog rescue={rescue} onClose={() => setRescue(undefined)} />
+        <RescueDialog
+          rescue={rescue}
+          onClose={() => setRescue(undefined)}
+          onSaved={onSaved}
+        />
       )}
     </>
   );

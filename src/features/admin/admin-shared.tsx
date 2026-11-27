@@ -2,8 +2,6 @@
 import {
   useCallback,
   useEffect,
-  useId,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -12,9 +10,12 @@ import {
   ChevronLeft,
   ChevronRight,
   RefreshCw,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  ExecutiveDialog,
+  type ExecutiveDialogTone,
+} from "@/components/ui/executive-dialog";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
 import s from "./admin.module.css";
@@ -27,7 +28,7 @@ export const labels: Record<string, string> = {
   UNBAN: "Unbanned",
   DELETE: "Deleted account",
   PENDING: "Awaiting review",
-  NOT_SUBMITTED: "Awaiting review",
+  NOT_SUBMITTED: "Awaiting documents",
   VERIFIED: "Verified",
   REJECTED: "Rejected",
   DONOR: "Donor",
@@ -86,7 +87,6 @@ export function Status({ value }: { value: string }) {
       ? "danger"
       : [
             "PENDING",
-            "NOT_SUBMITTED",
             "SUBMITTED",
             "UNDER_REVIEW",
             "MEDIUM",
@@ -205,47 +205,40 @@ export function Dialog({
   children,
   onClose,
   busy = false,
+  tone = "emerald",
+  subtitle,
+  badge,
+  leading,
+  footer,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   busy?: boolean;
+  tone?: ExecutiveDialogTone;
+  subtitle?: ReactNode;
+  badge?: ReactNode;
+  leading?: ReactNode;
+  footer?: ReactNode;
 }) {
   const tx = useUiText();
-  const ref = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
-  useEffect(() => {
-    const node = ref.current;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    node?.showModal();
-    return () => {
-      node?.close();
-      document.body.style.overflow = previousOverflow;
-    };
-  }, []);
   return (
-    <dialog
-      ref={ref}
-      className={s.dialog}
-      aria-labelledby={titleId}
-      onCancel={(e) => {
-        if (e.target !== e.currentTarget) return;
-        e.preventDefault();
-        if (!busy) onClose();
-      }}
+    <ExecutiveDialog
+      open
+      title={title}
+      eyebrow={tx("Admin review")}
+      subtitle={subtitle}
+      badge={badge}
+      leading={leading}
+      tone={tone}
+      size="lg"
+      busy={busy}
+      closeLabel="Close"
+      onClose={onClose}
+      footer={footer}
     >
-      <header className={s.dialogHeader}>
-        <div>
-          <p className={s.eyebrow}>{tx("Admin review")}</p>
-          <h2 id={titleId}>{title}</h2>
-        </div>
-        <button aria-label={tx("Close")} disabled={busy} onClick={onClose}>
-          <X size={22} />
-        </button>
-      </header>
-      <div className={s.dialogBody}>{children}</div>
-    </dialog>
+      <div className={s.dialogContent}>{children}</div>
+    </ExecutiveDialog>
   );
 }
 export function useAdminDate() {
