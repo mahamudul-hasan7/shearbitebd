@@ -4,7 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata = {
-  title: "লগইন করুন | ShareBite BD",
+  title: "লগইন করুন",
   description:
     "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা ও বণ্টন নেটওয়ার্কে প্রবেশ করুন।",
 };

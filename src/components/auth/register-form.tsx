@@ -12,16 +12,16 @@ import {
   Phone,
   UserRound,
 } from "lucide-react";
-import { VerificationDocumentPanel } from "@/features/verification/document-panel";
+import { AccountCreatedCelebration } from "@/components/auth/account-created-celebration";
 import { AuthProgress } from "@/components/auth/auth-progress";
 import { PasswordInput } from "@/components/auth/password-input";
 import { Alert } from "@/components/ui/alert";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useMockAuth, getRoleLandingRoute } from "@/features/auth/mock-auth";
+import { useMockAuth } from "@/features/auth/mock-auth";
 import {
   INITIAL_REGISTRATION_DATA,
   type RegistrationData,
@@ -212,55 +212,15 @@ export function RegisterForm() {
 
   if (currentStep === 4) {
     return (
-      <div className="grid gap-6">
-        <AuthProgress steps={steps} current={4} />
-        <CheckCircle2
-          size={48}
-          className="text-emerald-600"
-          aria-hidden="true"
-        />
-        <div>
-          <h1
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-2xl font-bold text-ink-900"
-          >
-            {tx("Your account is ready")}
-          </h1>
-          <p className="mt-3 text-sm leading-7 text-muted-600">
-            {tx("Your account has been created successfully.")}
-          </p>
-        </div>
-        {role !== "donor" && (
-          <Alert
-            tone="info"
-            title={tx("Account review pending")}
-            description={tx(
-              "Upload your document below. An administrator will review your account before you can claim or deliver food.",
-            )}
-          />
-        )}
-        {!sessionReady && (
-          <Alert
-            tone="info"
-            title={tx("Sign in to continue")}
-            description={tx(
-              "Your account was created. Sign in with the details you just entered.",
-            )}
-          />
-        )}
-        <p className="break-all text-sm text-muted-600">{data.email}</p>
-        {role !== "donor" && sessionReady && <VerificationDocumentPanel />}
-        <ButtonLink
-          href={
-            sessionReady ? getRoleLandingRoute(userRole) : ROUTES.auth.login
-          }
-          size="lg"
-          rightIcon={<ArrowRight size={18} />}
-        >
-          {tx(sessionReady ? "Continue to dashboard" : "Sign in")}
-        </ButtonLink>
-      </div>
+      <AccountCreatedCelebration
+        steps={steps}
+        role={role}
+        userRole={userRole}
+        roleLabel={roleNames[role]}
+        data={data}
+        sessionReady={sessionReady}
+        headingRef={headingRef}
+      />
     );
   }
 
@@ -281,7 +241,7 @@ export function RegisterForm() {
                 : "Review your details",
           )}
         </h1>
-        <p className="mt-3 text-sm leading-7 text-muted-600">
+        <p className="mt-1 text-sm leading-6 text-muted-600">
           {tx(
             currentStep === 1
               ? "Start with your contact details and a password."
@@ -307,12 +267,11 @@ export function RegisterForm() {
         )}
         <fieldset disabled={isSubmitting}>
           {currentStep === 1 && (
-            <div className="grid min-w-0 gap-5 sm:grid-cols-2">
+            <div className="grid min-w-0 gap-3.5 sm:grid-cols-2">
               <Select
                 label={tx("Choose your role")}
                 name="role"
                 value={role}
-                containerClassName="sm:col-span-2"
                 onChange={(event) => {
                   setRole(event.target.value as RegistrationRole);
                   setTermsAccepted(false);
@@ -337,7 +296,6 @@ export function RegisterForm() {
                 autoComplete="name"
                 error={errors.fullName}
                 leftIcon={<UserRound size={20} />}
-                containerClassName="sm:col-span-2"
               />
               <Input
                 label={tx("Email address")}
@@ -594,6 +552,7 @@ export function RegisterForm() {
               type="submit"
               size="lg"
               rightIcon={<ArrowRight size={17} />}
+              className="rounded-2xl"
             >
               {tx("Continue")}
             </Button>
@@ -603,6 +562,7 @@ export function RegisterForm() {
               size="lg"
               disabled={isSubmitting}
               rightIcon={<CheckCircle2 size={18} />}
+              className="rounded-2xl"
             >
               {tx(isSubmitting ? "Creating your account..." : "Create account")}
             </Button>

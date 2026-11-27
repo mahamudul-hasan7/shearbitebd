@@ -6,14 +6,14 @@ import { LanguageSwitch } from "@/components/ui/language-switch";
 import { ROUTES } from "@/lib/routes";
 
 export const metadata = {
-  title: "Platform Overview & Onboarding | ShareBite BD",
+  title: "Platform Overview & Onboarding",
   description: "Learn how ShareBite BD connects safe surplus food with nearby communities in Bangladesh.",
 };
 
 export default function OnboardingPage() {
   return (
-    <main className="min-h-screen bg-canvas px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-      <div className="mx-auto max-w-7xl rounded-2xl sm:rounded-3xl border border-line bg-surface/90 p-6 shadow-xl backdrop-blur-md sm:p-10 lg:p-12">
+    <main className="min-h-screen bg-[radial-gradient(640px_380px_at_10%_8%,rgba(16,185,129,0.18),transparent_68%),radial-gradient(580px_380px_at_90%_12%,rgba(56,189,248,0.16),transparent_68%),#eef6f3] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="liquid-glass-card mx-auto max-w-7xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 lg:p-12">
         {/* Top Header */}
         <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-6">
           <BrandLogo href={ROUTES.home} />

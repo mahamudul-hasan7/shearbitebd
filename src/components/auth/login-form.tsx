@@ -146,47 +146,71 @@ export function LoginForm() {
         size="lg"
         fullWidth
         disabled={loading || redirecting}
+        rightIcon={
+          !loading && !redirecting ? (
+            <ArrowRight size={18} aria-hidden="true" />
+          ) : undefined
+        }
+        className="rounded-2xl"
       >
         {redirecting
           ? tx("ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...")
           : loading
             ? tx("যাচাই করা হচ্ছে...")
             : tx("Sign in")}
-        {!loading && !redirecting && (
-          <ArrowRight size={18} aria-hidden="true" />
-        )}
       </Button>
       <p className={styles.signup}>
         {tx("Need an account?")}{" "}
         <Link href={ROUTES.auth.roleSelection}>{tx("Create an account")}</Link>
       </p>
-      <details className={styles.demo}>
-        <summary>{tx("Try a demo account")}</summary>
-        <p>{tx("Choose a demo account to fill the form, then sign in.")}</p>
-        <div className={styles.demoOptions}>
-          {DEMO_ACCOUNTS.map((account) => (
-            <button
-              key={account.role}
-              type="button"
-              disabled={loading || redirecting}
-              aria-pressed={email === account.email}
-              onClick={() => {
-                setEmail(account.email);
-                setPassword(account.password);
-                setErrors({});
-              }}
-            >
-              {tx(
+      <div className="liquid-glass-tile rounded-2xl border border-white/85 bg-gradient-to-br from-emerald-50/75 via-white/55 to-teal-50/55 p-3.5 space-y-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-extrabold uppercase tracking-wider text-emerald-950">
+            {tx("Try a demo account")}
+          </p>
+          <span className="text-[11px] font-semibold text-emerald-800/80">
+            {tx("1-click fill")}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {[
+            ...DEMO_ACCOUNTS.map((account) => ({
+              key: account.role,
+              email: account.email,
+              password: account.password,
+              label:
                 account.role === UserRole.DONOR
-                  ? "Food donor"
+                  ? "Donor"
                   : account.role === UserRole.NGO
                     ? "NGO"
-                    : "Volunteer",
-              )}
-            </button>
-          ))}
+                    : "Rider",
+            })),
+            { key: "ADMIN", email: "admin", password: "admin123", label: "Admin" },
+          ].map((account) => {
+            const active = email === account.email;
+            return (
+              <button
+                key={account.key}
+                type="button"
+                disabled={loading || redirecting}
+                aria-pressed={active}
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword(account.password);
+                  setErrors({});
+                }}
+                className={`min-h-10 whitespace-nowrap rounded-xl border px-3 py-2 text-xs font-bold transition cursor-pointer ${
+                  active
+                    ? "border-emerald-700 bg-gradient-to-r from-[#022c22] via-[#047857] to-[#059669] text-white shadow-sm"
+                    : "border-white/85 bg-white/75 text-slate-800 hover:border-emerald-400 hover:bg-emerald-50/85 hover:text-emerald-950"
+                }`}
+              >
+                {tx(account.label)}
+              </button>
+            );
+          })}
         </div>
-      </details>
+      </div>
     </form>
   );
 }

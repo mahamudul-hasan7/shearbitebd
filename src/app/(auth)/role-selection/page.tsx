@@ -16,11 +16,11 @@ export default function RoleSelectionPage() {
           <h1 className="text-2xl font-bold text-ink-900">
             {tx("Choose your role")}
           </h1>
-          <p className="mt-3 text-sm leading-7 text-muted-600">
+          <p className="mt-1.5 text-sm leading-6 text-muted-600">
             {tx("Choose how you want to help, then create your account.")}
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
           <RoleCard
             title={tx("Food donor")}
             description={tx("List extra meals for collection.")}

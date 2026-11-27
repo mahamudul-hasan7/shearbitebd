@@ -4,7 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
 
 export const metadata = {
-  title: "রেজিস্ট্রেশন করুন | ShareBite BD",
+  title: "রেজিস্ট্রেশন করুন",
   description:
     "ShareBite BD উদ্বৃত্ত খাদ্য সুরক্ষা ও বণ্টন নেটওয়ার্কে যুক্ত হোন।",
 };

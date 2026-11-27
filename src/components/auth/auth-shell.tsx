@@ -42,9 +42,17 @@ export function AuthShell({
             sizes="40vw"
             className="object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#062e23] to-[#062e23]/70" />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-emerald-400/20 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-24 -left-20 size-72 rounded-full bg-teal-300/15 blur-3xl"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#022c22] via-[#022c22]/65 to-transparent" />
           <div className={styles.artworkContent}>
-            <BrandLogo href={ROUTES.home} inverse />
+            <BrandLogo href={ROUTES.home} inverse variant="classic" />
             <h2>{tx(title)}</h2>
             <p>{tx(description)}</p>
             <ul>
@@ -63,7 +71,11 @@ export function AuthShell({
         </aside>
         <section className={styles.panel}>
           <header className={styles.header}>
-            <BrandLogo href={ROUTES.home} className={styles.mobileBrand} />
+            <BrandLogo
+              href={ROUTES.home}
+              variant="classic"
+              className={styles.mobileBrand}
+            />
             <Link href={backHref} className={styles.backLink}>
               <ArrowLeft size={17} aria-hidden="true" />
               {tx("Back to home")}

@@ -13,7 +13,7 @@ export interface AuthProgressStep {
 export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; current: number }) {
   const tx = useUiText();
   return (
-    <ol className="grid grid-cols-4 gap-2 mb-7" aria-label={tx("Registration progress")}>
+    <ol className="mb-1 grid grid-cols-4 gap-2" aria-label={tx("Registration progress")}>
       {steps.map((step, index) => {
         const stepNumber = index + 1;
         const complete = stepNumber < current;
@@ -24,7 +24,7 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
               <span
                 className={cn(
                   "absolute right-1/2 top-4 h-0.5 w-full -translate-x-[1px] transition-colors duration-300",
-                  stepNumber <= current ? "bg-emerald-600" : "bg-slate-200",
+                  stepNumber <= current ? "bg-emerald-600" : "bg-emerald-950/12",
                 )}
               />
             )}
@@ -32,18 +32,18 @@ export function AuthProgress({ steps, current }: { steps: AuthProgressStep[]; cu
               className={cn(
                 "relative z-10 grid size-8 place-items-center rounded-full text-xs font-black transition-all shadow-xs font-heading",
                 complete
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-gradient-to-br from-[#022c22] to-[#059669] text-white"
                   : active
-                  ? "bg-emerald-600 text-white ring-4 ring-emerald-500/20 scale-105"
-                  : "border-2 border-slate-200 bg-white text-slate-400",
+                  ? "bg-gradient-to-br from-[#022c22] to-[#059669] text-white ring-4 ring-emerald-500/25 scale-105"
+                  : "border border-white/90 bg-white/75 text-slate-500 backdrop-blur-sm",
               )}
             >
               {complete ? <Check className="size-4 stroke-[2.5]" /> : stepNumber}
             </span>
             <span
               className={cn(
-                "mt-2 text-center text-xs leading-relaxed font-heading transition-colors sm:text-xs",
-                active ? "font-black text-slate-900" : complete ? "font-bold text-emerald-700" : "font-medium text-slate-500",
+                "mt-1.5 text-center text-xs leading-snug font-heading transition-colors sm:text-xs",
+                active ? "font-black text-slate-900" : complete ? "font-bold text-emerald-800" : "font-medium text-slate-500",
               )}
             >
               {tx(step.shortLabel ?? step.label)}
