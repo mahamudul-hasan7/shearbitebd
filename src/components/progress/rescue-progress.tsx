@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { Bike, Building2, Check, CircleCheck, HandHeart, Package, PackageCheck, Pause, Play, ShieldAlert, UsersRound } from "lucide-react";
+import { Ban, Bike, Building2, Check, CircleCheck, Clock3, HandHeart, Package, PackageCheck, Pause, Play, ShieldAlert, UsersRound } from "lucide-react";
 import { buildRescueProgress, type RescueProgressIcon, type RescueProgressInput } from "@/lib/rescue-progress";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { getUiLocale } from "@/lib/i18n/locale";
@@ -28,7 +28,21 @@ export function RescueProgress({ label = "Rescue progress", stale = false, compa
       <span className={styles.eyebrow}>{tx("Food rescue journey")}</span>
       <span className={styles.badge}><span aria-hidden="true" />{stale ? tx("Updates paused") : tx(badges[model.state])}</span>
     </div>
-    <div className={styles.summary} aria-live="polite" aria-atomic="true"><h3>{tx(model.title)}</h3><p>{tx(model.description)}</p></div>
+    <div className={styles.summary} aria-live="polite" aria-atomic="true">
+      <h3>{tx(model.title)}</h3>
+      <p>{tx(model.description)}</p>
+      {exceptional && (
+        <div className={styles.milestoneCallout} data-state={model.state}>
+          <strong>{tx("Stopped at step {0} of {1}: {2}", model.index + 1, model.steps.length, tx(model.stoppedAtLabel))}</strong>
+          {input.cancellationReason && <span>{tx("Reason: {0}", input.cancellationReason)}</span>}
+        </div>
+      )}
+      {model.state === "complete" && (
+        <div className={styles.milestoneCallout} data-state="complete">
+          <strong>{tx("All {0} steps completed", model.steps.length)}</strong>
+        </div>
+      )}
+    </div>
     <LiveIconGroup className={styles.scene} paused={!moving || paused} aria-hidden="true" style={{ "--journey-position": `${model.position}%` } as CSSProperties}>
       <div className={styles.track}><div className={styles.fill} /><div className={styles.flow} />
         {model.steps.map((step, i) => <span key={step.id} className={`${styles.dot} ${step.done || step.current ? styles.reached : ""}`} style={{ left: `${i / (model.steps.length - 1) * 100}%` }} />)}
@@ -40,9 +54,34 @@ export function RescueProgress({ label = "Rescue progress", stale = false, compa
       {model.steps.map((step, i) => {
         const Icon = icons[step.icon as RescueProgressIcon];
         const stamp = time(step.timestamp);
-        return <li key={step.id} aria-current={step.current ? "step" : undefined} data-step={step.id} data-done={step.done} data-current={step.current}>
-          <span className={styles.stepIcon} aria-hidden="true">{step.done ? <LiveIcon icon={Check} motion="once" size={15} strokeWidth={2.5} /> : <Icon size={16} />}</span>
-          <div><p>{tx(step.label)}</p><span className={styles.stepNote}>{stamp ? <time dateTime={step.timestamp}>{stamp}</time> : step.current ? tx(model.state === "complete" ? "Completed" : "Current step") : step.done ? tx("Completed") : tx("Pending")}</span></div>
+        const stoppedHere = exceptional && step.current;
+        const StepGlyph = stoppedHere
+          ? model.state === "cancelled"
+            ? Ban
+            : model.state === "expired"
+              ? Clock3
+              : ShieldAlert
+          : undefined;
+        const statusText = stamp
+          ? undefined
+          : stoppedHere
+            ? model.state === "cancelled"
+              ? "Cancelled at this step"
+              : model.state === "expired"
+                ? "Expired at this step"
+                : "Paused at this step"
+            : step.current
+              ? model.state === "complete"
+                ? "Completed"
+                : model.state === "draft"
+                  ? "Saved as draft"
+                  : "Current step"
+              : step.done
+                ? "Completed"
+                : "Pending";
+        return <li key={step.id} aria-current={step.current ? "step" : undefined} data-step={step.id} data-done={step.done} data-current={step.current} data-stopped={stoppedHere || undefined}>
+          <span className={styles.stepIcon} aria-hidden="true">{StepGlyph ? <StepGlyph size={15} /> : step.done ? <LiveIcon icon={Check} motion="once" size={15} strokeWidth={2.5} /> : <Icon size={16} />}</span>
+          <div><p>{tx(step.label)}</p><span className={styles.stepNote}>{stamp ? <time dateTime={step.timestamp}>{stamp}</time> : tx(statusText || "Pending")}</span></div>
           <span className={styles.stepNumber} aria-hidden="true">{i + 1}</span>
         </li>;
       })}
