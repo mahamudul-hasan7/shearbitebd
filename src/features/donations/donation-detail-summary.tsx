@@ -87,6 +87,16 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
     refresh();
   }
 
+  async function publishDraft() {
+    await donationService.publishDraft(donationId, viewer);
+    setNotice({
+      tone: "success",
+      title: "খসড়া অনুদান প্রকাশিত হয়েছে",
+      description: "খাবারটি এখন এনজিওদের জন্য দৃশ্যমান করা হয়েছে।",
+    });
+    refresh();
+  }
+
   async function reportIssue(input: CreateDonationIncidentInput) {
     await incidentService.createForDonation(donationId, input, viewer);
     setNotice({
@@ -146,13 +156,24 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
       backLabel={tx("সকল অনুদান তালিকা")}
       actions={
         donation && (
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {donation.status === DonationStatus.DISTRIBUTED && (
+              <a
+                href={`/api/certificates/${encodeURIComponent(donation.id)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-xs font-extrabold text-amber-900 shadow-xs hover:bg-amber-100"
+              >
+                <ShieldCheck className="size-4 text-amber-700" />
+                <span>{tx("Download CSR Certificate (PDF)")}</span>
+              </a>
+            )}
             <ButtonLink
               href={ROUTES.donor.donationTracking(donation.id)}
               variant="primary"
               leftIcon={<Navigation className="size-4" />}
               className="font-bold shadow-md shadow-emerald-700/20"
-            ><UiText source={"লাইভ ট্র্যাকিং 🛵"} /></ButtonLink>
+            ><UiText source={"লাইভ ট্র্যাকিং"} /></ButtonLink>
           </div>
         )
       }
@@ -223,7 +244,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                       )}
                     </div>
                     <span className="rounded-full bg-brand-950/70 px-3 py-1 text-xs font-bold text-white/90 backdrop-blur-sm border border-white/20">
-                      {donation.sampleImageId ? tx("Sample image · নিজের upload নয়") : tx("📸 {0}টি ছবি সংরক্ষিত", donation.photoUrls.length)}
+                      {donation.sampleImageId ? tx("Sample image · নিজের upload নয়") : tx("{0}টি ছবি সংরক্ষিত", donation.photoUrls.length)}
                     </span>
                   </div>
 
@@ -347,7 +368,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                   </div>
                   <StatusBadge status={donation.status} />
                 </div>
-                <DonationStatusTimeline status={donation.status} claim={data.claim} publishedAt={donation.publishedAt} updatedAt={donation.updatedAt} stale={state.status === "error"} />
+                <DonationStatusTimeline status={donation.status} claim={data.claim} publishedAt={donation.publishedAt} updatedAt={donation.updatedAt} cancellationReason={donation.cancellationReason} stale={state.status === "error"} />
                 {data?.claim && <HandoverCodePanel claimId={data.claim.id} kind="PICKUP" />}
               </Card>
 
@@ -405,7 +426,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
 
                     {donation.pickup.directions && (
                       <p className="rounded-xl border border-emerald-100 bg-emerald-50/70 p-3 text-xs leading-5 text-emerald-900">
-                        💡 <strong>{tx("রাস্তার দিকনির্দেশনা:")}</strong> {donation.pickup.directions}
+                        <strong>{tx("রাস্তার দিকনির্দেশনা:")}</strong> {donation.pickup.directions}
                       </p>
                     )}
                   </div>
@@ -502,7 +523,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                   leftIcon={<Navigation className="size-4" />}
                   className="w-full justify-center font-black shadow-lg shadow-emerald-700/20 py-3"
                 >
-                  {tx("লাইভ ট্র্যাকিং ম্যাপ খুলুন 🛵")}</ButtonLink>
+                  {tx("লাইভ ট্র্যাকিং ম্যাপ খুলুন")}</ButtonLink>
                 <Button
                   type="button"
                   variant="outline"
@@ -517,7 +538,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
               <Card className="p-5 border-line shadow-sm">
                 <p className="font-black text-ink-900 text-sm">{tx("অনুদানের অ্যাকশন কন্ট্রোল")}</p>
                 <p className="mt-1 text-xs leading-5 text-muted-500">
-                  {tx("রাইডার পিকআপ শুরু করার পূর্ব পর্যন্ত তথ্য সংশোধন করা যাবে।")}</p>
+                  {tx("এনজিও ক্লেইম করার আগ পর্যন্ত তথ্য সংশোধন ও পিকআপের আগে পর্যন্ত বাতিল করা যাবে।")}</p>
                 <div className="mt-4">
                   <DonationActions
                     donation={donation}
@@ -525,6 +546,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                     canCancel={canCancelDonation(donation.status)}
                     canReport={canReport}
                     reportHref={data.claim ? ROUTES.donor.reportIssue(donationId, data.claim.id) : undefined}
+                    onPublishDraft={publishDraft}
                     onEdit={editDonation}
                     onCancel={cancelDonation}
                     onReport={reportIssue}

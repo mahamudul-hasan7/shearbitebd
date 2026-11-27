@@ -190,15 +190,21 @@ export function ProfileEditor() {
               tone="success"
               title={tx("প্রোফাইল সফলভাবে আপডেট করা হয়েছে!")}
               description={tx("আপনার প্রতিষ্ঠানের তথ্য ও যোগাযোগের বিবরণ ডিজিটাল সিস্টেমে সংরক্ষিত হয়েছে।")}
+              action={
+                <ButtonLink href={ROUTES.donor.profile} size="sm" variant="outline">
+                  {tx("প্রোফাইলে ফিরে যান")}
+                </ButtonLink>
+              }
             />
           )}
 
-          <div className="flex items-center justify-end gap-3">
-            <ButtonLink href={ROUTES.donor.profile} variant="ghost" size="md">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <ButtonLink href={ROUTES.donor.profile} variant="ghost" size="md" className="justify-center">
               {tx("বাতিল করুন")}</ButtonLink>
             <Button
               type="submit"
               disabled={saving}
+              className="justify-center"
               leftIcon={saved ? <CheckCircle2 className="size-4" /> : <Save className="size-4" />}
             >
               {saving ? tx("সংরক্ষণ করা হচ্ছে…") : tx("পরিবর্তনগুলো সংরক্ষণ করুন")}

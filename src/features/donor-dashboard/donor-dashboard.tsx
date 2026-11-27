@@ -16,9 +16,11 @@ import {
   DonorDashboardLoading,
 } from "@/components/donor/donor-dashboard-states";
 import { DonorImpactGrid } from "@/components/donor/donor-impact-grid";
+import { DonorImpactSummaryCard } from "@/components/donor/donor-impact-summary-card";
 import { RecentActivityCard } from "@/components/donor/recent-activity-card";
 import { SupportedNgosCard } from "@/components/donor/supported-ngos-card";
 import { DonationPhoto } from "@/components/donation/donation-photo";
+import { formatDonationQuantity } from "@/features/donations/donation-presentation";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { ButtonLink } from "@/components/ui/button";
 import {
@@ -33,6 +35,7 @@ import { useMockAuth } from "@/features/auth/mock-auth";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { DonationStatus } from "@/lib/constants/statuses";
+import { buildRescueProgress } from "@/lib/rescue-progress";
 import { ROUTES } from "@/lib/routes";
 import styles from "@/components/donor/donor-mobile.module.css";
 
@@ -152,91 +155,165 @@ export function DonorDashboard() {
           )}
 
           {hasDonations ? (
-            <section
-              className={styles.listSection}
-              aria-labelledby="donor-posts-heading"
-            >
-              <DashboardSectionHeading
-                id="donor-posts-heading"
-                title="Your donations"
-                href={ROUTES.donor.donations}
-              />
-              <div
-                className={styles.filters}
-                role="group"
-                aria-label={tx("Donation list filters")}
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start">
+              <section
+                className={styles.listSection}
+                aria-labelledby="donor-posts-heading"
               >
-                <button
-                  type="button"
-                  aria-pressed={activeTab === "recent"}
-                  onClick={() => setActiveTab("recent")}
+                <DashboardSectionHeading
+                  id="donor-posts-heading"
+                  title="Your donations"
+                  href={ROUTES.donor.donations}
+                />
+                <div
+                  className={styles.filters}
+                  role="group"
+                  aria-label={tx("Donation list filters")}
                 >
-                  {tx("Recent posts")}
-                  <span>{number(data.donations.length)}</span>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={activeTab === "distributed"}
-                  onClick={() => setActiveTab("distributed")}
-                >
-                  {tx("Distributed")}
-                  <span>{number(completed.length)}</span>
-                </button>
-              </div>
-              {listings.length ? (
-                <ul className={styles.list}>
-                  {listings.map((donation) => (
-                    <li key={donation.id}>
-                      <Link
-                        href={ROUTES.donor.donation(donation.id)}
-                        className={styles.listRow}
-                      >
-                        <span className={styles.listPhoto}>
-                          <DonationPhoto
-                            donation={donation}
-                            fill
-                            sizes="56px"
-                            className="object-cover"
-                          />
-                        </span>
-                        <span className={styles.listCopy}>
-                          <strong>{donation.title}</strong>
-                          <span>
-                            {number(donation.quantity.value)}{" "}
-                            {tx(donation.quantity.unit)} ·{" "}
-                            {donation.pickup.approximateArea}
-                          </span>
-                          <StatusBadge status={donation.status} />
-                        </span>
-                        <ArrowRight
-                          className={styles.rowArrow}
-                          size={17}
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className={styles.empty}>
-                  <HandHeart size={28} aria-hidden="true" />
-                  <p>
-                    {tx(
-                      activeTab === "recent"
-                        ? "Your first food post starts here."
-                        : "Your completed distributions will appear here.",
-                    )}
-                  </p>
-                  <span>
-                    {tx(
-                      activeTab === "recent"
-                        ? "Use Post extra food above when you are ready."
-                        : "Meals count after the NGO records distribution.",
-                    )}
-                  </span>
+                  <button
+                    type="button"
+                    aria-pressed={activeTab === "recent"}
+                    onClick={() => setActiveTab("recent")}
+                  >
+                    {tx("Recent posts")}
+                    <span>{number(data.donations.length)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={activeTab === "distributed"}
+                    onClick={() => setActiveTab("distributed")}
+                  >
+                    {tx("Distributed")}
+                    <span>{number(completed.length)}</span>
+                  </button>
                 </div>
+                {listings.length ? (
+                  <ul className={styles.list}>
+                    {listings.map((donation) => {
+                      const currentClaim =
+                        donation.status === DonationStatus.AVAILABLE &&
+                        donation.latestClaim?.status === "CANCELLED"
+                          ? undefined
+                          : donation.latestClaim;
+                      const claimIsNewer =
+                        currentClaim &&
+                        (!donation.updatedAt ||
+                          Date.parse(currentClaim.updatedAt) >=
+                            Date.parse(donation.updatedAt));
+                      const progress = buildRescueProgress({
+                        scope: "donation",
+                        status: claimIsNewer
+                          ? currentClaim.status
+                          : donation.status,
+                        routeStage: currentClaim?.routeStage,
+                        publishedAt: donation.publishedAt,
+                        reservedAt: currentClaim?.reservedAt,
+                        assignedAt: currentClaim?.assignedAt,
+                        pickedUpAt: currentClaim?.pickedUpAt,
+                        deliveredAt: currentClaim?.deliveredAt,
+                        distributedAt: currentClaim?.distributedAt,
+                        updatedAt: claimIsNewer
+                          ? currentClaim.updatedAt
+                          : donation.updatedAt,
+                        cancellationReason: donation.cancellationReason,
+                      });
+                      const isStopped = progress.state !== "complete" && progress.state !== "active" && progress.state !== "draft";
+
+                      return (
+                        <li key={donation.id}>
+                          <Link
+                            href={ROUTES.donor.donation(donation.id)}
+                            className={styles.listRow}
+                          >
+                            <span className={styles.listPhoto}>
+                              <DonationPhoto
+                                donation={donation}
+                                fill
+                                sizes="56px"
+                                className="object-cover"
+                              />
+                            </span>
+                            <span className={styles.listCopy}>
+                              <strong>{donation.title}</strong>
+                              <span>
+                                {formatDonationQuantity(donation)} ·{" "}
+                                {donation.pickup.approximateArea}
+                              </span>
+                              <span className="flex flex-wrap items-center gap-2 pt-0.5">
+                                <StatusBadge status={donation.status} />
+                                <span
+                                  className="inline-grid w-20 grid-cols-6 gap-0.5"
+                                  aria-hidden="true"
+                                >
+                                  {progress.steps.map((step) => {
+                                    const stoppedHere = isStopped && step.current;
+                                    return (
+                                      <span
+                                        key={step.id}
+                                        className={`h-1 rounded-full ${
+                                          stoppedHere
+                                            ? progress.state === "cancelled"
+                                              ? "bg-rose-600"
+                                              : "bg-amber-500"
+                                            : step.done
+                                              ? "bg-emerald-500"
+                                              : step.current
+                                                ? "bg-emerald-400"
+                                                : "bg-slate-200"
+                                        }`}
+                                      />
+                                    );
+                                  })}
+                                </span>
+                                <span className="text-[11px] font-bold text-slate-600 tabular-nums">
+                                  {tx(
+                                    "Step {0}/{1}",
+                                    progress.completedSteps,
+                                    progress.steps.length,
+                                  )}
+                                </span>
+                              </span>
+                            </span>
+                            <ArrowRight
+                              className={styles.rowArrow}
+                              size={17}
+                              aria-hidden="true"
+                            />
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <div className={styles.empty}>
+                    <HandHeart size={28} aria-hidden="true" />
+                    <p>
+                      {tx(
+                        activeTab === "recent"
+                          ? "Your first food post starts here."
+                          : "Your completed distributions will appear here.",
+                      )}
+                    </p>
+                    <span>
+                      {tx(
+                        activeTab === "recent"
+                          ? "Use Post extra food above when you are ready."
+                          : "Meals count after the NGO records distribution.",
+                      )}
+                    </span>
+                  </div>
+                )}
+              </section>
+
+              {data.supportedNgos.length > 0 ? (
+                <SupportedNgosCard ngos={data.supportedNgos} />
+              ) : (
+                <DonorImpactSummaryCard
+                  stats={data.stats}
+                  records={data.impactRecords}
+                />
               )}
-            </section>
+            </div>
           ) : (
             <section
               className={styles.emptyOverview}
@@ -256,39 +333,44 @@ export function DonorDashboard() {
             </section>
           )}
 
-          {hasDonations && (
-            <DashboardDisclosure
-              title="Recent activity"
-              icon={History}
-              data-testid="donor-activity"
-            >
-              <RecentActivityCard activities={data.activities} />
-              {data.supportedNgos.length > 0 && (
-                <SupportedNgosCard ngos={data.supportedNgos} />
-              )}
-            </DashboardDisclosure>
-          )}
-          <DashboardDisclosure
-            title="How does it work?"
-            icon={CircleHelp}
-            data-testid="donor-getting-started"
+          <div
+            className={
+              hasDonations
+                ? "grid gap-4 lg:grid-cols-2 lg:items-start"
+                : "grid gap-4"
+            }
           >
-            <div className={styles.gettingStarted}>
-              <ol>
-                {introduction.map((step, index) => (
-                  <li key={step.title}>
-                    <span className={styles.stepNumber} aria-hidden="true">
-                      {number(index + 1)}
-                    </span>
-                    <div>
-                      <h3>{tx(step.title)}</h3>
-                      <p>{tx(step.detail)}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </DashboardDisclosure>
+            {hasDonations && (
+              <DashboardDisclosure
+                title="Recent activity"
+                icon={History}
+                data-testid="donor-activity"
+              >
+                <RecentActivityCard activities={data.activities} />
+              </DashboardDisclosure>
+            )}
+            <DashboardDisclosure
+              title="How does it work?"
+              icon={CircleHelp}
+              data-testid="donor-getting-started"
+            >
+              <div className={styles.gettingStarted}>
+                <ol>
+                  {introduction.map((step, index) => (
+                    <li key={step.title}>
+                      <span className={styles.stepNumber} aria-hidden="true">
+                        {number(index + 1)}
+                      </span>
+                      <div>
+                        <h3>{tx(step.title)}</h3>
+                        <p>{tx(step.detail)}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </DashboardDisclosure>
+          </div>
         </div>
       )}
     </PortalShell>

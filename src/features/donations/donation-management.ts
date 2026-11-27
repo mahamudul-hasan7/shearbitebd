@@ -49,8 +49,6 @@ const EDITABLE_STATUSES = new Set<DonationStatus>([
   DonationStatus.DRAFT,
   DonationStatus.PUBLISHED,
   DonationStatus.AVAILABLE,
-  DonationStatus.RESERVED,
-  DonationStatus.ASSIGNED,
 ]);
 
 const CANCELLABLE_STATUSES = new Set<DonationStatus>([
@@ -61,7 +59,7 @@ const CANCELLABLE_STATUSES = new Set<DonationStatus>([
   DonationStatus.ASSIGNED,
 ]);
 
-const CLOSED_STATUSES = new Set<DonationStatus>([
+export const CLOSED_DONATION_STATUSES = new Set<DonationStatus>([
   DonationStatus.DISTRIBUTED,
   DonationStatus.EXPIRED,
   DonationStatus.CANCELLED,
@@ -81,7 +79,7 @@ export function canCancelDonation(status: DonationStatus) {
 }
 
 export function isClosedDonation(status: DonationStatus) {
-  return CLOSED_STATUSES.has(status);
+  return CLOSED_DONATION_STATUSES.has(status);
 }
 
 export function donationLifecycleProgress(status: DonationStatus) {

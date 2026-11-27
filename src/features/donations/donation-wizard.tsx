@@ -79,6 +79,7 @@ export function DonationWizard({ campusDemo = false }: { campusDemo?: boolean })
   const publishLock = useRef(false);
   const [result, setResult] = useState<DonationWizardResult>();
   const [preferredNgo, setPreferredNgo] = useState<NGODirectoryItem>();
+  const [donorVerificationStatus, setDonorVerificationStatus] = useState<string>("VERIFIED");
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export function DonationWizard({ campusDemo = false }: { campusDemo?: boolean })
         if (!address) throw new Error("Add a pickup address to your profile first.");
         if (controller.signal.aborted) return;
         setAddresses(profile.addresses);
+        setDonorVerificationStatus(profile.donorProfile?.verificationStatus || "PENDING");
         setDraft({ ...restored, addressId: address.id, pickupAddress: address.addressLine, approximateArea: address.area,
           contactPerson: restored.contactPerson || profile.user.displayName, phone: restored.phone || profile.user.phone || "",
           email: profile.user.email, preferredNgoProfileId: preferredNgoProfileId || restored.preferredNgoProfileId });
@@ -302,6 +304,27 @@ export function DonationWizard({ campusDemo = false }: { campusDemo?: boolean })
         label={tx("খাদ্য অনুদান পোস্টের অগ্রগতি")}
         onStepClick={result || uploading || submitting ? undefined : (step) => editStep(step as DonationWizardStep)}
       />
+      {donorVerificationStatus !== "VERIFIED" && currentStep !== 6 && (
+        <Alert
+          className="mt-6"
+          tone={donorVerificationStatus === "REJECTED" ? "danger" : "warning"}
+          title={
+            donorVerificationStatus === "REJECTED"
+              ? tx("দাতা যাচাই প্রত্যাখ্যাত হয়েছে")
+              : tx("দাতা যাচাইয়ের অপেক্ষায় রয়েছে")
+          }
+          description={
+            donorVerificationStatus === "REJECTED"
+              ? tx("আপনার দাতা অ্যাকাউন্ট প্রত্যাখ্যাত হয়েছে; প্রোফাইল থেকে পুনরায় ডকুমেন্ট জমা দিন অথবা অ্যাডমিনের সাথে যোগাযোগ করুন।")
+              : tx("প্রোফাইল থেকে ডকুমেন্ট আপলোড করুন; অ্যাডমিন অনুমোদনের আগে নতুন খাদ্য পোস্ট প্রকাশ করা যাবে না।")
+          }
+          action={
+            <ButtonLink href={ROUTES.donor.profile} size="sm" variant="outline">
+              <UiText source={"প্রোফাইল ও ডকুমেন্ট যাচাই"} />
+            </ButtonLink>
+          }
+        />
+      )}
       {preferredNgo && currentStep !== 6 && (
         <Alert
           className="mt-6"

@@ -90,12 +90,76 @@ export const STATUS_TEXT_BN: Record<DonationStatus, string> = {
 };
 
 export function formatDonationQuantity(donation: DonationView) {
-  return `${donation.quantity.value} ${donation.quantity.unit.toLowerCase().replaceAll("_", " ")}`;
+  if (getUiLocale().startsWith("bn")) {
+    return formatDonationQuantityBn(donation);
+  }
+  return `${donation.quantity.value.toLocaleString(getUiLocale())} ${donation.quantity.unit.toLowerCase().replaceAll("_", " ")}`;
 }
 
 export function formatDonationQuantityBn(donation: DonationView) {
   const unitBn = UNIT_LABELS_BN[donation.quantity.unit] || donation.quantity.unit;
-  return `${donation.quantity.value} ${displayUiText(unitBn)}`;
+  return `${donation.quantity.value.toLocaleString(getUiLocale())} ${displayUiText(unitBn)}`;
+}
+
+const UNIT_LABELS_EN: Record<QuantityUnit, string> = {
+  [QuantityUnit.PORTIONS]: "portions",
+  [QuantityUnit.MEALS]: "meals",
+  [QuantityUnit.KILOGRAMS]: "kg",
+  [QuantityUnit.PACKETS]: "packets",
+  [QuantityUnit.TRAYS]: "trays",
+  [QuantityUnit.LITRES]: "litres",
+};
+
+export function localizeQuantityText(raw: string): string {
+  const match = raw.trim().match(/^(\d+(?:[.,]\d+)?)\s+([A-Z_]+)$/i);
+  if (!match) return raw;
+  const amount = Number(match[1].replaceAll(",", ""));
+  const unit = match[2].toUpperCase() as QuantityUnit;
+  const locale = getUiLocale();
+  const formattedAmount = Number.isFinite(amount) ? amount.toLocaleString(locale) : match[1];
+  if (locale.startsWith("bn")) {
+    const label = UNIT_LABELS_BN[unit];
+    return label ? `${formattedAmount} ${displayUiText(label)}` : `${formattedAmount} ${match[2].toLowerCase().replaceAll("_", " ")}`;
+  }
+  const enLabel = UNIT_LABELS_EN[unit] || match[2].toLowerCase().replaceAll("_", " ");
+  return `${formattedAmount} ${enLabel}`;
+}
+
+export function formatDurationMinutes(totalMinutes: number): string {
+  const locale = getUiLocale();
+  const isBn = locale.startsWith("bn");
+  const safeMins = Math.max(0, Math.round(totalMinutes));
+  if (safeMins === 0) {
+    return isBn ? "০ মিনিট" : "0 min";
+  }
+  const days = Math.floor(safeMins / 1440);
+  const hours = Math.floor((safeMins % 1440) / 60);
+  const mins = safeMins % 60;
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days.toLocaleString(locale)} ${isBn ? "দিন" : days === 1 ? "day" : "days"}`);
+  if (hours > 0) parts.push(`${hours.toLocaleString(locale)} ${isBn ? "ঘণ্টা" : "hr"}`);
+  if (mins > 0 || parts.length === 0) parts.push(`${mins.toLocaleString(locale)} ${isBn ? "মিনিট" : "min"}`);
+  return parts.join(" ");
+}
+
+const CONDITION_LABELS: Record<string, string> = {
+  GOOD: "Good",
+  ACCEPTABLE: "Acceptable",
+  DAMAGED_POOR: "Damaged or poor",
+};
+
+export function localizeMissionFeedback(
+  feedback: string,
+  tx: (text: string, ...args: Array<string | number>) => string,
+): string {
+  if (!feedback) return feedback;
+  const receiptMatch = feedback.match(/^Receipt recorded:\s*(.+)$/i);
+  if (receiptMatch) {
+    const rawCondition = receiptMatch[1].trim();
+    const mapped = CONDITION_LABELS[rawCondition.toUpperCase()] || rawCondition;
+    return tx("Receipt recorded: {0}", tx(mapped));
+  }
+  return tx(feedback);
 }
 
 export const TITLE_TRANSLATIONS: Record<string, string> = {

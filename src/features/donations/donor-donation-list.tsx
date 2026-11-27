@@ -17,11 +17,12 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { DonationManagementCard } from "@/components/donation/donation-management-card";
+import { DonorDonationArchiveList } from "@/features/donations/donor-donation-archive";
 import { CollectionToolbar } from "@/components/portal/collection-toolbar";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { DONATION_TABS, matchesDonationTab, type DonationTabKey } from "@/features/donations/donation-management";
+import { DONATION_TABS, isClosedDonation, matchesDonationTab, type DonationTabKey } from "@/features/donations/donation-management";
 import { FoodCategory, FOOD_CATEGORY_LABELS, PriorityLevel } from "@/lib/constants/domain";
 import { DonationStatus } from "@/lib/constants/statuses";
 import { ROUTES } from "@/lib/routes";
@@ -170,60 +171,62 @@ export function DonorDonationList() {
         <div className="space-y-6">
           {/* 1. Clear Operational KPI Summary Cards */}
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label={tx("Donation overview")}>
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("মোট অনুদান পোস্ট")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-slate-100 text-slate-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("মোট অনুদান পোস্ট")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-slate-500/12 text-slate-700 ring-1 ring-slate-300/40">
                   <PackageOpen className="size-4" />
                 </span>
               </div>
               <p className="mt-2 text-2xl font-black text-slate-900 font-heading">
-                {donations.length}{tx("টি")}</p>
-              <p className="text-[11px] text-slate-400 font-medium">{tx("ক্যাফেটেরিয়ার তালিকা")}</p>
+                {tx("{0}টি", donations.length)}
+              </p>
+              <p className="text-[11px] text-slate-500 font-medium">{tx("ক্যাফেটেরিয়ার তালিকা")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-sky-200/80 bg-sky-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("চলমান রেসকিউ")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-sky-50 text-sky-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("চলমান রেসকিউ")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-sky-500/15 text-sky-700 ring-1 ring-sky-300/40">
                   <Clock3 className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-sky-700 font-heading">
-                {activeRescuesCount}{tx("টি")}</p>
-              <p className="text-[11px] text-sky-600 font-medium">{tx("পিকআপ ও ডেলিভারি সক্রিয়")}</p>
+              <p className="mt-2 text-2xl font-black text-sky-800 font-heading">
+                {tx("{0}টি", activeRescuesCount)}
+              </p>
+              <p className="text-[11px] text-sky-700 font-medium">{tx("পিকআপ ও ডেলিভারি সক্রিয়")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-emerald-200/80 bg-emerald-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("সফল বিতরণ সম্পন্ন")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("সফল বিতরণ সম্পন্ন")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-300/40">
                   <CheckCircle2 className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-emerald-700 font-heading">
+              <p className="mt-2 text-2xl font-black text-emerald-800 font-heading">
                 {completedCount > 0 ? tx("{0}টি", completedCount) : tx("১টি ব্যাচ")}
               </p>
-              <p className="text-[11px] text-emerald-600 font-medium">{tx("৮৫০+ মানুষের পাতে পৌঁছেছে")}</p>
+              <p className="text-[11px] text-emerald-700 font-medium">{tx("৮৫০+ মানুষের পাতে পৌঁছেছে")}</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+            <div className="liquid-glass-tile rounded-2xl border-emerald-200/80 bg-emerald-100/40 p-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 font-heading">{tx("খাদ্য সুরক্ষা স্কোর")}</span>
-                <span className="grid size-8 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                <span className="text-xs font-bold text-slate-600 font-heading">{tx("খাদ্য সুরক্ষা স্কোর")}</span>
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-300/40">
                   <ShieldCheck className="size-4" />
                 </span>
               </div>
-              <p className="mt-2 text-2xl font-black text-emerald-800 font-heading">
+              <p className="mt-2 text-2xl font-black text-emerald-900 font-heading">
                 {tx("১০০%")}</p>
-              <p className="text-[11px] text-emerald-600 font-medium">{tx("নিরাপদ কোল্ড-চেইন মান")}</p>
+              <p className="text-[11px] text-emerald-700 font-medium">{tx("নিরাপদ কোল্ড-চেইন মান")}</p>
             </div>
           </section>
 
           {/* 2. Streamlined Navigation Tabs & Filters Bar */}
           <CollectionToolbar label={tx("Donation filters")}>
             {/* Top Row: 4 Consolidated Purposeful Tabs */}
-            <div className="flex gap-1.5 overflow-x-auto pb-1 text-xs font-bold font-heading">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-1 text-xs font-bold font-heading">
               {DONATION_TABS.map((item) => {
                 const isActive = tab === item.key;
                 return (
@@ -256,7 +259,7 @@ export function DonorDonationList() {
             {/* Bottom Row: Search & Filters */}
             <div className="grid gap-2.5 sm:grid-cols-12 items-center pt-2 border-t border-slate-100">
               {/* Search Bar */}
-              <div className="relative sm:col-span-6">
+              <div className="relative sm:col-span-5">
                 <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
                 <input
                   type="text"
@@ -286,7 +289,7 @@ export function DonorDonationList() {
               </div>
 
               {/* Sort Dropdown */}
-              <div className="sm:col-span-3">
+              <div className="sm:col-span-4">
                 <select
                   aria-label={tx("Sort donations")}
                   value={sort}
@@ -304,7 +307,10 @@ export function DonorDonationList() {
           {/* Results Summary & Reset Filter */}
           <div className="flex flex-wrap items-center justify-between gap-3 px-1 text-xs font-heading">
             <p className="font-bold text-slate-500">
-              {tx("প্রদর্শিত হচ্ছে")}<span className="text-slate-900 font-black">{filtered.length}{tx("টি")}</span> {" "}{tx("অনুদান (সর্বমোট")}{" "}{donations.length}{tx("টির মধ্যে)")}</p>
+              {tx("প্রদর্শিত হচ্ছে")}{" "}
+              <span className="text-slate-900 font-black">{tx("{0}টি", filtered.length)}</span>{" "}
+              {tx("অনুদান (সর্বমোট")} {donations.length} {tx("টির মধ্যে)")}
+            </p>
             {(search || category !== "all" || priority !== "all" || tab !== "all" || sort !== "deadline") && (
               <button
                 type="button"
@@ -346,11 +352,50 @@ export function DonorDonationList() {
                 {tx("সব অনুদান দেখুন")}</button>
             </div>
           ) : (
-            <section className="grid gap-4 sm:gap-5" aria-label={tx("Donations list")}>
-              {filtered.map((donation) => (
-                <DonationManagementCard key={donation.id} donation={donation} />
-              ))}
-            </section>
+            (() => {
+              const activeDonations = filtered.filter((d) => !isClosedDonation(d.status));
+              const archiveDonations = filtered.filter((d) => isClosedDonation(d.status));
+              return (
+                <div className="grid gap-7">
+                  {activeDonations.length > 0 && (
+                    <section className="grid gap-4 sm:gap-5" aria-label={tx("Active & live donations")}>
+                      {archiveDonations.length > 0 && (
+                        <div className="flex items-center justify-between gap-2 px-1">
+                          <h2 className="text-base font-black text-slate-900 font-heading">
+                            {tx("Active & live donations")}
+                          </h2>
+                          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-black text-emerald-800">
+                            {tx("{0} active", activeDonations.length)}
+                          </span>
+                        </div>
+                      )}
+                      {activeDonations.map((donation) => (
+                        <DonationManagementCard key={donation.id} donation={donation} />
+                      ))}
+                    </section>
+                  )}
+
+                  {archiveDonations.length > 0 && (
+                    <section className="grid gap-3.5" aria-label={tx("Closed & archive history")}>
+                      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                        <div>
+                          <h2 className="text-base font-black text-slate-900 font-heading">
+                            {tx("Closed & archive history")}
+                          </h2>
+                          <p className="text-xs text-slate-500">
+                            {tx("Completed distributions, cancelled batches, and expired food logs.")}
+                          </p>
+                        </div>
+                        <span className="rounded-full bg-slate-200/80 px-2.5 py-0.5 text-xs font-black text-slate-800">
+                          {tx("{0} closed", archiveDonations.length)}
+                        </span>
+                      </div>
+                      <DonorDonationArchiveList donations={archiveDonations} />
+                    </section>
+                  )}
+                </div>
+              );
+            })()
           )}
         </div>
       )}
