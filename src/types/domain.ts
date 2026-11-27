@@ -194,7 +194,10 @@ export interface DonationPickupView {
   directions?: string;
 }
 
-export type DonationView = Omit<Donation, "pickup"> & { pickup: DonationPickupView };
+export type DonationView = Omit<Donation, "pickup"> & {
+  pickup: DonationPickupView;
+  latestClaim?: Claim;
+};
 
 export interface Claim {
   foodRequestId?: EntityId;

@@ -281,6 +281,8 @@ model AuthSession {
 }
 
 model DonorProfile {
+  verificationDocumentId String? @unique
+  verificationDocument VerificationDocument? @relation("DonorCurrentDocument", fields: [verificationDocumentId], references: [id], onDelete: SetNull)
   id                 String             @id @default(cuid())
   userId             String             @unique
   donorType          DonorType          @default(RESTAURANT)
@@ -700,6 +702,7 @@ model VerificationDocument {
   sourceHash String
   createdAt DateTime @default(now())
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  donorProfile DonorProfile? @relation("DonorCurrentDocument")
   ngoProfile NGOProfile? @relation("NGOCurrentDocument")
   volunteerProfile VolunteerProfile? @relation("VolunteerCurrentDocument")
   reviews AccountReview[]
