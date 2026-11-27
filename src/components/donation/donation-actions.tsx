@@ -1,14 +1,15 @@
 "use client";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 
-import { AlertTriangle, Ban, Pencil, Send, X } from "lucide-react";
-import { useRef, useState, type FormEvent } from "react";
+import { AlertTriangle, Ban, Pencil, Send } from "lucide-react";
+import { useId, useState, type FormEvent } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { IconButton } from "@/components/ui/icon-button";
+import { ExecutiveDialog } from "@/components/ui/executive-dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DonationStatus } from "@/lib/constants/statuses";
 import { IncidentType, PriorityLevel } from "@/lib/constants/domain";
 import { UNIT_LABELS_BN, PRIORITY_LABELS_BN } from "@/features/donations/donation-presentation";
 import { validateDonationTimes } from "@/lib/validators/date-time";
@@ -46,6 +47,7 @@ export function DonationActions({
   canEdit,
   canCancel,
   canReport,
+  onPublishDraft,
   onEdit,
   onCancel,
   onReport,
@@ -56,14 +58,17 @@ export function DonationActions({
   canEdit: boolean;
   canCancel: boolean;
   canReport: boolean;
+  onPublishDraft?: () => Promise<void>;
   onEdit: (input: UpdateDonationInput) => Promise<void>;
   onCancel: (reason: string) => Promise<void>;
   onReport: (input: CreateDonationIncidentInput) => Promise<void>;
 }) {
   const tx = useUiText();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const formId = useId();
+  const [openModal, setOpenModal] = useState(false);
   const [action, setAction] = useState<ActionKind>("edit");
   const [busy, setBusy] = useState(false);
+  const [publishError, setPublishError] = useState<string>();
   const [error, setError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [title, setTitle] = useState(donation.title);
@@ -85,11 +90,15 @@ export function DonationActions({
     setAction(nextAction);
     setError(undefined);
     setFieldErrors({});
-    window.requestAnimationFrame(() => dialogRef.current?.showModal());
+    setOpenModal(true);
   }
 
   function close() {
-    if (!busy) dialogRef.current?.close();
+    if (!busy) {
+      setOpenModal(false);
+      setError(undefined);
+      setFieldErrors({});
+    }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -148,7 +157,7 @@ export function DonationActions({
           preferredContactMethod: contactMethod,
         });
       }
-      dialogRef.current?.close();
+      setOpenModal(false);
     } catch (caught: unknown) {
       const serviceError = toServiceError(caught);
       setError(serviceError.message);
@@ -167,21 +176,51 @@ export function DonationActions({
 
   const descriptionText =
     action === "edit"
-      ? "ভলান্টিয়ার খাবার সংগ্রহ শুরু করার পূর্ব পর্যন্ত আপনি তথ্য পরিমার্জন করতে পারবেন।"
+      ? "এনজিও ক্লেইম করার আগ পর্যন্ত তথ্য পরিমার্জন করা যাবে।"
       : action === "cancel"
       ? "অনুদান বাতিল করলে সক্রিয় এনজিও ক্লেইম অবমুক্ত হবে এবং তালিকাটি আর দৃশ্যমান থাকবে না।"
       : "কোনো অপ্রত্যাশিত সমস্যা বা খাদ্য নিরাপত্তা ঝুঁকি তৈরি হলে রিপোর্ট করুন, সাপোর্ট টিম অবিলম্বে পর্যালোচনায় নেবে।";
 
   const unitLabel = UNIT_LABELS_BN[donation.quantity.unit] || donation.quantity.unit;
 
+  async function handlePublishDraft() {
+    if (!onPublishDraft || busy) return;
+    setPublishError(undefined);
+    try {
+      setBusy(true);
+      await onPublishDraft();
+    } catch (caught: unknown) {
+      setPublishError(toServiceError(caught).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <>
       <div id="actions" className="grid gap-2.5">
+        {donation.status === DonationStatus.DRAFT && onPublishDraft && (
+          <>
+            <Button
+              type="button"
+              variant="primary"
+              leftIcon={<Send className="size-4" />}
+              disabled={busy}
+              onClick={() => void handlePublishDraft()}
+              className="w-full justify-start font-bold"
+            >
+              {tx("খসড়া অনুদান প্রকাশ করুন")}
+            </Button>
+            {publishError && (
+              <Alert tone="danger" title={tx("কার্যক্রম সম্পন্ন করা যায়নি")} description={tx(publishError)} />
+            )}
+          </>
+        )}
         <Button
           type="button"
           variant="outline"
           leftIcon={<Pencil className="size-4 text-emerald-600" />}
-          disabled={!canEdit}
+          disabled={!canEdit || busy}
           onClick={() => open("edit")}
           className="w-full justify-start font-bold border-line hover:border-emerald-300 hover:bg-emerald-50/50"
         >
@@ -206,41 +245,48 @@ export function DonationActions({
           {tx("অনুদান বাতিল করুন")}</Button>
       </div>
 
-      <dialog
-        ref={dialogRef}
-        aria-labelledby="donation-action-title"
-        aria-describedby="donation-action-description"
-        onClick={(event) => {
-          if (event.target === event.currentTarget) close();
-        }}
-        onClose={() => {
-          setError(undefined);
-          setFieldErrors({});
-        }}
-        className="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-3xl border border-line bg-white p-0 shadow-2xl backdrop:bg-brand-950/60 backdrop:backdrop-blur-sm"
+      <ExecutiveDialog
+        open={openModal}
+        onClose={close}
+        busy={busy}
+        tone={action === "cancel" ? "rose" : action === "issue" ? "amber" : "emerald"}
+        size="lg"
+        title={titleText}
+        subtitle={descriptionText}
+        leading={
+          action === "edit" ? (
+            <Pencil className="size-5" />
+          ) : action === "cancel" ? (
+            <Ban className="size-5" />
+          ) : (
+            <AlertTriangle className="size-5" />
+          )
+        }
+        footer={
+          <>
+            <Button type="button" variant="outline" disabled={busy} onClick={close}>
+              {tx("ফিরে যান")}
+            </Button>
+            <Button
+              type="submit"
+              form={formId}
+              variant={action === "cancel" ? "danger" : "primary"}
+              rightIcon={<Send className="size-4" />}
+              disabled={busy}
+            >
+              {busy
+                ? tx("সংরক্ষণ করা হচ্ছে...")
+                : action === "edit"
+                  ? tx("তথ্য আপডেট করুন")
+                  : action === "cancel"
+                    ? tx("বাতিল নিশ্চিত করুন")
+                    : tx("রিপোর্ট জমা দিন")}
+            </Button>
+          </>
+        }
       >
-        <div className="flex items-start justify-between gap-4 border-b border-line bg-gradient-to-r from-emerald-50/60 to-transparent p-5 sm:p-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-white">
-                {action === "edit" ? <Pencil className="size-4" /> : action === "cancel" ? <Ban className="size-4" /> : <AlertTriangle className="size-4" />}
-              </span>
-              <h2 id="donation-action-title" className="text-xl font-black text-ink-900">
-                {titleText}
-              </h2>
-            </div>
-            <p id="donation-action-description" className="mt-1.5 text-xs leading-5 text-muted-600">
-              {descriptionText}
-            </p>
-          </div>
-          <IconButton autoFocus label={tx("বন্ধ করুন")} onClick={close}>
-            <X className="size-5" />
-          </IconButton>
-        </div>
-
-        <form onSubmit={submit} noValidate>
-          <div className="grid gap-5 p-5 sm:p-6">
-            {error && <Alert tone="danger" title={tx("কার্যক্রম সম্পন্ন করা যায়নি")} description={tx(error)} />}
+        <form id={formId} onSubmit={submit} noValidate className="grid gap-5">
+          {error && <Alert tone="danger" title={tx("কার্যক্রম সম্পন্ন করা যায়নি")} description={tx(error)} />}
 
             {action === "edit" && (
               <>
@@ -392,22 +438,8 @@ export function DonationActions({
                 </Select>
               </>
             )}
-          </div>
-
-          <div className="flex flex-col-reverse gap-3 border-t border-line bg-canvas/40 p-5 sm:flex-row sm:justify-end sm:p-6">
-            <Button type="button" variant="ghost" disabled={busy} onClick={close}>
-              {tx("ফিরে যান")}</Button>
-            <Button
-              type="submit"
-              variant={action === "cancel" ? "danger" : "primary"}
-              rightIcon={<Send className="size-4" />}
-              disabled={busy}
-            >
-              {busy ? tx("সংরক্ষণ করা হচ্ছে...") : action === "edit" ? tx("তথ্য আপডেট করুন") : action === "cancel" ? tx("বাতিল নিশ্চিত করুন") : tx("রিপোর্ট জমা দিন")}
-            </Button>
-          </div>
         </form>
-      </dialog>
+      </ExecutiveDialog>
     </>
   );
 }

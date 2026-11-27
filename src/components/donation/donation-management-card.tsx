@@ -20,6 +20,7 @@ import { RescueClock } from "@/components/donor/rescue-clock";
 import { donationImageUrl, formatDonationDateTime, formatDonationQuantity } from "@/features/donations/donation-presentation";
 import { FOOD_CATEGORY_LABELS } from "@/lib/constants/domain";
 import { DonationStatus } from "@/lib/constants/statuses";
+import { buildRescueProgress } from "@/lib/rescue-progress";
 import { ROUTES } from "@/lib/routes";
 import type { DonationView } from "@/types/domain";
 import { cn } from "@/lib/utils";
@@ -114,32 +115,6 @@ const STATUS_BADGE_CONFIG: Record<
   },
 };
 
-const RESCUE_STAGES = [
-  { key: "posted", label: "পোস্টকৃত" },
-  { key: "claimed", label: "এনজিও ক্লেইম" },
-  { key: "picked_up", label: "হ্যান্ডওভার ও পিকআপ" },
-  { key: "distributed", label: "বিতরণ সম্পন্ন" },
-] as const;
-
-function getStageIndex(status: DonationStatus): number {
-  switch (status) {
-    case DonationStatus.DRAFT:
-    case DonationStatus.PUBLISHED:
-    case DonationStatus.AVAILABLE:
-      return 0;
-    case DonationStatus.RESERVED:
-      return 1;
-    case DonationStatus.ASSIGNED:
-    case DonationStatus.PICKED_UP:
-    case DonationStatus.DELIVERED:
-      return 2;
-    case DonationStatus.DISTRIBUTED:
-      return 3;
-    default:
-      return -1;
-  }
-}
-
 export function DonationManagementCard({ donation }: { donation: DonationView }) {
   const tx = useUiText();
   const isUrgent = donation.priority === "URGENT" || donation.priority === "HIGH";
@@ -150,7 +125,28 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
     border: "border-slate-200",
     dot: "bg-slate-400",
   };
-  const currentStageIndex = getStageIndex(donation.status);
+  const currentClaim =
+    donation.status === DonationStatus.AVAILABLE &&
+    donation.latestClaim?.status === "CANCELLED"
+      ? undefined
+      : donation.latestClaim;
+  const claimIsNewer =
+    currentClaim &&
+    (!donation.updatedAt ||
+      Date.parse(currentClaim.updatedAt) >= Date.parse(donation.updatedAt));
+  const progress = buildRescueProgress({
+    scope: "donation",
+    status: claimIsNewer ? currentClaim.status : donation.status,
+    routeStage: currentClaim?.routeStage,
+    publishedAt: donation.publishedAt,
+    reservedAt: currentClaim?.reservedAt,
+    assignedAt: currentClaim?.assignedAt,
+    pickedUpAt: currentClaim?.pickedUpAt,
+    deliveredAt: currentClaim?.deliveredAt,
+    distributedAt: currentClaim?.distributedAt,
+    updatedAt: claimIsNewer ? currentClaim.updatedAt : donation.updatedAt,
+    cancellationReason: donation.cancellationReason,
+  });
   const isInRescue = [
     DonationStatus.RESERVED,
     DonationStatus.ASSIGNED,
@@ -158,9 +154,13 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
     DonationStatus.DELIVERED,
   ].includes(donation.status);
   const isCompleted = donation.status === DonationStatus.DISTRIBUTED;
+  const isCancelled = progress.state === "cancelled";
+  const isExpired = progress.state === "expired";
+  const isPaused = progress.state === "paused";
+  const isExceptional = isCancelled || isExpired || isPaused;
 
   return (
-    <div className="group overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xs hover:border-emerald-500/70 hover:shadow-xl hover:shadow-emerald-950/5 transition-all duration-300">
+    <div className="liquid-glass-card group overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-300 hover:border-emerald-500/70 hover:shadow-xl">
       <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)]">
         {/* 1. Food Visual Thumbnail */}
         <div className="relative min-h-52 overflow-hidden bg-slate-100 lg:min-h-full">
@@ -254,49 +254,78 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
               </div>
             </div>
 
-            {/* 4-Step Rescue Journey Milestone Tracker */}
-            {currentStageIndex >= 0 && (
-              <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/50 p-3">
-                <div className="flex items-center justify-between text-[11px] font-heading mb-2">
-                  <span className="font-bold text-slate-500 flex items-center gap-1">
-                    <ShieldCheck className="size-3.5 text-emerald-600" />
-                    {tx("রেসকিউ প্রসেস ট্র্যাকার")}</span>
-                  <span className="font-bold text-emerald-700">
-                    {isCompleted ? tx("বিতরণ সফলভাবে সম্পন্ন") : isInRescue ? tx("উদ্ধার ও ডেলিভারি চলমান") : tx("ক্লেইমের অপেক্ষায়")}
-                  </span>
-                </div>
-                <div className="grid grid-cols-4 gap-1 sm:gap-2">
-                  {RESCUE_STAGES.map((stage, idx) => {
-                    const isPassed = idx < currentStageIndex;
-                    const isCurrent = idx === currentStageIndex;
-                    return (
-                      <div key={stage.key} className="text-center">
-                        <div
-                          className={cn(
-                            "h-1.5 rounded-full transition-all duration-300",
-                            isPassed || (isCurrent && isCompleted)
-                              ? "bg-emerald-600"
-                              : isCurrent
-                              ? "bg-emerald-500 animate-pulse"
-                              : "bg-slate-200"
-                          )}
-                        />
-                        <span
-                          className={cn(
-                            "mt-1.5 block text-[10px] font-bold truncate",
-                            isPassed || isCurrent
-                              ? "text-emerald-800"
-                              : "text-slate-400"
-                          )}
-                        >
-                          {tx(stage.label)}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+            {/* 6-Step Rescue Journey Milestone Tracker */}
+            <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/50 p-3">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] font-heading">
+                <span className="flex items-center gap-1 font-bold text-slate-500">
+                  <ShieldCheck className="size-3.5 text-emerald-600" />
+                  {tx("রেসকিউ প্রসেস ট্র্যাকার")}
+                </span>
+                <span
+                  className={cn(
+                    "font-bold",
+                    isCancelled
+                      ? "text-rose-700"
+                      : isExpired || isPaused
+                        ? "text-amber-700"
+                        : "text-emerald-700",
+                  )}
+                >
+                  {isCancelled
+                    ? tx("বাতিল: {0} ধাপে থেমেছে", tx(progress.stoppedAtLabel))
+                    : isExpired
+                      ? tx("মেয়াদ শেষ: {0} ধাপে থেমেছে", tx(progress.stoppedAtLabel))
+                      : isPaused
+                        ? tx("স্থগিত: {0} ধাপে যাচাই চলছে", tx(progress.stoppedAtLabel))
+                        : isCompleted
+                          ? tx("বিতরণ সফলভাবে সম্পন্ন")
+                          : isInRescue
+                            ? tx("উদ্ধার ও ডেলিভারি চলমান")
+                            : donation.status === DonationStatus.DRAFT
+                              ? tx("খসড়া সংরক্ষিত")
+                              : tx("ক্লেইমের অপেক্ষায়")}
+                </span>
               </div>
-            )}
+              <div className="grid grid-cols-6 gap-1 sm:gap-1.5">
+                {progress.steps.map((step) => {
+                  const stoppedHere = isExceptional && step.current;
+                  const barColor =
+                    isCancelled && stoppedHere
+                      ? "bg-rose-600"
+                      : (isExpired || isPaused) && stoppedHere
+                        ? "bg-amber-500"
+                        : step.done
+                          ? "bg-emerald-600"
+                          : step.current
+                            ? "bg-emerald-500 animate-pulse"
+                            : "bg-slate-200";
+                  const textColor =
+                    isCancelled && stoppedHere
+                      ? "text-rose-800"
+                      : (isExpired || isPaused) && stoppedHere
+                        ? "text-amber-800"
+                        : step.done || (step.current && !isExceptional)
+                          ? "text-emerald-800"
+                          : "text-slate-400";
+                  return (
+                    <div key={step.id} className="min-w-0 text-center">
+                      <div className={cn("h-1.5 rounded-full transition-all duration-300", barColor)} />
+                      <span
+                        className={cn("mt-1.5 block truncate text-[10px] font-bold", textColor)}
+                        title={tx(step.label)}
+                      >
+                        {tx(step.label)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              {donation.cancellationReason && isCancelled && (
+                <p className="mt-2 truncate text-[11px] font-medium text-rose-800">
+                  {tx("Reason: {0}", donation.cancellationReason)}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* 3. Action Buttons & Operational Footer */}

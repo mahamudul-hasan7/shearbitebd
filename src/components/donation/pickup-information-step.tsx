@@ -137,7 +137,7 @@ export function PickupInformationStep({
             onClick={() => update("pickupWindowEnd", draft.safePickupDeadline)}
             className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 underline cursor-pointer"
           >
-            {tx("⚡ নিরাপদ মেয়াদের সাথে মিলিয়ে দিন (")}{draft.safePickupDeadline.replace("T", " ")})
+            {tx("নিরাপদ মেয়াদের সাথে মিলিয়ে দিন (")}{draft.safePickupDeadline.replace("T", " ")})
           </button>
         )}
       </div>

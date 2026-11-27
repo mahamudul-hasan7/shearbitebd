@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { QrCode, Copy, Check } from "lucide-react";
+import { QrMatrix } from "@/components/donation/qr-matrix";
 import { Button } from "@/components/ui/button";
 import {
   handoverService,
@@ -32,7 +34,8 @@ export function HandoverCodePanel({
   }>();
   const [busy, setBusy] = useState(false),
     [now, setNow] = useState(0),
-    [revision, setRevision] = useState(0);
+    [revision, setRevision] = useState(0),
+    [copied, setCopied] = useState(false);
   const lock = useRef(false),
     readVersion = useRef(0);
   useEffect(() => {
@@ -168,23 +171,48 @@ export function HandoverCodePanel({
         ) : (
           <>
             {visible && (
-              <div className="rounded-2xl bg-brand-50 p-5 text-center">
-                <p
-                  aria-label={tx("Six digit handover code")}
-                  className="select-all font-mono text-4xl font-bold tracking-widest"
-                >
-                  {code!.code}
-                </p>
-                <p className="mt-3 text-sm" role="timer" aria-live="off">
-                  {tx(
-                    "Code valid for {0}:{1}",
-                    number(Math.floor(seconds / 60)),
-                    (seconds % 60).toLocaleString(
-                      language === "bn" ? "bn-BD" : "en-BD",
-                      { minimumIntegerDigits: 2, useGrouping: false },
-                    ),
-                  )}
-                </p>
+              <div className="grid gap-4 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 sm:grid-cols-[auto_1fr] sm:items-center">
+                <QrMatrix
+                  value={`sharebite://handover/${claimId}/${kind}/${code!.code}`}
+                  size={108}
+                  label={tx("Handover QR code")}
+                />
+                <div className="space-y-2 text-center sm:text-left">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                    <QrCode className="size-3.5" />
+                    <span>{tx("QR + 6-Digit Handover Proof")}</span>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                    <p
+                      aria-label={tx("Six digit handover code")}
+                      className="select-all font-mono text-3xl font-extrabold tracking-widest text-ink-900 sm:text-4xl"
+                    >
+                      {code!.code}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void navigator.clipboard?.writeText(code!.code);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-white px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
+                    >
+                      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                      <span>{copied ? tx("Copied") : tx("Copy")}</span>
+                    </button>
+                  </div>
+                  <p className="text-sm font-medium text-muted-600" role="timer" aria-live="off">
+                    {tx(
+                      "Code valid for {0}:{1}",
+                      number(Math.floor(seconds / 60)),
+                      (seconds % 60).toLocaleString(
+                        language === "bn" ? "bn-BD" : "en-BD",
+                        { minimumIntegerDigits: 2, useGrouping: false },
+                      ),
+                    )}
+                  </p>
+                </div>
               </div>
             )}
             {code && !visible && !current?.error && (
