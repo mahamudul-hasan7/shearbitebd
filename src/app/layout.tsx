@@ -35,8 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="bn">
       <head>
         <link rel="preload" href="/fonts/hind-siliguri-ijwTs5juQtsyLLR5jN4cxBEoTI7ax9k0.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/outfit-QGYvz_MVcBeNP4NJtEtq.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/plus-jakarta-sans-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
         <MockAuthProvider>

@@ -37,13 +37,14 @@
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
   --color-info-strong: var(--info-strong);
-  --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Outfit', 'Hind Siliguri', sans-serif;
-  --radius-sm: 0.5rem;
-  --radius-card: 0.875rem;
-  --radius-control: 0.625rem;
-  --radius-panel: 1.125rem;
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --font-sans: 'Inter', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', 'Hind Siliguri', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Hind Siliguri', monospace;
+  --radius-sm: 0.625rem;
+  --radius-card: 1.375rem;
+  --radius-control: 0.875rem;
+  --radius-panel: 1.75rem;
+  --shadow-card: 0 18px 42px -18px rgb(15 23 42 / 14%), 0 6px 18px -10px rgb(16 185 129 / 10%);
   --shadow-float: 0 10px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
   --shadow-dialog: 0 25px 50px -12px rgb(0 0 0 / 0.2);
   --shadow-sticky: 0 -4px 16px -2px rgb(0 0 0 / 0.05);
@@ -62,16 +63,16 @@
   --identity-donor-soft: #edf5f1;
   --identity-donor-ink: #124f40;
   --identity-donor-border: #cee1d7;
-  --identity-ngo: #3d5f87;
-  --identity-ngo-hover: #2c4869;
-  --identity-ngo-soft: #eef3f8;
-  --identity-ngo-ink: #2e4865;
-  --identity-ngo-border: #d2deeb;
-  --identity-rider: #9a5b35;
-  --identity-rider-hover: #774328;
-  --identity-rider-soft: #f8f1eb;
-  --identity-rider-ink: #754329;
-  --identity-rider-border: #ead7c8;
+  --identity-ngo: #176b55;
+  --identity-ngo-hover: #10503f;
+  --identity-ngo-soft: #edf5f1;
+  --identity-ngo-ink: #124f40;
+  --identity-ngo-border: #cee1d7;
+  --identity-rider: #176b55;
+  --identity-rider-hover: #10503f;
+  --identity-rider-soft: #edf5f1;
+  --identity-rider-ink: #124f40;
+  --identity-rider-border: #cee1d7;
 
   --brand-50: #ecfdf5;
   --brand-100: #d1fae5;
@@ -107,8 +108,9 @@
   --info: #3b82f6;
   --info-soft: #eff6ff;
   --info-strong: #1d4ed8;
-  --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Outfit', 'Hind Siliguri', sans-serif;
+  --font-sans: 'Inter', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', 'Hind Siliguri', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Hind Siliguri', monospace;
   --sidebar-width: 17.5rem;
   --page-max-width: 90rem;
 
@@ -118,6 +120,43 @@
   --executive-sidebar-border: #0a4f3d;
   --executive-sidebar-active: #059669;
   --executive-sidebar-glow: rgba(16, 185, 129, 0.28);
+
+  /* Unified Liquid Glass & Surface Design Tokens */
+  --radius-sm: 0.625rem;
+  --radius-control: 0.875rem;
+  --radius-card: 1.375rem;
+  --radius-panel: 1.625rem;
+
+  --glass-surface: linear-gradient(145deg, rgb(255 255 255 / 78%), rgb(255 255 255 / 54%));
+  --glass-surface-strong: linear-gradient(145deg, rgb(255 255 255 / 88%), rgb(255 255 255 / 70%));
+  --glass-tile: linear-gradient(155deg, rgb(255 255 255 / 76%), rgb(255 255 255 / 50%));
+  --glass-control: linear-gradient(180deg, rgb(255 255 255 / 82%), rgb(255 255 255 / 62%));
+  --glass-pill: rgb(255 255 255 / 68%);
+  --glass-modal: linear-gradient(155deg, rgb(255 255 255 / 92%), rgb(255 255 255 / 78%));
+
+  --glass-border: rgb(255 255 255 / 82%);
+  --glass-border-strong: rgb(255 255 255 / 96%);
+  --glass-backdrop: rgba(3, 39, 29, 0.56);
+
+  --glass-blur-card: blur(22px) saturate(180%);
+  --glass-blur-tile: blur(18px) saturate(175%);
+  --glass-blur-control: blur(14px) saturate(165%);
+  --glass-blur-modal: blur(26px) saturate(185%);
+
+  --glass-shadow-card:
+    inset 0 1px 0.5px rgb(255 255 255 / 92%),
+    inset 0 -1px 0 rgb(255 255 255 / 38%),
+    0 18px 42px -18px rgb(15 23 42 / 14%),
+    0 8px 20px -10px rgb(16 185 129 / 10%);
+  --glass-shadow-tile:
+    inset 0 1px 0 rgb(255 255 255 / 88%),
+    0 8px 20px -14px rgb(15 23 42 / 14%);
+  --glass-shadow-control:
+    inset 0 1px 0 rgb(255 255 255 / 88%),
+    0 2px 6px -4px rgb(15 23 42 / 10%);
+  --glass-shadow-modal:
+    inset 0 1px 0.5px rgb(255 255 255 / 95%),
+    0 24px 60px -16px rgb(2 44 34 / 24%);
 }
 
 * {
@@ -160,7 +199,7 @@ nav a {
 
 h1, h2, h3, h4, h5, h6, .font-heading {
   font-family: var(--font-heading);
-  letter-spacing: -0.028em;
+  letter-spacing: -0.02em;
 }
 
 img,
@@ -181,7 +220,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background: rgba(3, 39, 29, 0.65);
+  background: var(--glass-backdrop);
   backdrop-filter: blur(6px);
 }
 
@@ -398,7 +437,7 @@ button:disabled,
 .animate-stroke-check {
   stroke-dasharray: 48;
   stroke-dashoffset: 48;
-  animation: stroke-check 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+  animation: stroke-check 0.36s cubic-bezier(0.65, 0, 0.45, 1) 0.14s forwards;
 }
 
 .animate-popup-pop {
@@ -453,6 +492,116 @@ button:disabled,
 }
 
 
+
+/* Smooth global crossfade when toggling between Bangla and English */
+@keyframes lang-vt-out {
+  from {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  to {
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes lang-vt-in {
+  from {
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes lang-fallback-in {
+  from {
+    opacity: 0.72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+html[data-lang-transition]::view-transition-old(root) {
+  animation: lang-vt-out 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html[data-lang-transition]::view-transition-new(root) {
+  animation: lang-vt-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html[data-lang-fallback="true"] body {
+  animation: lang-fallback-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scrollbar-none,
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Global Apple Liquid Glass Primitives (in @layer components so Tailwind utilities can override) */
+@layer components {
+  .liquid-glass-card {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-surface);
+    -webkit-backdrop-filter: var(--glass-blur-card);
+    backdrop-filter: var(--glass-blur-card);
+    box-shadow: var(--glass-shadow-card);
+  }
+
+  .liquid-glass-tile {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-tile);
+    -webkit-backdrop-filter: var(--glass-blur-tile);
+    backdrop-filter: var(--glass-blur-tile);
+    box-shadow: var(--glass-shadow-tile);
+    transition:
+      transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .liquid-glass-tile:hover {
+    border-color: var(--glass-border-strong);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 95%),
+      0 14px 28px -16px rgb(15 23 42 / 18%);
+  }
+
+  .liquid-glass-control {
+    background: var(--glass-control);
+    -webkit-backdrop-filter: var(--glass-blur-control);
+    backdrop-filter: var(--glass-blur-control);
+    box-shadow: var(--glass-shadow-control);
+  }
+
+  .liquid-glass-pill {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-pill);
+    -webkit-backdrop-filter: var(--glass-blur-control);
+    backdrop-filter: var(--glass-blur-control);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 88%);
+  }
+
+  .liquid-glass-dark {
+    border: 1px solid rgb(255 255 255 / 22%);
+    -webkit-backdrop-filter: var(--glass-blur-modal);
+    backdrop-filter: var(--glass-blur-modal);
+    box-shadow:
+      inset 0 1px 0.5px rgb(255 255 255 / 38%),
+      inset 0 -1px 0 rgb(255 255 255 / 12%),
+      0 20px 44px -18px rgb(2 24 18 / 28%);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {

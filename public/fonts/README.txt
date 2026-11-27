@@ -1,8 +1,6 @@
 Self-hosted fonts used by ShareBite BD.
 
-Hind Siliguri, Outfit and Plus Jakarta Sans are distributed under the
-SIL Open Font License. Each family's license is included in this directory.
+- Inter (variable Latin/Latin-ext): clean sans-serif for English UI, headings, and metrics.
+- Hind Siliguri (Light 300, Regular 400, Medium 500, SemiBold 600, Bold 700): unified Bangla typography across all weights and sizes.
 
-WOFF2 files were obtained from the Google Fonts CSS API. Font faces and
-Unicode subsets are defined in src/app/fonts.css using font-display: swap.
-Files are loaded only when required by the page's text and font weights.
+Distributed under the SIL Open Font License (OFL). WOFF2 files are defined in src/app/fonts.css with font-display: swap.
