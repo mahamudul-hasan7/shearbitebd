@@ -1,7 +1,7 @@
 import { VolunteerDashboard } from "@/features/volunteer-dashboard/volunteer-dashboard";
 
 export const metadata = {
-  title: "Volunteer Command Hub | ShareBite BD",
+  title: "Volunteer Command Hub",
   description: "Real-time surplus food dispatch, rapid transport and verified handover operations across Dhaka Metro.",
 };
 
