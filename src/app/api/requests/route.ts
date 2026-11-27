@@ -3,10 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { apiError, requireAuth, object, textField } from "@/lib/api";
 import { UserRole } from "@/lib/constants/roles";
 import { createFoodRequest, changeFoodRequest, ownFoodRequest, requestInclude, foodRequestDto, expireFoodRequests, foodRequestMatches } from "@/lib/db/food-requests";
+import { expireOpenDonations } from "@/lib/db/rescue";
 
 export async function GET(request: Request) {
   try {
     const { user } = await requireAuth(UserRole.NGO);
+    await expireOpenDonations();
     await expireFoodRequests(user);
     const params = new URL(request.url).searchParams;
     const id = params.get("id");

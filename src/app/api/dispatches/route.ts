@@ -8,7 +8,9 @@ import { ApiError, apiError, object, requireAuth, textField } from "@/lib/api";
 import type { AvailableDispatch } from "@/features/volunteer-dashboard/volunteer-types";
 import { Prisma } from "@prisma/client";
 import { activeVolunteerMission } from "@/lib/db/rescue-access";
+import { expireOpenDonations } from "@/lib/db/rescue";
 import { volunteerDutyDto } from "@/lib/db/volunteer-duty";
+import { emitRescueEvent } from "@/lib/realtime/rescue-events";
 
 const include = { donation: { include: { donor: { include: { user: true } }, pickupAddress: true } }, ngo: { include: { user: { include: { addresses: true } } } }, foodRequest: true } satisfies Prisma.ClaimInclude;
 type DispatchRow = Prisma.ClaimGetPayload<{ include: typeof include }>;
@@ -34,7 +36,9 @@ export async function GET() {
   try {
     const { user } = await requireAuth(UserRole.VOLUNTEER);
     if (!user.volunteerProfileId) throw new ApiError(403, "A volunteer profile is required.");
-    const rows = await prisma.claim.findMany({ where: { status: "RESERVED", ngo:{user:{isActive:true,deletedAt:null}}, donation: { donor:{user:{isActive:true,deletedAt:null}}, status: "RESERVED", safePickupDeadline: { gt: new Date() } } }, include, orderBy: { reservedAt: "asc" } });
+    await expireOpenDonations();
+    const now = new Date();
+    const rows = await prisma.claim.findMany({ where: { status: "RESERVED", ngo:{user:{isActive:true,deletedAt:null}}, donation: { donor:{user:{isActive:true,deletedAt:null}}, status: "RESERVED", safePickupDeadline: { gt: now }, windowEnd: { gt: now } } }, include, orderBy: { reservedAt: "asc" } });
     const active = await prisma.claim.findFirst({ where: { volunteerProfileId: user.volunteerProfileId, ...activeVolunteerMission }, include });
     const profile = await prisma.volunteerProfile.findUniqueOrThrow({ where: { id: user.volunteerProfileId } });
     return NextResponse.json({ success: true, count: rows.length, dispatches: rows.map((row) => dispatchDto(row)), activeDispatch: active ? dispatchDto(active, true) : null, duty: volunteerDutyDto(profile, Boolean(active)) });
@@ -59,7 +63,12 @@ export async function POST(request: Request) {
       await tx.$queryRaw`SELECT id FROM donations WHERE id = ${previous.donationId} FOR UPDATE`;
       const claim = await tx.claim.findUniqueOrThrow({ where: { id }, include: { donation: { include: { donor: true } }, ngo: true } });
       if (await tx.user.count({where:{id:{in:[claim.donation.donor.userId,claim.ngo.userId]},isActive:true,deletedAt:null}}) !== 2) throw new ApiError(409, "A rescue participant account is unavailable.");
-      if (claim.status !== "RESERVED" || claim.donation.status !== "RESERVED" || claim.donation.safePickupDeadline.getTime() <= Date.now()) throw new ApiError(409, "Dispatch is already accepted or expired.");
+      if (
+        claim.status !== "RESERVED" ||
+        claim.donation.status !== "RESERVED" ||
+        claim.donation.safePickupDeadline.getTime() <= Date.now() ||
+        claim.donation.windowEnd.getTime() <= Date.now()
+      ) throw new ApiError(409, "Dispatch is already accepted or expired.");
       await tx.claim.update({ where: { id }, data: { status: "ASSIGNED", routeStage: "assigned", volunteerProfileId: volunteer.id, assignedAt: new Date() } });
       await tx.donation.update({ where: { id: claim.donationId }, data: { status: "ASSIGNED" } });
       await tx.notification.createMany({ data: [
@@ -69,6 +78,7 @@ export async function POST(request: Request) {
       ] });
     });
     const claim = await prisma.claim.findUniqueOrThrow({ where: { id }, include });
+    emitRescueEvent("mission.accepted", `${user.displayName} accepted dispatch for ${claim.donation.title}`);
     return NextResponse.json({ success: true, claimId: id, dispatch: dispatchDto(claim, true) });
   } catch (error) { return apiError(error); }
 }

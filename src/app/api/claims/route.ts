@@ -2,15 +2,17 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/lib/constants/roles";
 import { ApiError, apiError, object, requireAuth, textField } from "@/lib/api";
-import { claimDto, claimVisibility, donationDto, donationInclude, reserveDonation } from "@/lib/db/rescue";
+import { claimDto, claimVisibility, donationDto, donationInclude, expireOpenDonations, reserveDonation } from "@/lib/db/rescue";
 import { legacyDeliveryAddress, requestAddress, savedDeliveryAddress } from "@/lib/db/locations";
 import { refreshRequestProgress } from "@/lib/db/request-progress";
+import { emitRescueEvent } from "@/lib/realtime/rescue-events";
 
-const include = { donation: { include: donationInclude }, ngo: { include: { user: { include: { addresses: true } } } }, volunteer: { include: { user: true } }, foodRequest: true, deliveryReceipt: { select: { id: true } }, distributionRecord: { select: { id: true } } } as const;
+const include = { donation: { include: donationInclude }, ngo: { include: { user: { include: { addresses: true } } } }, volunteer: { include: { user: true } }, foodRequest: true, deliveryReceipt: { select: { id: true, distributionBlocked: true } }, distributionRecord: { select: { id: true } } } as const;
 
 export async function GET(request: Request) {
   try {
     const { user } = await requireAuth();
+    await expireOpenDonations();
     const params = new URL(request.url).searchParams;
     const id = params.get("id");
     const rows = await prisma.claim.findMany({ where: { AND: [claimVisibility(user), ...(id ? [{ id }] : []), ...(params.get("donationId") ? [{ donationId: params.get("donationId")! }] : [])] }, include, orderBy: { updatedAt: "desc" }, take: 200 });
@@ -20,6 +22,7 @@ export async function GET(request: Request) {
       const destinationVisible = user.role !== "VOLUNTEER" || !["CANCELLED", "EXPIRED"].includes(row.status);
       const details = {
         receiptRecorded: Boolean(row.deliveryReceipt),
+        distributionBlocked: Boolean(row.deliveryReceipt?.distributionBlocked),
         distributionRecorded: Boolean(row.distributionRecord),
         claim: claimDto(row),
         donation: donationDto(row.donation, user),
@@ -41,6 +44,7 @@ export async function POST(request: Request) {
     const body = object(await request.json());
     const id = await reserveDonation(textField(body.donationId, "donationId", 160), user, textField(body.foodRequestId, "foodRequestId", 160, true) || undefined, body.allergenReviewAcknowledged === true);
     const row = await prisma.claim.findUniqueOrThrow({ where: { id }, include: { ngo: { include: { user: true } }, volunteer: { include: { user: true } } } });
+    emitRescueEvent("claim.created", `${row.ngo.organizationName} claimed a food batch`);
     return NextResponse.json({ success: true, claim: claimDto(row) }, { status: 201 });
   } catch (error) { return apiError(error); }
 }
@@ -55,14 +59,30 @@ export async function PATCH(request: Request) {
     if (!existing) throw new ApiError(404, "Claim not found for your account.");
     await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM donations WHERE id = ${existing.donationId} FOR UPDATE`;
-      const claim = await tx.claim.findUniqueOrThrow({ where: { id } });
+      const claim = await tx.claim.findUniqueOrThrow({
+        where: { id },
+        include: { donation: { include: { donor: true } }, ngo: true, volunteer: true },
+      });
       if (!["RESERVED", "ASSIGNED"].includes(claim.status)) throw new ApiError(409, "This claim can no longer be released.");
+      const now = new Date();
       await tx.claim.update({ where: { id }, data: { status: "CANCELLED" } });
-      const donation = await tx.donation.findUniqueOrThrow({ where: { id: claim.donationId } });
-      await tx.donation.update({ where: { id: donation.id }, data: { status: donation.safePickupDeadline.getTime() > Date.now() ? "AVAILABLE" : "EXPIRED" } });
+      await tx.handoverChallenge.updateMany({ where: { claimId: id, consumedAt: null }, data: { expiresAt: now } });
+      const stillOpen = claim.donation.safePickupDeadline.getTime() > now.getTime() && claim.donation.windowEnd.getTime() > now.getTime();
+      await tx.donation.update({ where: { id: claim.donation.id }, data: { status: stillOpen ? "AVAILABLE" : "EXPIRED" } });
+      const notifyIds = [claim.donation.donor.userId, ...(claim.volunteer ? [claim.volunteer.userId] : [])];
+      await tx.notification.createMany({
+        data: notifyIds.map((userId) => ({
+          userId,
+          type: "CLAIM",
+          title: "Claim cancelled by NGO",
+          message: `${claim.ngo.organizationName} released ${claim.donation.title}.`,
+          href: userId === claim.donation.donor.userId ? `/donor/donations/${claim.donationId}` : "/volunteer/dashboard",
+        })),
+      });
       if (claim.foodRequestId) await refreshRequestProgress(tx, claim.foodRequestId);
     });
-    const row = await prisma.claim.findUniqueOrThrow({ where: { id }, include: { ngo: { include: { user: true } }, volunteer: { include: { user: true } } } });
+    const row = await prisma.claim.findUniqueOrThrow({ where: { id }, include: { ngo: { include: { user: true } }, volunteer: { include: { user: true } }, donation: true } });
+    emitRescueEvent("claim.cancelled", `${row.ngo.organizationName} released ${row.donation.title}`);
     return NextResponse.json({ claim: claimDto(row) });
   } catch (error) { return apiError(error); }
 }
