@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { apiError, ApiError, requireAuth } from "@/lib/api";
+import { expireOpenDonations } from "@/lib/db/rescue";
 
 export async function GET(request: Request) {
   try {
     const { user } = await requireAuth();
+    await expireOpenDonations();
     if (user.role === "DONOR") {
       if (!user.donorProfileId) throw new ApiError(403, "A donor profile is required.");
       const [donations, records] = await Promise.all([

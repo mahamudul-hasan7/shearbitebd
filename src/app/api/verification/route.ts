@@ -19,10 +19,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { user } = await requireAuth();
-    if (user.role !== "NGO" && user.role !== "VOLUNTEER")
+    if (user.role !== "DONOR" && user.role !== "NGO" && user.role !== "VOLUNTEER")
       throw new ApiError(
         403,
-        "Only NGO and volunteer accounts can submit verification documents.",
+        "Only donor, NGO, and volunteer accounts can submit verification documents.",
       );
     if (!request.headers.get("content-type")?.includes("multipart/form-data"))
       throw new ApiError(415, "Choose a PDF, JPG or PNG document.");
