@@ -7,6 +7,7 @@ import {
   verificationFileDto,
 } from "@/lib/db/verification-documents";
 import { savedDeliveryAddress } from "@/lib/db/locations";
+import { refreshRequestProgress } from "@/lib/db/request-progress";
 
 const roles = ["DONOR", "NGO", "VOLUNTEER"] as const;
 const pending = ["PENDING", "NOT_SUBMITTED"] as const;
@@ -30,6 +31,7 @@ const accountSelect = {
     select: {
       organizationName: true,
       bfsaCertNumber: true,
+      verificationDocument: { select: verificationFileSelect },
       verificationStatus: true,
       updatedAt: true,
     },
@@ -66,6 +68,7 @@ function accountDto(
 ) {
   const profile = row.donorProfile || row.ngoProfile || row.volunteerProfile;
   const document =
+    row.donorProfile?.verificationDocument ||
     row.ngoProfile?.verificationDocument ||
     row.volunteerProfile?.verificationDocument;
   return {
@@ -143,6 +146,7 @@ const rescueSelect = {
   volunteer: {
     select: { user: { select: { displayName: true, phone: true } } },
   },
+  deliveryReceipt: { select: { distributionBlocked: true } },
 } satisfies Prisma.ClaimSelect;
 function rescueDto(
   row: Prisma.ClaimGetPayload<{ select: typeof rescueSelect }>,
@@ -156,6 +160,7 @@ function rescueDto(
     title: row.donation.title,
     meals: row.donation.estimatedMeals,
     deadline: row.donation.safePickupDeadline.toISOString(),
+    distributionBlocked: Boolean(row.deliveryReceipt?.distributionBlocked),
     donor:
       row.donation.donor.organizationName ||
       row.donation.donor.user.displayName,
@@ -380,6 +385,7 @@ export async function reviewAccount(
         "This account changed. Reload its details before reviewing.",
       );
     const document =
+      row.donorProfile?.verificationDocument ||
       row.ngoProfile?.verificationDocument ||
       row.volunteerProfile?.verificationDocument;
     if (
@@ -482,6 +488,119 @@ export async function adminRescues(params: URLSearchParams) {
   );
   return { items: rows.map(rescueDto), total, page, pageSize };
 }
+export async function discardRescue(
+  input: Record<string, unknown>,
+  actor: AuthAccount,
+) {
+  if (actor.role !== "ADMIN") throw new ApiError(403, "Access denied.");
+  const id = textField(input.id, "rescue id", 160);
+  const note = textField(input.note, "reason note", 1000);
+  if (note.length < 12)
+    throw new ApiError(422, "Add a closure note of at least 12 characters.");
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.claim.findUnique({
+      where: { id },
+      select: { id: true, donationId: true },
+    });
+    if (!existing) throw new ApiError(404, "Rescue claim not found.");
+    await tx.$queryRaw`SELECT id FROM donations WHERE id = ${existing.donationId} FOR UPDATE`;
+    const claim = await tx.claim.findUniqueOrThrow({
+      where: { id },
+      include: {
+        donation: { include: { donor: true } },
+        ngo: true,
+        volunteer: true,
+        deliveryReceipt: true,
+        distributionRecord: true,
+        foodRequest: true,
+      },
+    });
+    if (
+      ["CANCELLED", "EXPIRED", "DISTRIBUTED"].includes(claim.status) ||
+      claim.distributionRecord
+    )
+      throw new ApiError(409, "This rescue is already closed.");
+    const now = new Date();
+    const expired =
+      claim.donation.safePickupDeadline.getTime() <= now.getTime() ||
+      (["RESERVED", "ASSIGNED"].includes(claim.status) &&
+        claim.donation.windowEnd.getTime() <= now.getTime());
+    const blocked = Boolean(claim.deliveryReceipt?.distributionBlocked);
+    if (!expired && !blocked && claim.status !== "DISPUTED")
+      throw new ApiError(
+        409,
+        "Only expired, damaged-receipt, or held rescues can be closed directly.",
+      );
+    if (
+      (claim.status === "DELIVERED" ||
+        (claim.status === "DISPUTED" && claim.incidentHoldStatus === "DELIVERED")) &&
+      claim.volunteerProfileId &&
+      claim.volunteer
+    ) {
+      await tx.volunteerProfile.update({
+        where: { id: claim.volunteerProfileId },
+        data: {
+          completedRescues: Math.max(0, claim.volunteer.completedRescues - 1),
+        },
+      });
+    }
+    const openReports = await tx.incidentReport.findMany({
+      where: { claimId: id, status: { in: ["SUBMITTED", "UNDER_REVIEW"] } },
+      select: { id: true },
+    });
+    if (openReports.length) {
+      await tx.incidentReport.updateMany({
+        where: { id: { in: openReports.map((r) => r.id) } },
+        data: { status: "RESOLVED", decision: "REJECT_FOOD", resolvedAt: now },
+      });
+      await tx.incidentReview.createMany({
+        data: openReports.map((r) => ({
+          incidentId: r.id,
+          actorUserId: actor.id,
+          actorLabel: actor.displayName,
+          status: "RESOLVED",
+          decision: "REJECT_FOOD",
+          note,
+        })),
+      });
+    }
+    await tx.claim.update({
+      where: { id },
+      data: { status: "CANCELLED", incidentHoldStatus: null },
+    });
+    await tx.handoverChallenge.updateMany({
+      where: { claimId: id, consumedAt: null },
+      data: { expiresAt: now },
+    });
+    await tx.donation.update({
+      where: { id: claim.donationId },
+      data: {
+        status: "CANCELLED",
+        cancelledAt: now,
+        cancellationReason: `Admin closed ${blocked ? "damaged" : "expired"} rescue: ${note}`,
+      },
+    });
+    if (claim.foodRequestId)
+      await refreshRequestProgress(tx, claim.foodRequestId);
+    const recipients = [
+      { userId: claim.donation.donor.userId, href: `/donor/donations/${claim.donationId}` },
+      { userId: claim.ngo.userId, href: `/ngo/claims/${id}` },
+      ...(claim.volunteer
+        ? [{ userId: claim.volunteer.userId, href: `/volunteer/missions/${id}` }]
+        : []),
+    ];
+    await tx.notification.createMany({
+      data: recipients.map((target) => ({
+        userId: target.userId,
+        type: "SYSTEM",
+        title: "Unsafe or expired rescue closed",
+        message: `${claim.donation.title}: ${note}`,
+        href: target.href,
+      })),
+    });
+    return { id, status: "CANCELLED" as const, title: claim.donation.title };
+  });
+}
 export async function adminReport(id: string) {
   const row = await prisma.incidentReport.findUnique({
     where: { id },
@@ -530,6 +649,87 @@ export async function adminReports(params: URLSearchParams) {
   );
   return { items: rows.map(reportDto), total, page, pageSize };
 }
+const DHAKA_ZONES = [
+  "Dhanmondi 27",
+  "Dhanmondi",
+  "Mirpur 10",
+  "Mirpur 12",
+  "Mirpur 1",
+  "Mirpur",
+  "Bashundhara",
+  "Mohammadpur",
+  "Aftabnagar",
+  "Kallyanpur",
+  "Cantonment",
+  "Shahbagh",
+  "Jatrabari",
+  "Banashree",
+  "Baridhara",
+  "Malibagh",
+  "Moghbazar",
+  "Agargaon",
+  "Motijheel",
+  "Farmgate",
+  "Tejgaon",
+  "Khilgaon",
+  "Rampura",
+  "Old Dhaka",
+  "Lalbagh",
+  "Azimpur",
+  "Shyamoli",
+  "Gulshan",
+  "Banani",
+  "Uttara",
+  "Paltan",
+  "Adabor",
+  "Niketan",
+  "Badda",
+  "Wari",
+] as const;
+
+function normalizeZoneName(raw: string) {
+  const parts = (raw || "")
+    .split(",")
+    .map((part) => part.replace(/\s+/g, " ").trim())
+    .filter(
+      (part) =>
+        part && !/^(dhaka(\s+metro)?|bangladesh|bd|\d{4})$/i.test(part),
+    );
+  const foldedSource = raw.toLowerCase().replace(/[-_]+/g, " ").replace(/\s+/g, " ");
+  for (const canonical of DHAKA_ZONES) {
+    if (foldedSource.includes(canonical.toLowerCase())) {
+      return { key: canonical.toLowerCase(), label: canonical };
+    }
+  }
+  const preferred =
+    parts.find(
+      (part) =>
+        !/^(house|h|road|rd|plot|flat|apt|sector|sec|block|lane)\b/i.test(
+          part,
+        ),
+    ) || parts[0];
+  const label = (preferred || "Dhaka Metro")
+    .replace(/\s*-\s*/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return { key: label.toLowerCase(), label };
+}
+
+const REPORT_SEVERITY_RANK: Record<string, number> = {
+  URGENT: 0,
+  HIGH: 1,
+  MEDIUM: 2,
+  LOW: 3,
+};
+
+const RESCUE_STATUS_RANK: Record<string, number> = {
+  DISPUTED: 0,
+  RESERVED: 1,
+  ASSIGNED: 2,
+  PICKED_UP: 3,
+  DELIVERED: 4,
+};
+
 export async function adminOverview() {
   return prisma.$transaction(
     async (tx) => {
@@ -538,11 +738,18 @@ export async function adminOverview() {
         openRescues,
         openReports,
         distributed,
-        accounts,
-        rescues,
-        reports,
+        pendingCandidateRows,
+        activeRescueRows,
+        openReportRows,
         accountActivity,
         reportActivity,
+        accessActivity,
+        totalPosted,
+        totalClaimed,
+        totalPickedUp,
+        totalDistributed,
+        zoneDonations,
+        zoneRequests,
       ] = await Promise.all([
         tx.user.count({ where: pendingWhere }),
         tx.claim.count({ where: { status: { in: [...active] } } }),
@@ -554,19 +761,19 @@ export async function adminOverview() {
           where: pendingWhere,
           select: accountSelect,
           orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-          take: 4,
+          take: 40,
         }),
         tx.claim.findMany({
           where: { status: { in: [...active] } },
           select: rescueSelect,
-          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-          take: 4,
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+          take: 40,
         }),
         tx.incidentReport.findMany({
           where: { status: { in: ["SUBMITTED", "UNDER_REVIEW"] } },
           select: reportSelect,
           orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-          take: 3,
+          take: 40,
         }),
         tx.accountReview.findMany({
           select: {
@@ -576,8 +783,8 @@ export async function adminOverview() {
             createdAt: true,
             target: { select: { displayName: true } },
           },
-          orderBy: { createdAt: "desc" },
-          take: 5,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take: 8,
         }),
         tx.incidentReview.findMany({
           select: {
@@ -588,14 +795,174 @@ export async function adminOverview() {
             createdAt: true,
             incident: {
               select: {
+                claimId: true,
                 claim: { select: { donation: { select: { title: true } } } },
               },
             },
           },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take: 15,
+        }),
+        tx.userAccessAudit.findMany({
+          select: {
+            id: true,
+            actorLabel: true,
+            action: true,
+            createdAt: true,
+            target: { select: { displayName: true } },
+          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take: 8,
+        }),
+        tx.donation.count({ where: { status: { not: "DRAFT" } } }),
+        tx.donation.count({
+          where: {
+            status: { notIn: ["DRAFT", "PUBLISHED", "AVAILABLE"] },
+            claims: { some: {} },
+          },
+        }),
+        tx.donation.count({
+          where: {
+            status: { notIn: ["DRAFT", "PUBLISHED", "AVAILABLE"] },
+            claims: {
+              some: {
+                OR: [
+                  { pickedUpAt: { not: null } },
+                  { status: { in: ["PICKED_UP", "DELIVERED", "DISTRIBUTED"] } },
+                  {
+                    status: "DISPUTED",
+                    incidentHoldStatus: { in: ["PICKED_UP", "DELIVERED"] },
+                  },
+                ],
+              },
+            },
+          },
+        }),
+        tx.donation.count({
+          where: {
+            status: "DISTRIBUTED",
+            claims: { some: { status: "DISTRIBUTED" } },
+          },
+        }),
+        tx.donation.findMany({
+          where: { status: { notIn: ["DRAFT", "CANCELLED"] } },
+          select: { approximateArea: true, estimatedMeals: true, status: true },
           orderBy: { createdAt: "desc" },
-          take: 5,
+          take: 2000,
+        }),
+        tx.foodRequest.findMany({
+          where: { status: { notIn: ["DRAFT", "CANCELLED"] } },
+          select: { deliveryArea: true, mealsNeeded: true },
+          orderBy: { createdAt: "desc" },
+          take: 2000,
         }),
       ]);
+      const zoneMap = new Map<
+        string,
+        { zone: string; surplusMeals: number; demandMeals: number; batches: number }
+      >();
+      for (const d of zoneDonations) {
+        const { key, label } = normalizeZoneName(d.approximateArea);
+        const cur = zoneMap.get(key) ?? {
+          zone: label,
+          surplusMeals: 0,
+          demandMeals: 0,
+          batches: 0,
+        };
+        cur.surplusMeals += d.estimatedMeals;
+        cur.batches += 1;
+        zoneMap.set(key, cur);
+      }
+      for (const req of zoneRequests) {
+        const { key, label } = normalizeZoneName(req.deliveryArea);
+        const cur = zoneMap.get(key) ?? {
+          zone: label,
+          surplusMeals: 0,
+          demandMeals: 0,
+          batches: 0,
+        };
+        cur.demandMeals += req.mealsNeeded;
+        zoneMap.set(key, cur);
+      }
+      const zones = [...zoneMap.values()]
+        .sort(
+          (a, b) =>
+            b.surplusMeals +
+              b.demandMeals -
+              (a.surplusMeals + a.demandMeals) ||
+            b.demandMeals - a.demandMeals ||
+            a.zone.localeCompare(b.zone),
+        )
+        .slice(0, 5);
+      const accounts = pendingCandidateRows
+        .map(accountDto)
+        .sort((a, b) => {
+          const rankA = a.status === "PENDING" ? 0 : 1;
+          const rankB = b.status === "PENDING" ? 0 : 1;
+          return (
+            rankA - rankB ||
+            a.createdAt.localeCompare(b.createdAt) ||
+            a.id.localeCompare(b.id)
+          );
+        })
+        .slice(0, 4);
+      const rescues = activeRescueRows
+        .map(rescueDto)
+        .sort((a, b) => {
+          const holdA = a.status === "DISPUTED" || a.distributionBlocked ? 0 : 1;
+          const holdB = b.status === "DISPUTED" || b.distributionBlocked ? 0 : 1;
+          if (holdA !== holdB) return holdA - holdB;
+          const rankA = RESCUE_STATUS_RANK[a.status] ?? 9;
+          const rankB = RESCUE_STATUS_RANK[b.status] ?? 9;
+          return (
+            rankA - rankB ||
+            a.deadline.localeCompare(b.deadline) ||
+            b.createdAt.localeCompare(a.createdAt)
+          );
+        })
+        .slice(0, 4);
+      const reports = openReportRows
+        .map(reportDto)
+        .sort((a, b) => {
+          const blockDiff = Number(b.blocksRescue) - Number(a.blocksRescue);
+          if (blockDiff !== 0) return blockDiff;
+          const sevDiff =
+            (REPORT_SEVERITY_RANK[a.severity] ?? 9) -
+            (REPORT_SEVERITY_RANK[b.severity] ?? 9);
+          if (sevDiff !== 0) return sevDiff;
+          const statusDiff =
+            (a.status === "SUBMITTED" ? 0 : 1) -
+            (b.status === "SUBMITTED" ? 0 : 1);
+          return (
+            statusDiff ||
+            a.createdAt.localeCompare(b.createdAt) ||
+            a.id.localeCompare(b.id)
+          );
+        })
+        .slice(0, 4);
+      const seenIncidentBatch = new Map<string, number>();
+      const dedupedReportActivity: Array<{
+        id: string;
+        actor: string;
+        subject: string;
+        action: string;
+        createdAt: string;
+      }> = [];
+      for (const r of reportActivity) {
+        const action = r.decision || r.status;
+        const ts = r.createdAt.getTime();
+        const batchKey = `${r.incident.claimId}:${r.actorLabel}:${action}`;
+        const prevTs = seenIncidentBatch.get(batchKey);
+        if (prevTs !== undefined && Math.abs(prevTs - ts) <= 5000) continue;
+        seenIncidentBatch.set(batchKey, ts);
+        dedupedReportActivity.push({
+          id: r.id,
+          actor: r.actorLabel,
+          subject: r.incident.claim.donation.title,
+          action,
+          createdAt: r.createdAt.toISOString(),
+        });
+      }
       const activity = [
         ...accountActivity.map((r) => ({
           id: r.id,
@@ -604,11 +971,12 @@ export async function adminOverview() {
           action: r.status,
           createdAt: r.createdAt.toISOString(),
         })),
-        ...reportActivity.map((r) => ({
+        ...dedupedReportActivity,
+        ...accessActivity.map((r) => ({
           id: r.id,
           actor: r.actorLabel,
-          subject: r.incident.claim.donation.title,
-          action: r.decision || r.status,
+          subject: r.target.displayName,
+          action: r.action,
           createdAt: r.createdAt.toISOString(),
         })),
       ]
@@ -619,9 +987,16 @@ export async function adminOverview() {
         openRescues,
         openReports,
         mealsDistributed: distributed._sum.mealsDistributed || 0,
-        accounts: accounts.map(accountDto),
-        rescues: rescues.map(rescueDto),
-        reports: reports.map(reportDto),
+        funnel: {
+          posted: totalPosted,
+          claimed: totalClaimed,
+          pickedUp: totalPickedUp,
+          distributed: totalDistributed,
+        },
+        zones,
+        accounts,
+        rescues,
+        reports,
         activity,
       };
     },

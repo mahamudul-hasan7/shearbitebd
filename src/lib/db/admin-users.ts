@@ -277,11 +277,33 @@ export async function changeUserAccess(
       },
       select,
     });
-    if (action !== "UNBAN")
+    if (action !== "UNBAN") {
       await tx.volunteerProfile.updateMany({
         where: { userId: id },
         data: { isOnDuty: false },
       });
+      if (action === "BAN" && row.role === "VOLUNTEER") {
+        const assignedClaims = await tx.claim.findMany({
+          where: { status: "ASSIGNED", volunteer: { userId: id } },
+          include: { donation: { include: { donor: true } }, ngo: true },
+        });
+        for (const held of assignedClaims) {
+          await tx.$queryRaw`SELECT id FROM donations WHERE id = ${held.donationId} FOR UPDATE`;
+          await tx.claim.update({
+            where: { id: held.id },
+            data: { status: "RESERVED", volunteerProfileId: null, assignedAt: null, routeStage: "assigned" },
+          });
+          await tx.donation.update({ where: { id: held.donationId }, data: { status: "RESERVED" } });
+          await tx.handoverChallenge.updateMany({ where: { claimId: held.id, consumedAt: null }, data: { expiresAt: new Date() } });
+          await tx.notification.createMany({
+            data: [
+              { userId: held.donation.donor.userId, type: "VOLUNTEER", title: "Volunteer unassigned", message: `${held.donation.title} was returned to open dispatch after account restriction.`, href: `/donor/donations/${held.donationId}` },
+              { userId: held.ngo.userId, type: "VOLUNTEER", title: "Volunteer unassigned", message: `${held.donation.title} is awaiting a new volunteer rider.`, href: `/ngo/claims/${held.id}` },
+            ],
+          });
+        }
+      }
+    }
     await tx.userAccessAudit.create({
       data: {
         targetUserId: id,

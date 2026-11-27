@@ -38,6 +38,26 @@ export async function saveReceipt(id: string, input: Record<string, unknown>, us
       foodCondition, quantityMismatchConfirmed: mismatch, distributionBlocked: foodCondition === "DAMAGED_POOR",
       verificationMethod: "OTP", notes: notes || null, photoNames: photos.urls.length ? photos.names : photoNames, photoUrls: photos.urls } });
     await tx.notification.create({ data: { userId: claim.donation.donor.userId, type: "DELIVERY", title: "NGO receipt recorded", message: `${claim.donation.title}: ${actualQuantity} ${claim.donation.quantityUnit}; ${foodCondition}.`, href: `/donor/donations/${claim.donationId}` } });
+    if (foodCondition === "DAMAGED_POOR") {
+      const admins = await tx.user.findMany({ where: { role: "ADMIN", isActive: true, deletedAt: null }, select: { id: true } });
+      const alerts = [
+        ...(claim.volunteer ? [{
+          userId: claim.volunteer.userId,
+          type: "DELIVERY" as const,
+          title: "Delivery marked damaged or poor",
+          message: `${claim.donation.title}: the NGO marked this batch damaged or poor; distribution is blocked.`,
+          href: `/volunteer/missions/${id}`,
+        }] : []),
+        ...admins.map((admin) => ({
+          userId: admin.id,
+          type: "SYSTEM" as const,
+          title: "Damaged food receipt recorded",
+          message: `${claim.donation.title}: ${claim.ngo.organizationName} blocked distribution due to damaged or poor food condition.`,
+          href: "/admin/rescues",
+        })),
+      ];
+      if (alerts.length) await tx.notification.createMany({ data: alerts });
+    }
     return receipt;
   });
 }

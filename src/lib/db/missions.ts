@@ -1,5 +1,6 @@
 import { coordinates, distanceKm } from "@/lib/locations";
 import { legacyDeliveryAddress, requestAddress, savedDeliveryAddress } from "@/lib/db/locations";
+import { buildRescueProgress } from "@/lib/rescue-progress";
 import { Prisma } from "@prisma/client";
 import type { VolunteerMission, CompletedMissionRecord } from "@/features/volunteer-dashboard/volunteer-types";
 
@@ -26,11 +27,58 @@ export function missionHistoryDto(row: MissionRow): CompletedMissionRecord {
   const mission = missionDto(row);
   const at = row.deliveredAt || row.updatedAt;
   const duration = row.assignedAt ? Math.max(0, Math.round((at.getTime() - row.assignedAt.getTime()) / 60_000)) : 0;
-  return { id: row.id, missionNumber: row.id, date: new Intl.DateTimeFormat("bn-BD", { timeZone: "Asia/Dhaka", dateStyle: "medium" }).format(at),
+  const progress = buildRescueProgress({
+    scope: "rider",
+    status: row.status,
+    routeStage: row.routeStage,
+    assignedAt: (row.assignedAt || row.createdAt).toISOString(),
+    pickedUpAt: row.pickedUpAt?.toISOString(),
+    deliveredAt: row.deliveredAt?.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    cancellationReason: row.donation.cancellationReason || undefined,
+  });
+  const historyStatus: CompletedMissionRecord["status"] =
+    row.status === "CANCELLED"
+      ? "cancelled"
+      : row.status === "EXPIRED"
+        ? "expired"
+        : row.status === "DISPUTED"
+          ? "disputed"
+          : "delivered_verified";
+  return {
+    id: row.id,
+    missionNumber: row.id,
+    date: new Intl.DateTimeFormat("bn-BD", { timeZone: "Asia/Dhaka", dateStyle: "medium" }).format(at),
     time: new Intl.DateTimeFormat("bn-BD", { timeZone: "Asia/Dhaka", timeStyle: "short" }).format(at),
-    donorName: mission.donorName, donorArea: mission.donorArea, ngoName: mission.ngoName, ngoArea: mission.ngoArea,
-    foodTitle: mission.foodTitle, quantity: mission.quantity, servings: row.distributionRecord?.mealsDistributed ?? 0,
-    distanceKm: mission.distanceKm, durationMins: duration, deliverySpeedNote: `${duration} minutes`, cargoTempHandover: 0,
-    foodValueSavedEstimated: 0, verificationToken: row.challenges.find((c) => c.kind === "DELIVERY" && c.consumedAt)?.id || "",
-    status: ["DISPUTED", "CANCELLED"].includes(row.status) ? "disputed" : "delivered_verified", ngoRating: 0, ngoFeedback: row.status === "DISPUTED" ? "Incident review pending" : row.status === "CANCELLED" ? "Batch rejected after incident review" : row.deliveryReceipt ? `Receipt recorded: ${row.deliveryReceipt.foodCondition}` : "NGO receipt pending" };
+    donorName: mission.donorName,
+    donorArea: mission.donorArea,
+    ngoName: mission.ngoName,
+    ngoArea: mission.ngoArea,
+    foodTitle: mission.foodTitle,
+    quantity: mission.quantity,
+    servings: row.distributionRecord?.mealsDistributed ?? mission.servings,
+    distanceKm: mission.distanceKm,
+    durationMins: duration,
+    deliverySpeedNote: `${duration} minutes`,
+    cargoTempHandover: 0,
+    foodValueSavedEstimated: 0,
+    verificationToken: row.challenges.find((c) => c.kind === "DELIVERY" && c.consumedAt)?.id || "",
+    status: historyStatus,
+    stoppedAtLabel: progress.stoppedAtLabel,
+    completedSteps: progress.completedSteps,
+    totalSteps: progress.steps.length,
+    outcomeReason: row.donation.cancellationReason || undefined,
+    progressSteps: progress.steps.map(({ id, label, done, current }) => ({ id, label, done, current })),
+    ngoRating: 0,
+    ngoFeedback:
+      row.status === "DISPUTED"
+        ? "Incident review pending"
+        : row.status === "CANCELLED"
+          ? row.donation.cancellationReason || "Rescue cancelled before completion"
+          : row.status === "EXPIRED"
+            ? "Safe food deadline expired before completion"
+            : row.deliveryReceipt
+              ? `Receipt recorded: ${row.deliveryReceipt.foodCondition}`
+              : "NGO receipt pending",
+  };
 }

@@ -37,11 +37,11 @@ export function verificationFileDto(
     url: `/api/verification/documents/${row.id}`,
   };
 }
-function participant(user: AuthAccount): "NGO" | "VOLUNTEER" {
-  if (user.role !== "NGO" && user.role !== "VOLUNTEER")
+function participant(user: AuthAccount): "DONOR" | "NGO" | "VOLUNTEER" {
+  if (user.role !== "DONOR" && user.role !== "NGO" && user.role !== "VOLUNTEER")
     throw new ApiError(
       403,
-      "Only NGO and volunteer accounts can submit verification documents.",
+      "Only donor, NGO, and volunteer accounts can submit verification documents.",
     );
   return user.role;
 }
@@ -52,15 +52,23 @@ export async function ownVerification(
   return prisma.$transaction(
     async (tx) => {
       const row =
-        role === "NGO"
-          ? await tx.nGOProfile.findUnique({
+        role === "DONOR"
+          ? await tx.donorProfile.findUnique({
               where: { userId: user.id },
               select: {
                 verificationStatus: true,
                 verificationDocument: { select: verificationFileSelect },
               },
             })
-          : await tx.volunteerProfile.findUnique({
+          : role === "NGO"
+            ? await tx.nGOProfile.findUnique({
+                where: { userId: user.id },
+                select: {
+                  verificationStatus: true,
+                  verificationDocument: { select: verificationFileSelect },
+                },
+              })
+            : await tx.volunteerProfile.findUnique({
               where: { userId: user.id },
               select: {
                 verificationStatus: true,
@@ -125,9 +133,11 @@ export async function submitVerification(
     // Use the same lock order as account reviews so uploads and approvals serialize.
     await lockActiveAccount(tx, user.id);
     const profile =
-      role === "NGO"
-        ? await tx.nGOProfile.findUnique({ where: { userId: user.id } })
-        : await tx.volunteerProfile.findUnique({ where: { userId: user.id } });
+      role === "DONOR"
+        ? await tx.donorProfile.findUnique({ where: { userId: user.id } })
+        : role === "NGO"
+          ? await tx.nGOProfile.findUnique({ where: { userId: user.id } })
+          : await tx.volunteerProfile.findUnique({ where: { userId: user.id } });
     if (!profile) throw new ApiError(404, "Verification profile not found.");
     const previous = await tx.verificationDocument.findUnique({
       where: { ownerId_uploadKey: { ownerId: user.id, uploadKey: key } },
@@ -168,13 +178,26 @@ export async function submitVerification(
       data: {
         ...prepared,
         ownerId: user.id,
-        kind: role === "NGO" ? "NGO_REGISTRATION" : "VOLUNTEER_ID",
+        kind:
+          role === "DONOR"
+            ? "DONOR_LICENSE"
+            : role === "NGO"
+              ? "NGO_REGISTRATION"
+              : "VOLUNTEER_ID",
         uploadKey: key,
         sourceHash,
       },
       select: verificationFileSelect,
     });
-    if (role === "NGO")
+    if (role === "DONOR")
+      await tx.donorProfile.update({
+        where: { userId: user.id },
+        data: {
+          verificationDocumentId: document.id,
+          verificationStatus: "PENDING",
+        },
+      });
+    else if (role === "NGO")
       await tx.nGOProfile.update({
         where: { userId: user.id },
         data: {

@@ -14,6 +14,7 @@ import type { Claim, Donation, ViewerContext } from "@/types/domain";
 import { attachPhotos } from "@/lib/db/photos";
 import { refreshRequestProgress } from "@/lib/db/request-progress";
 import { requestMatch } from "@/lib/db/request-matching";
+import { selectTrackingClaim } from "@/lib/rescue-next-step";
 
 export const donationInclude = {
   pickupAddress: true, donor: { include: { user: true } },
@@ -44,7 +45,10 @@ export function donationDto(row: DonationRow, user: AuthAccount) {
     safetyDeclaration: { freshlyPrepared: row.safetyFreshlyPrepared, properlyCovered: row.safetyProperlyCovered, noVisibleSpoilage: row.safetyNoSpoilage, storedAccordingToDeclaration: row.safetyStoredCorrectly, allergensDisclosed: row.safetyAllergensDisclosed, pickupDeadlineConfirmed: row.safetyDeadlineConfirmed, donorAccuracyConfirmed: row.safetyAccuracyConfirmed, declaredByUserId: row.donor.userId, declaredAt: row.safetyDeclaredAt },
     publishedAt: row.publishedAt, cancelledAt: row.cancelledAt, cancellationReason: row.cancellationReason ?? undefined, createdAt: row.createdAt, updatedAt: row.updatedAt,
   };
-  return { ...createDonationView(JSON.parse(JSON.stringify(value)) as Donation, viewerFor(user), row.claims.map(claimDto), [{ ...addressDto(row.pickupAddress), coordinates: coordinates(row.pickupLatitude, row.pickupLongitude) }]),
+  const claims = row.claims.map(claimDto);
+  const latestClaim = selectTrackingClaim(claims, row.status);
+  return { ...createDonationView(JSON.parse(JSON.stringify(value)) as Donation, viewerFor(user), claims, [{ ...addressDto(row.pickupAddress), coordinates: coordinates(row.pickupLatitude, row.pickupLongitude) }]),
+    ...(latestClaim ? { latestClaim } : {}),
     donorOrganization: row.donor.organizationName || row.donor.user.displayName, donorVerified: row.donor.verificationStatus === "VERIFIED" };
 }
 
@@ -59,13 +63,82 @@ export function positiveNumber(value: unknown, field: string, integer = false) {
 }
 
 export async function expireOpenDonations() {
-  await prisma.donation.updateMany({ where: { status: { in: ["AVAILABLE", "PUBLISHED"] }, safePickupDeadline: { lte: new Date() } }, data: { status: "EXPIRED" } });
+  const now = new Date();
+  await prisma.donation.updateMany({
+    where: {
+      status: { in: ["AVAILABLE", "PUBLISHED"] },
+      OR: [{ safePickupDeadline: { lte: now } }, { windowEnd: { lte: now } }],
+    },
+    data: { status: "EXPIRED" },
+  });
+
+  const staleClaims = await prisma.claim.findMany({
+    where: {
+      status: { in: ["RESERVED", "ASSIGNED"] },
+      donation: {
+        status: { in: ["RESERVED", "ASSIGNED"] },
+        OR: [{ safePickupDeadline: { lte: now } }, { windowEnd: { lte: now } }],
+      },
+    },
+    select: { id: true, donationId: true },
+    take: 50,
+  });
+  if (!staleClaims.length) return;
+
+  await prisma.$transaction(async (tx) => {
+    const requestIds = new Set<string>();
+    for (const item of staleClaims) {
+      await tx.$queryRaw`SELECT id FROM donations WHERE id = ${item.donationId} FOR UPDATE`;
+      const claim = await tx.claim.findUnique({
+        where: { id: item.id },
+        include: { donation: { include: { donor: true } }, ngo: true, volunteer: true },
+      });
+      if (
+        !claim ||
+        !["RESERVED", "ASSIGNED"].includes(claim.status) ||
+        !["RESERVED", "ASSIGNED"].includes(claim.donation.status) ||
+        (claim.donation.safePickupDeadline.getTime() > now.getTime() &&
+          claim.donation.windowEnd.getTime() > now.getTime())
+      ) {
+        continue;
+      }
+      await tx.claim.update({ where: { id: claim.id }, data: { status: "EXPIRED" } });
+      await tx.donation.update({ where: { id: claim.donationId }, data: { status: "EXPIRED" } });
+      await tx.handoverChallenge.updateMany({
+        where: { claimId: claim.id, consumedAt: null },
+        data: { expiresAt: now },
+      });
+      const notifyIds = [
+        claim.donation.donor.userId,
+        claim.ngo.userId,
+        ...(claim.volunteer ? [claim.volunteer.userId] : []),
+      ];
+      await tx.notification.createMany({
+        data: notifyIds.map((userId) => ({
+          userId,
+          type: "SYSTEM",
+          title: "Rescue expired",
+          message: `${claim.donation.title}: Pickup window expired before handover.`,
+          href:
+            userId === claim.donation.donor.userId
+              ? `/donor/donations/${claim.donationId}`
+              : userId === claim.ngo.userId
+                ? `/ngo/claims/${claim.id}`
+                : "/volunteer/dashboard",
+        })),
+      });
+      if (claim.foodRequestId) requestIds.add(claim.foodRequestId);
+    }
+    for (const requestId of [...requestIds].sort()) {
+      await refreshRequestProgress(tx, requestId);
+    }
+  });
 }
 
 export function visibleDonations(user: AuthAccount): Prisma.DonationWhereInput {
   if (user.role === "ADMIN") return {};
   if (user.role === "DONOR") return { donorProfileId: user.donorProfileId ?? "__none__" };
-  if (user.role === "NGO") return { OR: [{ status: { in: ["AVAILABLE", "PUBLISHED"] }, donor: {user: {isActive:true,deletedAt:null}}, safePickupDeadline: { gt: new Date() } }, { claims: { some: { ngoProfileId: user.ngoProfileId ?? "__none__" } } }] };
+  if (user.role === "NGO") return { OR: [{ status: { in: ["AVAILABLE", "PUBLISHED"] }, donor: {user: {isActive:true,deletedAt:null}}, safePickupDeadline: { gt: new Date() }, windowEnd: { gt: new Date() } }, { claims: { some: { ngoProfileId: user.ngoProfileId ?? "__none__" } } }] };
   return { claims: { some: { volunteerProfileId: user.volunteerProfileId ?? "__none__" } } };
 }
 
@@ -102,6 +175,15 @@ export async function publishDonation(body: Record<string, unknown>, user: AuthA
   if (preferredNgoProfileId && !await prisma.nGOProfile.findFirst({ where: { id: preferredNgoProfileId, verificationStatus: "VERIFIED", user: {isActive:true,deletedAt:null} } })) throw new ApiError(422, "Select an available verified NGO.");
   return prisma.$transaction(async (tx) => {
     await lockActiveAccount(tx, user.id);
+    const donor = await tx.donorProfile.findUniqueOrThrow({ where: { id: user.donorProfileId! } });
+    if (status === "AVAILABLE" && donor.verificationStatus !== "VERIFIED") {
+      throw new ApiError(
+        403,
+        donor.verificationStatus === "REJECTED"
+          ? "Donor verification was rejected. Contact the project administrator."
+          : "Donor verification is pending. Contact the project administrator.",
+      );
+    }
     const donation = await tx.donation.create({ data: {
       donorProfileId: user.donorProfileId!, pickupAddressId: addressId, preferredNgoProfileId,
       pickupLatitude: pickupAddress.latitude, pickupLongitude: pickupAddress.longitude,
@@ -122,7 +204,9 @@ export async function publishDonation(body: Record<string, unknown>, user: AuthA
       await tx.donation.update({ where: { id: donation.id }, data: { photoUrls: photos.urls } });
       donation.photoUrls = photos.urls;
     }
-    await tx.donorProfile.update({ where: { id: user.donorProfileId }, data: { totalDonations: { increment: 1 } } });
+    if (status === "AVAILABLE") {
+      await tx.donorProfile.update({ where: { id: user.donorProfileId }, data: { totalDonations: { increment: 1 } } });
+    }
     await tx.notification.create({ data: { userId: user.id, type: "SYSTEM", title: "Donation saved", message: donation.title, href: `/donor/donations/${donation.id}` } });
     return donation;
   });
@@ -150,7 +234,7 @@ export async function reserveDonation(donationId: string, user: AuthAccount, foo
       const request = await refreshRequestProgress(tx, foodRequestId);
       if (!request || request.ngoProfileId !== ngo.id) throw new ApiError(404, "Food request not found for your NGO.");
       if (!["FINDING_MATCH", "MATCHED"].includes(request.status) || request.neededBy.getTime() <= Date.now() || !request.remainingMeals) throw new ApiError(409, "This request is closed, expired or already fully reserved.");
-      const match = requestMatch(request, donation);
+      const match = requestMatch(request, donation, { mealsReserved: request.mealsReserved });
       if (!match.eligible) throw new ApiError(422, "This donation does not meet the request's declared category, dietary, allergen, location or timing requirements.");
       if (match.allergenReviewRequired && allergenReviewAcknowledged !== true) throw new ApiError(422, "Confirm that you reviewed the donor's allergen declaration and request restrictions.");
       requestMealsAllocated = Math.min(request.remainingMeals, donation.estimatedMeals);

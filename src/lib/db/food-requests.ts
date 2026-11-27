@@ -26,7 +26,18 @@ export async function ownFoodRequest(id: string, user: AuthAccount) {
   return row;
 }
 export async function expireFoodRequests(user: AuthAccount) {
-  await prisma.foodRequest.updateMany({ where: { ngoProfileId: user.ngoProfileId || "__none__", status: { in: ["FINDING_MATCH", "PENDING_REVIEW", "DRAFT"] }, neededBy: { lte: new Date() } }, data: { status: "EXPIRED" } });
+  const now = new Date();
+  await prisma.foodRequest.updateMany({
+    where: {
+      ngoProfileId: user.ngoProfileId || "__none__",
+      neededBy: { lte: now },
+      OR: [
+        { status: { in: ["FINDING_MATCH", "PENDING_REVIEW", "DRAFT"] } },
+        { status: "MATCHED", claims: { none: { status: { in: [...ACTIVE_REQUEST_CLAIMS] } } } },
+      ],
+    },
+    data: { status: "EXPIRED" },
+  });
 }
 function textList(value: unknown, field: string) {
   if (value === undefined) return [];
@@ -125,7 +136,7 @@ export async function foodRequestMatches(id: string, user: AuthAccount) {
   const ngo = await prisma.nGOProfile.findUniqueOrThrow({ where: { id: user.ngoProfileId } });
   if (ngo.verificationStatus !== "VERIFIED") throw new ApiError(403, "NGO verification is required to reserve food.");
   const donations = await prisma.donation.findMany({ where: { donor: {user:{isActive:true,deletedAt:null}}, status: "AVAILABLE", category: { in: row.categories.filter((category) => ngo.acceptedFoodCategories.includes(category)) }, safePickupDeadline: { gt: new Date() }, windowEnd: { gt: new Date() }, windowStart: { lt: row.neededBy } }, include: donationInclude, orderBy: { safePickupDeadline: "asc" }, take: 200 });
-  const matches = donations.map((donation) => ({ row: donation, ...requestMatch(row, donation) })).filter((item) => item.eligible)
+  const matches = donations.map((donation) => ({ row: donation, ...requestMatch(row, donation, { mealsReserved: progress.mealsReserved }) })).filter((item) => item.eligible)
     .sort((a, b) => b.score - a.score || a.row.safePickupDeadline.getTime() - b.row.safePickupDeadline.getTime()).map((item) => ({ donation: donationDto(item.row, user), score: item.score,
       reasons: item.reasons, allergenReviewRequired: item.allergenReviewRequired, mealsToAllocate: Math.min(progress.remainingMeals, item.row.estimatedMeals) }));
   return { request: foodRequestDto(row), matches };

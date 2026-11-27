@@ -71,8 +71,21 @@ export async function createIncident(claimId: string, input: Record<string, unkn
       // An unresolved incident must never leave a usable code behind.
       await tx.handoverChallenge.updateMany({ where: { claimId, consumedAt: null }, data: { expiresAt: new Date() } });
     }
-    await tx.notification.createMany({ data: participantIds(claim).map((userId) => ({ userId, type: "URGENT", priority: severity,
-      title: "Rescue issue submitted", message: `${claim.donation.title}: ${type}. ${blocksRescue ? "Rescue paused for review." : "Post-distribution report recorded."}`, href: reportHref(claim, userId) })) });
+    const adminUsers = blocksRescue
+      ? await tx.user.findMany({ where: { role: "ADMIN", isActive: true, deletedAt: null }, select: { id: true } })
+      : [];
+    const participants = participantIds(claim);
+    const recipients = [...new Set([...participants, ...adminUsers.map((admin) => admin.id)])];
+    await tx.notification.createMany({
+      data: recipients.map((userId) => ({
+        userId,
+        type: "URGENT",
+        priority: severity,
+        title: "Rescue issue submitted",
+        message: `${claim.donation.title}: ${type}. ${blocksRescue ? "Rescue paused for review." : "Post-distribution report recorded."}`,
+        href: participants.includes(userId) ? reportHref(claim, userId) : "/admin/reports",
+      })),
+    });
     return { incident: incidentDto(report), created: true };
   });
 }
@@ -100,8 +113,35 @@ export async function reviewIncident(id: string, input: Record<string, unknown>,
     await tx.incidentReport.update({ where: { id }, data: { status, decision, ...(status === "RESOLVED" ? { resolvedAt: new Date() } : {}) } });
     await tx.incidentReview.create({ data: { incidentId: id, actorUserId: actor.userId, actorLabel: actor.label, status, decision, note } });
     if (incident.blocksRescue && action === "REJECT_FOOD" && claim.status === "DISPUTED") {
+      if (claim.incidentHoldStatus === "DELIVERED" && claim.volunteerProfileId && claim.volunteer) {
+        await tx.volunteerProfile.update({
+          where: { id: claim.volunteerProfileId },
+          data: { completedRescues: Math.max(0, claim.volunteer.completedRescues - 1) },
+        });
+      }
       await tx.claim.update({ where: { id: claim.id }, data: { status: "CANCELLED", incidentHoldStatus: null } });
       await tx.donation.update({ where: { id: claim.donationId }, data: { status: "CANCELLED", cancelledAt: new Date(), cancellationReason: `Food rejected after incident ${id}: ${note}` } });
+      const extraOpen = await tx.incidentReport.findMany({
+        where: { claimId: claim.id, id: { not: id }, status: { in: ["SUBMITTED", "UNDER_REVIEW"] } },
+        select: { id: true },
+      });
+      if (extraOpen.length) {
+        const closedAt = new Date();
+        await tx.incidentReport.updateMany({
+          where: { id: { in: extraOpen.map((r) => r.id) } },
+          data: { status: "RESOLVED", decision: "REJECT_FOOD", resolvedAt: closedAt },
+        });
+        await tx.incidentReview.createMany({
+          data: extraOpen.map((r) => ({
+            incidentId: r.id,
+            actorUserId: actor.userId,
+            actorLabel: actor.label,
+            status: "RESOLVED",
+            decision: "REJECT_FOOD",
+            note: `Closed alongside incident ${id}: ${note}`,
+          })),
+        });
+      }
       if (claim.foodRequestId) await refreshRequestProgress(tx, claim.foodRequestId);
     } else if (incident.blocksRescue && action === "RESUME" && claim.incidentHoldStatus) {
       const remaining = await tx.incidentReport.count({ where: { claimId: claim.id, blocksRescue: true, status: { in: ["SUBMITTED", "UNDER_REVIEW"] } } });
