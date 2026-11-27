@@ -491,13 +491,13 @@
     "bn": "গুলশান ১ ও ২ · ধানমন্ডি ২৭ · বাড্ডা UIU ক্যাম্পাস",
     "en": "Gulshan 1 & 2 · Dhanmondi 27 · Badda UIU Campus"
   },
-  "⚡ ১৫ মিনিটে জরুরি রেসকিউ": {
-    "bn": "⚡ ১৫ মিনিটে জরুরি রেসকিউ",
-    "en": "⚡ 15-Min Rapid Rescue"
+  "১৫ মিনিটে জরুরি রেসকিউ": {
+    "bn": "১৫ মিনিটে জরুরি রেসকিউ",
+    "en": "15-Min Rapid Rescue"
   },
-  "⚡ 15-Minute Rapid Rescue": {
-    "bn": "⚡ ১৫ মিনিটে জরুরি রেসকিউ",
-    "en": "⚡ 15-Minute Rapid Rescue"
+  "15-Minute Rapid Rescue": {
+    "bn": "১৫ মিনিটে জরুরি রেসকিউ",
+    "en": "15-Minute Rapid Rescue"
   },
   "সরাসরি ডেমো পোর্টাল:": {
     "bn": "সরাসরি ডেমো পোর্টাল:",
@@ -2251,29 +2251,29 @@
     "bn": "সাম্প্রতিক অনুদান",
     "en": "Recently published"
   },
-  "📍 নিকটবর্তী প্রথমে (Nearest first)": {
-    "bn": "📍 নিকটবর্তী প্রথমে (Nearest first)",
-    "en": "📍 Nearest first"
+  "নিকটবর্তী প্রথমে (Nearest first)": {
+    "bn": "নিকটবর্তী প্রথমে (Nearest first)",
+    "en": "Nearest first"
   },
-  "📍 Nearest first": {
-    "bn": "📍 নিকটবর্তী প্রথমে (Nearest first)",
-    "en": "📍 Nearest first"
+  "Nearest first": {
+    "bn": "নিকটবর্তী প্রথমে (Nearest first)",
+    "en": "Nearest first"
   },
-  "⏰ সময় দ্রুত শেষ হচ্ছে (Urgent first)": {
-    "bn": "⏰ সময় দ্রুত শেষ হচ্ছে (Urgent first)",
-    "en": "⏰ Deadline soonest"
+  "সময় দ্রুত শেষ হচ্ছে (Urgent first)": {
+    "bn": "সময় দ্রুত শেষ হচ্ছে (Urgent first)",
+    "en": "Deadline soonest"
   },
-  "⏰ Deadline soonest": {
-    "bn": "⏰ সময় দ্রুত শেষ হচ্ছে (Urgent first)",
-    "en": "⏰ Deadline soonest"
+  "Deadline soonest": {
+    "bn": "সময় দ্রুত শেষ হচ্ছে (Urgent first)",
+    "en": "Deadline soonest"
   },
-  "🍱 সর্বোচ্চ খাবার (Largest quantity)": {
-    "bn": "🍱 সর্বোচ্চ খাবার (Largest quantity)",
-    "en": "🍱 Largest quantity"
+  "সর্বোচ্চ খাবার (Largest quantity)": {
+    "bn": "সর্বোচ্চ খাবার (Largest quantity)",
+    "en": "Largest quantity"
   },
-  "🍱 Largest quantity": {
-    "bn": "🍱 সর্বোচ্চ খাবার (Largest quantity)",
-    "en": "🍱 Largest quantity"
+  "Largest quantity": {
+    "bn": "সর্বোচ্চ খাবার (Largest quantity)",
+    "en": "Largest quantity"
   },
   "উদ্ধার ফিল্টার": {
     "bn": "উদ্ধার ফিল্টার",
@@ -2320,7 +2320,7 @@
     "en": "Urgent"
   },
   "Urgent": {
-    "bn": "অতি জরুরি",
+    "bn": "অতি জরুরি (<২ ঘণ্টা)",
     "en": "Urgent"
   },
   "৫ কিমি রেডিয়াস": {
@@ -2587,21 +2587,17 @@
     "bn": "ফিল্টার রিসেট করুন",
     "en": "Reset filters"
   },
-  "🚨 অতি জরুরি (<২ ঘণ্টা)": {
-    "bn": "🚨 অতি জরুরি (<২ ঘণ্টা)",
-    "en": "🚨 Urgent"
+  "অতি জরুরি (<২ ঘণ্টা)": {
+    "bn": "অতি জরুরি (<২ ঘণ্টা)",
+    "en": "Urgent"
   },
-  "🚨 Urgent": {
-    "bn": "🚨 অতি জরুরি (<২ ঘণ্টা)",
-    "en": "🚨 Urgent"
+  "উচ্চ অগ্রাধিকার": {
+    "bn": "উচ্চ অগ্রাধিকার",
+    "en": "High priority"
   },
-  "⚡ উচ্চ অগ্রাধিকার": {
-    "bn": "⚡ উচ্চ অগ্রাধিকার",
-    "en": "⚡ High priority"
-  },
-  "⚡ High priority": {
-    "bn": "⚡ উচ্চ অগ্রাধিকার",
-    "en": "⚡ High priority"
+  "High priority": {
+    "bn": "উচ্চ অগ্রাধিকার",
+    "en": "High priority"
   },
   "উপলব্ধ উদ্ধার": {
     "bn": "উপলব্ধ উদ্ধার",
@@ -3115,9 +3111,9 @@
     "bn": "খাবার পোস্ট / দাবি করুন",
     "en": "Post / Claim Food"
   },
-  "⚡ 15-Min Rapid Rescue": {
-    "bn": "⚡ ১৫ মিনিটে জরুরি রেসকিউ",
-    "en": "⚡ 15-Min Rapid Rescue"
+  "15-Min Rapid Rescue": {
+    "bn": "১৫ মিনিটে জরুরি রেসকিউ",
+    "en": "15-Min Rapid Rescue"
   },
   "৮৫+": {
     "bn": "৮৫+",
