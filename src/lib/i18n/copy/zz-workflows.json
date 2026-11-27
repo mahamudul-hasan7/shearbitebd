@@ -576,5 +576,578 @@
   [
     "Available with an active claim",
     "খাবার নেওয়ার কাজ চালু থাকলে করা যাবে"
+  ],
+  [
+    "Only missions before pickup can be released back to dispatch.",
+    "খাবার সংগ্রহের আগে শুধুমাত্র তখনই মিশনের দায়িত্ব ছাড়া যাবে।"
+  ],
+  [
+    "Rescue expired",
+    "উদ্ধারকাজের সময় শেষ হয়েছে"
+  ],
+  [
+    "Claim cancelled by NGO",
+    "এনজিও খাবারের বরাদ্দ বাতিল করেছে"
+  ],
+  [
+    "Donation cancelled by donor",
+    "দাতা খাবারের পোস্ট বাতিল করেছেন"
+  ],
+  [
+    "Volunteer released mission",
+    "স্বেচ্ছাসেবক মিশনের দায়িত্ব ছেড়ে দিয়েছেন"
+  ],
+  [
+    "Donor verification is pending. Contact the project administrator.",
+    "দাতা অ্যাকাউন্ট অনুমোদনের অপেক্ষায় আছে। অ্যাডমিনের সাথে যোগাযোগ করুন।"
+  ],
+  [
+    "Donor verification was rejected. Contact the project administrator.",
+    "দাতা অ্যাকাউন্ট যাচাই প্রত্যাখ্যাত হয়েছে। অ্যাডমিনের সাথে যোগাযোগ করুন।"
+  ],
+  [
+    "Donor verification rejected",
+    "দাতা যাচাই প্রত্যাখ্যাত হয়েছে"
+  ],
+  [
+    "Donor verification pending",
+    "দাতা যাচাইয়ের অপেক্ষায় রয়েছে"
+  ],
+  [
+    "Your donor account was rejected; contact an administrator before publishing new food listings.",
+    "আপনার দাতা অ্যাকাউন্ট প্রত্যাখ্যাত হয়েছে; নতুন খাদ্য পোস্ট প্রকাশের আগে অ্যাডমিনের সাথে যোগাযোগ করুন।"
+  ],
+  [
+    "New food listings cannot be published until an administrator verifies your account.",
+    "অ্যাডমিন অনুমোদনের আগে নতুন খাদ্য পোস্ট প্রকাশ করা যাবে না।"
+  ],
+  [
+    "Hide completed card",
+    "সম্পন্ন কার্ড লুকান"
+  ],
+  [
+    "View issue & reports",
+    "সমস্যা ও রিপোর্ট দেখুন"
+  ],
+  [
+    "Releasing…",
+    "ছাড়া হচ্ছে…"
+  ],
+  [
+    "Release mission",
+    "দায়িত্ব ছেড়ে দিন"
+  ],
+  [
+    "This rescue is paused for incident review. Code verification remains disabled until an administrator resolves it.",
+    "এই উদ্ধারকাজ সমস্যা যাচাইয়ের জন্য স্থগিত আছে। অ্যাডমিন সিদ্ধান্ত না দেওয়া পর্যন্ত কোড যাচাই বন্ধ থাকবে।"
+  ],
+  [
+    "The donor's safe food deadline has passed. Please submit an issue report for administrator review.",
+    "দাতার নির্ধারিত নিরাপদ সময়সীমা পার হয়েছে। অনুগ্রহ করে অ্যাডমিন পর্যালোচনার জন্য ইস্যু রিপোর্ট জমা দিন।"
+  ],
+  [
+    "Your business or license document",
+    "আপনার ব্যবসা বা লাইসেন্সের ডকুমেন্ট"
+  ],
+  [
+    "Upload a trade license, BFSA certificate, or valid ID for an administrator to verify your donor account.",
+    "অ্যাডমিনের যাচাইয়ের জন্য আপনার ট্রেড লাইসেন্স, বিএফএসএ সনদ বা বৈধ পরিচয়পত্র আপলোড করুন।"
+  ],
+  [
+    "Verification rejected",
+    "যাচাই প্রত্যাখ্যাত হয়েছে"
+  ],
+  [
+    "Profile & document verification",
+    "প্রোফাইল ও ডকুমেন্ট যাচাই"
+  ],
+  [
+    "Your donor account was rejected; submit a new document from your profile or contact an administrator.",
+    "আপনার দাতা অ্যাকাউন্ট প্রত্যাখ্যাত হয়েছে; প্রোফাইল থেকে পুনরায় ডকুমেন্ট জমা দিন অথবা অ্যাডমিনের সাথে যোগাযোগ করুন।"
+  ],
+  [
+    "Upload your verification document from your profile; new food listings cannot be published until an administrator verifies your account.",
+    "প্রোফাইল থেকে ডকুমেন্ট আপলোড করুন; অ্যাডমিন অনুমোদনের আগে নতুন খাদ্য পোস্ট প্রকাশ করা যাবে না।"
+  ],
+  [
+    "Receipt blocked distribution because food was marked damaged or poor.",
+    "রিসিটে খাবার নষ্ট বা নিম্নমানের চিহ্নিত হওয়ায় বিতরণ বন্ধ আছে।"
+  ],
+  [
+    "The safe food pickup deadline has passed.",
+    "নিরাপদ খাদ্য সংগ্রহের সময়সীমা পার হয়েছে।"
+  ],
+  [
+    "Close unsafe or expired rescue",
+    "অনিরাপদ বা মেয়াদোত্তীর্ণ রেসকিউ বন্ধ করুন"
+  ],
+  [
+    "Closure note",
+    "বন্ধ করার কারণ"
+  ],
+  [
+    "Explain why this food cannot continue safely…",
+    "কেন এই খাবার নিরাপদে বিতরণ করা যাচ্ছে না তা লিখুন…"
+  ],
+  [
+    "Closing…",
+    "বন্ধ হচ্ছে…"
+  ],
+  [
+    "Discard and close rescue",
+    "খাবার বাতিল করে রেসকিউ বন্ধ করুন"
+  ],
+  [
+    "Could not close this rescue. Try again.",
+    "রেসকিউ বন্ধ করা যায়নি। আবার চেষ্টা করুন।"
+  ],
+  [
+    "Distribution blocked",
+    "বিতরণ বন্ধ আছে"
+  ],
+  [
+    "The delivery receipt marked this food damaged or poor. Do not distribute it; submit or follow up on an issue report for administrator closure.",
+    "ডেলিভারি রিসিটে খাবার নষ্ট বা নিম্নমানের চিহ্নিত হয়েছে। এটি বিতরণ করবেন না; অ্যাডমিন বন্ধ করার জন্য ইস্যু রিপোর্ট করুন বা অনুসরণ করুন।"
+  ],
+  [
+    "Safe food deadline passed",
+    "নিরাপদ খাদ্যের সময়সীমা শেষ হয়েছে"
+  ],
+  [
+    "The donor's safe food deadline has expired. Do not serve this batch; report an issue or contact an administrator to close this rescue.",
+    "দাতার নির্ধারিত নিরাপদ সময়সীমা শেষ হয়ে গেছে। এই খাবার পরিবেশন করবেন না; রেসকিউ বন্ধ করতে ইস্যু রিপোর্ট করুন বা অ্যাডমিনের সাথে যোগাযোগ করুন।"
+  ],
+  [
+    "The donor's safe food deadline has already passed. Record damaged/poor condition if spoiled, or submit an issue report before distributing.",
+    "দাতার নির্ধারিত নিরাপদ সময়সীমা ইতোমধ্যে পার হয়েছে। খাবার নষ্ট হলে রিসিটে নিম্নমান উল্লেখ করুন বা বিতরণের আগে ইস্যু রিপোর্ট করুন।"
+  ],
+  [
+    "Active mission must still be completed; turning Duty OFF pauses new offers only.",
+    "চলমান মিশন শেষ করতে হবে; Duty OFF করলে শুধু নতুন ডিসপ্যাচ অফার বন্ধ থাকবে।"
+  ],
+  [
+    "Details can be edited until an NGO claims this batch, and cancelled before pickup.",
+    "এনজিও ক্লেইম করার আগ পর্যন্ত তথ্য সংশোধন ও পিকআপের আগে পর্যন্ত বাতিল করা যাবে।"
+  ],
+  [
+    "Draft donation published",
+    "খসড়া অনুদান প্রকাশিত হয়েছে"
+  ],
+  [
+    "The batch is now listed and visible to eligible NGOs.",
+    "খাবারটি এখন এনজিওদের জন্য দৃশ্যমান করা হয়েছে।"
+  ],
+  [
+    "Publish draft donation",
+    "খসড়া অনুদান প্রকাশ করুন"
+  ],
+  [
+    "Stopped at step {0} of {1}: {2}",
+    "থেমে গেছে (ধাপ {0}/{1}): {2}"
+  ],
+  [
+    "Reason: {0}",
+    "কারণ: {0}"
+  ],
+  [
+    "All {0} steps completed",
+    "সব {0}টি ধাপ সম্পন্ন"
+  ],
+  [
+    "Cancelled at this step",
+    "এই ধাপে বাতিল হয়েছে"
+  ],
+  [
+    "Expired at this step",
+    "এই ধাপে মেয়াদ শেষ"
+  ],
+  [
+    "Paused at this step",
+    "এই ধাপে স্থগিত হয়েছে"
+  ],
+  [
+    "Saved as draft",
+    "খসড়া হিসেবে সংরক্ষিত"
+  ],
+  [
+    "Cancelled / Expired",
+    "বাতিল / মেয়াদোত্তীর্ণ"
+  ],
+  [
+    "Filter by outcome",
+    "ফলাফল অনুযায়ী ফিল্টার"
+  ],
+  [
+    "All records ({0})",
+    "সব রেকর্ড ({0})"
+  ],
+  [
+    "Completed ({0})",
+    "সম্পন্ন ({0})"
+  ],
+  [
+    "Cancelled / Expired ({0})",
+    "বাতিল / মেয়াদোত্তীর্ণ ({0})"
+  ],
+  [
+    "Under review ({0})",
+    "পর্যালোচনাধীন ({0})"
+  ],
+  [
+    "Cancelled at: {0}",
+    "বাতিল হয়েছে: {0}"
+  ],
+  [
+    "Expired at: {0}",
+    "মেয়াদ শেষ: {0}"
+  ],
+  [
+    "Paused at: {0}",
+    "স্থগিত আছে: {0}"
+  ],
+  [
+    "Stopped at: {0}",
+    "থেমে গেছে: {0}"
+  ],
+  [
+    "Not verified",
+    "যাচাই হয়নি"
+  ],
+  [
+    "Cancelled: stopped at {0}",
+    "বাতিল: {0} ধাপে থেমেছে"
+  ],
+  [
+    "Expired: stopped at {0}",
+    "মেয়াদ শেষ: {0} ধাপে থেমেছে"
+  ],
+  [
+    "Paused: under review at {0}",
+    "স্থগিত: {0} ধাপে যাচাই চলছে"
+  ],
+  [
+    "Draft saved",
+    "খসড়া সংরক্ষিত"
+  ],
+  [
+    "Step {0}/{1}",
+    "ধাপ {0}/{1}"
+  ],
+  [
+    "Mission details",
+    "মিশনের বিস্তারিত"
+  ],
+  [
+    "Active & live donations",
+    "সক্রিয় ও চলমান অনুদান"
+  ],
+  [
+    "Closed & archive history",
+    "সমাপ্ত ও আর্কাইভ অনুদান"
+  ],
+  [
+    "Completed distributions, cancelled batches, and expired food logs.",
+    "বিতরণ সম্পন্ন, বাতিল ও মেয়াদোত্তীর্ণ অনুদানের সংক্ষিপ্ত রেকর্ড — বিস্তারিত দেখতে পাশের বাটনে ক্লিক করুন।"
+  ],
+  [
+    "Open full page",
+    "বিস্তারিত পেজ খুলুন"
+  ],
+  [
+    "ShareBite BD donation audit trail",
+    "শেয়ারবাইট বিডি অনুদান অডিট ট্রেইল"
+  ],
+  [
+    "ShareBite BD claim audit trail",
+    "শেয়ারবাইট বিডি ক্লেইম অডিট ট্রেইল"
+  ],
+  [
+    "Pickup area",
+    "পিকআপ অবস্থান"
+  ],
+  [
+    "Safe eat deadline",
+    "নিরাপদ খাওয়ার সময়"
+  ],
+  [
+    "Food quantity",
+    "খাবারের পরিমাণ"
+  ],
+  [
+    "Claim #{0}",
+    "ক্লেইম #{0}"
+  ],
+  [
+    "Reference #{0}",
+    "রেফারেন্স #{0}"
+  ],
+  [
+    "Donor organization",
+    "দাতা প্রতিষ্ঠান"
+  ],
+  [
+    "Unassigned",
+    "রাইডার নির্ধারিত হয়নি"
+  ],
+  [
+    "Completed distribution",
+    "সফল বিতরণ সম্পন্ন"
+  ],
+  [
+    "Food expired",
+    "মেয়াদোত্তীর্ণ"
+  ],
+  [
+    "Under review",
+    "পর্যালোচনায়"
+  ],
+  [
+    "Storage & condition",
+    "সংরক্ষণ ও অবস্থা"
+  ],
+  [
+    "{0} active",
+    "{0}টি সক্রিয়"
+  ],
+  [
+    "{0} closed",
+    "{0}টি আর্কাইভ"
+  ],
+  [
+    "Download CSR Certificate (PDF)",
+    "সিএসআর সার্টিফিকেট ডাউনলোড (PDF)"
+  ],
+  [
+    "Damaged or poor",
+    "ক্ষতিগ্রস্ত বা নিম্নমানের"
+  ],
+  [
+    "Receipt recorded: {0}",
+    "এনজিও গ্রহণ রেকর্ড: {0}"
+  ],
+  [
+    "Incident review pending",
+    "অভিযোগ পর্যালোচনা চলমান"
+  ],
+  [
+    "Rescue cancelled before completion",
+    "সম্পন্ন হওয়ার আগেই উদ্ধার বাতিল হয়েছে"
+  ],
+  [
+    "Safe food deadline expired before completion",
+    "সম্পন্ন হওয়ার আগেই নিরাপদ সময়সীমা শেষ হয়েছে"
+  ],
+  [
+    "NGO receipt pending",
+    "এনজিও রসিদ অপেক্ষমাণ"
+  ],
+  [
+    "Active & Ready",
+    "সক্রিয় ও প্রস্তুত"
+  ],
+  [
+    "Pending Document Review",
+    "নথি যাচাইয়ের অপেক্ষায়"
+  ],
+  [
+    "Post your first surplus batch",
+    "প্রথম উদ্বৃত্ত খাবার পোস্ট করুন"
+  ],
+  [
+    "Upload verification document below",
+    "নিচে যাচাইয়ের নথি আপলোড করুন"
+  ],
+  [
+    "Welcome to ShareBite BD",
+    "শেয়ারবাইট বিডি-তে স্বাগতম"
+  ],
+  [
+    "Account Holder",
+    "অ্যাকাউন্টধারী"
+  ],
+  [
+    "Upload verification document",
+    "যাচাইয়ের নথি আপলোড করুন"
+  ],
+  [
+    "View member summary",
+    "সদস্যের সারসংক্ষেপ দেখুন"
+  ],
+  [
+    "Member Credential",
+    "সদস্য পরিচিতিপত্র"
+  ],
+  [
+    "Registered",
+    "নিবন্ধিত"
+  ],
+  [
+    "Live Rescue",
+    "লাইভ উদ্ধার"
+  ],
+  [
+    "1-click fill",
+    "১-ক্লিকে পূরণ"
+  ],
+  [
+    "Expired / Invalid Window",
+    "মেয়াদোত্তীর্ণ / অবৈধ সময়"
+  ],
+  [
+    "Optimal Freshness",
+    "সর্বোচ্চ সতেজতা"
+  ],
+  [
+    "Urgent Dispatch Window",
+    "দ্রুত প্রেরণ প্রয়োজন"
+  ],
+  [
+    "Critical Rescue Window",
+    "অতি জরুরি উদ্ধার সময়"
+  ],
+  [
+    "Showing safe pickup window based on time and storage declaration.",
+    "সময় ও সংরক্ষণ ঘোষণার ভিত্তিতে নিরাপদ পিকআপ সময়সীমা দেখানো হচ্ছে।",
+    "সময় ও storage declaration অনুযায়ী নিরাপদ পিকআপ উইন্ডো দেখানো হচ্ছে।"
+  ],
+  [
+    "Sample photo",
+    "নমুনা ছবি"
+  ],
+  [
+    "Handover QR code",
+    "হস্তান্তর কিউআর কোড"
+  ],
+  [
+    "QR + 6-Digit Handover Proof",
+    "কিউআর ও ৬-সংখ্যার হস্তান্তর প্রমাণ"
+  ],
+  [
+    "Copied",
+    "কপি হয়েছে"
+  ],
+  [
+    "Road route (OSRM)",
+    "সড়ক রুট (OSRM)"
+  ],
+  [
+    "Estimated route",
+    "আনুমানিক রুট"
+  ],
+  [
+    "Stop rider sim",
+    "রাইডার সিমুলেশন থামান"
+  ],
+  [
+    "Simulate live rider",
+    "লাইভ রাইডার সিমুলেট করুন"
+  ],
+  [
+    "Hover points for breakdown",
+    "বিস্তারিত দেখতে পয়েন্টের ওপর হোভার করুন"
+  ],
+  [
+    "Rescue Coordinator",
+    "উদ্ধার সমন্বয়কারী"
+  ],
+  [
+    "Field Distribution Staff",
+    "মাঠ পর্যায়ের বিতরণ কর্মী"
+  ],
+  [
+    "Audit Viewer",
+    "অডিট পর্যবেক্ষক"
+  ],
+  [
+    "Manage NGO coordinators and field staff stored in PostgreSQL.",
+    "ডেটাবেসে সংরক্ষিত এনজিও সমন্বয়কারী ও মাঠকর্মীদের পরিচালনা করুন।"
+  ],
+  [
+    "Organization roster",
+    "সংস্থার টিম তালিকা"
+  ],
+  [
+    "Primary owner plus assigned rescue coordinators.",
+    "মূল স্বত্বাধিকারী ও নিযুক্ত উদ্ধার সমন্বয়কারীগণ।"
+  ],
+  [
+    "OWNER",
+    "মূল মালিক"
+  ],
+  [
+    "Loading team members…",
+    "টিম সদস্যদের তথ্য লোড হচ্ছে…"
+  ],
+  [
+    "No additional staff added yet. Add a coordinator or field member on the right.",
+    "এখনো কোনো অতিরিক্ত কর্মী যোগ করা হয়নি। ডান দিক থেকে একজন সমন্বয়কারী বা মাঠকর্মী যোগ করুন।"
+  ],
+  [
+    "Add team member",
+    "টিম সদস্য যোগ করুন"
+  ],
+  [
+    "Assign coordinators for pickup & shelter distribution.",
+    "পিকআপ ও শেল্টার বিতরণের জন্য সমন্বয়কারী নিযুক্ত করুন।"
+  ],
+  [
+    "Full name",
+    "পূর্ণ নাম"
+  ],
+  [
+    "Access role",
+    "অ্যাক্সেস ভূমিকা"
+  ],
+  [
+    "Add to NGO team",
+    "এনজিও টিমে যোগ করুন"
+  ],
+  [
+    "Match",
+    "সামঞ্জস্য"
+  ],
+  [
+    "Window",
+    "সময়সীমা"
+  ],
+  [
+    "Live rescue in progress",
+    "লাইভ খাদ্য উদ্ধার চলমান"
+  ],
+  [
+    "Ready to rescue surplus food?",
+    "উদ্বৃত্ত খাবার বাঁচাতে প্রস্তুত?"
+  ],
+  [
+    "{0} distributed meals · {1} partner NGOs",
+    "{0}টি খাবার বিতরণ · {1}টি পার্টনার এনজিও"
+  ],
+  [
+    "All donations",
+    "সকল অনুদান"
+  ],
+  [
+    "Impact & CSR summary",
+    "ইমপ্যাক্ট ও সিএসআর সারাংশ"
+  ],
+  [
+    "Food rescued (kg)",
+    "উদ্ধারকৃত খাবার (কেজি)"
+  ],
+  [
+    "CO₂e prevented (kg)",
+    "কার্বন সাশ্রয় (কেজি CO₂e)"
+  ],
+  [
+    "Donor score",
+    "ডোনার স্কোর"
+  ],
+  [
+    "View partner NGOs",
+    "পার্টনার এনজিও দেখুন"
+  ],
+  [
+    "CSR audit certificates ready",
+    "বিতরণকৃত অনুদানের জন্য CSR অডিট সার্টিফিকেট প্রস্তুত"
   ]
 ]

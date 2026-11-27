@@ -1,242 +1,963 @@
 [
-  ["PageContainer", "পেজের মূল অংশ"],
-  ["Password recovery", "পাসওয়ার্ড ফিরে পেতে সাহায্য"],
-  ["Password reset and additional privacy settings are not connected yet.", "পাসওয়ার্ড বদলানো ও বাড়তি ব্যক্তিগত তথ্যের সেটিংস এখনো চালু হয়নি।"],
-  ["People to be served", "কতজনের খাবার লাগবে"],
-  ["People to serve", "কতজনের খাবার লাগবে"],
-  ["Phase 1 foundation", "প্রথম ধাপের ভিত্তি"],
-  ["Phone preference", "ফোনে যোগাযোগের পছন্দ"],
-  ["Pickup addresses", "খাবার নেওয়ার ঠিকানা"],
-  ["Pickup addresses & location pins", "খাবার নেওয়ার ঠিকানা ও ম্যাপের জায়গা"],
-  ["Pickup and delivery map", "খাবার নেওয়া ও দেওয়ার জায়গার ম্যাপ"],
-  ["Pickup deadline must follow preparation time.", "খাবার নেওয়ার শেষ সময় রান্নার সময়ের পরে হতে হবে।"],
-  ["Pickup from donor", "দাতার কাছ থেকে খাবার নিন"],
-  ["Pickup handover code", "খাবার নেওয়ার কোড"],
-  ["Pickup pending", "খাবার নেওয়া বাকি"],
-  ["Pickup pin not saved. Coordinate the location by phone.", "খাবার নেওয়ার জায়গা ম্যাপে দেওয়া নেই। ফোনে ঠিকানা মিলিয়ে নিন।"],
-  ["Pickup pin not set", "খাবার নেওয়ার জায়গা ম্যাপে ঠিক করা নেই"],
-  ["Pickup to delivery directions ↗", "খাবার নেওয়া থেকে দেওয়ার পথ দেখুন ↗"],
-  ["Pin not set", "ম্যাপে জায়গা দেওয়া নেই"],
-  ["planned recipients", "জনের জন্য পরিকল্পনা"],
-  ["planned recipients ·", "জনের জন্য পরিকল্পনা ·"],
-  ["Postal code", "পোস্ট কোড"],
-  ["Posted", "পোস্ট হয়েছে"],
-  ["Preferred food categories", "যে ধরনের খাবার চাই"],
-  ["Preferred slot:", "পছন্দের সময়:"],
-  ["Preferred time slot", "পছন্দের সময়"],
-  ["Primary action", "মূল বোতাম"],
-  ["priority", "জরুরির ধরন"],
-  ["Priority reason:", "কেন জরুরি:"],
-  ["Profile could not be saved", "প্রোফাইল রাখা যায়নি"],
-  ["Profile could not load", "প্রোফাইলের তথ্য আনা যায়নি"],
-  ["Profile updated", "প্রোফাইল বদলানো হয়েছে"],
-  ["Protected frontend preview", "অনুমতি নিয়ে দেখার নমুনা পেজ"],
-  ["Protected mock route", "অনুমতি নিয়ে দেখার নমুনা পেজ"],
-  ["Public contact", "সবার জন্য যোগাযোগের তথ্য"],
-  ["Public email", "সবার জন্য ইমেইল"],
-  ["Public organization details", "সবার জন্য সংস্থার তথ্য"],
-  ["Public phone", "সবার জন্য ফোন নম্বর"],
-  ["Publish a verified community need without mixing it with the donation-claim workflow.", "আপনার সংস্থার জন্য খাবারের চাহিদা দিন। খাবার বুক করতে পরে তালিকা থেকে বেছে নিন।"],
-  ["Purpose", "কেন খাবার দরকার"],
-  ["Quality guidance, not a medical guarantee", "খাবারের তথ্য দেখুন; এটি নিরাপত্তা পরীক্ষার ফল নয়"],
-  ["Quantity and time", "পরিমাণ ও সময়"],
-  ["Quick actions", "দরকারি কাজ"],
-  ["Radio messaging is not connected. Use the donor/NGO phone number in your assigned mission.", "রেডিওতে কথা বলা এখনো চালু হয়নি। আপনার কাজের পাতায় দাতা বা এনজিওর ফোন নম্বর ব্যবহার করুন।"],
-  ["Ranked by aggregate beneficiaries served.", "মোট কতজন খাবার পেয়েছেন সেই হিসাবে সাজানো।"],
-  ["Rankings, training certificates and university credits are not connected.", "র‍্যাংকিং, প্রশিক্ষণের সনদ ও বিশ্ববিদ্যালয়ের ক্রেডিট এখনো চালু হয়নি।"],
-  ["Receipt could not be saved", "খাবার বুঝে পাওয়ার তথ্য রাখা যায়নি"],
-  ["Receipt notes (optional)", "খাবার বুঝে পাওয়ার বাড়তি তথ্য (না দিলেও চলবে)"],
-  ["Receipt photos", "বুঝে পাওয়া খাবারের ছবি"],
-  ["Receipt saved", "খাবার বুঝে পাওয়ার তথ্য রাখা হয়েছে"],
-  ["Received food", "বুঝে পাওয়া খাবার"],
-  ["Received food photos (optional)", "বুঝে পাওয়া খাবারের ছবি (না দিলেও চলবে)"],
-  ["Received quantity ({0})", "যতটা খাবার পাওয়া গেছে ({0})"],
-  ["Received:", "পাওয়া গেছে:"],
-  ["Receiving organization", "যে সংস্থা খাবার নিচ্ছে"],
-  ["Recent activity", "সাম্প্রতিক কাজ"],
-  ["Recent impact activity", "সাম্প্রতিক বিতরণের হিসাব"],
-  ["recent notifications", "টি সাম্প্রতিক খবর"],
-  ["Recipient group", "যাদের খাবার দেওয়া হবে"],
-  ["Recommended", "বেছে দেখতে পারেন"],
-  ["Recommended donation", "বেছে দেখার মতো খাবার"],
-  ["Recommended donations near you", "কাছে বেছে দেখার মতো খাবার"],
-  ["Record {0}", "হিসাব {0}"],
-  ["Record delivery receipt", "খাবার বুঝে পাওয়ার তথ্য দিন"],
-  ["Recorded volunteer contributions", "আপনার কাজের হিসাব"],
-  ["Recurring program", "নিয়মিত খাবারের ব্যবস্থা"],
-  ["Recurring program requests cover this stated occurrence; future requests are created separately.", "নিয়মিত কাজের হলেও এই চাহিদা শুধু এইবারের জন্য। পরেরবার নতুন চাহিদা দিতে হবে।"],
-  ["Reference:", "নম্বর:"],
-  ["Refresh dispatches", "নতুন কাজ দেখুন"],
-  ["Refresh matches", "আবার খাবার খুঁজুন"],
-  ["Refrigerated", "ফ্রিজে রাখা"],
-  ["Registration number:", "নিবন্ধন নম্বর:"],
-  ["Registration progress", "অ্যাকাউন্ট খোলার ধাপ"],
-  ["Release claim", "খাবার ছেড়ে দিন"],
-  ["Remove photo", "ছবি সরান"],
-  ["Remove sample image", "নমুনা ছবি সরান"],
-  ["Report", "সমস্যা জানান"],
-  ["Report / review history", "সমস্যা ও আগের পর্যালোচনা"],
-  ["Report a rescue issue", "খাবার পৌঁছানোর সমস্যা জানান"],
-  ["Report an issue / history", "সমস্যা জানান / আগের তথ্য"],
-  ["Report an issue with a rescue", "খাবারের কাজের সমস্যা জানান"],
-  ["Request history", "আগের চাহিদা"],
-  ["Request information", "চাহিদার তথ্য"],
-  ["Request needs attention", "চাহিদার তথ্য ঠিক করতে হবে"],
-  ["Request progress", "চাহিদা কতটা পূরণ হলো"],
-  ["Request snapshot", "চাহিদার সংরক্ষিত তথ্য"],
-  ["Request title", "চাহিদার নাম"],
-  ["Request type", "চাহিদার ধরন"],
-  ["Requests could not load", "চাহিদার তথ্য আনা যায়নি"],
-  ["Rescue clock", "বাকি সময়"],
-  ["Rescue communication", "খাবারের কাজ নিয়ে যোগাযোগ"],
-  ["Rescue Food · Respect Time · Measure Impact", "খাবার বাঁচান · সময় মানুন · হিসাব রাখুন"],
-  ["Rescue food before time runs out.", "সময় শেষ হওয়ার আগেই খাবার পৌঁছে দিন।"],
-  ["Rescue incident report", "খাবারের কাজের সমস্যার তথ্য"],
-  ["Rescue incidents", "খাবারের কাজের সমস্যা"],
-  ["Rescue issue reporting", "খাবারের কাজের সমস্যা জানান"],
-  ["Rescue locations", "খাবার নেওয়া ও দেওয়ার জায়গা"],
-  ["Rescue locations & navigation", "খাবার নেওয়া ও দেওয়ার জায়গা এবং পথ"],
-  ["Rescue mission", "খাবার পৌঁছানোর কাজ"],
-  ["Rescue partner", "খাবারের কাজের সঙ্গী"],
-  ["Rescue time", "খাবার পৌঁছানোর সময়"],
-  ["Reserve for this request", "এই চাহিদার জন্য খাবার রাখুন"],
-  ["Reserving…", "খাবার আপনার জন্য রাখা হচ্ছে…"],
-  ["Restrictions:", "যেসব খাবার দেওয়া যাবে না:"],
-  ["Return to claim", "বুক করা খাবারে ফিরুন"],
-  ["Return to dispatches", "খাবার পৌঁছানোর কাজগুলো দেখুন"],
-  ["Return to login", "লগইন পাতায় ফিরুন"],
-  ["Return to rescue", "খাবারের কাজে ফিরুন"],
-  ["Review before submitting", "পাঠানোর আগে তথ্য মিলিয়ে নিন"],
-  ["Room temperature", "ঘরের তাপমাত্রায় রাখা"],
-  ["Rule match score:", "নিয়ম অনুযায়ী মিল:"],
-  ["Safe deadline remaining:", "দাতার দেওয়া সময় বাকি:"],
-  ["Sample food images", "খাবারের নমুনা ছবি"],
-  ["Sample image: {0} — illustrative, not an uploaded food photo", "নমুনা ছবি: {0} — এটি আসল খাবারের আপলোড করা ছবি নয়"],
-  ["Sample: {0}", "নমুনা: {0}"],
-  ["Save address", "ঠিকানা রাখুন"],
-  ["Save location pin", "ম্যাপে জায়গা রাখুন"],
-  ["Save receipt", "খাবার বুঝে পাওয়ার তথ্য রাখুন"],
-  ["Saved account details", "অ্যাকাউন্টের সংরক্ষিত তথ্য"],
-  ["Saved addresses & location pins", "রাখা ঠিকানা ও ম্যাপের জায়গা"],
-  ["Saved delivery address", "খাবার দেওয়ার রাখা ঠিকানা"],
-  ["Saved delivery location", "খাবার দেওয়ার রাখা জায়গা"],
-  ["Saved handover pins. Volunteer GPS tracking is not connected.", "খাবার নেওয়া ও দেওয়ার রাখা জায়গা। স্বেচ্ছাসেবক এখন কোথায় আছেন তা সরাসরি দেখা যায় না।"],
-  ["Saved identity for this project account.", "এই প্রজেক্টের অ্যাকাউন্টে রাখা পরিচয়।"],
-  ["Saved locations used for new donations.", "নতুন খাবারের জন্য ব্যবহার করা ঠিকানা।"],
-  ["Saved pickup and delivery points for this rescue.", "এই কাজের জন্য রাখা খাবার নেওয়া ও দেওয়ার জায়গা।"],
-  ["Saved pickup location", "খাবার নেওয়ার রাখা জায়গা"],
-  ["Saved pin: {0}, {1}", "ম্যাপে রাখা জায়গা: {0}, {1}"],
-  ["Saved rescue claim", "খাবার বুক করা আছে"],
-  ["Saving distribution…", "বিতরণের হিসাব রাখা হচ্ছে…"],
-  ["Sealed hygienic catering containers with Kacchi Biryani and Polao", "ঢাকনা দেওয়া পাত্রে বিরিয়ানি ও পোলাও"],
-  ["Search requests", "চাহিদা খুঁজুন"],
-  ["Secondary action", "দ্বিতীয় বোতাম"],
-  ["Select workspace", "কাজের পেজ বেছে নিন"],
-  ["Selected pin: {0}, {1}", "বেছে নেওয়া জায়গা: {0}, {1}"],
-  ["Send reset link", "পাসওয়ার্ড বদলানোর লিংক পাঠান"],
-  ["Separate items with commas, or enter ‘None known’. Donors must still declare allergens on their listing.", "কমা দিয়ে আলাদা করে লিখুন। কিছু জানা না থাকলে ‘জানা নেই’ লিখুন। খাবারের অ্যালার্জির তথ্য দাতাকেও দিতে হবে।"],
-  ["Service areas", "যেসব এলাকায় কাজ করেন"],
-  ["Set a deadline to see the remaining pickup time.", "বাকি সময় দেখতে খাবার নেওয়ার শেষ সময় দিন।"],
-  ["Set location pin", "ম্যাপে জায়গা ঠিক করুন"],
-  ["Set location: {0}", "জায়গা ঠিক করুন: {0}"],
-  ["Set preparation time to now", "রান্নার সময় এখন দিন"],
-  ["Set primary", "প্রধান ঠিকানা করুন"],
-  ["Set primary NGO location for nearby search", "কাছের খাবার খুঁজতে এনজিওর প্রধান জায়গা ঠিক করুন"],
-  ["Severity", "সমস্যা কতটা গুরুতর"],
-  ["ShareBite", "ShareBite"],
-  ["ShareBite BD", "ShareBite BD"],
-  ["ShareBite BD connects verified donors, recipient organizations, and volunteers through a clear, accountable rescue workflow.", "ShareBite BD-তে দাতা, খাবার নেওয়া সংস্থা ও স্বেচ্ছাসেবক মিলে খাবার পৌঁছে দেওয়ার কাজ ও হিসাব রাখতে পারেন।"],
-  ["ShareBite BD home", "ShareBite BD-এর শুরুর পাতা"],
-  ["Shelter families", "আশ্রয়কেন্দ্রের পরিবার"],
-  ["Shelter or orphanage", "আশ্রয়কেন্দ্র বা এতিমখানা"],
-  ["Show onboarding page {0}", "শুরু করার পেজ {0} দেখুন"],
-  ["Show password", "পাসওয়ার্ড দেখুন"],
-  ["Signed in as", "যে অ্যাকাউন্টে আছেন"],
-  ["Six digit handover code", "খাবার হাতে দেওয়ার ৬ সংখ্যার কোড"],
-  ["Six-digit handover code", "খাবার হাতে দেওয়ার ৬ সংখ্যার কোড"],
-  ["Skip", "এড়িয়ে যান"],
-  ["Smart Surplus Food Rescue Platform", "অতিরিক্ত খাবার পৌঁছে দেওয়ার প্ল্যাটফর্ম"],
-  ["Some donations have no saved location pin. They remain in the list below; no location has been guessed.", "কিছু খাবারের জায়গা ম্যাপে দেওয়া নেই। সেগুলো নিচের তালিকায় আছে; জায়গা অনুমান করে বসানো হয়নি।"],
-  ["SOS/radio dispatch is not connected. This app does not contact emergency responders. For a mission issue, open the incident form to save a report and supporting photos for operator review.", "জরুরি সাহায্য বা রেডিও যোগাযোগ এই অ্যাপ থেকে পাঠানো হয় না। খাবারের কাজে সমস্যা হলে সমস্যার ফরম খুলে তথ্য ও ছবি দিন। দায়িত্বে থাকা ব্যক্তি তা দেখবেন।"],
-  ["Specific preferences (optional)", "বিশেষ পছন্দ (না দিলেও চলবে)"],
-  ["Step 0{0}", "ধাপ ০{0}"],
-  ["Still to reserve", "আরও যত বেলার খাবার রাখতে হবে"],
-  ["Storage declared by donor:", "কীভাবে রাখা হয়েছে (দাতার তথ্য):"],
-  ["Straight-line distance:", "সরাসরি দূরত্ব:"],
-  ["Submit incident", "সমস্যার তথ্য পাঠান"],
-  ["Submit request", "চাহিদা পাঠান"],
-  ["Submitting...", "পাঠানো হচ্ছে…", "Submitting…"],
-  ["Suitable donations", "মানানসই খাবার"],
-  ["Summary", "একনজরে"],
-  ["Surplus Food Rescue", "অতিরিক্ত খাবার পৌঁছে দেওয়া"],
-  ["Team & permissions", "দল ও অনুমতি"],
-  ["Team invitations are not available yet", "দলের সদস্য যোগ করা এখনো চালু হয়নি"],
-  ["The NGO route guard is active. Backend authorization and production operations remain future integrations.", "এটি এনজিওর পেজের নমুনা।"],
-  ["The receipt marked this food as damaged or poor. Report the incident and do not serve it.", "বুঝে পাওয়ার তথ্যে খাবার নষ্ট বা খারাপ বলা হয়েছে। সমস্যাটি জানান এবং এই খাবার বিতরণ করবেন না।"],
-  ["The recorded food condition blocks distribution.", "খাবারের দেওয়া অবস্থা অনুযায়ী বিতরণ বন্ধ রাখা হয়েছে।"],
-  ["There are no unclaimed listings inside your current service radius. Check again soon or publish a demand request.", "এই দূরত্বে এখন নেওয়ার মতো খাবার নেই। পরে আবার দেখুন বা খাবারের চাহিদা দিন।"],
-  ["These fields may appear in the verified donor directory.", "এই তথ্য দাতাদের তালিকায় দেখা যেতে পারে।"],
-  ["This claim cannot continue.", "এই খাবার নেওয়ার কাজ এগোনো যাবে না।"],
-  ["This confirmation is required before the outcome can be saved.", "হিসাব রাখার আগে এখানে নিশ্চিত করতে হবে।"],
-  ["This frontend preview does not send coordinates or provide live routing. The full address is visible only within the authorized request workflow.", "এই নমুনা পেজ থেকে জায়গার তথ্য পাঠানো বা সরাসরি পথ দেখানো হয় না। অনুমতি পাওয়া কাজেই পুরো ঠিকানা দেখা যায়।"],
-  ["This guard demonstrates frontend navigation only. Real authorization must be enforced by the backend.", "এটি পেজ ব্যবহারের নমুনা।"],
-  ["This is a project account profile. A government ID, BFSA certificate and independently verifiable QR credential are not issued by this app.", "এটি প্রজেক্টের অ্যাকাউন্টের পরিচয়। এই অ্যাপ থেকে সরকারি পরিচয়পত্র, খাবারের নিরাপত্তার সনদ বা যাচাইযোগ্য QR পরিচয় দেওয়া হয় না।"],
-  ["This page could not be loaded. Try again, or return to the ShareBite BD welcome page.", "পেজটি খোলা যায়নি। আবার চেষ্টা করুন বা শুরুর পাতায় ফিরুন।"],
-  ["This route is connected so dashboard navigation never ends at a missing page. Its complete workflow is delivered in the dedicated upcoming NGO phase.", "এই পেজের কাজ এখনো পুরোপুরি চালু হয়নি।"],
-  ["Title, purpose, recipient or ID", "নাম, কারণ, কার জন্য বা নম্বর"],
-  ["Toast uses a polite live region and remains keyboard dismissible.", "নতুন বার্তা কিবোর্ড দিয়েও বন্ধ করা যায়।"],
-  ["Toggle Navigation Menu", "মেনু খুলুন বা বন্ধ করুন"],
-  ["Top impact areas", "যেসব এলাকায় বেশি খাবার দেওয়া হয়েছে"],
-  ["Total requests", "মোট চাহিদা"],
-  ["Track verified community needs separately from donation claims and rescue coordination.", "খাবারের চাহিদার হিসাব দেখুন। খাবার বুক করা ও পৌঁছে দেওয়ার কাজ আলাদা করে দেখা যাবে।"],
-  ["UIU Cafeteria · 40 meal packs · Refrigerated", "UIU ক্যাফেটেরিয়া · ৪০ প্যাকেট খাবার · ফ্রিজে রাখা"],
-  ["UIU Cafeteria & Food Court", "UIU ক্যাফেটেরিয়া ও ফুড কোর্ট"],
-  ["UIU Campus pilot experience", "UIU ক্যাম্পাসের প্রজেক্টের নমুনা"],
-  ["unread ·", "টি পড়া হয়নি ·"],
-  ["Updated {0}", "বদলানো হয়েছে {0}"],
-  ["Urgent action", "জরুরি কাজ"],
-  ["Use aggregate counts only. Never enter beneficiary names, phone numbers, or identifiable notes.", "শুধু মোট সংখ্যা দিন। যারা খাবার পেয়েছেন তাদের নাম, ফোন নম্বর বা চেনা যায় এমন তথ্য দেবেন না।"],
-  ["Use device location", "আমার বর্তমান জায়গা নিন"],
-  ["Use operational details that help verified rescue partners find the handover point.", "খাবার নিতে আসা ব্যক্তি যেন সহজে জায়গাটি খুঁজে পান, তেমন তথ্য দিন।"],
-  ["Use sample image: {0}", "নমুনা ছবি ব্যবহার করুন: {0}"],
-  ["Use the connected report workflow for a food rescue issue.", "খাবারের কাজে সমস্যা হলে এখান থেকে জানাতে পারবেন।"],
-  ["Use the email connected to your ShareBite BD account.", "ShareBite BD অ্যাকাউন্টের ইমেইল ব্যবহার করুন।"],
-  ["User Account Settings", "ব্যবহারকারীর অ্যাকাউন্টের সেটিংস"],
-  ["Veg Meal Pack", "নিরামিষ খাবারের প্যাকেট"],
-  ["Verification record ID", "যাচাইয়ের নম্বর"],
-  ["Verification record ID:", "যাচাইয়ের নম্বর:"],
-  ["verified delivery handovers", "বার কোড মিলিয়ে খাবার পৌঁছে দিয়েছেন"],
-  ["Verified NGO · Dhanmondi, Dhaka", "যাচাই করা এনজিও · ধানমন্ডি, ঢাকা"],
-  ["Verified NGOs List", "যাচাই করা এনজিওর তালিকা"],
-  ["Verified partner", "যাচাই করা সঙ্গী সংস্থা"],
-  ["Verify delivery code", "খাবার পৌঁছানোর কোড মিলিয়ে নিন"],
-  ["Verify pickup code", "খাবার নেওয়ার কোড মিলিয়ে নিন"],
-  ["Verifying…", "কোড মেলানো হচ্ছে…"],
-  ["View account roles", "অ্যাকাউন্টের ধরন দেখুন"],
-  ["View all notifications", "সব খবর দেখুন"],
-  ["View dispatches", "খাবার পৌঁছানোর কাজ দেখুন"],
-  ["View donation & claim", "খাবার দেখুন ও নিতে চাই বলুন"],
-  ["View donation & handover code", "খাবারের তথ্য ও হাতে দেওয়ার কোড দেখুন"],
-  ["View in-app notifications", "অ্যাপের খবর দেখুন"],
-  ["View linked food request", "সঙ্গে যুক্ত খাবারের চাহিদা দেখুন"],
-  ["View linked rescue", "সঙ্গে যুক্ত কাজ দেখুন"],
-  ["View mission history", "আগের কাজ দেখুন"],
-  ["View organization profile", "সংস্থার প্রোফাইল দেখুন"],
-  ["View profile", "প্রোফাইল দেখুন"],
-  ["View request", "চাহিদা দেখুন"],
-  ["View rescue status", "খাবারের কাজের অবস্থা দেখুন"],
-  ["View UI preview", "পেজের নমুনা দেখুন"],
-  ["Vision", "আগামী দিনের লক্ষ্য"],
-  ["Volunteer assigned", "স্বেচ্ছাসেবক ঠিক হয়েছে"],
-  ["Volunteer pending", "স্বেচ্ছাসেবক ঠিক করা বাকি"],
-  ["Volunteer profile", "স্বেচ্ছাসেবকের প্রোফাইল"],
-  ["Volunteer session", "স্বেচ্ছাসেবকের কাজের মেনু"],
-  ["Volunteers preparing hot meal distributions", "খাবার বিতরণের প্রস্তুতি নিচ্ছেন স্বেচ্ছাসেবকেরা"],
-  ["was accepted by the UI. No real email was sent; backend integration will be added later.", "নমুনা ফরমে নেওয়া হয়েছে। আসলে কোনো ইমেইল পাঠানো হয়নি; সুবিধাটি পরে চালু হবে।"],
-  ["What happened?", "কী হয়েছে?"],
-  ["When is the food needed?", "খাবার কখন দরকার?"],
-  ["Your assigned mission", "আপনার খাবার পৌঁছানোর কাজ"],
-  ["Your NGO now has a saved active claim. Exact pickup details are available in the authorized claim view.", "খাবার আপনার এনজিওর জন্য রাখা হয়েছে। এখন পুরো ঠিকানা ও যোগাযোগের তথ্য দেখতে পারবেন।"],
-  ["Your saved account details and recorded food rescue impact.", "অ্যাকাউন্টে রাখা তথ্য ও খাবার বিতরণের হিসাব।"],
-  ["Your signed-in NGO account can manage its own claims and food requests. Additional team invitations and permission changes are not connected yet.", "আপনার এনজিওর অ্যাকাউন্ট থেকে নিজেদের বুক করা খাবার ও চাহিদা দেখা যায়। দলের সদস্য যোগ করা ও অনুমতি বদলানো এখনো চালু হয়নি।"]
+  [
+    "PageContainer",
+    "পেজের মূল অংশ"
+  ],
+  [
+    "Password recovery",
+    "পাসওয়ার্ড ফিরে পেতে সাহায্য"
+  ],
+  [
+    "Password reset and additional privacy settings are not connected yet.",
+    "পাসওয়ার্ড বদলানো ও বাড়তি ব্যক্তিগত তথ্যের সেটিংস এখনো চালু হয়নি।"
+  ],
+  [
+    "People to be served",
+    "কতজনের খাবার লাগবে"
+  ],
+  [
+    "People to serve",
+    "কতজনের খাবার লাগবে"
+  ],
+  [
+    "Phase 1 foundation",
+    "প্রথম ধাপের ভিত্তি"
+  ],
+  [
+    "Phone preference",
+    "ফোনে যোগাযোগের পছন্দ"
+  ],
+  [
+    "Pickup addresses",
+    "খাবার নেওয়ার ঠিকানা"
+  ],
+  [
+    "Pickup addresses & location pins",
+    "খাবার নেওয়ার ঠিকানা ও ম্যাপের জায়গা"
+  ],
+  [
+    "Pickup and delivery map",
+    "খাবার নেওয়া ও দেওয়ার জায়গার ম্যাপ"
+  ],
+  [
+    "Pickup deadline must follow preparation time.",
+    "খাবার নেওয়ার শেষ সময় রান্নার সময়ের পরে হতে হবে।"
+  ],
+  [
+    "Pickup from donor",
+    "দাতার কাছ থেকে খাবার নিন"
+  ],
+  [
+    "Pickup handover code",
+    "খাবার নেওয়ার কোড"
+  ],
+  [
+    "Pickup pending",
+    "খাবার নেওয়া বাকি"
+  ],
+  [
+    "Pickup pin not saved. Coordinate the location by phone.",
+    "খাবার নেওয়ার জায়গা ম্যাপে দেওয়া নেই। ফোনে ঠিকানা মিলিয়ে নিন।"
+  ],
+  [
+    "Pickup pin not set",
+    "খাবার নেওয়ার জায়গা ম্যাপে ঠিক করা নেই"
+  ],
+  [
+    "Pickup to delivery directions ↗",
+    "খাবার নেওয়া থেকে দেওয়ার পথ দেখুন ↗"
+  ],
+  [
+    "Pin not set",
+    "ম্যাপে জায়গা দেওয়া নেই"
+  ],
+  [
+    "planned recipients",
+    "জনের জন্য পরিকল্পনা"
+  ],
+  [
+    "planned recipients ·",
+    "জনের জন্য পরিকল্পনা ·"
+  ],
+  [
+    "Postal code",
+    "পোস্ট কোড"
+  ],
+  [
+    "Posted",
+    "পোস্ট হয়েছে"
+  ],
+  [
+    "Preferred food categories",
+    "যে ধরনের খাবার চাই"
+  ],
+  [
+    "Preferred slot:",
+    "পছন্দের সময়:"
+  ],
+  [
+    "Preferred time slot",
+    "পছন্দের সময়"
+  ],
+  [
+    "Primary action",
+    "মূল বোতাম"
+  ],
+  [
+    "priority",
+    "জরুরির ধরন"
+  ],
+  [
+    "Priority reason:",
+    "কেন জরুরি:"
+  ],
+  [
+    "Profile could not be saved",
+    "প্রোফাইল রাখা যায়নি"
+  ],
+  [
+    "Profile could not load",
+    "প্রোফাইলের তথ্য আনা যায়নি"
+  ],
+  [
+    "Profile updated",
+    "প্রোফাইল বদলানো হয়েছে"
+  ],
+  [
+    "Protected frontend preview",
+    "অনুমতি নিয়ে দেখার নমুনা পেজ"
+  ],
+  [
+    "Protected mock route",
+    "অনুমতি নিয়ে দেখার নমুনা পেজ"
+  ],
+  [
+    "Public contact",
+    "সবার জন্য যোগাযোগের তথ্য"
+  ],
+  [
+    "Public email",
+    "সবার জন্য ইমেইল"
+  ],
+  [
+    "Public organization details",
+    "সবার জন্য সংস্থার তথ্য"
+  ],
+  [
+    "Public phone",
+    "সবার জন্য ফোন নম্বর"
+  ],
+  [
+    "Publish a verified community need without mixing it with the donation-claim workflow.",
+    "আপনার সংস্থার জন্য খাবারের চাহিদা দিন। খাবার বুক করতে পরে তালিকা থেকে বেছে নিন।"
+  ],
+  [
+    "Purpose",
+    "কেন খাবার দরকার"
+  ],
+  [
+    "Quality guidance, not a medical guarantee",
+    "খাবারের তথ্য দেখুন; এটি নিরাপত্তা পরীক্ষার ফল নয়"
+  ],
+  [
+    "Quantity and time",
+    "পরিমাণ ও সময়"
+  ],
+  [
+    "Quick actions",
+    "দরকারি কাজ"
+  ],
+  [
+    "Radio messaging is not connected. Use the donor/NGO phone number in your assigned mission.",
+    "রেডিওতে কথা বলা এখনো চালু হয়নি। আপনার কাজের পাতায় দাতা বা এনজিওর ফোন নম্বর ব্যবহার করুন।"
+  ],
+  [
+    "Ranked by aggregate beneficiaries served.",
+    "মোট কতজন খাবার পেয়েছেন সেই হিসাবে সাজানো।"
+  ],
+  [
+    "Rankings, training certificates and university credits are not connected.",
+    "র্যাংকিং, প্রশিক্ষণের সনদ ও বিশ্ববিদ্যালয়ের ক্রেডিট এখনো চালু হয়নি।"
+  ],
+  [
+    "Receipt could not be saved",
+    "খাবার বুঝে পাওয়ার তথ্য রাখা যায়নি"
+  ],
+  [
+    "Receipt notes (optional)",
+    "খাবার বুঝে পাওয়ার বাড়তি তথ্য (না দিলেও চলবে)"
+  ],
+  [
+    "Receipt photos",
+    "বুঝে পাওয়া খাবারের ছবি"
+  ],
+  [
+    "Receipt saved",
+    "খাবার বুঝে পাওয়ার তথ্য রাখা হয়েছে"
+  ],
+  [
+    "Received food",
+    "বুঝে পাওয়া খাবার"
+  ],
+  [
+    "Received food photos (optional)",
+    "বুঝে পাওয়া খাবারের ছবি (না দিলেও চলবে)"
+  ],
+  [
+    "Received quantity ({0})",
+    "যতটা খাবার পাওয়া গেছে ({0})"
+  ],
+  [
+    "Received:",
+    "পাওয়া গেছে:"
+  ],
+  [
+    "Receiving organization",
+    "যে সংস্থা খাবার নিচ্ছে"
+  ],
+  [
+    "Recent activity",
+    "সাম্প্রতিক কাজ"
+  ],
+  [
+    "Recent impact activity",
+    "সাম্প্রতিক বিতরণের হিসাব"
+  ],
+  [
+    "recent notifications",
+    "টি সাম্প্রতিক খবর"
+  ],
+  [
+    "Recipient group",
+    "যাদের খাবার দেওয়া হবে"
+  ],
+  [
+    "Recommended",
+    "বেছে দেখতে পারেন"
+  ],
+  [
+    "Recommended donation",
+    "বেছে দেখার মতো খাবার"
+  ],
+  [
+    "Recommended donations near you",
+    "কাছে বেছে দেখার মতো খাবার"
+  ],
+  [
+    "Record {0}",
+    "হিসাব {0}"
+  ],
+  [
+    "Record delivery receipt",
+    "খাবার বুঝে পাওয়ার তথ্য দিন"
+  ],
+  [
+    "Recorded volunteer contributions",
+    "আপনার কাজের হিসাব"
+  ],
+  [
+    "Recurring program",
+    "নিয়মিত খাবারের ব্যবস্থা"
+  ],
+  [
+    "Recurring program requests cover this stated occurrence; future requests are created separately.",
+    "নিয়মিত কাজের হলেও এই চাহিদা শুধু এইবারের জন্য। পরেরবার নতুন চাহিদা দিতে হবে।"
+  ],
+  [
+    "Reference:",
+    "নম্বর:"
+  ],
+  [
+    "Refresh dispatches",
+    "নতুন কাজ দেখুন"
+  ],
+  [
+    "Refresh matches",
+    "আবার খাবার খুঁজুন"
+  ],
+  [
+    "Refrigerated",
+    "ফ্রিজে রাখা"
+  ],
+  [
+    "Registration number:",
+    "নিবন্ধন নম্বর:"
+  ],
+  [
+    "Registration progress",
+    "অ্যাকাউন্ট খোলার ধাপ"
+  ],
+  [
+    "Release claim",
+    "খাবার ছেড়ে দিন"
+  ],
+  [
+    "Remove photo",
+    "ছবি সরান"
+  ],
+  [
+    "Remove sample image",
+    "নমুনা ছবি সরান"
+  ],
+  [
+    "Report",
+    "সমস্যা জানান"
+  ],
+  [
+    "Report / review history",
+    "সমস্যা ও আগের পর্যালোচনা"
+  ],
+  [
+    "Report a rescue issue",
+    "খাবার পৌঁছানোর সমস্যা জানান"
+  ],
+  [
+    "Report an issue / history",
+    "সমস্যা জানান / আগের তথ্য"
+  ],
+  [
+    "Report an issue with a rescue",
+    "খাবারের কাজের সমস্যা জানান"
+  ],
+  [
+    "Request history",
+    "আগের চাহিদা"
+  ],
+  [
+    "Request information",
+    "চাহিদার তথ্য"
+  ],
+  [
+    "Request needs attention",
+    "চাহিদার তথ্য ঠিক করতে হবে"
+  ],
+  [
+    "Request progress",
+    "চাহিদা কতটা পূরণ হলো"
+  ],
+  [
+    "Request snapshot",
+    "চাহিদার সংরক্ষিত তথ্য"
+  ],
+  [
+    "Request title",
+    "চাহিদার নাম"
+  ],
+  [
+    "Request type",
+    "চাহিদার ধরন"
+  ],
+  [
+    "Requests could not load",
+    "চাহিদার তথ্য আনা যায়নি"
+  ],
+  [
+    "Rescue clock",
+    "বাকি সময়"
+  ],
+  [
+    "Rescue communication",
+    "খাবারের কাজ নিয়ে যোগাযোগ"
+  ],
+  [
+    "Rescue Food · Respect Time · Measure Impact",
+    "খাবার বাঁচান · সময় মানুন · হিসাব রাখুন"
+  ],
+  [
+    "Rescue food before time runs out.",
+    "সময় শেষ হওয়ার আগেই খাবার পৌঁছে দিন।"
+  ],
+  [
+    "Rescue incident report",
+    "খাবারের কাজের সমস্যার তথ্য"
+  ],
+  [
+    "Rescue incidents",
+    "খাবারের কাজের সমস্যা"
+  ],
+  [
+    "Rescue issue reporting",
+    "খাবারের কাজের সমস্যা জানান"
+  ],
+  [
+    "Rescue locations",
+    "খাবার নেওয়া ও দেওয়ার জায়গা"
+  ],
+  [
+    "Rescue locations & navigation",
+    "খাবার নেওয়া ও দেওয়ার জায়গা এবং পথ"
+  ],
+  [
+    "Rescue mission",
+    "খাবার পৌঁছানোর কাজ"
+  ],
+  [
+    "Rescue partner",
+    "খাবারের কাজের সঙ্গী"
+  ],
+  [
+    "Rescue time",
+    "খাবার পৌঁছানোর সময়"
+  ],
+  [
+    "Reserve for this request",
+    "এই চাহিদার জন্য খাবার রাখুন"
+  ],
+  [
+    "Reserving…",
+    "খাবার আপনার জন্য রাখা হচ্ছে…"
+  ],
+  [
+    "Restrictions:",
+    "যেসব খাবার দেওয়া যাবে না:"
+  ],
+  [
+    "Return to claim",
+    "বুক করা খাবারে ফিরুন"
+  ],
+  [
+    "Return to dispatches",
+    "খাবার পৌঁছানোর কাজগুলো দেখুন"
+  ],
+  [
+    "Return to login",
+    "লগইন পাতায় ফিরুন"
+  ],
+  [
+    "Return to rescue",
+    "খাবারের কাজে ফিরুন"
+  ],
+  [
+    "Review before submitting",
+    "পাঠানোর আগে তথ্য মিলিয়ে নিন"
+  ],
+  [
+    "Room temperature",
+    "ঘরের তাপমাত্রায় রাখা"
+  ],
+  [
+    "Rule match score:",
+    "নিয়ম অনুযায়ী মিল:"
+  ],
+  [
+    "Safe deadline remaining:",
+    "দাতার দেওয়া সময় বাকি:"
+  ],
+  [
+    "Sample food images",
+    "খাবারের নমুনা ছবি"
+  ],
+  [
+    "Sample image: {0} — illustrative, not an uploaded food photo",
+    "নমুনা ছবি: {0} — এটি আসল খাবারের আপলোড করা ছবি নয়"
+  ],
+  [
+    "Sample: {0}",
+    "নমুনা: {0}"
+  ],
+  [
+    "Save address",
+    "ঠিকানা রাখুন"
+  ],
+  [
+    "Save location pin",
+    "ম্যাপে জায়গা রাখুন"
+  ],
+  [
+    "Save receipt",
+    "খাবার বুঝে পাওয়ার তথ্য রাখুন"
+  ],
+  [
+    "Saved account details",
+    "অ্যাকাউন্টের সংরক্ষিত তথ্য"
+  ],
+  [
+    "Saved addresses & location pins",
+    "রাখা ঠিকানা ও ম্যাপের জায়গা"
+  ],
+  [
+    "Saved delivery address",
+    "খাবার দেওয়ার রাখা ঠিকানা"
+  ],
+  [
+    "Saved delivery location",
+    "খাবার দেওয়ার রাখা জায়গা"
+  ],
+  [
+    "Saved handover pins. Volunteer GPS tracking is not connected.",
+    "খাবার নেওয়া ও দেওয়ার রাখা জায়গা। স্বেচ্ছাসেবক এখন কোথায় আছেন তা সরাসরি দেখা যায় না।"
+  ],
+  [
+    "Saved identity for this project account.",
+    "এই প্রজেক্টের অ্যাকাউন্টে রাখা পরিচয়।"
+  ],
+  [
+    "Saved locations used for new donations.",
+    "নতুন খাবারের জন্য ব্যবহার করা ঠিকানা।"
+  ],
+  [
+    "Saved pickup and delivery points for this rescue.",
+    "এই কাজের জন্য রাখা খাবার নেওয়া ও দেওয়ার জায়গা।"
+  ],
+  [
+    "Saved pickup location",
+    "খাবার নেওয়ার রাখা জায়গা"
+  ],
+  [
+    "Saved pin: {0}, {1}",
+    "ম্যাপে রাখা জায়গা: {0}, {1}"
+  ],
+  [
+    "Saved rescue claim",
+    "খাবার বুক করা আছে"
+  ],
+  [
+    "Saving distribution…",
+    "বিতরণের হিসাব রাখা হচ্ছে…"
+  ],
+  [
+    "Sealed hygienic catering containers with Kacchi Biryani and Polao",
+    "ঢাকনা দেওয়া পাত্রে বিরিয়ানি ও পোলাও"
+  ],
+  [
+    "Search requests",
+    "চাহিদা খুঁজুন"
+  ],
+  [
+    "Secondary action",
+    "দ্বিতীয় বোতাম"
+  ],
+  [
+    "Select workspace",
+    "কাজের পেজ বেছে নিন"
+  ],
+  [
+    "Selected pin: {0}, {1}",
+    "বেছে নেওয়া জায়গা: {0}, {1}"
+  ],
+  [
+    "Send reset link",
+    "পাসওয়ার্ড বদলানোর লিংক পাঠান"
+  ],
+  [
+    "Separate items with commas, or enter ‘None known’. Donors must still declare allergens on their listing.",
+    "কমা দিয়ে আলাদা করে লিখুন। কিছু জানা না থাকলে ‘জানা নেই’ লিখুন। খাবারের অ্যালার্জির তথ্য দাতাকেও দিতে হবে।"
+  ],
+  [
+    "Service areas",
+    "যেসব এলাকায় কাজ করেন"
+  ],
+  [
+    "Set a deadline to see the remaining pickup time.",
+    "বাকি সময় দেখতে খাবার নেওয়ার শেষ সময় দিন।"
+  ],
+  [
+    "Set location pin",
+    "ম্যাপে জায়গা ঠিক করুন"
+  ],
+  [
+    "Set location: {0}",
+    "জায়গা ঠিক করুন: {0}"
+  ],
+  [
+    "Set preparation time to now",
+    "রান্নার সময় এখন দিন"
+  ],
+  [
+    "Set primary",
+    "প্রধান ঠিকানা করুন"
+  ],
+  [
+    "Set primary NGO location for nearby search",
+    "কাছের খাবার খুঁজতে এনজিওর প্রধান জায়গা ঠিক করুন"
+  ],
+  [
+    "Severity",
+    "সমস্যা কতটা গুরুতর"
+  ],
+  [
+    "ShareBite",
+    "ShareBite"
+  ],
+  [
+    "ShareBite BD",
+    "ShareBite BD"
+  ],
+  [
+    "ShareBite BD connects verified donors, recipient organizations, and volunteers through a clear, accountable rescue workflow.",
+    "ShareBite BD-তে দাতা, খাবার নেওয়া সংস্থা ও স্বেচ্ছাসেবক মিলে খাবার পৌঁছে দেওয়ার কাজ ও হিসাব রাখতে পারেন।"
+  ],
+  [
+    "ShareBite BD home",
+    "ShareBite BD-এর শুরুর পাতা"
+  ],
+  [
+    "Shelter families",
+    "আশ্রয়কেন্দ্রের পরিবার"
+  ],
+  [
+    "Shelter or orphanage",
+    "আশ্রয়কেন্দ্র বা এতিমখানা"
+  ],
+  [
+    "Show onboarding page {0}",
+    "শুরু করার পেজ {0} দেখুন"
+  ],
+  [
+    "Show password",
+    "পাসওয়ার্ড দেখুন"
+  ],
+  [
+    "Signed in as",
+    "যে অ্যাকাউন্টে আছেন"
+  ],
+  [
+    "Six digit handover code",
+    "খাবার হাতে দেওয়ার ৬ সংখ্যার কোড"
+  ],
+  [
+    "Six-digit handover code",
+    "খাবার হাতে দেওয়ার ৬ সংখ্যার কোড"
+  ],
+  [
+    "Skip",
+    "এড়িয়ে যান"
+  ],
+  [
+    "Smart Surplus Food Rescue Platform",
+    "অতিরিক্ত খাবার পৌঁছে দেওয়ার প্ল্যাটফর্ম"
+  ],
+  [
+    "Some donations have no saved location pin. They remain in the list below; no location has been guessed.",
+    "কিছু খাবারের জায়গা ম্যাপে দেওয়া নেই। সেগুলো নিচের তালিকায় আছে; জায়গা অনুমান করে বসানো হয়নি।"
+  ],
+  [
+    "SOS/radio dispatch is not connected. This app does not contact emergency responders. For a mission issue, open the incident form to save a report and supporting photos for operator review.",
+    "জরুরি সাহায্য বা রেডিও যোগাযোগ এই অ্যাপ থেকে পাঠানো হয় না। খাবারের কাজে সমস্যা হলে সমস্যার ফরম খুলে তথ্য ও ছবি দিন। দায়িত্বে থাকা ব্যক্তি তা দেখবেন।"
+  ],
+  [
+    "Specific preferences (optional)",
+    "বিশেষ পছন্দ (না দিলেও চলবে)"
+  ],
+  [
+    "Step 0{0}",
+    "ধাপ ০{0}"
+  ],
+  [
+    "Still to reserve",
+    "আরও যত বেলার খাবার রাখতে হবে"
+  ],
+  [
+    "Storage declared by donor:",
+    "কীভাবে রাখা হয়েছে (দাতার তথ্য):"
+  ],
+  [
+    "Straight-line distance:",
+    "সরাসরি দূরত্ব:"
+  ],
+  [
+    "Submit incident",
+    "সমস্যার তথ্য পাঠান"
+  ],
+  [
+    "Submit request",
+    "চাহিদা পাঠান"
+  ],
+  [
+    "Submitting...",
+    "পাঠানো হচ্ছে…",
+    "Submitting…"
+  ],
+  [
+    "Suitable donations",
+    "মানানসই খাবার"
+  ],
+  [
+    "Summary",
+    "একনজরে"
+  ],
+  [
+    "Surplus Food Rescue",
+    "অতিরিক্ত খাবার পৌঁছে দেওয়া"
+  ],
+  [
+    "Team & permissions",
+    "দল ও অনুমতি"
+  ],
+  [
+    "Team invitations are not available yet",
+    "দলের সদস্য যোগ করা এখনো চালু হয়নি"
+  ],
+  [
+    "The NGO route guard is active. Backend authorization and production operations remain future integrations.",
+    "এটি এনজিওর পেজের নমুনা।"
+  ],
+  [
+    "The receipt marked this food as damaged or poor. Report the incident and do not serve it.",
+    "বুঝে পাওয়ার তথ্যে খাবার নষ্ট বা খারাপ বলা হয়েছে। সমস্যাটি জানান এবং এই খাবার বিতরণ করবেন না।"
+  ],
+  [
+    "The recorded food condition blocks distribution.",
+    "খাবারের দেওয়া অবস্থা অনুযায়ী বিতরণ বন্ধ রাখা হয়েছে।"
+  ],
+  [
+    "There are no unclaimed listings inside your current service radius. Check again soon or publish a demand request.",
+    "এই দূরত্বে এখন নেওয়ার মতো খাবার নেই। পরে আবার দেখুন বা খাবারের চাহিদা দিন।"
+  ],
+  [
+    "These fields may appear in the verified donor directory.",
+    "এই তথ্য দাতাদের তালিকায় দেখা যেতে পারে।"
+  ],
+  [
+    "This claim cannot continue.",
+    "এই খাবার নেওয়ার কাজ এগোনো যাবে না।"
+  ],
+  [
+    "This confirmation is required before the outcome can be saved.",
+    "হিসাব রাখার আগে এখানে নিশ্চিত করতে হবে।"
+  ],
+  [
+    "This frontend preview does not send coordinates or provide live routing. The full address is visible only within the authorized request workflow.",
+    "এই নমুনা পেজ থেকে জায়গার তথ্য পাঠানো বা সরাসরি পথ দেখানো হয় না। অনুমতি পাওয়া কাজেই পুরো ঠিকানা দেখা যায়।"
+  ],
+  [
+    "This guard demonstrates frontend navigation only. Real authorization must be enforced by the backend.",
+    "এটি পেজ ব্যবহারের নমুনা।"
+  ],
+  [
+    "This is a project account profile. A government ID, BFSA certificate and independently verifiable QR credential are not issued by this app.",
+    "এটি প্রজেক্টের অ্যাকাউন্টের পরিচয়। এই অ্যাপ থেকে সরকারি পরিচয়পত্র, খাবারের নিরাপত্তার সনদ বা যাচাইযোগ্য QR পরিচয় দেওয়া হয় না।"
+  ],
+  [
+    "This page could not be loaded. Try again, or return to the ShareBite BD welcome page.",
+    "পেজটি খোলা যায়নি। আবার চেষ্টা করুন বা শুরুর পাতায় ফিরুন।"
+  ],
+  [
+    "This route is connected so dashboard navigation never ends at a missing page. Its complete workflow is delivered in the dedicated upcoming NGO phase.",
+    "এই পেজের কাজ এখনো পুরোপুরি চালু হয়নি।"
+  ],
+  [
+    "Title, purpose, recipient or ID",
+    "নাম, কারণ, কার জন্য বা নম্বর"
+  ],
+  [
+    "Toast uses a polite live region and remains keyboard dismissible.",
+    "নতুন বার্তা কিবোর্ড দিয়েও বন্ধ করা যায়।"
+  ],
+  [
+    "Toggle Navigation Menu",
+    "মেনু খুলুন বা বন্ধ করুন"
+  ],
+  [
+    "Top impact areas",
+    "যেসব এলাকায় বেশি খাবার দেওয়া হয়েছে"
+  ],
+  [
+    "Total requests",
+    "মোট চাহিদা"
+  ],
+  [
+    "Track verified community needs separately from donation claims and rescue coordination.",
+    "খাবারের চাহিদার হিসাব দেখুন। খাবার বুক করা ও পৌঁছে দেওয়ার কাজ আলাদা করে দেখা যাবে।"
+  ],
+  [
+    "UIU Cafeteria · 40 meal packs · Refrigerated",
+    "UIU ক্যাফেটেরিয়া · ৪০ প্যাকেট খাবার · ফ্রিজে রাখা"
+  ],
+  [
+    "UIU Cafeteria & Food Court",
+    "UIU ক্যাফেটেরিয়া ও ফুড কোর্ট"
+  ],
+  [
+    "UIU Campus pilot experience",
+    "UIU ক্যাম্পাসের প্রজেক্টের নমুনা"
+  ],
+  [
+    "unread ·",
+    "টি পড়া হয়নি ·"
+  ],
+  [
+    "Updated {0}",
+    "বদলানো হয়েছে {0}"
+  ],
+  [
+    "Urgent action",
+    "জরুরি কাজ"
+  ],
+  [
+    "Use aggregate counts only. Never enter beneficiary names, phone numbers, or identifiable notes.",
+    "শুধু মোট সংখ্যা দিন। যারা খাবার পেয়েছেন তাদের নাম, ফোন নম্বর বা চেনা যায় এমন তথ্য দেবেন না।"
+  ],
+  [
+    "Use device location",
+    "আমার বর্তমান জায়গা নিন"
+  ],
+  [
+    "Use operational details that help verified rescue partners find the handover point.",
+    "খাবার নিতে আসা ব্যক্তি যেন সহজে জায়গাটি খুঁজে পান, তেমন তথ্য দিন।"
+  ],
+  [
+    "Use sample image: {0}",
+    "নমুনা ছবি ব্যবহার করুন: {0}"
+  ],
+  [
+    "Use the connected report workflow for a food rescue issue.",
+    "খাবারের কাজে সমস্যা হলে এখান থেকে জানাতে পারবেন।"
+  ],
+  [
+    "Use the email connected to your ShareBite BD account.",
+    "ShareBite BD অ্যাকাউন্টের ইমেইল ব্যবহার করুন।"
+  ],
+  [
+    "User Account Settings",
+    "ব্যবহারকারীর অ্যাকাউন্টের সেটিংস"
+  ],
+  [
+    "Veg Meal Pack",
+    "নিরামিষ খাবারের প্যাকেট"
+  ],
+  [
+    "Verification record ID",
+    "যাচাইয়ের নম্বর"
+  ],
+  [
+    "Verification record ID:",
+    "যাচাইয়ের নম্বর:"
+  ],
+  [
+    "verified delivery handovers",
+    "বার কোড মিলিয়ে খাবার পৌঁছে দিয়েছেন"
+  ],
+  [
+    "Verified NGO · Dhanmondi, Dhaka",
+    "যাচাই করা এনজিও · ধানমন্ডি, ঢাকা"
+  ],
+  [
+    "Verified NGOs List",
+    "যাচাই করা এনজিওর তালিকা"
+  ],
+  [
+    "Verified partner",
+    "যাচাই করা সঙ্গী সংস্থা"
+  ],
+  [
+    "Verify delivery code",
+    "খাবার পৌঁছানোর কোড মিলিয়ে নিন"
+  ],
+  [
+    "Verify pickup code",
+    "খাবার নেওয়ার কোড মিলিয়ে নিন"
+  ],
+  [
+    "Verifying…",
+    "কোড মেলানো হচ্ছে…"
+  ],
+  [
+    "View account roles",
+    "অ্যাকাউন্টের ধরন দেখুন"
+  ],
+  [
+    "View all notifications",
+    "সব খবর দেখুন"
+  ],
+  [
+    "View dispatches",
+    "খাবার পৌঁছানোর কাজ দেখুন"
+  ],
+  [
+    "View donation & claim",
+    "খাবার দেখুন ও নিতে চাই বলুন"
+  ],
+  [
+    "View donation & handover code",
+    "খাবারের তথ্য ও হাতে দেওয়ার কোড দেখুন"
+  ],
+  [
+    "View in-app notifications",
+    "অ্যাপের খবর দেখুন"
+  ],
+  [
+    "View linked food request",
+    "সঙ্গে যুক্ত খাবারের চাহিদা দেখুন"
+  ],
+  [
+    "View linked rescue",
+    "সঙ্গে যুক্ত কাজ দেখুন"
+  ],
+  [
+    "View mission history",
+    "আগের কাজ দেখুন"
+  ],
+  [
+    "View organization profile",
+    "সংস্থার প্রোফাইল দেখুন"
+  ],
+  [
+    "View profile",
+    "প্রোফাইল দেখুন"
+  ],
+  [
+    "View request",
+    "চাহিদা দেখুন"
+  ],
+  [
+    "View rescue status",
+    "খাবারের কাজের অবস্থা দেখুন"
+  ],
+  [
+    "View UI preview",
+    "পেজের নমুনা দেখুন"
+  ],
+  [
+    "Vision",
+    "আগামী দিনের লক্ষ্য"
+  ],
+  [
+    "Volunteer assigned",
+    "স্বেচ্ছাসেবক ঠিক হয়েছে"
+  ],
+  [
+    "Volunteer pending",
+    "স্বেচ্ছাসেবক ঠিক করা বাকি"
+  ],
+  [
+    "Volunteer profile",
+    "স্বেচ্ছাসেবকের প্রোফাইল"
+  ],
+  [
+    "Volunteer session",
+    "স্বেচ্ছাসেবকের কাজের মেনু"
+  ],
+  [
+    "Volunteers preparing hot meal distributions",
+    "খাবার বিতরণের প্রস্তুতি নিচ্ছেন স্বেচ্ছাসেবকেরা"
+  ],
+  [
+    "was accepted by the UI. No real email was sent; backend integration will be added later.",
+    "নমুনা ফরমে নেওয়া হয়েছে। আসলে কোনো ইমেইল পাঠানো হয়নি; সুবিধাটি পরে চালু হবে।"
+  ],
+  [
+    "What happened?",
+    "কী হয়েছে?"
+  ],
+  [
+    "When is the food needed?",
+    "খাবার কখন দরকার?"
+  ],
+  [
+    "Your assigned mission",
+    "আপনার খাবার পৌঁছানোর কাজ"
+  ],
+  [
+    "Your NGO now has a saved active claim. Exact pickup details are available in the authorized claim view.",
+    "খাবার আপনার এনজিওর জন্য রাখা হয়েছে। এখন পুরো ঠিকানা ও যোগাযোগের তথ্য দেখতে পারবেন।"
+  ],
+  [
+    "Your saved account details and recorded food rescue impact.",
+    "অ্যাকাউন্টে রাখা তথ্য ও খাবার বিতরণের হিসাব।"
+  ],
+  [
+    "Your signed-in NGO account can manage its own claims and food requests. Additional team invitations and permission changes are not connected yet.",
+    "আপনার এনজিওর অ্যাকাউন্ট থেকে নিজেদের বুক করা খাবার ও চাহিদা দেখা যায়। দলের সদস্য যোগ করা ও অনুমতি বদলানো এখনো চালু হয়নি।"
+  ]
 ]

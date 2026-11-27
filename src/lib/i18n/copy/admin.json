@@ -246,5 +246,247 @@
   [
     "An administrator reviews your account details. Original documents must be checked separately. Account verification does not certify the safety of an individual food batch.",
     "অ্যাডমিন আপনার অ্যাকাউন্টের তথ্য পর্যালোচনা করেন। মূল নথি আলাদাভাবে যাচাই করতে হয়। অ্যাকাউন্ট যাচাই কোনো নির্দিষ্ট খাবারের নিরাপত্তার সনদ নয়।"
+  ],
+  ["Rescue conversion funnel", "উদ্ধার রূপান্তর ধাপ"],
+  [
+    "Live pipeline from published food to verified distribution",
+    "খাবার পোস্ট থেকে যাচাইকৃত বিতরণ পর্যন্ত লাইভ অগ্রগতি"
+  ],
+  ["Food batches posted", "খাবারের ব্যাচ পোস্ট হয়েছে"],
+  ["Claimed by NGOs", "এনজিও গ্রহণ করেছে"],
+  ["Verified pickup", "যাচাইকৃত পিকআপ সম্পন্ন"],
+  ["Distributed to people", "মানুষের মাঝে বিতরণ হয়েছে"],
+  ["Dhaka zone supply vs demand", "ঢাকার এলাকাভিত্তিক সরবরাহ বনাম চাহিদা"],
+  ["Meals posted vs NGO demand by area", "এলাকা অনুযায়ী পোস্টকৃত মিল ও এনজিও চাহিদা"],
+  ["High NGO demand", "উচ্চ এনজিও চাহিদা"],
+  ["batches", "টি ব্যাচ"],
+  ["Surplus", "উদ্বৃত্ত"],
+  ["Demand", "চাহিদা"],
+  [
+    "Zone metrics appear once donations are posted.",
+    "খাবার পোস্ট হলেই এলাকাভিত্তিক পরিসংখ্যান দেখা যাবে।"
+  ],
+  ["Purpose and priority", "চাহিদার উদ্দেশ্য ও অগ্রাধিকার"],
+  [
+    "How is food safety and quality ensured?",
+    "খাবারের গুণগত মান ও নিরাপত্তা কীভাবে নিশ্চিত করা হয়?"
+  ],
+  [
+    "Every food batch tracks an automated Safe Consumption Window from preparation time. Donors seal warm meals above 60°C or chilled items in food-grade containers per BFSA safety standards before verified volunteer pickup.",
+    "প্রতিটি খাবারে রান্নার সময় থেকে স্বয়ংক্রিয় নিরাপদ মেয়াদ ট্র্যাক করা হয় এবং BFSA মানদণ্ডে ৬০°C+ গরম বা ঠান্ডা ইনসুলেটেড বক্সে সিল করে ভলান্টিয়ারের মাধ্যমে পাঠানো হয়।"
+  ],
+  ["Verified Food Donor", "ভেরিফায়েড খাদ্য দাতা"],
+  ["Verification pending", "যাচাই অপেক্ষমাণ"],
+  ["Cafeteria", "ক্যাফেটেরিয়া"],
+  ["Restaurant", "রেস্তোরাঁ"],
+  ["Bakery", "বেকারি"],
+  ["Event organizer", "ইভেন্ট আয়োজক"],
+  ["Individual donor", "ব্যক্তিগত দাতা"],
+  [
+    "Account verification & digital handover tracking ensure every safe food donation by this donor is recorded and preserved.",
+    "অ্যাকাউন্ট ভেরিফিকেশন ও ডিজিটাল হ্যান্ডওভার ট্র্যাকিংয়ের মাধ্যমে দাতার প্রতিটি নিরাপদ খাদ্য অনুদান রেকর্ড ও সংরক্ষিত থাকে।"
+  ],
+  ["Contact person", "ফোকাল পারসন"],
+  ["Official email", "অফিসিয়াল ইমেইল"],
+  ["Pickup hotline", "পিকআপ হটলাইন"],
+  ["Not provided", "দেওয়া হয়নি"],
+  ["Primary", "মূল ঠিকানা"],
+  ["GPS pin saved", "জিপিএস পিন সংরক্ষিত"],
+  ["My food donations", "আমার খাদ্য অনুদানসমূহ"],
+  ["Post surplus food", "নতুন খাবার পোস্ট দিন"],
+  ["Pickup addresses & location pins", "পিকআপ ঠিকানা ও ম্যাপ পিন"],
+  ["Partner NGOs", "সহযোগী এনজিওসমূহ"],
+  ["No saved pickup addresses yet", "এখনও কোনো পিকআপ ঠিকানা যুক্ত হয়নি"],
+  [
+    "Add a pickup address and map pin so NGOs and riders can find your kitchen faster.",
+    "এনজিও ও রাইডাররা যাতে দ্রুত আপনার রান্নাঘর খুঁজে পায়, সেজন্য পিকআপ ঠিকানা ও ম্যাপ পিন যোগ করুন।"
+  ],
+  ["Saved identity, active dispatch credentials, and delivery record.", "আপনার সংরক্ষিত পরিচয়, সক্রিয় ডিসপ্যাচ ক্রেডেনশিয়াল ও ডেলিভারির তথ্য।"],
+  ["Edit name", "নাম পরিবর্তন করুন"],
+  ["Rider full name", "রাইডারের পূর্ণ নাম"],
+  ["Display name updated.", "রাইডারের নাম সফলভাবে আপডেট হয়েছে।"],
+  ["Verified Volunteer Rider", "ভেরিফায়েড ভলান্টিয়ার রাইডার"],
+  [
+    "Verified ShareBite BD volunteer squad member authorized for sealed surplus food pickup, OTP verification, and NGO handover.",
+    "সিল করা উদ্বৃত্ত খাবার সংগ্রহ, ওটিপি যাচাই ও এনজিওতে নিরাপদ হস্তান্তরের জন্য নিবন্ধিত ShareBite BD ভলান্টিয়ার স্কোয়াড সদস্য।"
+  ],
+  ["Rider contact", "রাইডার মোবাইল"],
+  ["Operating zones", "কার্যকরী এলাকা"],
+  ["Meals rescued", "উদ্ধারকৃত মিল"],
+  ["Active service zones", "সক্রিয় সার্ভিস জোন"],
+  ["ShareBite BD Digital Squad Pass", "ShareBite BD ডিজিটাল স্কোয়াড পাস"],
+  ["OTP & QR pickup ready", "ওটিপি ও কিউআর পিকআপ প্রস্তুত"],
+  ["Digital rider verification QR", "রাইডার যাচাইকরণ কিউআর কোড"],
+  ["Squad Pass", "স্কোয়াড পাস"],
+  ["Duty availability", "ডিউটির অবস্থা"],
+  ["Control whether your account receives live dispatch alerts.", "লাইভ ডিসপ্যাচ অ্যালার্ট পাবেন কিনা এখান থেকে নিয়ন্ত্রণ করুন।"],
+  ["Command hub", "কমান্ড হাব"],
+  ["Notifications & alerts", "নোটিফিকেশন ও অ্যালার্ট"],
+  [
+    "Verified records synced from completed NGO handovers and delivery confirmations.",
+    "সম্পন্ন এনজিও হ্যান্ডওভার ও ডেলিভারি নিশ্চিতকরণের ভিত্তিতে যাচাইকৃত রেকর্ড সংরক্ষিত।"
+  ],
+  ["Completed handovers", "সম্পন্ন হ্যান্ডওভার"],
+  ["Verified NGO", "ভেরিফায়েড এনজিও"],
+  ["Est.", "প্রতিষ্ঠিত"],
+  ["Dispatch hotline", "ডিসপ্যাচ হটলাইন"],
+  ["Daily meal capacity", "দৈনিক মিল সক্ষমতা"],
+  ["meals/day", "মিল/দিন"],
+  ["Mission, vision & communities", "লক্ষ্য, উদ্দেশ্য ও সুবিধাপ্রাপ্ত জনগোষ্ঠী"],
+  ["Public mandate shared with partner food donors.", "অংশীদার খাদ্য দাতাদের সাথে শেয়ার করা প্রতিষ্ঠানের বিবরণ।"],
+  ["Organization mandate", "মূল লক্ষ্য"],
+  ["Beneficiary communities", "সুবিধাপ্রাপ্ত কমিউনিটি"],
+  ["Delivery hubs & drop-off locations", "বিতরণ কেন্দ্র ও ড্রপ-অফ ঠিকানা"],
+  ["Authorized shelters and kitchen collection points.", "নিবন্ধিত আশ্রয়কেন্দ্র ও খাবার সংগ্রহ পয়েন্ট।"],
+  ["No saved delivery hubs yet", "এখনও কোনো ডেলিভারি হাব যুক্ত হয়নি"],
+  [
+    "Add a verified drop-off address and map pin so riders can deliver faster.",
+    "রাইডাররা যাতে দ্রুত খাবার পৌঁছে দিতে পারে সেজন্য যাচাইকৃত ঠিকানা ও ম্যাপ পিন যোগ করুন।"
+  ],
+  ["Impact & CSR reports", "ইমপ্যাক্ট ও সিএসআর রিপোর্ট"],
+  ["Back to profile", "প্রোফাইলে ফিরে যান"],
+  [
+    "Your verified NGO profile and operational capacity have been saved.",
+    "আপনার যাচাইকৃত এনজিও প্রোফাইল ও কার্যক্রম সক্ষমতা সফলভাবে সংরক্ষিত হয়েছে।"
+  ],
+  [
+    "Rescuing fresh surplus meals safely from partner donors and delivering dignified nutrition across verified Dhaka hubs.",
+    "অংশীদার খাদ্য দাতাদের কাছ থেকে নিরাপদ উদ্বৃত্ত খাবার সংগ্রহ করে ঢাকার নিবন্ধিত আশ্রয়কেন্দ্রে মর্যাদাপূর্ণ বিতরণ নিশ্চিত করা।"
+  ],
+  [
+    "Zero edible surplus food wasted, supported by transparent OTP-verified handovers and real-time distribution tracking.",
+    "ওটিপি-ভেরিফাইড স্বচ্ছ হ্যান্ডওভার ও রিয়েল-টাইম বিতরণ ট্র্যাকিংয়ের মাধ্যমে কোনো ভোজ্য খাবার অপচয় হতে না দেওয়া।"
+  ],
+  ["Manage language, live rescue alerts, and account preferences.", "ভাষা, লাইভ উদ্ধার অ্যালার্ট এবং অ্যাকাউন্ট পছন্দসমূহ নিয়ন্ত্রণ করুন।"],
+  ["View full profile", "সম্পূর্ণ প্রোফাইল দেখুন"],
+  ["Authenticated workspace session", "যাচাইকৃত ওয়ার্কস্পেস সেশন"],
+  ["Display language (Bangla / English)", "প্রদর্শনের ভাষা (বাংলা / English)"],
+  ["Switches smoothly across portals and mobile view.", "পোর্টাল ও মোবাইল ভিউয়ের সব জায়গায় স্মুথভাবে পরিবর্তন হয়।"],
+  ["Notification & rescue alert preferences", "নোটিফিকেশন ও উদ্ধার অ্যালার্ট পছন্দ"],
+  ["Customize live alerts and visual confirmation behavior.", "লাইভ অ্যালার্ট ও কনফার্মেশন আচরণ নিজের মতো সেট করুন।"],
+  ["Preferences saved", "পছন্দ সংরক্ষিত হয়েছে"],
+  ["Live in-app rescue updates", "অ্যাপের ভেতর লাইভ উদ্ধার আপডেট"],
+  ["Real-time claim, pickup, and handover alerts inside the portal.", "পোর্টালের ভেতর রিয়েল-টাইম ক্লেইম, পিকআপ ও হ্যান্ডওভার অ্যালার্ট।"],
+  ["Safe consumption deadline reminders", "নিরাপদ মেয়াদ শেষ হওয়ার সতর্কতা"],
+  ["Highlight urgent batches nearing safe pickup thresholds.", "দ্রুত সংগ্রহের সময় কাছাকাছি আসা জরুরি খাবারগুলো হাইলাইট করবে।"],
+  ["Silent completion popups", "শব্দহীন কনফার্মেশন পপআপ"],
+  ["Show celebratory milestones cleanly without audio chimes.", "কোনো অডিও সাউন্ড ছাড়াই পরিচ্ছন্ন কনফার্মেশন ডায়ালগ দেখাবে।"],
+  [
+    "Upload official NGO documents to unlock surplus food reservations and rider dispatch.",
+    "খাবার রিজার্ভ ও রাইডার ডিসপ্যাচ চালু করতে এনজিওর অফিসিয়াল নিবন্ধন নথি আপলোড করুন।"
+  ],
+  ["Verification steps", "ভেরিফিকেশনের ধাপসমূহ"],
+  ["How NGO approval works on ShareBite BD.", "ShareBite BD-তে এনজিও অনুমোদন যেভাবে সম্পন্ন হয়।"],
+  ["1. Submit official NGO registration", "১. অফিসিয়াল এনজিও নিবন্ধন জমা দিন"],
+  [
+    "Upload Social Services or NGO Affairs Bureau registration certificate (PDF, PNG, or JPG).",
+    "সমাজসেবা অধিদপ্তর বা এনজিও বিষয়ক ব্যুরোর নিবন্ধন সনদ (PDF, PNG বা JPG) আপলোড করুন।"
+  ],
+  ["2. Operator review & audit", "২. অ্যাডমিন পর্যালোচনা ও যাচাই"],
+  [
+    "ShareBite BD administrators verify organization legitimacy and active service areas.",
+    "ShareBite BD অ্যাডমিনরা প্রতিষ্ঠানের বৈধতা ও কার্যক্রম এলাকা যাচাই করবেন।"
+  ],
+  ["3. Claim food batches", "৩. উদ্বৃত্ত খাবার গ্রহণ শুরু করুন"],
+  [
+    "Verified NGOs unlock instant surplus meal claims, volunteer dispatch, and impact tracking.",
+    "যাচাই সম্পন্ন হলে তাৎক্ষণিক খাবার ক্লেইম, রাইডার ডিসপ্যাচ ও ইমপ্যাক্ট ট্র্যাকিং চালু হবে।"
+  ],
+  [
+    "Documents are stored securely for platform verification review.",
+    "প্ল্যাটফর্ম ভেরিফিকেশন পর্যালোচনার জন্য নথিপত্র নিরাপদভাবে সংরক্ষিত থাকে।"
+  ],
+  ["Request reference", "চাহিদা রেফারেন্স"],
+  ["Saved in ShareBite BD registry", "ShareBite BD রেজিস্ট্রিতে সংরক্ষিত"],
+  ["Request details could not load", "চাহিদার তথ্য লোড করা যায়নি"],
+  ["Delivery area", "বিতরণের এলাকা"],
+  ["New food request", "নতুন খাবারের চাহিদা"],
+  ["Preferences and restrictions", "খাবারের পছন্দ ও বিধিনিষেধ"],
+  ["People, meals and schedule", "জনসংখ্যা, খাবার ও সময়সূচি"],
+  ["Authorized delivery details", "যাচাইকৃত ডেলিভারির ঠিকানা"],
+  ["Check and submit", "সবকিছু দেখে জমা দিন"],
+  ["Untitled request", "শিরোনামহীন চাহিদা"],
+  ["Draft saved at {0}", "খসড়া সংরক্ষিত হয়েছে {0}"],
+  ["Draft autosaves automatically on this device", "এই ডিভাইসে খসড়া নিজে থেকেই সংরক্ষিত হয়"],
+  ["Requested meals", "প্রয়োজনীয় বেলার খাবার"],
+  ["People to serve", "যতজনকে দেওয়া হবে"],
+  ["Clear this food request draft and start again?", "খাবারের চাহিদার এই খসড়াটি মুছে নতুন করে শুরু করবেন?"],
+  ["This browser could not save the draft.", "এই ব্রাউজারে খসড়া সংরক্ষণ করা যায়নি।"],
+  ["About two hours from now", "প্রায় দুই ঘণ্টা পর"],
+  ["Later today", "আজকের মধ্যেই"],
+  ["Tomorrow around midday", "আগামীকাল দুপুরের দিকে"],
+  ["Choose a specific time", "নির্দিষ্ট সময় বেছে নিন"],
+  ["Primary address", "প্রধান ঠিকানা"],
+  ["Saved delivery location", "সংরক্ষিত ডেলিভারির জায়গা"],
+  ["Food safety & freshness standards", "খাদ্য নিরাপত্তা ও সতেজতার মানদণ্ড"],
+  [
+    "Requests match with donations declaring clear preparation time, storage condition, allergen details, and a safe pickup deadline.",
+    "খাবার প্রস্তুতের সময়, সংরক্ষণের অবস্থা, অ্যালার্জেনের তথ্য ও নিরাপদ সংগ্রহের সময়সীমা স্পষ্ট থাকা অনুদানগুলোর সাথেই আপনার চাহিদা ম্যাচ করা হবে।"
+  ],
+  [
+    "Exact delivery address and map pin are shared only with authorized rescue participants.",
+    "বিতরণের সঠিক ঠিকানা ও ম্যাপ পিন শুধুমাত্র অনুমোদিত উদ্ধার কার্যক্রমে যুক্তদের সাথেই শেয়ার করা হয়।"
+  ],
+  ["{0} priority", "{0} অগ্রাধিকার"],
+  ["{0} for {1}", "{1}-এর জন্য {0}"],
+  ["{0} meals for {1} people", "{1} জন মানুষের জন্য {0} বেলার খাবার"],
+  ["None provided", "উল্লেখ করা হয়নি"],
+  ["Awaiting documents", "নথি জমা বাকি"],
+  ["Document pending", "নথি বাকি"],
+  ["Ready for review first, oldest next", "যাচাইয়ের জন্য প্রস্তুত ও পুরোনো আবেদন আগে"],
+  ["Safety reports require your review.", "নিরাপত্তা সংক্রান্ত অভিযোগ পর্যালোচনা প্রয়োজন।"],
+  ["Resolve open concerns to keep active rescues moving safely.", "উদ্ধার কার্যক্রম নিরাপদে সচল রাখতে অমীমাংসিত অভিযোগগুলো পর্যালোচনা করুন।"],
+  ["Review reports", "অভিযোগ পর্যালোচনা করুন"],
+  ["Verification and safety queues are clear.", "অ্যাকাউন্ট যাচাই ও অভিযোগের সব কাজ সম্পন্ন।"],
+  ["Follow active rescues and verified meal distributions across Dhaka.", "ঢাকাজুড়ে চলমান উদ্ধার ও যাচাইকৃত খাবার বিতরণ পর্যবেক্ষণ করুন।"],
+  ["View rescues", "উদ্ধার কার্যক্রম দেখুন"],
+  ["Conversion rate", "সম্পন্নের হার"],
+  ["{0} batches", "{0}টি ব্যাচ"],
+  ["Urgent and rescue-blocking reports first", "জরুরি ও উদ্ধার-স্থগিতকারী অভিযোগ আগে"],
+  ["Held rescues and urgent deadlines first", "স্থগিত ও জরুরি সময়সীমার উদ্ধার আগে"],
+  ["Account, report and access actions", "অ্যাকাউন্ট, অভিযোগ ও প্রবেশাধিকারের সিদ্ধান্ত"],
+  ["No driver assigned", "রাইডার নির্ধারিত হয়নি"],
+  ["Distribution held", "বিতরণ স্থগিত"],
+  ["Quick note preset", "প্রস্তুত নোট বেছে নিন"],
+  ["Select a ready-made note (optional)", "একটি প্রস্তুত নোট বেছে নিন (ঐচ্ছিক)"],
+  ["Identity & documents verified", "পরিচয় ও নথি যাচাই সম্পন্ন"],
+  [
+    "Identity, organization details, and submitted verification documents are complete and verified.",
+    "পরিচয়, প্রতিষ্ঠানের তথ্য এবং জমাকৃত যাচাইকরণ নথি সম্পূর্ণ সঠিক ও যাচাইকৃত।"
+  ],
+  ["Registration & contact confirmed", "নিবন্ধন ও যোগাযোগ নিশ্চিত"],
+  [
+    "Registration number and contact details verified with platform safety requirements.",
+    "নিবন্ধন নম্বর ও যোগাযোগের তথ্য প্ল্যাটফর্মের নিরাপত্তা মানদণ্ড অনুযায়ী যাচাই সম্পন্ন হয়েছে।"
+  ],
+  ["Volunteer & service zone approved", "স্বেচ্ছাসেবক ও সেবার এলাকা অনুমোদিত"],
+  [
+    "Volunteer identity and service area credentials checked and approved for active dispatch.",
+    "স্বেচ্ছাসেবকের পরিচয় ও সেবার এলাকার তথ্য যাচাই করে সক্রিয় উদ্ধারের অনুমোদন দেওয়া হলো।"
+  ],
+  ["Profile & address ready", "প্রোফাইল ও ঠিকানা যাচাইকৃত"],
+  [
+    "Account profile, address, and operational readiness verified for ShareBite BD participation.",
+    "অ্যাকাউন্টের প্রোফাইল, ঠিকানা ও কার্যক্রম প্রস্তুতি যাচাই করে অনুমোদন দেওয়া হয়েছে।"
+  ],
+  ["Unclear or incomplete document", "অস্পষ্ট বা অসম্পূর্ণ নথি"],
+  [
+    "Submitted verification document is unclear or incomplete. Please upload a readable official file.",
+    "জমাকৃত যাচাইকরণ নথি অস্পষ্ট বা অসম্পূর্ণ। অনুগ্রহ করে স্পষ্ট অফিসিয়াল নথি আবার আপলোড করুন।"
+  ],
+  ["Registration number mismatch", "নিবন্ধন নম্বরে অমিল"],
+  [
+    "Registration or certificate number does not match the organization details provided.",
+    "নিবন্ধন বা সনদ নম্বর প্রতিষ্ঠানের প্রদত্ত তথ্যের সাথে মিলছে না। সঠিক তথ্য দিয়ে আবার জমা দিন।"
+  ],
+  ["Contact or address unverified", "যোগাযোগ বা ঠিকানা অযাচাইকৃত"],
+  [
+    "Contact number or Dhaka service address could not be verified. Update profile details and resubmit.",
+    "যোগাযোগের নম্বর বা ঠিকানা যাচাই করা যায়নি। সঠিক তথ্য হালনাগাদ করে পুনরায় আবেদন করুন।"
+  ],
+  ["Missing supporting documents", "প্রয়োজনীয় নথি অনুপস্থিত"],
+  [
+    "Required supporting documents are missing. Upload valid verification files before requesting review.",
+    "প্রয়োজনীয় সহায়ক নথিপত্র পাওয়া যায়নি। বৈধ যাচাইকরণ নথি আপলোড করে আবার পর্যালোচনার অনুরোধ করুন।"
   ]
 ]

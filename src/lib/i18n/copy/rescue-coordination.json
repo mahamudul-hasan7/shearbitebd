@@ -334,5 +334,25 @@
   [
     "Call",
     "ফোন করুন"
+  ],
+  [
+    "Scan handover QR",
+    "হ্যান্ডওভার QR স্ক্যান করুন"
+  ],
+  [
+    "Scan handover QR code",
+    "হ্যান্ডওভার QR কোড স্ক্যান করুন"
+  ],
+  [
+    "Initializing camera…",
+    "ক্যামেরা চালু হচ্ছে…"
+  ],
+  [
+    "Or paste scanned QR URI / 6-digit code",
+    "অথবা স্ক্যান করা QR URI বা ৬-সংখ্যার কোড দিন"
+  ],
+  [
+    "Apply scanned code",
+    "স্ক্যান করা কোড বসান"
   ]
 ]

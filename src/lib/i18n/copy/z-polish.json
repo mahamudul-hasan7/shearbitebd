@@ -1,79 +1,336 @@
 [
-  ["Preparing registration form...", "অ্যাকাউন্ট খোলার ফর্ম তৈরি হচ্ছে...", "রেজিস্ট্রেশন ফর্ম প্রস্তুত হচ্ছে..."],
-  ["Adjust filters", "ফিল্টার বদলান"],
-  ["Post extra food", "বাড়তি খাবারের পোস্ট দিন", "Add surplus food"],
-  ["Browse food", "খাবার দেখুন", "Browse Food"],
-  ["BD", "BD"],
-  ["EN", "EN"],
-  ["/4", "/৪", "/ ৪"],
-  ["/7 safety declarations", "/৭টি নিরাপত্তার ঘোষণা", "/৭টি স্বাস্থ্যবিধি ঘোষণা"],
-  ["/100", "/১০০"],
-  ["Post your first donation", "প্রথম খাবারের পোস্ট দিন", "প্রথম অনুদান পোস্ট করুন"],
-  ["View all →", "সব দেখুন →", "সবগুলো দেখুন →"],
-  ["Approximate area; exact pickup pin unlocks after claim.", "কাছাকাছি এলাকা দেখানো হচ্ছে। খাবার নিলে সঠিক জায়গা দেখা যাবে।"],
-  ["Go to reservation", "খাবার নেওয়ার পাতায় যান", "Go to claim", "ক্লেইম পেজ খুলুন"],
-  ["Report an issue", "সমস্যা জানান", "Report incident"],
-  ["Track food 🛵", "খাবারের খোঁজ দেখুন 🛵", "লাইভ ট্র্যাকিং 🛵"],
-  ["Try again", "আবার চেষ্টা করুন", "পুনরায় চেষ্টা করুন"],
-  ["Refresh", "নতুন তথ্য দেখুন", "রিফ্রেশ"],
-  ["View NGO profile", "এনজিওর পরিচিতি দেখুন", "এনজিও প্রোফাইল দেখুন"],
-  ["Add address", "ঠিকানা যোগ করুন"],
-  ["Back to profile", "পরিচিতিতে ফিরুন", "প্রোফাইলে ফিরে যান"],
-  ["View all", "সব দেখুন"],
-  ["Arrival estimate", "আসার আনুমানিক সময়", "ETA"],
-  ["Create request", "খাবারের চাহিদা দিন", "Create Request", "খাদ্য চাহিদা পোস্ট করুন"],
-  ["New request", "নতুন খাবারের চাহিদা"],
-  ["Mission history (", "আগের কাজ (", "মিশন হিস্ট্রি ("],
-  ["Digital ID", "ডিজিটাল পরিচয়পত্র", "ডিজিটাল আইডি"],
-  ["Available deliveries (", "খোলা কাজ (", "উন্মুক্ত ডিসপ্যাচ ("],
-  ["Verification code", "যাচাইয়ের কোড", "OTP"],
-  ["Print activity report", "কাজের তথ্য প্রিন্ট করুন", "অডিট রিপোর্ট প্রিন্ট করুন"],
-  ["“", "“", "&ldquo;"],
-  ["”", "”", "&rdquo;"],
-  ["Receive and distribute food", "খাবার নিন ও বিতরণ করুন"],
-  ["Help deliver food", "খাবার পৌঁছে দিন"],
-  ["Sign in to view available food", "পাওয়া যাবে এমন খাবার দেখতে লগইন করুন", "সংরক্ষিত খাবার দেখতে sign in করুন"],
-  ["A university project connecting food donations, NGO claims, volunteer handovers and recorded distributions. Sign in to work with saved rescue records.", "বিশ্ববিদ্যালয়ের এই প্রজেক্টে বাড়তি খাবার দেওয়া, এনজিওর নেওয়া, স্বেচ্ছাসেবকের পৌঁছানো ও বিতরণের তথ্য এক জায়গায় থাকে। কাজ শুরু করতে লগইন করুন।"],
-  ["Donor-declared pickup deadline", "দাতার বলা খাবার নেওয়ার শেষ সময়"],
-  ["Account food listings", "অ্যাকাউন্টের খাবারের তালিকা"],
-  ["Food listings follow your account permissions. Open Discover from an NGO account.", "আপনার অ্যাকাউন্টের অনুমতি অনুযায়ী খাবারের পোস্ট দেখানো হয়। এনজিও অ্যাকাউন্ট থেকে খাবার খোঁজার পাতা খুলুন।"],
-  ["Sample donations are not shown here. Sign in to view the food listings available to your account.", "এখানে নমুনা খাবারের পোস্ট নেই। আপনার জন্য পাওয়া যাবে এমন খাবার দেখতে লগইন করুন।"],
-  ["Recorded distributions", "বিতরণের রাখা তথ্য"],
-  ["Actual NGO distribution records supply meal and beneficiary counts. Certificate issuance is not connected.", "এনজিও আসলে কত খাবার দিয়েছেন ও কতজন পেয়েছেন তার হিসাব রাখা হয়। সনদ দেওয়ার ব্যবস্থা এখনও হয়নি।"],
-  ["Recorded workflow", "যে কাজের তথ্য রাখা হয়"],
-  ["Declarations, handovers and distributions", "ঘোষণা, খাবার দেওয়া ও বিতরণ"],
-  ["Food testing and temperature monitoring are not connected.", "খাবার পরীক্ষা বা তাপমাত্রা মাপার ব্যবস্থা যুক্ত হয়নি।"],
-  ["Donor declarations", "দাতার ঘোষণা"],
-  ["The donor supplies preparation time, pickup deadline and storage declarations.", "দাতা খাবার তৈরির সময়, নেওয়ার শেষ সময় ও কীভাবে রেখেছেন তা জানান।"],
-  ["OTP handover", "কোড দিয়ে খাবার দেওয়া"],
-  ["The assigned volunteer verifies six-digit pickup and delivery codes.", "দায়িত্বে থাকা স্বেচ্ছাসেবক ৬ সংখ্যার কোড দিয়ে খাবার নেওয়া ও পৌঁছানো নিশ্চিত করেন।"],
-  ["Distribution record", "খাবার বিতরণের তথ্য"],
-  ["The receiving NGO records receipt and actual distribution.", "যে এনজিও খাবার নেন তাঁরা পাওয়ার রসিদ ও বিতরণের তথ্য রাখেন।"],
-  ["An illustrative planning simulator, separate from recorded account impact.", "পরিকল্পনা বোঝাতে নমুনা হিসাব। এটি আপনার আসল অবদানের হিসাব নয়।"],
-  ["Example assumptions: four weeks, 1.25 people per meal, 2.4 kg CO₂e and 160 litres per meal. These are not measured or validated project results.", "নমুনায় ৪ সপ্তাহ, প্রতি বেলার খাবারে ১.২৫ জন, ২.৪ কেজি CO₂e ও ১৬০ লিটার ধরা হয়েছে। এগুলো প্রজেক্টে মেপে পাওয়া ফল নয়।"],
-  ["Project demonstration", "প্রজেক্ট দেখানোর নমুনা"],
-  ["Demonstrate the flow with saved records", "রাখা তথ্য দিয়ে কাজের ধাপ দেখান"],
-  ["Independently verified testimonials have not been published for this project.", "এই প্রজেক্টে আলাদা করে যাচাই করা ব্যবহারকারীর মতামত প্রকাশ করা হয়নি।"],
-  ["Register and sign in as a donor, NGO or volunteer. New NGO and volunteer accounts need verification by the project operator.", "দাতা, এনজিও বা স্বেচ্ছাসেবক হিসেবে অ্যাকাউন্ট খুলে লগইন করুন। নতুন এনজিও ও স্বেচ্ছাসেবকের অ্যাকাউন্ট প্রজেক্টের দায়িত্বে থাকা ব্যক্তি যাচাই করবেন।"],
-  ["Does the app test food safety?", "অ্যাপে খাবারের নিরাপত্তা পরীক্ষা হয়?"],
-  ["No. The app stores donor declarations, deadlines and handover records. Food quality and temperature are not independently tested.", "না। অ্যাপে দাতার ঘোষণা, শেষ সময় ও খাবার দেওয়ার তথ্য থাকে। খাবারের মান বা তাপমাত্রা আলাদা করে পরীক্ষা করা হয় না।"],
-  ["How do handovers work?", "খাবার দেওয়া-নেওয়া কীভাবে হয়?"],
-  ["After an NGO claim, a volunteer accepts the mission. The donor issues a pickup code and the NGO a delivery code; the assigned volunteer verifies them.", "এনজিও খাবার নিলে স্বেচ্ছাসেবক পৌঁছানোর কাজ নেন। দাতা খাবার নেওয়ার কোড ও এনজিও পৌঁছানোর কোড দেন। স্বেচ্ছাসেবক কোড যাচাই করেন।"],
-  ["Which features remain pending?", "কোন সুবিধাগুলো এখনও বাকি?"],
-  ["Live GPS, road ETA, SMS/push, team invitations, support tickets, certificates and the full admin dashboard are not connected yet.", "সরাসরি জিপিএস, রাস্তায় যেতে লাগার সময়, এসএমএস, পুশ নোটিফিকেশন, দলে আমন্ত্রণ, সহায়তার টিকিট, সনদ ও পুরো অ্যাডমিন পাতা এখনও যুক্ত হয়নি।"],
-  ["A project hotline is not configured. Contact your project operator for account help.", "প্রজেক্টের হটলাইন যুক্ত হয়নি। অ্যাকাউন্ট নিয়ে সাহায্যের জন্য প্রজেক্টের দায়িত্বে থাকা ব্যক্তিকে জানান।"],
-  ["Donation saved", "খাবারের পোস্ট রাখা হয়েছে"],
-  ["Donation claimed", "এনজিও খাবার নিয়েছে"],
-  ["Claim confirmed", "খাবার নেওয়া নিশ্চিত হয়েছে"],
-  ["Mission accepted", "কাজটি নেওয়া হয়েছে"],
-  ["NGO receipt recorded", "এনজিওর খাবার পাওয়ার রসিদ রাখা হয়েছে"],
-  ["Distribution recorded", "বিতরণের তথ্য রাখা হয়েছে"],
-  ["Food request published", "খাবারের চাহিদা দেওয়া হয়েছে"],
-  ["Food request cancelled", "খাবারের চাহিদা বাতিল হয়েছে"],
-  ["Pickup verified", "খাবার নেওয়া যাচাই হয়েছে"],
-  ["Delivery verified", "খাবার পৌঁছানো যাচাই হয়েছে"],
-  ["Rescue issue submitted", "সমস্যার কথা জমা হয়েছে"],
-  ["Incident review updated", "সমস্যা যাচাইয়ের নতুন তথ্য"],
-  ["{0} meals served to {1} people.", "{1} জনকে {0} বেলার খাবার দেওয়া হয়েছে।"],
-  ["{0} claimed {1}.", "{0} খাবার নিয়েছেন: {1}।"]
+  [
+    "Preparing registration form...",
+    "অ্যাকাউন্ট খোলার ফর্ম তৈরি হচ্ছে...",
+    "রেজিস্ট্রেশন ফর্ম প্রস্তুত হচ্ছে..."
+  ],
+  [
+    "Adjust filters",
+    "ফিল্টার বদলান"
+  ],
+  [
+    "Post extra food",
+    "বাড়তি খাবারের পোস্ট দিন",
+    "Add surplus food"
+  ],
+  [
+    "Browse food",
+    "খাবার দেখুন",
+    "Browse Food"
+  ],
+  [
+    "BD",
+    "BD"
+  ],
+  [
+    "EN",
+    "EN"
+  ],
+  [
+    "/4",
+    "/৪",
+    "/ ৪"
+  ],
+  [
+    "/7 safety declarations",
+    "/৭টি নিরাপত্তার ঘোষণা",
+    "/৭টি স্বাস্থ্যবিধি ঘোষণা"
+  ],
+  [
+    "/100",
+    "/১০০"
+  ],
+  [
+    "Post your first donation",
+    "প্রথম খাবারের পোস্ট দিন",
+    "প্রথম অনুদান পোস্ট করুন"
+  ],
+  [
+    "View all →",
+    "সব দেখুন →",
+    "সবগুলো দেখুন →"
+  ],
+  [
+    "Approximate area; exact pickup pin unlocks after claim.",
+    "কাছাকাছি এলাকা দেখানো হচ্ছে। খাবার নিলে সঠিক জায়গা দেখা যাবে।"
+  ],
+  [
+    "Go to reservation",
+    "খাবার নেওয়ার পাতায় যান",
+    "Go to claim",
+    "ক্লেইম পেজ খুলুন"
+  ],
+  [
+    "Report an issue",
+    "সমস্যা জানান",
+    "Report incident"
+  ],
+  [
+    "Track food",
+    "খাবারের খোঁজ দেখুন",
+    "লাইভ ট্র্যাকিং"
+  ],
+  [
+    "Try again",
+    "আবার চেষ্টা করুন",
+    "পুনরায় চেষ্টা করুন"
+  ],
+  [
+    "Refresh",
+    "নতুন তথ্য দেখুন",
+    "রিফ্রেশ"
+  ],
+  [
+    "View NGO profile",
+    "এনজিওর পরিচিতি দেখুন",
+    "এনজিও প্রোফাইল দেখুন"
+  ],
+  [
+    "Add address",
+    "ঠিকানা যোগ করুন"
+  ],
+  [
+    "Back to profile",
+    "পরিচিতিতে ফিরুন",
+    "প্রোফাইলে ফিরে যান"
+  ],
+  [
+    "View all",
+    "সব দেখুন"
+  ],
+  [
+    "Arrival estimate",
+    "আসার আনুমানিক সময়",
+    "ETA"
+  ],
+  [
+    "Create request",
+    "খাবারের চাহিদা দিন",
+    "Create Request",
+    "খাদ্য চাহিদা পোস্ট করুন"
+  ],
+  [
+    "New request",
+    "নতুন খাবারের চাহিদা"
+  ],
+  [
+    "Mission history (",
+    "আগের কাজ (",
+    "মিশন হিস্ট্রি ("
+  ],
+  [
+    "Digital ID",
+    "ডিজিটাল পরিচয়পত্র",
+    "ডিজিটাল আইডি"
+  ],
+  [
+    "Available deliveries (",
+    "খোলা কাজ (",
+    "উন্মুক্ত ডিসপ্যাচ ("
+  ],
+  [
+    "Verification code",
+    "যাচাইয়ের কোড",
+    "OTP"
+  ],
+  [
+    "Print activity report",
+    "কাজের তথ্য প্রিন্ট করুন",
+    "অডিট রিপোর্ট প্রিন্ট করুন"
+  ],
+  [
+    "“",
+    "“",
+    "&ldquo;"
+  ],
+  [
+    "”",
+    "”",
+    "&rdquo;"
+  ],
+  [
+    "Receive and distribute food",
+    "খাবার নিন ও বিতরণ করুন"
+  ],
+  [
+    "Help deliver food",
+    "খাবার পৌঁছে দিন"
+  ],
+  [
+    "Sign in to view available food",
+    "পাওয়া যাবে এমন খাবার দেখতে লগইন করুন",
+    "সংরক্ষিত খাবার দেখতে sign in করুন"
+  ],
+  [
+    "A university project connecting food donations, NGO claims, volunteer handovers and recorded distributions. Sign in to work with saved rescue records.",
+    "বিশ্ববিদ্যালয়ের এই প্রজেক্টে বাড়তি খাবার দেওয়া, এনজিওর নেওয়া, স্বেচ্ছাসেবকের পৌঁছানো ও বিতরণের তথ্য এক জায়গায় থাকে। কাজ শুরু করতে লগইন করুন।"
+  ],
+  [
+    "Donor-declared pickup deadline",
+    "দাতার বলা খাবার নেওয়ার শেষ সময়"
+  ],
+  [
+    "Account food listings",
+    "অ্যাকাউন্টের খাবারের তালিকা"
+  ],
+  [
+    "Food listings follow your account permissions. Open Discover from an NGO account.",
+    "আপনার অ্যাকাউন্টের অনুমতি অনুযায়ী খাবারের পোস্ট দেখানো হয়। এনজিও অ্যাকাউন্ট থেকে খাবার খোঁজার পাতা খুলুন।"
+  ],
+  [
+    "Sample donations are not shown here. Sign in to view the food listings available to your account.",
+    "এখানে নমুনা খাবারের পোস্ট নেই। আপনার জন্য পাওয়া যাবে এমন খাবার দেখতে লগইন করুন।"
+  ],
+  [
+    "Recorded distributions",
+    "বিতরণের রাখা তথ্য"
+  ],
+  [
+    "Actual NGO distribution records supply meal and beneficiary counts. Certificate issuance is not connected.",
+    "এনজিও আসলে কত খাবার দিয়েছেন ও কতজন পেয়েছেন তার হিসাব রাখা হয়। সনদ দেওয়ার ব্যবস্থা এখনও হয়নি।"
+  ],
+  [
+    "Recorded workflow",
+    "যে কাজের তথ্য রাখা হয়"
+  ],
+  [
+    "Declarations, handovers and distributions",
+    "ঘোষণা, খাবার দেওয়া ও বিতরণ"
+  ],
+  [
+    "Food testing and temperature monitoring are not connected.",
+    "খাবার পরীক্ষা বা তাপমাত্রা মাপার ব্যবস্থা যুক্ত হয়নি।"
+  ],
+  [
+    "Donor declarations",
+    "দাতার ঘোষণা"
+  ],
+  [
+    "The donor supplies preparation time, pickup deadline and storage declarations.",
+    "দাতা খাবার তৈরির সময়, নেওয়ার শেষ সময় ও কীভাবে রেখেছেন তা জানান।"
+  ],
+  [
+    "OTP handover",
+    "কোড দিয়ে খাবার দেওয়া"
+  ],
+  [
+    "The assigned volunteer verifies six-digit pickup and delivery codes.",
+    "দায়িত্বে থাকা স্বেচ্ছাসেবক ৬ সংখ্যার কোড দিয়ে খাবার নেওয়া ও পৌঁছানো নিশ্চিত করেন।"
+  ],
+  [
+    "Distribution record",
+    "খাবার বিতরণের তথ্য"
+  ],
+  [
+    "The receiving NGO records receipt and actual distribution.",
+    "যে এনজিও খাবার নেন তাঁরা পাওয়ার রসিদ ও বিতরণের তথ্য রাখেন।"
+  ],
+  [
+    "An illustrative planning simulator, separate from recorded account impact.",
+    "পরিকল্পনা বোঝাতে নমুনা হিসাব। এটি আপনার আসল অবদানের হিসাব নয়।"
+  ],
+  [
+    "Example assumptions: four weeks, 1.25 people per meal, 2.4 kg CO₂e and 160 litres per meal. These are not measured or validated project results.",
+    "নমুনায় ৪ সপ্তাহ, প্রতি বেলার খাবারে ১.২৫ জন, ২.৪ কেজি CO₂e ও ১৬০ লিটার ধরা হয়েছে। এগুলো প্রজেক্টে মেপে পাওয়া ফল নয়।"
+  ],
+  [
+    "Project demonstration",
+    "প্রজেক্ট দেখানোর নমুনা"
+  ],
+  [
+    "Demonstrate the flow with saved records",
+    "রাখা তথ্য দিয়ে কাজের ধাপ দেখান"
+  ],
+  [
+    "Independently verified testimonials have not been published for this project.",
+    "এই প্রজেক্টে আলাদা করে যাচাই করা ব্যবহারকারীর মতামত প্রকাশ করা হয়নি।"
+  ],
+  [
+    "Register and sign in as a donor, NGO or volunteer. New NGO and volunteer accounts need verification by the project operator.",
+    "দাতা, এনজিও বা স্বেচ্ছাসেবক হিসেবে অ্যাকাউন্ট খুলে লগইন করুন। নতুন এনজিও ও স্বেচ্ছাসেবকের অ্যাকাউন্ট প্রজেক্টের দায়িত্বে থাকা ব্যক্তি যাচাই করবেন।"
+  ],
+  [
+    "Does the app test food safety?",
+    "অ্যাপে খাবারের নিরাপত্তা পরীক্ষা হয়?"
+  ],
+  [
+    "No. The app stores donor declarations, deadlines and handover records. Food quality and temperature are not independently tested.",
+    "না। অ্যাপে দাতার ঘোষণা, শেষ সময় ও খাবার দেওয়ার তথ্য থাকে। খাবারের মান বা তাপমাত্রা আলাদা করে পরীক্ষা করা হয় না।"
+  ],
+  [
+    "How do handovers work?",
+    "খাবার দেওয়া-নেওয়া কীভাবে হয়?"
+  ],
+  [
+    "After an NGO claim, a volunteer accepts the mission. The donor issues a pickup code and the NGO a delivery code; the assigned volunteer verifies them.",
+    "এনজিও খাবার নিলে স্বেচ্ছাসেবক পৌঁছানোর কাজ নেন। দাতা খাবার নেওয়ার কোড ও এনজিও পৌঁছানোর কোড দেন। স্বেচ্ছাসেবক কোড যাচাই করেন।"
+  ],
+  [
+    "Which features remain pending?",
+    "কোন সুবিধাগুলো এখনও বাকি?"
+  ],
+  [
+    "Live GPS, road ETA, SMS/push, team invitations, support tickets, certificates and the full admin dashboard are not connected yet.",
+    "সরাসরি জিপিএস, রাস্তায় যেতে লাগার সময়, এসএমএস, পুশ নোটিফিকেশন, দলে আমন্ত্রণ, সহায়তার টিকিট, সনদ ও পুরো অ্যাডমিন পাতা এখনও যুক্ত হয়নি।"
+  ],
+  [
+    "A project hotline is not configured. Contact your project operator for account help.",
+    "প্রজেক্টের হটলাইন যুক্ত হয়নি। অ্যাকাউন্ট নিয়ে সাহায্যের জন্য প্রজেক্টের দায়িত্বে থাকা ব্যক্তিকে জানান।"
+  ],
+  [
+    "Donation saved",
+    "খাবারের পোস্ট রাখা হয়েছে"
+  ],
+  [
+    "Donation claimed",
+    "এনজিও খাবার নিয়েছে"
+  ],
+  [
+    "Claim confirmed",
+    "খাবার নেওয়া নিশ্চিত হয়েছে"
+  ],
+  [
+    "Mission accepted",
+    "কাজটি নেওয়া হয়েছে"
+  ],
+  [
+    "NGO receipt recorded",
+    "এনজিওর খাবার পাওয়ার রসিদ রাখা হয়েছে"
+  ],
+  [
+    "Distribution recorded",
+    "বিতরণের তথ্য রাখা হয়েছে"
+  ],
+  [
+    "Food request published",
+    "খাবারের চাহিদা দেওয়া হয়েছে"
+  ],
+  [
+    "Food request cancelled",
+    "খাবারের চাহিদা বাতিল হয়েছে"
+  ],
+  [
+    "Pickup verified",
+    "খাবার নেওয়া যাচাই হয়েছে"
+  ],
+  [
+    "Delivery verified",
+    "খাবার পৌঁছানো যাচাই হয়েছে"
+  ],
+  [
+    "Rescue issue submitted",
+    "সমস্যার কথা জমা হয়েছে"
+  ],
+  [
+    "Incident review updated",
+    "সমস্যা যাচাইয়ের নতুন তথ্য"
+  ],
+  [
+    "{0} meals served to {1} people.",
+    "{1} জনকে {0} বেলার খাবার দেওয়া হয়েছে।"
+  ],
+  [
+    "{0} claimed {1}.",
+    "{0} খাবার নিয়েছেন: {1}।"
+  ]
 ]
