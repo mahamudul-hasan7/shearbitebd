@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Bell,
   ChevronRight,
@@ -54,28 +54,40 @@ function readPrefs(role: "donor" | "ngo"): NotificationPrefs {
   }
 }
 
+function createPreferencesStore(role: "donor" | "ngo") {
+  let value = DEFAULT_PREFS;
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => value,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      value = readPrefs(role);
+      listener();
+      return () => { listeners.delete(listener); };
+    },
+    toggle(key: keyof NotificationPrefs) {
+      value = { ...value, [key]: !value[key] };
+      try {
+        localStorage.setItem(`sharebite_alert_prefs_${role}`, JSON.stringify(value));
+      } catch {
+        // Keep the current page's preference usable when browser storage is full.
+      }
+      listeners.forEach(listener => listener());
+    },
+  };
+}
+
 export function AccountSettingsView({ role }: { role: "donor" | "ngo" }) {
   const tx = useUiText();
   const { session, signOut } = useMockAuth();
   const routes = role === "donor" ? ROUTES.donor : ROUTES.ngo;
   const profileRoute = role === "donor" ? ROUTES.donor.profile : ROUTES.ngo.profile;
-  const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
+  const preferences = useMemo(() => createPreferencesStore(role), [role]);
+  const prefs = useSyncExternalStore(preferences.subscribe, preferences.getSnapshot, () => DEFAULT_PREFS);
   const [savedToast, setSavedToast] = useState(false);
 
-  useEffect(() => {
-    setPrefs(readPrefs(role));
-  }, [role]);
-
   function togglePref(key: keyof NotificationPrefs) {
-    setPrefs((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
-      try {
-        localStorage.setItem(`sharebite_alert_prefs_${role}`, JSON.stringify(next));
-      } catch {
-        // Ignore storage quota issues.
-      }
-      return next;
-    });
+    preferences.toggle(key);
     setSavedToast(true);
     window.setTimeout(() => setSavedToast(false), 1800);
   }

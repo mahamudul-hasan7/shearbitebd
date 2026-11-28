@@ -30,32 +30,22 @@ export function RequestSubmitted({ requestId }: { requestId?: string }) {
   const { language } = useLanguage();
   const locale = language === "bn" ? "bn-BD" : "en-BD";
   const { session } = useMockAuth();
-  const [request, setRequest] = useState<FoodRequest>();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(Boolean(requestId));
+  const [snapshot, setSnapshot] = useState<{ requestId: string; request?: FoodRequest; error?: string }>();
+  const current = snapshot?.requestId === requestId ? snapshot : undefined;
+  const request = current?.request;
+  const error = current?.error;
+  const loading = Boolean(requestId) && !current;
 
   useEffect(() => {
-    if (!requestId) {
-      setLoading(false);
-      return;
-    }
+    if (!requestId) return;
     const controller = new AbortController();
-    setLoading(true);
     requestService
       .getById(requestId, { signal: controller.signal })
       .then((item) => {
-        setRequest(item);
-        setError("");
+        if (!controller.signal.aborted) setSnapshot({ requestId, request: item });
       })
       .catch((caught: unknown) => {
-        if (!controller.signal.aborted) {
-          setError(toServiceError(caught).message);
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
+        if (!controller.signal.aborted) setSnapshot({ requestId, error: toServiceError(caught).message });
       });
     return () => controller.abort();
   }, [requestId]);

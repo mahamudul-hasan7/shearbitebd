@@ -1,6 +1,7 @@
 "use client";
+import { useClock } from "@/lib/hooks/use-clock";
 import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useEffectEvent, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, ChevronDown, Navigation, QrCode, RefreshCw, X } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -59,53 +60,6 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   const lock = useRef(false);
 
   useEffect(() => {
-    if (!qrOpen) return;
-    let stream: MediaStream | undefined;
-    let timer: number | undefined;
-    let cancelled = false;
-    async function startCamera() {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraStatus("Camera unavailable on this connection. Paste or scan QR string below.");
-        return;
-      }
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        if (cancelled) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-        if (videoRef.current) videoRef.current.srcObject = stream;
-        setCameraStatus("Camera active. Point at Donor/NGO QR code or paste payload below.");
-        const Detector = (window as unknown as { BarcodeDetector?: new (opts?: { formats: string[] }) => { detect: (src: HTMLVideoElement) => Promise<Array<{ rawValue?: string }>> } }).BarcodeDetector;
-        if (Detector) {
-          const detector = new Detector({ formats: ["qr_code"] });
-          timer = window.setInterval(async () => {
-            if (!videoRef.current || cancelled) return;
-            try {
-              const found = await detector.detect(videoRef.current);
-              const raw = found[0]?.rawValue || "";
-              const match = raw.match(/(\d{6})/);
-              if (match) {
-                setPinRef.current(match[1]);
-                setQrOpen(false);
-              }
-            } catch {
-              // Ignore transient frame decode errors.
-            }
-          }, 450);
-        }
-      } catch {
-        if (!cancelled) setCameraStatus("Camera permission denied or unavailable. Enter/paste QR payload below.");
-      }
-    }
-    void startCamera();
-    return () => {
-      cancelled = true;
-      if (timer) window.clearInterval(timer);
-      stream?.getTracks().forEach((t) => t.stop());
-    };
-  }, [qrOpen]);
-  useEffect(() => {
     if (!owner) return;
     const controller = new AbortController();
     let inFlight = false;
@@ -138,8 +92,9 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
       document.removeEventListener("visibilitychange", refresh);
     };
   }, [owner, missionId, revision, syncWithUserSession, loadMission]);
+  const now = useClock();
   const expired =
-    !!mission?.safeDeadline && Date.parse(mission.safeDeadline) <= Date.now();
+    now !== null && !!mission?.safeDeadline && Date.parse(mission.safeDeadline) <= now;
   const model = rescueNextStep({
     role: "volunteer",
     status: mission?.claimStatus || "ASSIGNED",
@@ -149,8 +104,56 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   const pinKey = `${owner}:${missionId}:${model.action}`;
   const pin = pinValue?.key === pinKey ? pinValue.value : "";
   const setPin = (value: string) => setPinValue({ key: pinKey, value });
-  const setPinRef = useRef(setPin);
-  setPinRef.current = setPin;
+  const onCodeDetected = useEffectEvent((value: string) => {
+    setPinValue({ key: pinKey, value });
+  });
+  useEffect(() => {
+    if (!qrOpen) return;
+    let stream: MediaStream | undefined;
+    let timer: number | undefined;
+    let cancelled = false;
+    async function startCamera() {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraStatus("Camera unavailable on this connection. Paste or scan QR string below.");
+        return;
+      }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        if (videoRef.current) videoRef.current.srcObject = stream;
+        setCameraStatus("Camera active. Point at Donor/NGO QR code or paste payload below.");
+        const Detector = (window as unknown as { BarcodeDetector?: new (opts?: { formats: string[] }) => { detect: (src: HTMLVideoElement) => Promise<Array<{ rawValue?: string }>> } }).BarcodeDetector;
+        if (Detector) {
+          const detector = new Detector({ formats: ["qr_code"] });
+          timer = window.setInterval(async () => {
+            if (!videoRef.current || cancelled) return;
+            try {
+              const found = await detector.detect(videoRef.current);
+              const raw = found[0]?.rawValue || "";
+              const match = raw.match(/(\d{6})/);
+              if (match) {
+                onCodeDetected(match[1]);
+                setQrOpen(false);
+              }
+            } catch {
+              // Ignore transient frame decode errors.
+            }
+          }, 450);
+        }
+      } catch {
+        if (!cancelled) setCameraStatus("Camera permission denied or unavailable. Enter/paste QR payload below.");
+      }
+    }
+    void startCamera();
+    return () => {
+      cancelled = true;
+      if (timer) window.clearInterval(timer);
+      stream?.getTracks().forEach((t) => t.stop());
+    };
+  }, [qrOpen]);
   const stageAction = Object.keys(ACTIONS).includes(model.action || "")
     ? (model.action as MissionStage)
     : undefined;

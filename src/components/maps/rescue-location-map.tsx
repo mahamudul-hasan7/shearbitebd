@@ -27,7 +27,7 @@ export function RescueLocationMap({
   deliveryLabel?: string;
 }) {
   const tx = useUiText();
-  const [route, setRoute] = useState<RouteSummary>();
+  const [savedRoute, setSavedRoute] = useState<{ key: string; route: RouteSummary }>();
   const [simulating, setSimulating] = useState(false);
   const [simStep, setSimStep] = useState(0);
 
@@ -50,21 +50,25 @@ export function RescueLocationMap({
     return list;
   }, [pickup, delivery, pickupLabel, deliveryLabel, tx]);
 
-  useEffect(() => {
-    if (!pickup || !delivery) {
-      setRoute(undefined);
-      return;
-    }
-    const controller = new AbortController();
+  const routeKey = pickup && delivery
+    ? `${pickup.latitude},${pickup.longitude}:${delivery.latitude},${delivery.longitude}`
+    : undefined;
+  const fallback = useMemo<RouteSummary | undefined>(() => {
+    if (!pickup || !delivery) return undefined;
     const straightKm = distanceKm(pickup, delivery);
-    const fallback: RouteSummary = {
+    return {
       path: [pickup, delivery],
       distanceKm: straightKm,
       durationMin: Math.max(4, Math.round(straightKm * 3.2)),
       source: "straight",
     };
-    setRoute(fallback);
+  }, [pickup, delivery]);
+  const route = savedRoute?.key === routeKey ? savedRoute?.route : fallback;
 
+  useEffect(() => {
+    if (!pickup || !delivery || !routeKey) return;
+    const controller = new AbortController();
+    const straightKm = distanceKm(pickup, delivery);
     fetch(
       `https://router.project-osrm.org/route/v1/driving/${pickup.longitude},${pickup.latitude};${delivery.longitude},${delivery.latitude}?overview=full&geometries=geojson`,
       { signal: controller.signal },
@@ -74,8 +78,8 @@ export function RescueLocationMap({
         const first = json?.routes?.[0];
         const coords: [number, number][] | undefined =
           first?.geometry?.coordinates;
-        if (Array.isArray(coords) && coords.length >= 2) {
-          setRoute({
+        if (!controller.signal.aborted && Array.isArray(coords) && coords.length >= 2) {
+          setSavedRoute({ key: routeKey, route: {
             path: coords.map(([lon, lat]) => ({
               latitude: lat,
               longitude: lon,
@@ -83,7 +87,7 @@ export function RescueLocationMap({
             distanceKm: (first.distance ?? straightKm * 1000) / 1000,
             durationMin: Math.max(1, Math.round((first.duration ?? 600) / 60)),
             source: "osrm",
-          });
+          } });
         }
       })
       .catch(() => {
@@ -91,7 +95,7 @@ export function RescueLocationMap({
       });
 
     return () => controller.abort();
-  }, [pickup, delivery]);
+  }, [pickup, delivery, routeKey]);
 
   const sampledPath = useMemo(() => {
     if (!route?.path || route.path.length < 2) return [];
@@ -113,7 +117,7 @@ export function RescueLocationMap({
   }, [simulating, sampledPath]);
 
   const riderCoordinates =
-    simulating && sampledPath.length > 0 ? sampledPath[simStep] : undefined;
+    simulating && sampledPath.length > 0 ? sampledPath[simStep % sampledPath.length] : undefined;
 
   return (
     <section className="grid gap-3" aria-label={tx("Rescue locations")}>

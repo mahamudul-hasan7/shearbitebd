@@ -3232,3 +3232,9 @@ test("browser portal navigation preserves its frame with consistent motion acros
   const { runNavigationBrowserChecks } = await import("./navigation-browser.mjs");
   await runNavigationBrowserChecks({ base, login, assignedRescue });
 });
+
+
+test("browser lint regressions preserve preferences maps camera handovers and expiry", { skip: process.env.RUN_LINT_REGRESSIONS_BROWSER !== "1", timeout: 180_000 }, async () => {
+  const { runLintRegressionChecks } = await import("./lint-regressions-browser.mjs");
+  await runLintRegressionChecks({ base, prisma, login, assignedRescue, deliveredRescue, newFoodRequest, handover, issue, jsonResult });
+});

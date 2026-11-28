@@ -1,4 +1,5 @@
 "use client";
+import { useClock } from "@/lib/hooks/use-clock";
 import { createRequestId } from "@/lib/request-id";
 import { useRef, useState } from "react";
 import { Check, ExternalLink, ShieldCheck } from "lucide-react";
@@ -610,7 +611,8 @@ export function RescueDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const lock = useRef(false);
-  const expired = Date.parse(rescue.deadline) <= Date.now();
+  const now = useClock();
+  const expired = now !== null && Date.parse(rescue.deadline) <= now;
   const canClose =
     !["CANCELLED", "EXPIRED", "DISTRIBUTED"].includes(rescue.status) &&
     (rescue.distributionBlocked || expired || rescue.status === "DISPUTED");

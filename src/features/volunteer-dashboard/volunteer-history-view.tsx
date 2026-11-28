@@ -23,7 +23,6 @@ import {
   Truck,
   UserRound,
   Utensils,
-  X,
 } from "lucide-react";
 import { CollectionToolbar } from "@/components/portal/collection-toolbar";
 import { ArchiveRowCard, type ArchiveRowTone } from "@/components/portal/archive-row-card";

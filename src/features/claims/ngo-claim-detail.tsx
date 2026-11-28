@@ -1,4 +1,5 @@
 "use client";
+import { useClock } from "@/lib/hooks/use-clock";
 import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
 import { ChevronDown, RefreshCw, ShieldCheck } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -29,8 +30,9 @@ export function NGOClaimDetail({ claimId }: { claimId: string }) {
     useNgoClaim(claimId);
   const details = state.data,
     claim = details?.claim;
-  const expired = details
-    ? Date.parse(details.donation.safePickupDeadline) <= Date.now()
+  const now = useClock();
+  const expired = now !== null && details
+    ? Date.parse(details.donation.safePickupDeadline) <= now
     : false;
   const model = rescueNextStep({
     role: "ngo",

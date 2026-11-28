@@ -1,4 +1,5 @@
 "use client";
+import { useClock } from "@/lib/hooks/use-clock";
 import { LiveIcon } from "@/components/motion/live-icon";
 import { getUiLocale } from "@/lib/i18n/locale";
 import { STORAGE_CONDITION_LABELS } from "@/lib/constants/domain";
@@ -36,6 +37,7 @@ type CommandTab = "all" | "active" | "available" | "comms" | "badges";
 
 export function VolunteerDashboard() {
   const tx = useUiText();
+  const now = useClock();
   const { session } = useMockAuth();
   const {
     dutyStatus,
@@ -100,10 +102,10 @@ export function VolunteerDashboard() {
     activeMission && (activeMission.incidentPaused || activeMission.claimStatus === "DISPUTED"),
   );
   const isDeadlineElapsed = Boolean(
-    activeMission &&
+    now !== null && activeMission &&
       !isDisputedHold &&
       activeMission.currentStage !== "completed" &&
-      new Date(activeMission.safeDeadline).getTime() <= Date.now(),
+      new Date(activeMission.safeDeadline).getTime() <= now,
   );
 
   async function handleReleaseMission() {
