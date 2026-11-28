@@ -259,7 +259,7 @@ export function ClaimCard({ item }: { item: ClaimCoordinationDetails }) {
             {/* Left side info */}
             <div className="flex flex-wrap items-center gap-3">
               {showRescueClock && (
-                <RescueClock deadline={donation.safePickupDeadline} compact />
+                <RescueClock deadline={donation.safePickupDeadline} status={donation.status} compact />
               )}
               {showEta && (
                 <div className="inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-1.5 text-xs text-blue-900">

@@ -322,6 +322,7 @@ export function NGODonationDetail({ donationId }: { donationId: string }) {
                 <div className="mt-6">
                   <RescueClock
                     deadline={new Date(pickupDeadline(donation)).toISOString()}
+                    status={donation.status}
                     compact
                   />
                 </div>

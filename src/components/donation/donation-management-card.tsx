@@ -222,7 +222,7 @@ export function DonationManagementCard({ donation }: { donation: DonationView })
 
               {CLOCK_STATUSES.has(donation.status) && (
                 <div className="shrink-0 self-start sm:self-auto">
-                  <RescueClock deadline={donation.safePickupDeadline} compact />
+                  <RescueClock deadline={donation.safePickupDeadline} status={donation.status} compact />
                 </div>
               )}
             </div>

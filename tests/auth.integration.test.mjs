@@ -3238,3 +3238,8 @@ test("browser lint regressions preserve preferences maps camera handovers and ex
   const { runLintRegressionChecks } = await import("./lint-regressions-browser.mjs");
   await runLintRegressionChecks({ base, prisma, login, assignedRescue, deliveredRescue, newFoodRequest, handover, issue, jsonResult });
 });
+
+test("browser donor completion stops pickup clocks and shares saved NGO distribution photos", { skip: process.env.RUN_DONOR_COMPLETION_BROWSER !== "1", timeout: 360_000 }, async () => {
+  const { runDonorCompletionChecks } = await import("./donor-completion-browser.mjs");
+  await runDonorCompletionChecks({ base, prisma, request, assignedRescue, deliveredRescue, issue, handover, saveReceipt, imageBytes, secondLogin, distribute, distributionInput });
+});

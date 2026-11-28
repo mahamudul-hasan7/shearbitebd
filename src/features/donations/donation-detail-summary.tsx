@@ -27,6 +27,7 @@ import { useState } from "react";
 import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { HandoverCodePanel } from "@/components/donation/handover-code-panel";
 import { DonationActions } from "@/components/donation/donation-actions";
+import { DistributionEvidence } from "@/components/donation/distribution-evidence";
 import { DonationStatusTimeline } from "@/components/donation/donation-status-timeline";
 import { RescueClock } from "@/components/donor/rescue-clock";
 import { PortalShell } from "@/components/layout/portal-shell";
@@ -372,6 +373,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                 {data?.claim && <HandoverCodePanel claimId={data.claim.id} kind="PICKUP" />}
               </Card>
 
+              <DistributionEvidence record={data.distribution} />
               <PhotoGallery urls={donation.photoUrls} label={tx("Donor food photos")} />
               {data.claim && <IncidentPanel claimId={data.claim.id} />}
               {/* Pickup Information & Receiver NGO */}
@@ -509,7 +511,7 @@ export function DonationDetailSummary({ donationId }: { donationId: string }) {
                 </div>
 
                 <div className="mt-4">
-                  <RescueClock deadline={donation.safePickupDeadline} />
+                  <RescueClock deadline={donation.safePickupDeadline} status={donation.status} />
                 </div>
                 <p className="mt-3 text-[11px] leading-4 text-muted-500">
                   {tx("নির্ধারিত ডেডলাইন অনুদানের খাদ্যমান অক্ষুণ্ন রাখার জন্য নির্ধারিত।")}</p>
