@@ -59,3 +59,11 @@
 @container (min-width: 720px) { .steps { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 359px) { .root { padding: 14px; border-radius: 17px; } .summary h3 { font-size: 21px; } .steps li { flex-direction: column; gap: 5px; padding: 10px; } .scene { padding-left: 24px; padding-right: 24px; } }
 @media (prefers-reduced-motion: reduce) { .root *, .root *::before, .root *::after { animation: none !important; transition: none !important; } .motionButton { display: none; } }
+
+.stepsToggle { display: none; }
+@media (max-width: 1023px) {
+  .collapsible:not([data-expanded="true"]) .steps > li:not([data-current="true"]) { display: none; }
+  .collapsible:not([data-expanded="true"]) .scene { display: none; }
+  .collapsible .steps { grid-template-columns: minmax(0, 1fr); }
+  .collapsible .stepsToggle { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--role-border, var(--line)); border-radius: 10px; color: var(--role-ink, var(--ink-900)); font-size: 12px; font-weight: 600; margin-top: 12px; }
+}

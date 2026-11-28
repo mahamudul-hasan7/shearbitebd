@@ -6,6 +6,8 @@ import { ChevronDown, Radio, Repeat } from "lucide-react";
 import { useMockAuth, getRoleLandingRoute } from "@/features/auth/mock-auth";
 import { UserRole } from "@/lib/constants/roles";
 import { cn } from "@/lib/utils";
+import { useUiText } from "@/lib/i18n/use-ui-text";
+import styles from "./demo-role-switcher.module.css";
 
 const ROLES = [
   { label: "Donor", role: UserRole.DONOR, email: "donor@sharebite.demo", pass: "Demo1234" },
@@ -16,6 +18,8 @@ const ROLES = [
 
 export function DemoRoleSwitcher() {
   const pathname = usePathname() ?? "";
+  const tx = useUiText();
+  const isRider = pathname.startsWith("/volunteer/");
   const router = useRouter();
   const { session, signIn } = useMockAuth();
   const isFocusedMobileFlow =
@@ -59,9 +63,11 @@ export function DemoRoleSwitcher() {
 
   return (
     <div
+      data-testid="demo-role-switcher"
       className={cn(
         "pointer-events-none fixed bottom-[calc(5.8rem+env(safe-area-inset-bottom))] right-3 z-40 max-w-[calc(100vw-1.5rem)] flex-col items-end gap-2 sm:right-4 lg:bottom-4",
         isFocusedMobileFlow ? "hidden lg:flex" : "flex",
+        isRider && styles.riderDock,
       )}
     >
       {!minimized && lastEvent && (
@@ -105,7 +111,7 @@ export function DemoRoleSwitcher() {
           type="button"
           aria-label="Expand live status and role switcher"
           onClick={() => setMinimized(false)}
-          className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-[#03241b]/90 px-2.5 py-1.5 text-[11px] font-bold text-white shadow-md backdrop-blur-md hover:bg-[#063c2e] transition cursor-pointer"
+          className="pointer-events-auto inline-flex min-h-11 items-center gap-1.5 rounded-full border border-emerald-500/40 bg-[#03241b]/90 px-2.5 py-1.5 text-[11px] font-bold text-white shadow-md backdrop-blur-md hover:bg-[#063c2e] transition cursor-pointer"
         >
           <Radio
             className={cn(
@@ -116,7 +122,7 @@ export function DemoRoleSwitcher() {
           <span>{liveStatus === "live" ? "Live" : "Sync"}</span>
         </button>
       ) : (
-        <div className="pointer-events-auto inline-flex items-center overflow-hidden rounded-full border border-emerald-500/40 bg-[#03241b]/95 backdrop-blur-md text-[11px] sm:text-xs font-bold text-white shadow-lg">
+        <div className={cn("pointer-events-auto inline-flex items-center overflow-hidden rounded-full border border-emerald-500/40 bg-[#03241b]/95 backdrop-blur-md text-[11px] sm:text-xs font-bold text-white shadow-lg", isRider && styles.desktopControls)}>
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}
@@ -151,6 +157,9 @@ export function DemoRoleSwitcher() {
           </button>
         </div>
       )}
+      {isRider && !minimized && <button type="button" className={styles.riderMobileControls} onClick={() => setOpen(value => !value)} aria-expanded={open}>
+        <Repeat size={16} aria-hidden="true" />{tx("Demo roles")}
+      </button>}
     </div>
   );
 }

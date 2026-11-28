@@ -646,3 +646,7 @@
     box-shadow: none;
   }
 }
+
+@media (max-width: 1023px) {
+  .theme[data-portal-role="volunteer"] button { min-height: 44px; }
+}

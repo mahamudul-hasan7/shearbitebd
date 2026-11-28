@@ -29,6 +29,7 @@ import ngoDashboard from "./copy/ngo-dashboard.json";
 import notificationUi from "./copy/notification-ui.json";
 import rescueProgress from "./copy/rescue-progress.json";
 import riderOffer from "./copy/rider-offer.json";
+import riderMobile from "./copy/rider-mobile.json";
 import validation from "./copy/validation.json";
 import volunteerDuty from "./copy/volunteer-duty.json";
 import polish from "./copy/z-polish.json";
@@ -40,7 +41,7 @@ import operationsC from "./copy/operations-c.json";
 export type CopyPair = { bn: string; en: string };
 export const normalizeUiText = (text: string) => text.replace(/\s+/g, " ").trim();
 export const catalogue: Record<string, CopyPair> = { ...legacy };
-for (const entries of [banglaA, banglaB, banglaC, banglaD, banglaE, common, authPages, distribution, donationPost, donorMobile, donorCompletion, extra, homeHero, homeMobile, homeReviews, homeSlogan, loading, ngoDashboard, notificationUi, operationsA, operationsB, operationsC, rescueProgress, riderOffer, validation, volunteerDuty, polish, workflows, admin, dashboardConsistency, adminLogin, verificationDocuments, ngoDiscovery, rescueCoordination, adminUsers, rescueJourney, roleUi]) {
+for (const entries of [banglaA, banglaB, banglaC, banglaD, banglaE, common, authPages, distribution, donationPost, donorMobile, donorCompletion, extra, homeHero, homeMobile, homeReviews, homeSlogan, loading, ngoDashboard, notificationUi, operationsA, operationsB, operationsC, rescueProgress, riderOffer, riderMobile, validation, volunteerDuty, polish, workflows, admin, dashboardConsistency, adminLogin, verificationDocuments, ngoDiscovery, rescueCoordination, adminUsers, rescueJourney, roleUi]) {
   for (const [en, bn, ...aliases] of entries) {
     for (const alias of [en, bn, ...aliases]) catalogue[normalizeUiText(alias)] = { en, bn };
   }

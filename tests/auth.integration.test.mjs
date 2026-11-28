@@ -3243,3 +3243,8 @@ test("browser donor completion stops pickup clocks and shares saved NGO distribu
   const { runDonorCompletionChecks } = await import("./donor-completion-browser.mjs");
   await runDonorCompletionChecks({ base, prisma, request, assignedRescue, deliveredRescue, issue, handover, saveReceipt, imageBytes, secondLogin, distribute, distributionInput });
 });
+
+test("browser rider mobile workflow keeps the mission action visible and refresh compact", { skip: process.env.RUN_RIDER_MOBILE_WORKFLOW_BROWSER !== "1", timeout: 360_000 }, async () => {
+  const { runRiderMobileWorkflowChecks } = await import("./rider-mobile-workflow-browser.mjs");
+  await runRiderMobileWorkflowChecks({ base, prisma, assignedRescue, request, issue, login });
+});

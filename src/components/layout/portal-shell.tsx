@@ -24,7 +24,9 @@ export function PortalShell({
   description,
   actions,
   actionsClassName,
+  headerClassName,
   backHref,
+  backClassName,
   backLabel = "ফিরে যান",
   hideMobileNav = false,
   profileName,
@@ -42,7 +44,9 @@ export function PortalShell({
   description?: string;
   actions?: ReactNode;
   actionsClassName?: string;
+  headerClassName?: string;
   backHref?: string;
+  backClassName?: string;
   backLabel?: string;
   hideMobileNav?: boolean;
   profileName?: string;
@@ -101,9 +105,10 @@ export function PortalShell({
       <main ref={main} data-portal-page={pathname} className="relative z-[1] min-w-0">
         {/* Dedicated Left-Aligned Back Navigation */}
         {backHref && (
-          <div className="mb-4">
+          <div className={cn("mb-4", backClassName)}>
             <Link
               href={backHref}
+              aria-label={backLabel}
               className={`${theme.backLink} liquid-glass-pill inline-flex min-h-11 items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all`}
             >
               <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
@@ -118,6 +123,7 @@ export function PortalShell({
               ? "mb-5 flex flex-col gap-3 sm:mb-8"
               : "mb-8 flex flex-col gap-4",
             "sm:flex-row sm:items-center sm:justify-between",
+            headerClassName,
           )}
         >
           <div className="min-w-0 flex-1">

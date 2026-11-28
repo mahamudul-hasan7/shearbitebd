@@ -17,6 +17,9 @@ import {
   QrCode,
   ShieldCheck,
 } from "lucide-react";
+import { RiderMissionFocus } from "./rider-mission-focus";
+import { RiderRefreshButton } from "./rider-refresh-button";
+import mobile from "./rider-mobile.module.css";
 import { RiderDashboardOverview } from "./rider-dashboard-overview";
 import { DashboardFeedback } from "@/components/dashboard/dashboard-ui";
 import ui from "@/components/dashboard/dashboard.module.css";
@@ -61,6 +64,7 @@ export function VolunteerDashboard() {
   } = useVolunteerStore();
   const acceptanceLock=useRef(false);
   const [progressStale, setProgressStale] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [releasingMission, setReleasingMission] = useState(false);
 
   useEffect(() => {
@@ -107,6 +111,14 @@ export function VolunteerDashboard() {
       activeMission.currentStage !== "completed" &&
       new Date(activeMission.safeDeadline).getTime() <= now,
   );
+
+  async function refreshDashboard() {
+    if (refreshing) return;
+    setRefreshing(true);
+    try { await fetchDispatches(); setProgressStale(false); }
+    catch { setProgressStale(true); }
+    finally { setRefreshing(false); }
+  }
 
   async function handleReleaseMission() {
     if (!activeMission || releasingMission || progressStale) return;
@@ -159,8 +171,10 @@ export function VolunteerDashboard() {
       profileDescription={`${profile.squadRank} · ${profile.universityAffiliation}`}
       avatarInitials={volunteerInitials}
       compactHeader={hasCurrentMission}
+      headerClassName={mobile.header}
+      actions={<RiderRefreshButton onClick={() => void refreshDashboard()} disabled={refreshing} />}
     >
-      <div className={ui.stack}>
+      <div className={cn(ui.stack, mobile.dashboard)}>
         {/* SOS Delay Banner if Active */}
         {sosDelayAlert && (
           <div className="flex items-center justify-between gap-3 rounded-2xl border border-rose-500/40 bg-rose-50/90 p-4 text-rose-950 shadow-md">
@@ -186,6 +200,8 @@ export function VolunteerDashboard() {
             <p className="text-sm font-bold">{tx(acceptedNotice)}</p>
           </div>
         )}
+
+        <RiderMissionFocus mission={activeMission} stale={progressStale} expired={isDeadlineElapsed} onDismiss={clearActiveMission} />
 
         {/* Contribution totals from saved delivery records. */}
         <RiderDashboardOverview history={completedHistory} completed={profile.completedMissions} available={dispatches.length}/>
@@ -264,7 +280,7 @@ export function VolunteerDashboard() {
 
         {/* Section 1: Active Mission Telemetry */}
         {(activeTab === "all" || activeTab === "active") && (
-          <section id="active-mission" className="space-y-4">
+          <section id="active-mission-details" className="hidden space-y-4 lg:block">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <span className="flex size-3 rounded-full bg-[var(--role-accent)]" />

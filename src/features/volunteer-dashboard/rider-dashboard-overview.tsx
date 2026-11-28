@@ -7,6 +7,7 @@ import {
 } from "@/components/dashboard/dashboard-ui";
 import { getUiLocale } from "@/lib/i18n/locale";
 import type { CompletedMissionRecord } from "./volunteer-types";
+import styles from "./rider-mobile.module.css";
 
 export function RiderDashboardOverview({
   history,
@@ -22,12 +23,12 @@ export function RiderDashboardOverview({
     .filter((item) => item.status === "delivered_verified")
     .reduce((n, item) => n + item.servings, 0);
   return (
-    <section>
+    <section className={styles.overview}>
       <DashboardSectionHeading
         title="Your contribution"
         description="Saved delivery records and currently available work."
       />
-      <DashboardMetrics columns={3} data-testid="rider-impact">
+      <DashboardMetrics columns={3} data-testid="rider-impact" className={styles.metrics}>
         <DashboardMetric
           label="Verified deliveries"
           value={format(completed)}
