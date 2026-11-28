@@ -50,7 +50,7 @@ export function ActiveDonationCard({ donation }: { donation: DonationView }) {
         {nextStep ? (
           <p className={styles.nextStep}>{tx(nextStep)}</p>
         ) : (
-          <RescueClock deadline={donation.safePickupDeadline} compact />
+          <RescueClock deadline={donation.safePickupDeadline} status={donation.status} compact />
         )}
       </div>
       <div className={styles.activeActions}>

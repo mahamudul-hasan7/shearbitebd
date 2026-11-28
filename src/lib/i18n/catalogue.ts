@@ -16,6 +16,7 @@ import banglaE from "./copy/bangla-e.json";
 import common from "./copy/common.json";
 import authPages from "./copy/auth-pages.json";
 import distribution from "./copy/distribution.json";
+import donorCompletion from "./copy/donor-completion.json";
 import donationPost from "./copy/donation-post.json";
 import donorMobile from "./copy/donor-mobile.json";
 import extra from "./copy/extra.json";
@@ -39,7 +40,7 @@ import operationsC from "./copy/operations-c.json";
 export type CopyPair = { bn: string; en: string };
 export const normalizeUiText = (text: string) => text.replace(/\s+/g, " ").trim();
 export const catalogue: Record<string, CopyPair> = { ...legacy };
-for (const entries of [banglaA, banglaB, banglaC, banglaD, banglaE, common, authPages, distribution, donationPost, donorMobile, extra, homeHero, homeMobile, homeReviews, homeSlogan, loading, ngoDashboard, notificationUi, operationsA, operationsB, operationsC, rescueProgress, riderOffer, validation, volunteerDuty, polish, workflows, admin, dashboardConsistency, adminLogin, verificationDocuments, ngoDiscovery, rescueCoordination, adminUsers, rescueJourney, roleUi]) {
+for (const entries of [banglaA, banglaB, banglaC, banglaD, banglaE, common, authPages, distribution, donationPost, donorMobile, donorCompletion, extra, homeHero, homeMobile, homeReviews, homeSlogan, loading, ngoDashboard, notificationUi, operationsA, operationsB, operationsC, rescueProgress, riderOffer, validation, volunteerDuty, polish, workflows, admin, dashboardConsistency, adminLogin, verificationDocuments, ngoDiscovery, rescueCoordination, adminUsers, rescueJourney, roleUi]) {
   for (const [en, bn, ...aliases] of entries) {
     for (const alias of [en, bn, ...aliases]) catalogue[normalizeUiText(alias)] = { en, bn };
   }

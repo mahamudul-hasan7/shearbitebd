@@ -56,7 +56,7 @@ export function RecommendedDonationCard({
           <Badge tone="neutral">
             {tx(FOOD_CATEGORY_LABELS[donation.category])}
           </Badge>
-          <RescueClock deadline={donation.safePickupDeadline} compact />
+          <RescueClock deadline={donation.safePickupDeadline} status={donation.status} compact />
         </div>
         <h3>{donation.title}</h3>
         <p className={styles.recommendDescription}>{donation.description}</p>

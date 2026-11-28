@@ -1,5 +1,6 @@
 "use client";
 import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
+import { DistributionEvidence } from "@/components/donation/distribution-evidence";
 import { RefreshCw } from "lucide-react";
 import { useMockAuth } from "@/features/auth/mock-auth";
 import { useUiText } from "@/lib/i18n/use-ui-text";
@@ -109,6 +110,7 @@ export function DonationTracking({ donationId }: { donationId: string }) {
               updatedAt={claim?.updatedAt || donation.updatedAt}
               stale={state.status === "error"}
             />
+            <DistributionEvidence record={data.distribution} />
             <div className={styles.contacts}>
               {data.volunteer && (
                 <RescueContactCard
