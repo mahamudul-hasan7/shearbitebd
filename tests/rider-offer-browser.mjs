@@ -19,7 +19,7 @@ export async function runRiderOfferBrowserChecks({prisma,base,dutyRider,dutyClai
       await page.goto("/volunteer/id-card",{waitUntil:"networkidle"});
       assert.equal(await popup.count(),0,"Duty OFF must not show a job offer");
       await page.getByRole("button",{name:t("Open account menu"),exact:true}).click();
-      const duty=page.getByRole("switch",{name:t("Duty ON/OFF"),exact:true});await duty.click();
+      const duty=page.getByRole("dialog",{name:t("User Account Settings"),exact:true}).getByRole("switch",{name:t("Duty ON/OFF"),exact:true});await duty.click();
       await popup.waitFor();assert.equal(await popup.getAttribute("data-dispatch-id"),first.claim.id);
       assert.equal(await popup.getByText("01712345670",{exact:true}).count(),0,"Private contact details remain hidden before assignment");
       const accept=popup.getByRole("button",{name:t("Take this delivery"),exact:true});
@@ -61,7 +61,7 @@ export async function runRiderOfferBrowserChecks({prisma,base,dutyRider,dutyClai
       await dutyClaim();await page.goto("/volunteer/notifications",{waitUntil:"networkidle"});assert.equal(await popup.count(),0,"A rider with an active mission must not get another offer");
       assert.deepEqual(errors,[]);results.push({width,height,language,polling:true,dismissal:true,acceptance:true,passed:true});await context.close();
     }
-    await expireOpen();await dutyClaim();const pending=await dutyRider(false);await prisma.volunteerProfile.update({where:{userId:pending.user.id},data:{verificationStatus:"REJECTED"}});const context=await browser.newContext({baseURL:base});const [name,value]=pending.cookie.split("=");await context.addCookies([{name,value,url:base,httpOnly:true,sameSite:"Lax"}]);const page=await context.newPage();await page.addInitScript(()=>localStorage.setItem("sharebite_preferred_lang","en"));await page.goto("/volunteer/id-card",{waitUntil:"networkidle"});await page.getByRole("button",{name:"Open account menu",exact:true}).click();assert.equal(await page.getByTestId("rider-incoming-offer").count(),0);assert.equal(await page.getByRole("switch").isDisabled(),true);await context.close();
+    await expireOpen();await dutyClaim();const pending=await dutyRider(false);await prisma.volunteerProfile.update({where:{userId:pending.user.id},data:{verificationStatus:"REJECTED"}});const context=await browser.newContext({baseURL:base});const [name,value]=pending.cookie.split("=");await context.addCookies([{name,value,url:base,httpOnly:true,sameSite:"Lax"}]);const page=await context.newPage();await page.addInitScript(()=>localStorage.setItem("sharebite_preferred_lang","en"));await page.goto("/volunteer/id-card",{waitUntil:"networkidle"});await page.getByRole("button",{name:"Open account menu",exact:true}).click();assert.equal(await page.getByTestId("rider-incoming-offer").count(),0);assert.equal(await page.getByRole("dialog",{name:"User Account Settings",exact:true}).getByRole("switch").isDisabled(),true);await context.close();
     await writeFile(`${artifacts}/checks.json`,JSON.stringify(results,null,2));
   } finally {await browser.close();}
 }

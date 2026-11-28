@@ -1,9 +1,11 @@
 "use client";
 import { useClock } from "@/lib/hooks/use-clock";
+import { RiderRefreshButton } from "./rider-refresh-button";
+import mobile from "./rider-mobile.module.css";
 import { RescueMapDisclosure } from "@/components/rescue/rescue-map-disclosure";
 import { useEffect, useEffectEvent, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, ChevronDown, Navigation, QrCode, RefreshCw, X } from "lucide-react";
+import { Camera, ChevronDown, Navigation, QrCode, X } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { useMockAuth } from "@/features/auth/mock-auth";
@@ -58,6 +60,12 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
   const [cameraStatus, setCameraStatus] = useState<string>("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const lock = useRef(false);
+  const task = useRef<HTMLDivElement>(null);
+  function focusNextStep() {
+    window.requestAnimationFrame(() => task.current?.scrollIntoView({
+      block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    }));
+  }
 
   useEffect(() => {
     if (!owner) return;
@@ -179,6 +187,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
     setNotice(undefined);
     try {
       await advanceStage(stage);
+      focusNextStep();
     } catch (error) {
       setStale(true);
       setNotice({
@@ -217,7 +226,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
     try {
       const result = await verifyOtp(pin);
       setNotice(result);
-      if (result.success) setPin("");
+      if (result.success) { setPin(""); focusNextStep(); }
     } catch (error) {
       setStale(true);
       setNotice({
@@ -241,17 +250,11 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
       profileName={session?.displayName || "Volunteer"}
       notificationHref={ROUTES.volunteer.notifications}
       backHref={ROUTES.volunteer.dispatches}
+      backClassName={mobile.back}
       backLabel={tx("Return to dispatches")}
       compactHeader
-      actions={
-        <Button
-          variant="outline"
-          onClick={() => setRevision((value) => value + 1)}
-          leftIcon={<RefreshCw size={16} />}
-        >
-          {tx("Refresh")}
-        </Button>
-      }
+      headerClassName={`${mobile.header} ${mobile.missionHeader}`}
+      actions={<RiderRefreshButton onClick={() => setRevision(value => value + 1)} disabled={loading} />}
     >
       <div className={styles.workspace}>
         {loading && !mission && (
@@ -282,17 +285,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
         )}
         {mission && (
           <>
-            <div className={styles.summary}>
-              <div className={styles.summaryInfo}>
-                <span className={styles.reference}>
-                  {tx("Claim reference")} · {mission.claimId}
-                </span>
-                <h2>{mission.foodTitle}</h2>
-                <p>
-                  {mission.donorName} → {mission.ngoName}
-                </p>
-              </div>
-            </div>
+            <div ref={task} className={mobile.task} data-testid="rider-current-task" data-code={Boolean(active && codeAction)}>
             <RescueNextAction model={model} stale={stale}>
               {active && stageAction && (
                 <Button
@@ -364,6 +357,7 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
               >
                 <div className={styles.panelHeader}>
                   <div>
+                    <p className="line-clamp-1 text-xs font-semibold" title={mission.foodTitle}>{mission.foodTitle}</p>
                     <h2>
                       {tx(
                         model.action === "PICKUP_CODE"
@@ -426,14 +420,28 @@ export function VolunteerMissionCockpit({ missionId }: { missionId: string }) {
                         "A code is single use. For an expired or locked code, ask its owner for a replacement.",
                       )}
                     </p>
+                    {mission.claimStatus === "ASSIGNED" && <Button type="button" variant="outline" className="lg:hidden" disabled={busy || stale} onClick={() => void releaseAssignedMission()}>{tx("দায়িত্ব ছেড়ে দিন")}</Button>}
                   </form>
                 </div>
               </section>
             )}
+            </div>
+            <div className={`${styles.summary} ${mobile.missionSummary}`}>
+              <div className={styles.summaryInfo}>
+                <span className={styles.reference}>
+                  {tx("Claim reference")} · {mission.claimId}
+                </span>
+                <h2>{mission.foodTitle}</h2>
+                <p>
+                  {mission.donorName} → {mission.ngoName}
+                </p>
+              </div>
+            </div>
             <div className={styles.grid}>
               <div className={styles.column}>
                 <RescueProgress
                   scope="rider"
+                  collapsibleSteps
                   status={mission.claimStatus || "ASSIGNED"}
                   routeStage={mission.currentStage}
                   assignedAt={mission.assignedAt}

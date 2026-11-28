@@ -1,0 +1,7 @@
+.riderMobileControls { display: none; }
+@media (max-width: 1023px) {
+  .riderDock { position: relative; bottom: auto; right: auto; z-index: 2; width: calc(100% - 32px); max-width: none; margin: 0 16px calc(6rem + env(safe-area-inset-bottom)); }
+  .riderDock .desktopControls { display: none; }
+  .riderMobileControls { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border: 1px solid var(--role-border); border-radius: 12px; padding: 8px 12px; color: var(--role-ink); background: var(--glass-surface); font-size: 12px; font-weight: 600; }
+  .riderDock button { min-height: 44px; }
+}

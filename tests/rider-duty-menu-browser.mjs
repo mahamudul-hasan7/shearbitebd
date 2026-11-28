@@ -20,8 +20,10 @@ export async function runRiderDutyMenuChecks({ base, dutyRider, dutyClaim, jsonR
       const t = text => uiLabel(text, language);
       async function open(target = page) {
         await target.getByRole("button", { name: t("Open account menu"), exact: true }).click();
-        const toggle = target.getByRole("switch", { name: t("Duty ON/OFF"), exact: true });
+        const menu = target.getByRole("dialog", { name: t("User Account Settings"), exact: true });
+        const toggle = menu.getByRole("switch", { name: t("Duty ON/OFF"), exact: true });
         await toggle.waitFor();
+        await menu.evaluate(async node => Promise.allSettled(node.getAnimations({ subtree: true }).filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished)));
         return toggle;
       }
       async function dismissOffer(target) {

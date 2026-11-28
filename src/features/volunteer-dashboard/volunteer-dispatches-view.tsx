@@ -1,4 +1,6 @@
 "use client";
+import { RiderRefreshButton } from "./rider-refresh-button";
+import mobile from "./rider-mobile.module.css";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -36,9 +38,8 @@ export function VolunteerDispatchesView() {
     catch (e) { setError(e instanceof Error ? e.message : "Assignment failed."); setAccepting(""); }
     finally { acceptingRef.current = false; }
   }
-  return <PortalShell role="volunteer" activeHref={ROUTES.volunteer.dispatches} title={tx("Available dispatches")} description={tx("NGO-claimed খাবার পৌঁছে দেওয়ার জন্য mission গ্রহণ করুন।")} profileName={profile.fullName} profileDescription={profile.role} avatarInitials={profile.avatarInitials}>
+  return <PortalShell role="volunteer" activeHref={ROUTES.volunteer.dispatches} title={tx("Available dispatches")} description={tx("NGO-claimed খাবার পৌঁছে দেওয়ার জন্য mission গ্রহণ করুন।")} profileName={profile.fullName} profileDescription={profile.role} avatarInitials={profile.avatarInitials} compactHeader headerClassName={mobile.header} actions={<RiderRefreshButton label="Refresh dispatches" disabled={loading} onClick={() => void refresh()} />}>
     <div className="grid gap-6">
-      <div><Button variant="outline" disabled={loading} onClick={() => void refresh()}>{loading ? tx("Loading…") : tx("Refresh dispatches")}</Button></div>
       {error && <p role="alert" className="rounded-2xl bg-red-50 p-4 text-red-700">{tx(error)}</p>}
       {dutyReady && dutyStatus === "offline" && <p role="status" className="liquid-glass-tile rounded-xl p-4 text-sm text-slate-800">{tx("Turn duty ON before accepting a new mission.")}</p>}
       {activeMission && activeMission.currentStage !== "completed" && <Card><CardHeader title={tx("Your assigned mission")} description={activeMission.foodTitle} /><CardContent><ButtonLink href={ROUTES.volunteer.mission(activeMission.id)}>{tx("Continue mission")}</ButtonLink></CardContent></Card>}
