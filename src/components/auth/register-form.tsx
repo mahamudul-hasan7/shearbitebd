@@ -261,7 +261,7 @@ export function RegisterForm() {
         {errors.form && (
           <Alert
             tone="danger"
-            title={tx("Please check your details")}
+            title={tx("Account could not be created")}
             description={tx(errors.form)}
           />
         )}

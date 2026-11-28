@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
+import { uiLabel } from "./ui-labels.mjs";
 
 export async function runAuthPageBrowserChecks({ base, prisma }) {
   const browser = await chromium.launch({
@@ -238,6 +239,19 @@ export async function runAuthPageBrowserChecks({ base, prisma }) {
         );
         await form.getByRole("button").last().click();
         await form.locator('input[name="terms"]').waitFor();
+      }
+      if (role === "donor") {
+        await page.route("**/api/auth/register", route => route.fulfill({
+          status: 500,
+          json: { error: "Could not create the account. Please try again." },
+        }), { times: 1 });
+        await form.locator('button[type="submit"]').click();
+        const alert = form.getByRole("alert");
+        await alert.getByText(uiLabel("Account could not be created", language), { exact: true }).waitFor();
+        assert.equal(await form.locator('input[name="terms"]').isChecked(), true);
+        assert.equal(await form.locator('[aria-invalid="true"]').count(), 0);
+        assert.ok((await form.innerText()).includes(email));
+        assert.equal(await prisma.user.count({ where: { email } }), 0);
       }
       if (role === "ngo") {
         await page.route("**/api/auth/session", (route) =>
