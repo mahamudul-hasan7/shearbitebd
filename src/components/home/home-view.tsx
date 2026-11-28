@@ -34,7 +34,6 @@ import {
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { ReviewTrainMarquee } from "@/components/home/review-train-marquee";
 import { getRoleLandingRoute, useMockAuth } from "@/features/auth/mock-auth";
-import { UserRole } from "@/lib/constants/roles";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -456,8 +455,8 @@ export function HomeView() {
     { id: "faq", label: t.nav.faq, href: "#faq" },
   ];
 
-  const handleNavClick = (id: string, href: string) => {
-    scrollLockUntilRef.current = performance.now() + 900;
+  const handleNavClick = (id: string, href: string, startedAt: number) => {
+    scrollLockUntilRef.current = startedAt + 900;
     setActiveNav(id);
     setIsMobileMenuOpen(false);
     if (id === "hero") {
@@ -523,7 +522,7 @@ export function HomeView() {
                   aria-current={isActive ? "page" : undefined}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavClick(item.id, item.href);
+                    handleNavClick(item.id, item.href, performance.now());
                   }}
                   className={cn(
                     "relative z-10 px-2.5 xl:px-3.5 py-2 text-[13px] xl:text-[14.5px] font-semibold whitespace-nowrap transition-colors duration-200 cursor-pointer select-none",
@@ -624,7 +623,7 @@ export function HomeView() {
                   href={item.href}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavClick(item.id, item.href);
+                    handleNavClick(item.id, item.href, performance.now());
                   }}
                   className={`rounded-xl px-3.5 py-3 text-sm font-heading font-bold transition-all select-none touch-manipulation active:scale-98 ${
                     activeNav === item.id

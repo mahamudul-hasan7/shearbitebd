@@ -1,4 +1,5 @@
 "use client";
+import { useClock } from "@/lib/hooks/use-clock";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PortalShell } from "@/components/layout/portal-shell";
 import { Alert } from "@/components/ui/alert";
@@ -36,6 +37,7 @@ export function ConfirmDelivery({ claimId }: { claimId: string }) {
 }
 function ReceiptForm({ claimId }: { claimId: string }) {
   const tx = useUiText();
+  const now = useClock();
   const [details, setDetails] = useState<ClaimCoordinationDetails>();
   const [receipt, setReceipt] = useState<DeliveryReceipt>();
   const [error, setError] = useState("");
@@ -267,7 +269,7 @@ function ReceiptForm({ claimId }: { claimId: string }) {
                     )}
                   />
                   <CardContent className="grid gap-5">
-                    {Date.parse(details.donation.safePickupDeadline) <= Date.now() && (
+                    {now !== null && Date.parse(details.donation.safePickupDeadline) <= now && (
                       <Alert
                         tone="warning"
                         title={tx("Safe food deadline passed")}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ShieldCheck, Trash2, UserPlus, Users } from "lucide-react";
 import { useUiText } from "@/lib/i18n/use-ui-text";
 import { useMockAuth } from "@/features/auth/mock-auth";
@@ -40,26 +40,26 @@ export function NGOTeam() {
   const [role, setRole] = useState("COORDINATOR");
   const [notice, setNotice] = useState<{ tone: "success" | "danger"; message: string }>();
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/ngo/team", { cache: "no-store" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Team list could not load.");
-      setMembers(data.members ?? []);
-    } catch (error) {
-      setNotice({
-        tone: "danger",
-        message: error instanceof Error ? error.message : "Could not load team.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    const controller = new AbortController();
+    async function load() {
+      try {
+        const res = await fetch("/api/ngo/team", { cache: "no-store", signal: controller.signal });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Team list could not load.");
+        if (!controller.signal.aborted) setMembers(data.members ?? []);
+      } catch (error) {
+        if (!controller.signal.aborted) setNotice({
+          tone: "danger",
+          message: error instanceof Error ? error.message : "Could not load team.",
+        });
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
     void load();
-  }, [load]);
+    return () => controller.abort();
+  }, []);
 
   async function addMember(event: FormEvent) {
     event.preventDefault();
